@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Login Page</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row">
+			<h1 class="indigo-text center" th:text="${error}">Not found</h1>
+
+			<p class="col s12 center" th:text="${message}">This page is not
+				available</p>
+		</div>
+	</div>
+</body>
+</html>

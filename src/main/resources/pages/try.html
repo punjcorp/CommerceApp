@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<title>My Example</title>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+<!-- Latest compiled and minified Bootstrap CSS -->
+
+
+<style>
+body {
+padding-top: 1em;
+}	
+</style> <div class="container-fluid">
+		
+<div id="faq" role="tablist" aria-multiselectable="true">
+
+<div class="card">
+<div class="card-header" role="tab" id="questionOne">
+<h5 class="card-title">
+<a data-toggle="collapse" data-parent="#faq" href="#answerOne" aria-expanded="true" aria-controls="answerOne">
+What if my boots are too big for my feet?
+</a>
+</h5>
+</div>
+<div id="answerOne" class="collapse show" role="tabcard" aria-labelledby="questionOne">
+<div class="card-body">
+Stuff your boots with newspaper or tissue.
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header" role="tab" id="questionTwo">
+<h5 class="card-title">
+<a class="collapsed" data-toggle="collapse" data-parent="#faq" href="#answerTwo" aria-expanded="false" aria-controls="answerTwo">
+Can I wear my boots inside?
+</a>
+</h5>
+</div>
+<div id="answerTwo" class="collapse" role="tabcard" aria-labelledby="questionTwo">
+<div class="card-body">
+No. Your mama should've told you about this.
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header" role="tab" id="questionThree">
+<h5 class="card-title">
+<a class="collapsed" data-toggle="collapse" data-parent="#faq" href="#answerThree" aria-expanded="true" aria-controls="answerThree">
+What if my boots get slippery when wet?
+</a>
+</h5>
+</div>
+<div id="answerThree" class="collapse in" role="tabcard" aria-labelledby="questionThree">
+<div class="card-body">
+Keep your boots dry.
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+		
+<!-- jQuery library -->
+
+
+<!-- Latest compiled and minified Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+<!-- Initialize Bootstrap functionality -->
+<script>
+// Initialize tooltip component
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+// Initialize popover component
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+</script> 

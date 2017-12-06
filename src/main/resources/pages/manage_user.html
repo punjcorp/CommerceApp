@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>User Registration Page</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-2 flex-first px-0">
+				<nav class="nav flex-column">
+					<span class="nav-item nav-link">Manage Account</span> <a
+						class="nav-item nav-link" href="manage_password.html" th:href="@{/manage_password}">Change
+						Password</a> <a class="nav-item nav-link" href="manage_address.html" th:href="@{/manage_address}">Manage
+						Addresses</a> <a class="nav-item nav-link" href="manage_card.html" th:href="@{/manage_card}">Manage
+						Cards</a>
+				</nav>
+			</div>
+			<div class="col-6 text-center">
+
+				<div class="card">
+					<div class="card-header">
+						<h3>Manage Account</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"> </div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"> </div>
+							<form class="form" id="muform" action="#" th:action="@{/manage_user}"
+								th:object="${registerUserBean}" method="post">
+								<div class="form-group">
+									<input type="text" th:field="*{firstName}"
+										class="form-control input-sm" placeholder="First Name"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{lastName}"
+										class="form-control input-sm" placeholder="Last Name"></input>
+								</div>
+
+								<div class="form-group">
+									<input type="email" th:field="*{email}"
+										class="form-control input-sm" placeholder="Email Address"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{phone1}"
+										class="form-control input-sm" placeholder="Home Phone"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{phone2}"
+										class="form-control input-sm" placeholder="Work Phone"></input>
+								</div>
+								<div class="form-group">
+									<input type="password" th:field="*{password}"
+										class="form-control input-sm"
+										placeholder="Type your Current Password for verification"></input>
+								</div>
+
+								<div class="row">
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<input type="button" id="editbtn" value="Edit"
+											class="btn btn-info btn-block"></input>
+									</div>
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<input type="submit" value="Done"
+											class="btn btn-info btn-block"></input>
+
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="card-footer text-muted">
+						<a href="/register" th:href="@{/login}">Sign In</a> for Home Page
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+	
+	<script>
+	$(document).ready(function(){
+		$('#muform input[type=text],input[type=email],input[type=submit],input[type=password]').prop("disabled", true);
+		$('#editbtn').click(function() {
+	        if($(this).val() != '') {
+	    		$('#muform input[type=text],input[type=email],input[type=submit],input[type=password]').prop("disabled", false);
+	    		$('#editbtn').prop("disabled", false);
+	        }
+	     });
+		
+	});
+	
+	</script>
+	
+</body>
+</html>
