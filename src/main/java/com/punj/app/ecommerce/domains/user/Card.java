@@ -1,6 +1,4 @@
-package com.punj.app.ecommerce.domains;
-
-import java.math.BigInteger;
+package com.punj.app.ecommerce.domains.user;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.punj.app.ecommerce.domains.ids.CardId;
+import com.punj.app.ecommerce.domains.user.ids.CardId;
 
 @Entity
 @Table(name = "user_credit_debit")

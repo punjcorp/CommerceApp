@@ -1,4 +1,4 @@
-package com.punj.app.ecommerce.domains;
+package com.punj.app.ecommerce.domains.user;
 
 import java.math.BigInteger;
 

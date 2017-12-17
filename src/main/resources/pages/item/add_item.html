@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Item Creation Page</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+	crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet"></link>
+
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-2 flex-first px-0">
+				<nav class="nav flex-column">
+					<a class="
+						nav-item nav-link" href="add_hierarchy.html"
+						th:href="@{/add_hierarchy}">Add a Hierarchy</a> <a
+						class="nav-item nav-link" href="add_tax_group.html"
+						th:href="@{/add_tax_group}">Add a Tax Group</a> <a
+						class="nav-item nav-link" href="add_style.html"
+						th:href="@{/add_style}">Add a Style</a> <a
+						class="
+						nav-item nav-link" href="add_item.html"
+						th:href="@{/add_item}">Add an Item</a>
+				</nav>
+			</div>
+
+			<div class="col-10 mx-auto text-center">
+
+				<div class="card">
+					<div class="card-header">
+						<h3>Create Items</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+
+							<div th:if="${ alert!=null}" th:text="${alert}"
+								class="alert alert-danger " role="alert"></div>
+								
+								<!-- Success -->
+								<div class="row form-group" th:if="${SKUs !=null}">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="card alert-success">
+											<div class="card-header">
+												<div class="row">
+													<div class="col-11 text-left" th:text="${success}"></div>
+													<div class="col-1 text-right">
+														<a data-toggle="collapse" href="#msg"
+															aria-expanded="false" aria-controls="msg"><i
+															class="material-icons md-dark">keyboard_arrow_down</i></a>
+
+													</div>
+												</div>
+											</div>
+											<div id="msg" class="collapse">
+												<div class="card-body">
+													<div class="row">
+														<div class="col">
+															<th:block
+																th:each="skuItem,itrStat:${SKUs}">
+																<p>The<span th:text="${skuItem.itemId}"></span> has been created for selected color and size. </p>															
+																</th:block>
+
+														</div>
+													</div>
+
+
+
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>								
+							<form class="form" action="#" th:action="@{/add_item}"
+								th:object="${itemBean}" method="post">
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{name}"
+												class="form-control input-sm" placeholder="Name"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{parentItemId}"
+												class="form-control input-sm" placeholder="Style Number"></input>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<textarea th:field="*{longDesc}" class="form-control input-sm"
+										placeholder="Description" rows="2"></textarea>
+								</div>
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<div class="form-group">
+											<input type="text" th:field="*{hierarchy.hierarchyId}"
+												class="form-control input-sm"
+												placeholder="Select the Hierarchy"></input>
+										</div>
+									</div>
+									<div class="col-xs-2 col-sm-2 col-md-2">
+										<div class="form-group">
+											<input type="button"
+												class="form-control btn btn-secondary btn-block"
+												value="Select" data-toggle="modal"
+												data-target="#hierarchyModal"></input>
+										</div>
+									</div>
+
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{itemType}"
+												class="form-control input-sm" placeholder="Style Type"></input>
+										</div>
+									</div>
+								</div>
+
+								<!-- Default Settings -->
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="card form-group">
+											<div class="card-header">
+												<div class="row">
+													<div class="col-11 text-left">Default Options</div>
+													<div class="col-1 text-right">
+														<a data-toggle="collapse" href="#defaultOptions"
+															aria-expanded="false" aria-controls="defaultOptions"><i
+															class="material-icons md-dark">keyboard_arrow_down</i></a>
+
+													</div>
+												</div>
+											</div>
+											<div id="defaultOptions" class="collapse show">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-xs-4 col-sm-4 col-md-4">
+															<div class="form-group">
+																<input type="text" th:field="*{itemOptions.taxGroupId}"
+																	class="form-control input-sm"
+																	placeholder="Select Tax Group"></input>
+															</div>
+														</div>
+														<div class="col-xs-2 col-sm-2 col-md-2">
+															<div class="form-group">
+																<input type="button"
+																	class="form-control btn btn-secondary btn-block"
+																	value="Select" data-toggle="modal"
+																	data-target="#taxModal"></input>
+															</div>
+														</div>
+
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" th:field="*{itemOptions.packSize}"
+																	class="form-control input-sm" placeholder="Pack Size"></input>
+															</div>
+														</div>
+
+													</div>
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" th:field="*{itemOptions.uom}"
+																	class="form-control input-sm"
+																	placeholder="Enter Unit of Measure"></input>
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.discountFlag}" /> Discount
+																	Flag
+																</label>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.returnFlag}"></input> Return
+																	Flag
+																</label>
+															</div>
+														</div>
+													</div>
+
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.taxFlag}" /> Tax Flag
+																</label>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.askQtyFlag}"></input> Ask Qty
+																	Flag
+																</label>
+															</div>
+														</div>
+													</div>
+
+
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.askPriceFlag}" /> Ask Price
+																	Flag
+																</label>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.descFlag}"></input> Ask
+																	Description Flag
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.priceChangeFlag}" /> Price
+																	Change Allowed
+																</label>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.nonMerchFlag}"></input> Non
+																	Merch Flag
+																</label>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.minAgeFlag}" /> Min Age Needed
+																</label>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-check text-left">
+																<label class="form-check-label"> <input
+																	type="checkbox" class="form-check-input"
+																	th:field="*{itemOptions.customerPromptFlag}"></input>
+																	Customer Prompt Flag
+																</label>
+															</div>
+														</div>
+													</div>
+
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<!-- Prices -->
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="card form-group">
+											<div class="card-header">
+												<div class="row">
+													<div class="col-11 text-left">Prices</div>
+													<div class="col-1 text-right">
+														<a data-toggle="collapse" href="#prices"
+															aria-expanded="false" aria-controls="prices"><i
+															class="material-icons md-dark">keyboard_arrow_down</i></a>
+
+													</div>
+												</div>
+											</div>
+											<div id="prices" class="collapse show">
+												<div class="card-body">
+
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" class="form-control input-sm"
+																	placeholder="Unit Cost"
+																	th:field="*{itemOptions.unitCost}"></input>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" class="form-control input-sm"
+																	placeholder="Suggested Price"
+																	th:field="*{itemOptions.suggestedPrice}"></input>
+
+															</div>
+														</div>
+													</div>
+
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" class="form-control input-sm"
+																	placeholder="Compare at Price"
+																	th:field="*{itemOptions.compareAtPrice}"></input>
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" class="form-control input-sm"
+																	placeholder="Current Price"
+																	th:field="*{itemOptions.currentPrice}"></input>
+
+															</div>
+														</div>
+													</div>
+
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<input type="text" class="form-control input-sm"
+																	placeholder="Restocking Fee"
+																	th:field="*{itemOptions.restockingFee}"></input>
+
+															</div>
+														</div>
+													</div>
+
+
+
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<!-- Images -->
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="card form-group">
+											<div class="card-header">
+												<div class="row">
+													<div class="col-11 text-left">Images</div>
+													<div class="col-1 text-right">
+														<a data-toggle="collapse" href="#images"
+															aria-expanded="false" aria-controls="images"><i
+															class="material-icons md-dark">keyboard_arrow_down</i></a>
+
+													</div>
+												</div>
+											</div>
+											<div id="images" class="collapse show">
+												<div class="card-body">
+													<div class="row">
+														<div class="col">
+															<th:block
+																th:each="itemImage,itrStat:${itemBean.itemImages}">
+																<div class="form-group">
+																	<div class="input-group">
+																		<span class="input-group-addon"> <input
+																			type="checkbox" th:field="*{featureList}"
+																			th:value="${itemImage.key}" /> <span
+																			class="input-group-addon" th:text="${itemImage.key}"></span>
+																		</span> <input type="text" class="form-control input-sm"
+																			th:placeholder="'Image File Name for '+${itemImage.key}"
+																			th:id="${itemImage.key}"
+																			th:field="*{itemImages[__${itemImage.key}__]}"
+																			th:value="${itemImage.value}" />
+																	</div>
+																</div>
+															</th:block>
+
+														</div>
+													</div>
+
+
+
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<!-- Item Attributes -->
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="card form-group">
+											<div class="card-header">
+												<div class="row">
+													<div class="col-11 text-left">Item Attributes</div>
+													<div class="col-1 text-right">
+														<a data-toggle="collapse" href="#itemAttributes"
+															aria-expanded="false" aria-controls="itemAttributes"><i
+															class="material-icons md-dark">keyboard_arrow_down</i></a>
+
+													</div>
+												</div>
+											</div>
+											<div id="itemAttributes" class="collapse show">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+
+																<label class="form-select-label">Select Colors
+																	for the Style </label> <select id="color-select"
+																	class="form-control input-sm"
+																	placeholder="Select Colors for the item"
+																	th:field="*{itemColorSelected}" multiple="multiple">
+																	<option th:each="colorBean: ${colorList}"
+																		th:value="${colorBean.attributeId}+'_'+${colorBean.value}"
+																		th:text="${colorBean.value}"></option>
+																</select>
+
+
+															</div>
+														</div>
+														<div class="col-xs-6 col-sm-6 col-md-6">
+															<div class="form-group">
+																<label class="form-select-label"> Select Sizes
+																	for the Style </label> <select id="size-select"
+																	class="form-control input-sm"
+																	placeholder="Select Size for the item"
+																	th:field="*{itemSizeSelected}" multiple="multiple">
+																	<option th:each="sizeBean: ${sizeList}"
+																		th:value="${sizeBean.attributeId}+'_'+${sizeBean.value}"
+																		th:text="${sizeBean.value}"></option>
+																</select>
+
+
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<input type="submit" value="Save" class="btn btn-info btn-block"></input>
+							</form>
+						</div>
+					</div>
+					<div class="card-footer text-muted">Some text here at later
+						point</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+
+	<!-- Hierarchy Modal -->
+	<div class="modal fade " id="hierarchyModal" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Select Item
+						Hierarchy</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button type="button" id="addressbtn" class="btn btn-primary">Choose
+						Hierarchy</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Tax Modal -->
+	<div class="modal fade " id="taxModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Choose Tax
+						Group</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button type="button" id="addressbtn" class="btn btn-primary">Choose
+						Tax Group</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		$("#hierarchybtn").click(function() {
+
+			$('#hierarchyModal').modal('toggle');
+
+		});
+
+		$("#taxbtn").click(function() {
+
+			$('#taxModal').modal('toggle');
+
+		});
+	</script>
+</body>
+</html>

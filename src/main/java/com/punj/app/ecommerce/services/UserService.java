@@ -6,10 +6,10 @@ package com.punj.app.ecommerce.services;
 import java.math.BigInteger;
 import java.util.List;
 
-import com.punj.app.ecommerce.domains.Address;
-import com.punj.app.ecommerce.domains.Card;
-import com.punj.app.ecommerce.domains.Password;
-import com.punj.app.ecommerce.domains.User;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.domains.user.Card;
+import com.punj.app.ecommerce.domains.user.Password;
+import com.punj.app.ecommerce.domains.user.User;
 
 /**
  * @author admin

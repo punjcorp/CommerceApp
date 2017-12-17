@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_price` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `item_price_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `price_change_type` VARCHAR(5) NOT NULL,
   `start_date` DATETIME NOT NULL,
   `end_date` DATETIME NULL,
@@ -26,15 +27,22 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`item_price_id`),
+  PRIMARY KEY (`item_price_id`, `location_id`),
   CONSTRAINT `fk_item_price_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_price_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_price_item1_idx` ON `commercedb`.`item_price` (`item_id` ASC);
+
+CREATE INDEX `fk_item_price_location1_idx` ON `commercedb`.`item_price` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -45,6 +53,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_price_history` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `item_price_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `price_change_type` VARCHAR(5) NOT NULL,
   `start_date` DATETIME NOT NULL,
   `end_date` DATETIME NULL,
@@ -55,15 +64,14 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   `archived_date` DATETIME NOT NULL,
-  PRIMARY KEY (`item_price_id`),
-  CONSTRAINT `fk_item_price_history_item_price1`
-    FOREIGN KEY (`item_price_id`)
-    REFERENCES `commercedb`.`item_price` (`item_price_id`)
+  PRIMARY KEY (`item_price_id`, `location_id`, `item_id`, `archived_date`),
+  CONSTRAINT `fk_item_price_history_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_price_history_item_price1_idx` ON `commercedb`.`item_price_history` (`item_price_id` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

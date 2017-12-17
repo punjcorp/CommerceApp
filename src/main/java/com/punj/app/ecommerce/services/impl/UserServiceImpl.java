@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import com.punj.app.ecommerce.domains.Address;
-import com.punj.app.ecommerce.domains.Card;
-import com.punj.app.ecommerce.domains.Password;
-import com.punj.app.ecommerce.domains.User;
-import com.punj.app.ecommerce.domains.ids.CardId;
-import com.punj.app.ecommerce.domains.ids.PasswordId;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.domains.user.Card;
+import com.punj.app.ecommerce.domains.user.Password;
+import com.punj.app.ecommerce.domains.user.User;
+import com.punj.app.ecommerce.domains.user.ids.CardId;
+import com.punj.app.ecommerce.domains.user.ids.PasswordId;
 import com.punj.app.ecommerce.repositories.AddressRepository;
 import com.punj.app.ecommerce.repositories.CardRepository;
 import com.punj.app.ecommerce.repositories.PasswordRepository;

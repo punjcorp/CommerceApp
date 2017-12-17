@@ -116,11 +116,12 @@ DROP TABLE IF EXISTS `commercedb`.`user_role` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`user_role` (
   `username` VARCHAR(50) NOT NULL,
   `role_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `begin_date` DATETIME NULL,
   `end_date` DATETIME NULL,
-  PRIMARY KEY (`username`, `role_id`),
+  PRIMARY KEY (`username`, `role_id`, `location_id`),
   CONSTRAINT `fk_user_role_role1`
     FOREIGN KEY (`role_id`)
     REFERENCES `commercedb`.`role` (`role_id`)
@@ -130,10 +131,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_role` (
     FOREIGN KEY (`username`)
     REFERENCES `commercedb`.`user` (`username`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_role_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_user_role_user1_idx` ON `commercedb`.`user_role` (`username` ASC);
+
+CREATE INDEX `fk_user_role_location1_idx` ON `commercedb`.`user_role` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -223,7 +231,6 @@ ENGINE = InnoDB;
 
 CREATE INDEX `fk_user_credit_debit_user_address1_idx` ON `commercedb`.`user_credit_debit` (`address_id` ASC);
 
-
 -- -----------------------------------------------------
 -- Table `commercedb`.`user_address`
 -- -----------------------------------------------------
@@ -246,30 +253,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_address` (
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_user_address_user1_idx` ON `commercedb`.`user_address` (`username` ASC);
-
--- -----------------------------------------------------
--- Table `commercedb`.`user_address`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user_address` ;
-
-CREATE TABLE IF NOT EXISTS `commercedb`.`user_address` (
-  `username` VARCHAR(50) NOT NULL,
-  `address_id` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`username`, `address_id`),
-  CONSTRAINT `fk_user_address_address_master1`
-    FOREIGN KEY (`address_id`)
-    REFERENCES `commercedb`.`address_master` (`address_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_user_address_user1`
-    FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_user_address_user1_idx` ON `commercedb`.`user_address` (`username` ASC);
-
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

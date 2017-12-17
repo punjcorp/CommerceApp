@@ -5,8 +5,8 @@ package com.punj.app.ecommerce.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.punj.app.ecommerce.domains.Password;
-import com.punj.app.ecommerce.domains.ids.PasswordId;
+import com.punj.app.ecommerce.domains.user.Password;
+import com.punj.app.ecommerce.domains.user.ids.PasswordId;
 
 /**
  * @author admin

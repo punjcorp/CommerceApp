@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.punj.app.ecommerce.domains.ids;
+package com.punj.app.ecommerce.domains.user.ids;
 
 import java.io.Serializable;
 import java.sql.Date;

@@ -9,7 +9,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 USE `commercedb` ;
 
-
 -- -----------------------------------------------------
 -- Table `commercedb`.`item_hierarchy`
 -- -----------------------------------------------------
@@ -17,12 +16,22 @@ DROP TABLE IF EXISTS `commercedb`.`item_hierarchy` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   `hierarchy_id` INT NOT NULL AUTO_INCREMENT,
-  `dept_name` VARCHAR(100) NOT NULL,
-  `sub_dept_name` VARCHAR(100) NULL,
-  `class_name` VARCHAR(100) NULL,
-  `sub_class_name` VARCHAR(100) NULL,
-  PRIMARY KEY (`hierarchy_id`))
+  `level_code` VARCHAR(20) NOT NULL,
+  `description` VARCHAR(250) NULL,
+  `sort_order` INT NOT NULL DEFAULT 1,
+  `hidden_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `created_date` DATETIME NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `parent_id` INT NULL,
+  PRIMARY KEY (`hierarchy_id`),
+  CONSTRAINT `fk_item_hierarchy_item_hierarchy1`
+    FOREIGN KEY (`parent_id`)
+    REFERENCES `commercedb`.`item_hierarchy` (`hierarchy_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_item_hierarchy_item_hierarchy1_idx` ON `commercedb`.`item_hierarchy` (`parent_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -62,24 +71,24 @@ DROP TABLE IF EXISTS `commercedb`.`item_options` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `item_id` BIGINT NOT NULL,
   `uom` VARCHAR(20) NOT NULL,
-  `discount_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `tax_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `ask_qty_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `ask_price_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `discount_flag` TINYINT NOT NULL DEFAULT 1,
+  `tax_flag` TINYINT NOT NULL DEFAULT 1,
+  `ask_qty_flag` TINYINT NOT NULL DEFAULT 1,
+  `ask_price_flag` TINYINT NOT NULL DEFAULT 0,
   `unit_cost` DECIMAL NOT NULL DEFAULT 0.0,
   `suggested_price` DECIMAL NOT NULL DEFAULT 0.0,
   `current_price` DECIMAL NOT NULL DEFAULT 0.0,
   `compare_at_price` DECIMAL NOT NULL,
-  `return_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `desc_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `related_item_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `return_flag` TINYINT NOT NULL DEFAULT 1,
+  `desc_flag` TINYINT NOT NULL DEFAULT 0,
+  `related_item_flag` TINYINT NOT NULL DEFAULT 0,
   `tax_group_id` INT NOT NULL,
   `restocking_fee` DECIMAL NULL,
-  `price_change_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `non_merch_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
-  `min_age_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
-  `stock_status` VARCHAR(20) NOT NULL,
-  `customer_prompt` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `price_change_flag` TINYINT NOT NULL DEFAULT 1,
+  `non_merch_flag` TINYINT NOT NULL DEFAULT 0,
+  `min_age_flag` TINYINT NOT NULL DEFAULT 0,
+  `stock_status` VARCHAR(20) NOT NULL DEFAULT 0,
+  `customer_prompt` TINYINT NOT NULL DEFAULT 0,
   `shipping_weight` DECIMAL NULL,
   `pack_size` VARCHAR(45) NULL,
   PRIMARY KEY (`item_id`),
@@ -94,25 +103,43 @@ CREATE INDEX `fk_item_options_item1_idx` ON `commercedb`.`item_options` (`item_i
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_dimensions`
+-- Table `commercedb`.`attribute_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_dimensions` ;
+DROP TABLE IF EXISTS `commercedb`.`attribute_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_dimensions` (
+CREATE TABLE IF NOT EXISTS `commercedb`.`attribute_master` (
+  `attribute_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `value` VARCHAR(80) NOT NULL,
+  `code` VARCHAR(5) NOT NULL,
+  `name` VARCHAR(80) NOT NULL,
+  `description` VARCHAR(150) NULL,
+  PRIMARY KEY (`attribute_id`, `value`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`item_attributes`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`item_attributes` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`item_attributes` (
   `item_id` BIGINT NOT NULL,
-  `size_code` VARCHAR(30) NOT NULL,
-  `dim_name` VARCHAR(80) NOT NULL,
-  `dim_value` VARCHAR(80) NOT NULL,
-  `dim_description` VARCHAR(150) NOT NULL,
-  PRIMARY KEY (`item_id`, `size_code`),
-  CONSTRAINT `fk_item_dimensions_item1`
+  `attribute_id` BIGINT NOT NULL,
+  `value` VARCHAR(80) NOT NULL,
+  PRIMARY KEY (`item_id`, `attribute_id`, `value`),
+  CONSTRAINT `fk_item_attributes_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_style_attribute_values_attribute_master1`
+    FOREIGN KEY (`attribute_id`)
+    REFERENCES `commercedb`.`attribute_master` (`attribute_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_dimensions_item1_idx` ON `commercedb`.`item_dimensions` (`item_id` ASC);
+CREATE INDEX `fk_style_attribute_values_attribute_master1_idx` ON `commercedb`.`item_attributes` (`attribute_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -202,6 +229,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_related` (
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_related_item1_idx` ON `commercedb`.`item_related` (`item_id` ASC);
+
 
 
 

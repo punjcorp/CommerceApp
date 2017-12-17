@@ -16,17 +16,25 @@ DROP TABLE IF EXISTS `commercedb`.`item_stock` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock` (
   `item_id` BIGINT NOT NULL,
-  `total_qty` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
+  `total_qty` INT NOT NULL DEFAULT 0,
   `non_sellable_qty` INT NOT NULL DEFAULT 0,
   `reserved_qty` INT NOT NULL DEFAULT 0,
-  `stock_on_hand` INT NOT NULL,
-  PRIMARY KEY (`item_id`),
+  `stock_on_hand` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`item_id`, `location_id`),
   CONSTRAINT `fk_item_stock_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_stock_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_item_stock_location1_idx` ON `commercedb`.`item_stock` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -118,9 +126,10 @@ DROP TABLE IF EXISTS `commercedb`.`item_stock_details` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_details` (
   `item_id` BIGINT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `stock_bucket_id` INT NOT NULL,
   `total_qty` INT NOT NULL,
-  PRIMARY KEY (`item_id`, `stock_bucket_id`),
+  PRIMARY KEY (`item_id`, `location_id`, `stock_bucket_id`),
   CONSTRAINT `fk_item_stock_details_item_stock1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item_stock` (`item_id`)
@@ -130,11 +139,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_details` (
     FOREIGN KEY (`stock_bucket_id`)
     REFERENCES `commercedb`.`stock_bucket` (`stock_bucket_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_stock_details_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_stock_details_stock_bucket1_idx` ON `commercedb`.`item_stock_details` (`stock_bucket_id` ASC);
 
+CREATE INDEX `fk_item_stock_details_location1_idx` ON `commercedb`.`item_stock_details` (`location_id` ASC);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

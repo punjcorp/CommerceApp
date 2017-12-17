@@ -3,7 +3,6 @@ package com.punj.app.ecommerce.controller;
  * 
  */
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -18,11 +17,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.punj.app.ecommerce.domains.Address;
-import com.punj.app.ecommerce.domains.Card;
-import com.punj.app.ecommerce.domains.Password;
-import com.punj.app.ecommerce.domains.User;
-import com.punj.app.ecommerce.domains.ids.CardId;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.domains.user.Card;
+import com.punj.app.ecommerce.domains.user.Password;
+import com.punj.app.ecommerce.domains.user.ids.CardId;
 import com.punj.app.ecommerce.models.CardBean;
 import com.punj.app.ecommerce.models.RegisterUserBean;
 import com.punj.app.ecommerce.services.UserService;

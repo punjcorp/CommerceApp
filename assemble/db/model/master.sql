@@ -115,6 +115,38 @@ CREATE INDEX `fk_role_access_access1_idx` ON `commercedb`.`role_access` (`access
 
 
 -- -----------------------------------------------------
+-- Table `commercedb`.`location`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`location` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`location` (
+  `location_id` INT(4) NOT NULL,
+  `location_type` VARCHAR(15) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `description` VARCHAR(150) NULL,
+  `status` VARCHAR(5) NOT NULL,
+  `address1` VARCHAR(150) NOT NULL,
+  `address2` VARCHAR(150) NULL,
+  `city` VARCHAR(45) NOT NULL,
+  `state` VARCHAR(45) NOT NULL,
+  `country` VARCHAR(45) NOT NULL,
+  `pincode` VARCHAR(6) NOT NULL,
+  `neighborhood` VARCHAR(100) NULL,
+  `locale` VARCHAR(10) NOT NULL,
+  `currency` VARCHAR(3) NOT NULL,
+  `telephone1` VARCHAR(12) NOT NULL,
+  `telephone2` VARCHAR(12) NULL,
+  `store_manager` VARCHAR(80) NULL,
+  `email_address` VARCHAR(150) NULL,
+  `created_date` DATETIME NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `modified_date` DATETIME NULL,
+  `modified_by` VARCHAR(50) NULL,
+  PRIMARY KEY (`location_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `commercedb`.`user_role`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`user_role` ;
@@ -122,11 +154,12 @@ DROP TABLE IF EXISTS `commercedb`.`user_role` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`user_role` (
   `username` VARCHAR(50) NOT NULL,
   `role_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `begin_date` DATETIME NULL,
   `end_date` DATETIME NULL,
-  PRIMARY KEY (`username`, `role_id`),
+  PRIMARY KEY (`username`, `role_id`, `location_id`),
   CONSTRAINT `fk_user_role_role1`
     FOREIGN KEY (`role_id`)
     REFERENCES `commercedb`.`role` (`role_id`)
@@ -136,10 +169,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_role` (
     FOREIGN KEY (`username`)
     REFERENCES `commercedb`.`user` (`username`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_role_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_user_role_user1_idx` ON `commercedb`.`user_role` (`username` ASC);
+
+CREATE INDEX `fk_user_role_location1_idx` ON `commercedb`.`user_role` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -231,39 +271,28 @@ CREATE INDEX `fk_user_credit_debit_user_address1_idx` ON `commercedb`.`user_cred
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`timestamps`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`timestamps` ;
-
-CREATE TABLE IF NOT EXISTS `commercedb`.`timestamps` (
-  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` TIMESTAMP NULL);
-
-
--- -----------------------------------------------------
--- Table `commercedb`.`category`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`category` ;
-
-CREATE TABLE IF NOT EXISTS `commercedb`.`category` (
-  `category_id` INT NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`category_id`));
-
-
--- -----------------------------------------------------
 -- Table `commercedb`.`item_hierarchy`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`item_hierarchy` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   `hierarchy_id` INT NOT NULL AUTO_INCREMENT,
-  `dept_name` VARCHAR(100) NOT NULL,
-  `sub_dept_name` VARCHAR(100) NULL,
-  `class_name` VARCHAR(100) NULL,
-  `sub_class_name` VARCHAR(100) NULL,
-  PRIMARY KEY (`hierarchy_id`))
+  `level_code` VARCHAR(20) NOT NULL,
+  `description` VARCHAR(250) NULL,
+  `sort_order` INT NOT NULL DEFAULT 1,
+  `hidden_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `created_date` DATETIME NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `parent_id` INT NULL,
+  PRIMARY KEY (`hierarchy_id`),
+  CONSTRAINT `fk_item_hierarchy_item_hierarchy1`
+    FOREIGN KEY (`parent_id`)
+    REFERENCES `commercedb`.`item_hierarchy` (`hierarchy_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_item_hierarchy_item_hierarchy1_idx` ON `commercedb`.`item_hierarchy` (`parent_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -303,24 +332,24 @@ DROP TABLE IF EXISTS `commercedb`.`item_options` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `item_id` BIGINT NOT NULL,
   `uom` VARCHAR(20) NOT NULL,
-  `discount_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `tax_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `ask_qty_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `ask_price_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `discount_flag` TINYINT NOT NULL DEFAULT 1,
+  `tax_flag` TINYINT NOT NULL DEFAULT 1,
+  `ask_qty_flag` TINYINT NOT NULL DEFAULT 1,
+  `ask_price_flag` TINYINT NOT NULL DEFAULT 0,
   `unit_cost` DECIMAL NOT NULL DEFAULT 0.0,
   `suggested_price` DECIMAL NOT NULL DEFAULT 0.0,
   `current_price` DECIMAL NOT NULL DEFAULT 0.0,
   `compare_at_price` DECIMAL NOT NULL,
-  `return_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `desc_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `related_item_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `return_flag` TINYINT NOT NULL DEFAULT 1,
+  `desc_flag` TINYINT NOT NULL DEFAULT 0,
+  `related_item_flag` TINYINT NOT NULL DEFAULT 0,
   `tax_group_id` INT NOT NULL,
   `restocking_fee` DECIMAL NULL,
-  `price_change_flag` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `non_merch_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
-  `min_age_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
-  `stock_status` VARCHAR(20) NOT NULL,
-  `customer_prompt` VARCHAR(1) NOT NULL DEFAULT 'N',
+  `price_change_flag` TINYINT NOT NULL DEFAULT 1,
+  `non_merch_flag` TINYINT NOT NULL DEFAULT 0,
+  `min_age_flag` TINYINT NOT NULL DEFAULT 0,
+  `stock_status` VARCHAR(20) NOT NULL DEFAULT 0,
+  `customer_prompt` TINYINT NOT NULL DEFAULT 0,
   `shipping_weight` DECIMAL NULL,
   `pack_size` VARCHAR(45) NULL,
   PRIMARY KEY (`item_id`),
@@ -335,25 +364,43 @@ CREATE INDEX `fk_item_options_item1_idx` ON `commercedb`.`item_options` (`item_i
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_dimensions`
+-- Table `commercedb`.`attribute_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_dimensions` ;
+DROP TABLE IF EXISTS `commercedb`.`attribute_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_dimensions` (
+CREATE TABLE IF NOT EXISTS `commercedb`.`attribute_master` (
+  `attribute_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `value` VARCHAR(80) NOT NULL,
+  `code` VARCHAR(5) NOT NULL,
+  `name` VARCHAR(80) NOT NULL,
+  `description` VARCHAR(150) NULL,
+  PRIMARY KEY (`attribute_id`, `value`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`item_attributes`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`item_attributes` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`item_attributes` (
   `item_id` BIGINT NOT NULL,
-  `size_code` VARCHAR(30) NOT NULL,
-  `dim_name` VARCHAR(80) NOT NULL,
-  `dim_value` VARCHAR(80) NOT NULL,
-  `dim_description` VARCHAR(150) NOT NULL,
-  PRIMARY KEY (`item_id`, `size_code`),
-  CONSTRAINT `fk_item_dimensions_item1`
+  `attribute_id` BIGINT NOT NULL,
+  `value` VARCHAR(80) NOT NULL,
+  PRIMARY KEY (`item_id`, `attribute_id`, `value`),
+  CONSTRAINT `fk_item_attributes_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_style_attribute_values_attribute_master1`
+    FOREIGN KEY (`attribute_id`)
+    REFERENCES `commercedb`.`attribute_master` (`attribute_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_dimensions_item1_idx` ON `commercedb`.`item_dimensions` (`item_id` ASC);
+CREATE INDEX `fk_style_attribute_values_attribute_master1_idx` ON `commercedb`.`item_attributes` (`attribute_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -499,14 +546,23 @@ DROP TABLE IF EXISTS `commercedb`.`purchase_order` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order` (
   `order_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `supplier_id` INT NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `create_date` DATETIME NOT NULL,
   `total_amount` DECIMAL NOT NULL DEFAULT 0.0,
   `paid_amount` DECIMAL NOT NULL DEFAULT 0.0,
   `discount_amount` DECIMAL NOT NULL DEFAULT 0.0,
   `tax_amount` DECIMAL NOT NULL DEFAULT 0.0,
-  PRIMARY KEY (`order_id`))
+  `status` VARCHAR(1) NOT NULL,
+  PRIMARY KEY (`order_id`),
+  CONSTRAINT `fk_purchase_order_supplier1`
+    FOREIGN KEY (`supplier_id`)
+    REFERENCES `commercedb`.`supplier` (`supplier_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_purchase_order_supplier1_idx` ON `commercedb`.`purchase_order` (`supplier_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -516,7 +572,7 @@ DROP TABLE IF EXISTS `commercedb`.`purchase_order_items` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   `order_id` BIGINT NOT NULL,
-  `supplier_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `item_id` BIGINT NOT NULL,
   `ordered_qty` INT NOT NULL,
   `cost_amount` DECIMAL NOT NULL,
@@ -525,29 +581,29 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   `delievered_date` DATETIME NULL,
   `discount_amount` DECIMAL NULL,
   `total_discount_amount` DECIMAL NULL,
-  PRIMARY KEY (`order_id`, `supplier_id`, `item_id`, `cost_amount`),
+  PRIMARY KEY (`order_id`, `location_id`, `item_id`, `cost_amount`),
   CONSTRAINT `fk_purchase_order_items_purchase_order1`
     FOREIGN KEY (`order_id`)
     REFERENCES `commercedb`.`purchase_order` (`order_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_purchase_order_items_supplier1`
-    FOREIGN KEY (`supplier_id`)
-    REFERENCES `commercedb`.`supplier` (`supplier_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_purchase_order_items_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_purchase_order_items_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_purchase_order_items_purchase_order1_idx` ON `commercedb`.`purchase_order_items` (`order_id` ASC);
 
-CREATE INDEX `fk_purchase_order_items_supplier1_idx` ON `commercedb`.`purchase_order_items` (`supplier_id` ASC);
-
 CREATE INDEX `fk_purchase_order_items_item1_idx` ON `commercedb`.`purchase_order_items` (`item_id` ASC);
+
+CREATE INDEX `fk_purchase_order_items_location1_idx` ON `commercedb`.`purchase_order_items` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -581,17 +637,25 @@ DROP TABLE IF EXISTS `commercedb`.`item_stock` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock` (
   `item_id` BIGINT NOT NULL,
-  `total_qty` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
+  `total_qty` INT NOT NULL DEFAULT 0,
   `non_sellable_qty` INT NOT NULL DEFAULT 0,
   `reserved_qty` INT NOT NULL DEFAULT 0,
-  `stock_on_hand` INT NOT NULL,
-  PRIMARY KEY (`item_id`),
+  `stock_on_hand` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`item_id`, `location_id`),
   CONSTRAINT `fk_item_stock_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_stock_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_item_stock_location1_idx` ON `commercedb`.`item_stock` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -683,9 +747,10 @@ DROP TABLE IF EXISTS `commercedb`.`item_stock_details` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_details` (
   `item_id` BIGINT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `stock_bucket_id` INT NOT NULL,
   `total_qty` INT NOT NULL,
-  PRIMARY KEY (`item_id`, `stock_bucket_id`),
+  PRIMARY KEY (`item_id`, `location_id`, `stock_bucket_id`),
   CONSTRAINT `fk_item_stock_details_item_stock1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item_stock` (`item_id`)
@@ -695,10 +760,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_details` (
     FOREIGN KEY (`stock_bucket_id`)
     REFERENCES `commercedb`.`stock_bucket` (`stock_bucket_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_stock_details_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_stock_details_stock_bucket1_idx` ON `commercedb`.`item_stock_details` (`stock_bucket_id` ASC);
+
+CREATE INDEX `fk_item_stock_details_location1_idx` ON `commercedb`.`item_stock_details` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -709,6 +781,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_price` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `item_price_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `price_change_type` VARCHAR(5) NOT NULL,
   `start_date` DATETIME NOT NULL,
   `end_date` DATETIME NULL,
@@ -718,15 +791,22 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`item_price_id`),
+  PRIMARY KEY (`item_price_id`, `location_id`),
   CONSTRAINT `fk_item_price_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_price_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_price_item1_idx` ON `commercedb`.`item_price` (`item_id` ASC);
+
+CREATE INDEX `fk_item_price_location1_idx` ON `commercedb`.`item_price` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -737,6 +817,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_price_history` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `item_price_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `price_change_type` VARCHAR(5) NOT NULL,
   `start_date` DATETIME NOT NULL,
   `end_date` DATETIME NULL,
@@ -747,15 +828,218 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   `archived_date` DATETIME NOT NULL,
-  PRIMARY KEY (`item_price_id`),
-  CONSTRAINT `fk_item_price_history_item_price1`
-    FOREIGN KEY (`item_price_id`)
-    REFERENCES `commercedb`.`item_price` (`item_price_id`)
+  PRIMARY KEY (`item_price_id`, `location_id`, `item_id`, `archived_date`),
+  CONSTRAINT `fk_item_price_history_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_price_history_item_price1_idx` ON `commercedb`.`item_price_history` (`item_price_id` ASC);
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`style_generator`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`style_generator` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
+  `style_id` MEDIUMINT(7) ZEROFILL NOT NULL AUTO_INCREMENT,
+  `status` VARCHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`style_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`sku_generator`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`sku_generator` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`sku_generator` (
+  `style_id` MEDIUMINT(7) ZEROFILL NOT NULL,
+  `color` INT(2) ZEROFILL NOT NULL,
+  `size` INT(2) ZEROFILL NOT NULL,
+  `status` VARCHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`style_id`, `color`, `size`),
+  CONSTRAINT `fk_sku_generator_style_generator1`
+    FOREIGN KEY (`style_id`)
+    REFERENCES `commercedb`.`style_generator` (`style_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_sku_generator_style_generator1_idx` ON `commercedb`.`sku_generator` (`style_id` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_group`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_group` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_group` (
+  `tax_group_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(80) NOT NULL,
+  `description` VARCHAR(300) NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`tax_group_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_authority`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_authority` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_authority` (
+  `tax_authority_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(80) NOT NULL,
+  `rounding_code` VARCHAR(5) NOT NULL,
+  `rounding_digit_qty` INT(2) NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`tax_authority_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_location`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_location` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_location` (
+  `tax_location_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(80) NOT NULL,
+  `description` VARCHAR(200) NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`tax_location_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_group_rule`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_group_rule` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_group_rule` (
+  `tax_group_id` INT NOT NULL,
+  `tax_location_id` INT NOT NULL,
+  `tax_authority_id` INT NOT NULL,
+  `seq_no` INT(2) NOT NULL,
+  `name` VARCHAR(80) NOT NULL,
+  `description` VARCHAR(300) NULL,
+  `compound_seq_nbr` INT(2) NOT NULL,
+  `compound_flag` VARCHAR(1) NOT NULL,
+  `trans_level_flag` VARCHAR(1) NOT NULL,
+  `type_code` VARCHAR(40) NOT NULL,
+  `status` VARCHAR(5) NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`tax_group_id`, `tax_location_id`, `tax_authority_id`),
+  CONSTRAINT `fk_tax_group_rule_tax_authority1`
+    FOREIGN KEY (`tax_authority_id`)
+    REFERENCES `commercedb`.`tax_authority` (`tax_authority_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tax_group_rule_tax_group1`
+    FOREIGN KEY (`tax_group_id`)
+    REFERENCES `commercedb`.`tax_group` (`tax_group_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tax_group_rule_tax_location1`
+    FOREIGN KEY (`tax_location_id`)
+    REFERENCES `commercedb`.`tax_location` (`tax_location_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_tax_group_rule_tax_group1_idx` ON `commercedb`.`tax_group_rule` (`tax_group_id` ASC);
+
+CREATE INDEX `fk_tax_group_rule_tax_location1_idx` ON `commercedb`.`tax_group_rule` (`tax_location_id` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_bracket`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_bracket` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_bracket` (
+  `tax_bracket_id` INT NOT NULL AUTO_INCREMENT,
+  `seq_no` INT(2) NOT NULL,
+  `breakpoint` DECIMAL NULL,
+  `tax_amount` DECIMAL NULL,
+  `created_date` DATETIME NULL,
+  `created_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  `modified_by` VARCHAR(50) NULL,
+  PRIMARY KEY (`tax_bracket_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_rate_rule`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_rate_rule` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_rate_rule` (
+  `tax_rate_rule_id` INT NOT NULL AUTO_INCREMENT,
+  `tax_group_id` INT NOT NULL,
+  `tax_bracket_id` INT NOT NULL,
+  `seq_no` INT(2) NOT NULL,
+  `min_taxable_amt` DECIMAL NULL,
+  `max_taxable_amt` DECIMAL NULL,
+  `effective_date` DATETIME NOT NULL,
+  `expiry_date` DATETIME NOT NULL,
+  `percentage` DECIMAL NULL,
+  `amount` DECIMAL NULL,
+  `type_code` VARCHAR(30) NOT NULL,
+  `status` VARCHAR(5) NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`tax_rate_rule_id`),
+  CONSTRAINT `fk_tax_rate_rule_tax_group1`
+    FOREIGN KEY (`tax_group_id`)
+    REFERENCES `commercedb`.`tax_group` (`tax_group_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tax_rate_rule_tax_bracket1`
+    FOREIGN KEY (`tax_bracket_id`)
+    REFERENCES `commercedb`.`tax_bracket` (`tax_bracket_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_tax_rate_rule_tax_bracket1_idx` ON `commercedb`.`tax_rate_rule` (`tax_bracket_id` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`tax_location_mapping`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tax_location_mapping` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tax_location_mapping` (
+  `location_id` INT(4) NOT NULL,
+  `tax_location_id` INT NOT NULL,
+  PRIMARY KEY (`location_id`, `tax_location_id`),
+  CONSTRAINT `fk_tax_location_mapping_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tax_location_mapping_tax_location1`
+    FOREIGN KEY (`tax_location_id`)
+    REFERENCES `commercedb`.`tax_location` (`tax_location_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_tax_location_mapping_tax_location1_idx` ON `commercedb`.`tax_location_mapping` (`tax_location_id` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
