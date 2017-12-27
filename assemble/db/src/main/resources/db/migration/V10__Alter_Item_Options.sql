@@ -36,6 +36,22 @@ ADD COLUMN `seq_no` INT(2) NOT NULL AFTER `description`;
 CREATE UNIQUE INDEX `attribute_master_index2`
 ON `commercedb`.`attribute_master`(`code`,`seq_no`);
 
+
+-- -----------------------------------------------------
+-- Alter Table `commercedb`.`supplier_address`
+-- -----------------------------------------------------
+ALTER TABLE `commercedb`.`supplier_address` 
+DROP FOREIGN KEY `fk_supplier_addresses_address_master1`;
+ALTER TABLE `commercedb`.`supplier_address` 
+ADD CONSTRAINT `fk_supplier_addresses_address_master1`
+  FOREIGN KEY (`address_id`)
+  REFERENCES `commercedb`.`address_master` (`address_id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
+
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+

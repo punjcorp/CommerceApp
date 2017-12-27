@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.add.card.title}">Add a card</title>
+
+<!-- This is to include all the needed css and javascripts -->
+<div th:replace="common/header:: header"></div>
+
+	
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-1 flex-first px-0">
+				<!-- This is to include the needed left menu -->
+				<div th:include="common/menu :: leftMenu"></div>
+			</div>
+
+			<div class="col-11 text-center">
+
+				<div class="card">
+					<div class="card-header">
+						<h3><span  th:text="#{commerce.screen.add.card.header}">Add a card</span></h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+							<div th:if="${ success!=null}" th:text="${success}"
+								class="alert alert-success " role="alert"></div>
+							<div th:if="${ alert!=null}" th:text="${alert}"
+								class="alert alert-danger " role="alert"></div>
+
+							<form class="form" id="addForm" action="#"
+								th:action="@{/add_card}" th:object="${cardBean}" method="post">
+								<div class="form-group">
+									<input type="text" th:field="*{name}"
+										class="form-control input-sm" placeholder="Card Holder's Name" th:placeholder="#{commerce.screen.add.card.name}"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{cardNo}"
+										class="form-control input-sm" placeholder="Card Number" th:placeholder="#{commerce.screen.add.card.no}"></input>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+
+										<div class="form-group">
+											<input type="text" th:field="*{expiryDate}"
+												class="form-control input-sm"
+												placeholder="Expiry Date (MM/YY)" th:placeholder="#{commerce.screen.add.card.expiry.date}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{cvvNo}"
+												class="form-control input-sm" placeholder="CVV" th:placeholder="#{commerce.screen.add.card.cvv}"></input>
+										</div>
+									</div>
+								</div>
+
+								<div class="row ">
+									<div class="col">
+										<div class="address ">
+											<div id="targetaddress">
+											<div>
+												<b><span th:text="#{commerce.screen.add.card.label.address}">Billing Address</span></b>
+											</div>
+											<div>
+												<span th:text="${primaryAddress.address1}"></span>,
+											</div>
+											<div>
+												<span th:text="${primaryAddress.address2}"></span>,
+											</div>
+											<div>
+												<span th:text="${primaryAddress.city}"></span>, <span
+													th:text="${primaryAddress.state}"></span>,
+											</div>
+											<div>
+												<span th:text="${primaryAddress.pincode}"></span>, <span
+													th:text="${primaryAddress.country}"></span>
+											</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+
+											<input type="button" value="Change Address" th:value="#{commerce.btn.change.address}"
+												class="form-control btn-secondary btn-sm"
+												data-toggle="modal" data-target="#addressModal"> </input> <input
+												type="hidden" th:field="*{address.addressId}"></input>
+
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<div class="form-group">
+											<input type="submit" value="Save" th:value="#{commerce.screen.btn.submit.save}"
+												class="form-control btn btn-info btn-block"></input>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade " id="addressModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel"> <span th:text="#{commerce.screen.add.card.choose.address}">Choose Address</span></h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="album text-muted">
+						<div class="container">
+
+							<div class="row">
+
+								<th:block th:each="address,itrStat:${addresses}">
+									<div class="card">
+										<div class="address">
+											<div class="row">
+												<div class="col">
+													<input type="radio" name="addressradio" id="addressradio" th:value="${address.addressId}"></input>
+												</div>
+												<div class="col-10">
+												<div th:id="'address'+${address.addressId}">
+													<div>
+														<b><span th:text="#{commerce.screen.add.card.label.address}">Billing Address</span></b>
+													</div>
+													<div>
+														<span th:text="${address.address1}"></span>,
+													</div>
+													<div>
+														<span th:text="${address.address2}"></span>,
+													</div>
+													<div>
+														<span th:text="${address.city}"></span>, <span
+															th:text="${address.state}"></span>,
+													</div>
+													<div>
+														<span th:text="${address.pincode}"></span>, <span
+															th:text="${address.country}"></span>
+													</div>
+												</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</th:block>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal" value="Close" th:value="#{commerce.btn.close}">Close</button>
+					<button type="button" id="addressbtn" class="btn btn-primary" value="Choose This Address" th:value="#{commerce.btn.choose.address}">Choose This
+						Address</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script>
+	
+$("#addressbtn").click(function(){
+
+	
+	$('#addressModal').modal('toggle');
+	var selVal=$("#addressradio:checked").val();
+	$("#address\\.addressId").val(selVal);
+	$("#targetaddress").html($("#address"+selVal).html());
+	
+	
+
+	
+	
+});
+</script>
+
+</body>
+</html>

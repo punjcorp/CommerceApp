@@ -1,0 +1,172 @@
+/**
+ * 
+ */
+package com.punj.app.ecommerce.domains.supplier;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.punj.app.ecommerce.domains.user.Address;
+
+/**
+ * @author admin
+ *
+ */
+@Entity
+@Table(name = "supplier")
+public class Supplier implements Serializable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "supplier_id", updatable = false, nullable = false)
+	private Integer supplierId;
+	private String name;
+	private String phone1;
+	private String phone2;
+	private String email;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "supplier_address", joinColumns = @JoinColumn(name = "supplier_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
+	List<Address> addresses;
+
+	/**
+	 * @return the supplierId
+	 */
+	public Integer getSupplierId() {
+		return supplierId;
+	}
+
+	/**
+	 * @param supplierId
+	 *            the supplierId to set
+	 */
+	public void setSupplierId(Integer supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the phone1
+	 */
+	public String getPhone1() {
+		return phone1;
+	}
+
+	/**
+	 * @param phone1
+	 *            the phone1 to set
+	 */
+	public void setPhone1(String phone1) {
+		this.phone1 = phone1;
+	}
+
+	/**
+	 * @return the phone2
+	 */
+	public String getPhone2() {
+		return phone2;
+	}
+
+	/**
+	 * @param phone2
+	 *            the phone2 to set
+	 */
+	public void setPhone2(String phone2) {
+		this.phone2 = phone2;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email
+	 *            the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @return the addresses
+	 */
+	public List<Address> getAddresses() {
+		return addresses;
+	}
+
+	/**
+	 * @param addresses
+	 *            the addresses to set
+	 */
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((supplierId == null) ? 0 : supplierId.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Supplier other = (Supplier) obj;
+		if (supplierId == null) {
+			if (other.supplierId != null) {
+				return false;
+			}
+		} else if (!supplierId.equals(other.supplierId)) {
+			return false;
+		}
+		return true;
+	}
+
+}

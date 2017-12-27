@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.manage.address.title}">Manage
+	User Addresses</title>
+
+<!-- This is to include all the needed css and javascripts -->
+<div th:replace="common/header:: header"></div>
+
+
+
+<style>
+.card {
+	width: 95%;
+}
+</style>
+</head>
+<body>
+
+	<div class="container">
+
+
+		<div class="row">
+			<div class="col-1 flex-first px-0">
+				<!-- This is to include the needed left menu -->
+				<div th:include="common/menu :: leftMenu"></div>
+			</div>
+
+			<div class="col-11 text-center">
+				<div th:if="${ success!=null}" th:text="${success}"
+					class="alert alert-success " role="alert"></div>
+				<div th:if="${ alert!=null}" th:text="${alert}"
+					class="alert alert-danger " role="alert"></div>
+
+				<div class="album ">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<h3>
+									<span th:text="#{commerce.screen.manage.address.header}">Manage
+										Your Address</span>
+								</h3>
+							</div>
+						</div>
+
+						<div class="row">
+
+
+							<a class="card " href="add_address.html"
+								th:href="@{/add_address}">
+								<div class="card-block">
+									<p class="card-text">
+									<h1>+</h1>
+									</p>
+									<p class="card-text ">
+									<h5>
+										<span th:text="#{commerce.link.add.address}">Add New
+											Address</span>
+									</h5>
+									</p>
+
+								</div>
+							</a>
+							<th:block th:each="address,itrStat:${addresses}">
+								<div class="card">
+
+									<div class="card-block">
+										<div class="row">
+											<div class="col-2"></div>
+											<div class="col-12 text-left">
+												<h6>User Full Name here</h6>
+												<p class="card-text ">
+												<div>
+													<span th:text="${address.address1}"></span>,
+												</div>
+												<div th:if="${!#strings.isEmpty(address.address2)}">
+													<span th:text="${address.address2}"></span>,
+												</div>
+												<div>
+													<span th:text="${address.city}"></span>, <span
+														th:text="${address.state}"></span>,
+												</div>
+												<div>
+													<span th:text="${address.pincode}"></span>, <span
+														th:text="${address.country}"></span>
+												</div>
+												</p>
+											</div>
+										</div>
+									</div>
+									<p class="card-text">
+									<div class="row">
+										<div class="col-6">
+											<div class="btn-group">
+												<a class="btn btn-secondary btn-sm"
+													th:href="@{/manage_address/edit(addressId=${address.addressId})}"><span
+													th:text="#{commerce.btn.edit}">Edit</span></a> <a
+													class="btn btn-danger btn-sm"
+													th:href="@{/manage_address/delete(addressId=${address.addressId})}"><span
+													th:text="#{commerce.screen.btn.submit.delete}">Delete</span></a>
+
+											</div>
+										</div>
+									</div>
+									</p>
+								</div>
+
+								<div class="w-100" th:if="${(itrStat.index + 1 ) % 2} == 0"></div>
+							</th:block>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

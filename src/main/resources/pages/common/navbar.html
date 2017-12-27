@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Top Navbar</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+	crossorigin="anonymous"></script>
+
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet"></link>
+
+</head>
+<body>
+	<div th:fragment="navbarMenu">
+	<nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <a class="navbar-brand" href="#">Logo</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+      			<a class="nav-link" href="../home.html" th:href="@{/home}"><i
+				class="material-icons md-18">home</i> <span th:text="#{commerce.home.link.home}">Home</span></a>
+
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span th:text="#{commerce.home.link.dept}">Shop by Department</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Dept 1</a>
+          <a class="dropdown-item" href="#">Dept 2</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#"><span th:text="#{commerce.home.link.recommended}">Recommend Items</span></a>
+        </div>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0 navbar-nav">
+    <a  href="#" class="nav-link"><i class="material-icons">account_box</i><span th:text="#{commerce.home.link.account}">Your Account</span></a>
+      <input class="form-control input-sm ml-2" type="search" placeholder="Search" aria-label="Search" th:placeholder="#{commerce.home.label.search}"></input>
+      <a  class="nav-link" href="#"><i class="material-icons">search</i></a>
+      <a class="nav-link" href="../manage_cart.html" th:href="@{/manage_cart}"><i
+				class="material-icons">shopping_cart</i></a>
+      <a  class="nav-link" href="#"><i class="material-icons">exit_to_app</i></a>
+      
+   
+    </form>
+  </div>
+</nav>
+
+
+
+	</div>
+</body>
+</html>

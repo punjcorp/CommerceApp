@@ -20,16 +20,31 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`supplier` (
   `phone1` VARCHAR(20) NOT NULL,
   `phone2` VARCHAR(20) NULL,
   `email` VARCHAR(80) NULL,
+  PRIMARY KEY (`supplier_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`supplier_addresses`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`supplier_address` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`supplier_address` (
+  `supplier_id` INT NOT NULL,
   `address_id` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`supplier_id`),
-  CONSTRAINT `fk_supplier_address_master1`
+  PRIMARY KEY (`supplier_id`, `address_id`),
+  INDEX `fk_supplier_address_address_master1_idx` (`address_id` ASC),
+  CONSTRAINT `fk_supplier_address_supplier1`
+    FOREIGN KEY (`supplier_id`)
+    REFERENCES `commercedb`.`supplier` (`supplier_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_supplier_address_address_master1`
     FOREIGN KEY (`address_id`)
     REFERENCES `commercedb`.`address_master` (`address_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_supplier_address_master1_idx` ON `commercedb`.`supplier` (`address_id` ASC);
 
 
 -- -----------------------------------------------------

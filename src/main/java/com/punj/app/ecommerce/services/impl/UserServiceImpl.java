@@ -5,17 +5,24 @@ package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.domains.user.Card;
 import com.punj.app.ecommerce.domains.user.Password;
+import com.punj.app.ecommerce.domains.user.Role;
 import com.punj.app.ecommerce.domains.user.User;
 import com.punj.app.ecommerce.domains.user.ids.CardId;
 import com.punj.app.ecommerce.domains.user.ids.PasswordId;
@@ -105,12 +112,17 @@ public class UserServiceImpl implements UserService {
 		return passwords;
 	}
 
-	public Password updatePassword(Password pwd, String newPassword, String changedBy) {
+	public Password updatePassword(UserDetails userDetails,Password pwd, String newPassword, String changedBy) {
 
 		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}",
 				pwd.getStatus(), pwd.getModifiedBy(), pwd.getPasswordId().getUsername(),
 				pwd.getPasswordId().getPassword(), pwd.getPasswordId().getModifiedDate());
+		PasswordId passwordId=new PasswordId();
+		passwordId.setPassword(userDetails.getPassword());
+		passwordId.setUsername(userDetails.getUsername());
 		pwd.setStatus("E");
+		pwd.setPasswordId(passwordId);
+		
 		pwd = passwordRepository.save(pwd);
 
 		Password changedPassword = new Password();
@@ -141,33 +153,32 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<Address> getAddressByUsername(String username) {
-		
-		User userData= userRepository.findOne(username);
-		List<Address> addresses=userData.getAddresses();
-		logger.info("The {} number of addresses retrived for the user {}.", addresses.size() ,username);
+
+		User userData = userRepository.findOne(username);
+		List<Address> addresses = userData.getAddresses();
+		logger.info("The {} number of addresses retrived for the user {}.", addresses.size(), username);
 		return addresses;
 	}
 
 	@Override
 	public Address getPrimaryAddressByUsername(String username) {
-		
-		User userData= userRepository.findOne(username);
-		List<Address> addresses=userData.getAddresses();
-		
-		Address address=null;		
-		
-		for(Address addObject:addresses) {
-			if(addObject.getPrimary().equals("Y")) {
-				address=addObject;
+
+		User userData = userRepository.findOne(username);
+		List<Address> addresses = userData.getAddresses();
+
+		Address address = null;
+
+		for (Address addObject : addresses) {
+			if (addObject.getPrimary().equals("Y")) {
+				address = addObject;
 				break;
 			}
 		}
-		
-		logger.info("The primary addresses retrived for the user {}.", addresses.size() ,username);
+
+		logger.info("The primary addresses retrived for the user {}.", addresses.size(), username);
 		return address;
 	}
-	
-	
+
 	@Override
 	public Address getAddress(BigInteger addressId) {
 		Address newAddress = addressRepository.findOne(addressId);
@@ -182,40 +193,69 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<Card> getCardsByUsername(String username) {
-		Card card=new Card();
-		CardId cardId=new CardId();
+		Card card = new Card();
+		CardId cardId = new CardId();
 		cardId.setUsername(username);
 		card.setCardId(cardId);
-		
-		List<Card> cards= cardRepository.findAll(Example.of(card));
+
+		List<Card> cards = cardRepository.findAll(Example.of(card));
 		logger.info("The card details retrieved successfully.");
 
 		return cards;
 	}
-	
+
 	@Override
 	public void deleteCard(String username, String cardNo) {
-		CardId cardId=new CardId();
+		CardId cardId = new CardId();
 		cardId.setUsername(username);
 		cardId.setCardNo(cardNo);
-		
+
 		cardRepository.delete(cardId);
 		logger.info("The card details has been deleted successfully.");
-	}	
+	}
 
 	@Override
 	public Card getCard(String username, String cardNo) {
 
-		CardId cardId=new CardId();
+		CardId cardId = new CardId();
 		cardId.setUsername(username);
 		cardId.setCardNo(cardNo);
-		
-		Card card=cardRepository.findOne(cardId);
+
+		Card card = cardRepository.findOne(cardId);
 		logger.info("The card details has been retrieved successfully.");
-		
+
 		return card;
 
-		
 	}
-	
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = this.getUserByUsername(username);
+
+		String password = "$2a$10$dsyfqFN/BAS0mmaiN00VD.8.NRcbA/VjR8aD8Q.xZyldJy59Vt/tO";
+		List<Password> passwords = user.getPasswords();
+
+/*		for (Password passwd : passwords) {
+			if (passwd.getStatus().equals("Y")) {
+				password = passwd.getStatus();
+				break;
+			}
+		}
+*/
+		List<Role> roles = user.getRoles();
+
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		GrantedAuthority authority = null;
+		for (Role role : roles) {
+			authority = new SimpleGrantedAuthority(role.getName());
+			authorities.add(authority);
+		}
+
+		/*GrantedAuthority authority =new SimpleGrantedAuthority("ADMIN");*/
+		
+		UserDetails userDetails = (UserDetails) new org.springframework.security.core.userdetails.User(username, password, authorities); //Arrays.asList(authority)
+		return userDetails;
+	}
+
+
 }

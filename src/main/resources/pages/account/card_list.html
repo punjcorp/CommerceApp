@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.manage.card.title}">Manage
+	Payment Cards</title>
+
+<!-- This is to include all the needed css and javascripts -->
+<div th:replace="common/header:: header"></div>
+
+</head>
+<body>
+
+	<div class="container">
+
+
+		<div class="row">
+			<div class="col-1 flex-first px-0">
+				<!-- This is to include the needed left menu -->
+				<div th:include="common/menu :: leftMenu"></div>
+
+			</div>
+
+			<div class="col-11 text-center">
+				<div class="card">
+					<div class="card-header">
+						<h3>
+							<span th:text="#{commerce.screen.manage.card.header}"></span>
+						</h3>
+					</div>
+
+					<div class="card-body">
+						<div th:if="${ success!=null}" th:text="${success}"
+							class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}"
+							class="alert alert-danger " role="alert"></div>
+
+						<div id="accordion" role="tablist">
+							<th:block th:each="card,itrStat:${cards}">
+								<div class="card">
+									<a class="card-header" role="tab" id="headingOne"
+										data-toggle="collapse" th:href="'#collapse'+${itrStat.index}"
+										aria-expanded="true" aria-controls="collapseOne">
+										<div class="row">
+											<div class="col-3 text-left text-muted">
+												Card ending with <span th:text="${card.cardId.cardNo}"></span>
+											</div>
+											<div class="col-3 text-left  text-muted">
+												Expiry date <span th:text="${card.expiryDate}"></span>
+											</div>
+											<div class="col-6 text-right">
+												<i class="material-icons">keyboard_arrow_down</i>
+											</div>
+										</div>
+									</a>
+									<div th:id="'collapse'+${itrStat.index}" class="collapse"
+										role="tabpanel" aria-labelledby="headingOne"
+										data-parent="#accordion">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-4 text-left">
+													<div>
+														<b><span
+															th:text="#{commerce.screen.manage.card.label.name}">Name
+																on the card</span></b>
+													</div>
+													<div>
+														<span th:text="${card.nameOnCard}"></span>
+													</div>
+												</div>
+												<div class="col-4 text-right">
+												</div>
+												<div class="col-4 text-left">
+													<div>
+														<b><span
+															th:text="#{commerce.screen.add.card.label.address}">Billing
+																Address</span></b>
+													</div>
+													<div>
+														<span th:text="${card.address.address1}"></span>,
+													</div>
+													<div th:if="${!#strings.isEmpty(card.address.address2)}">
+														<span th:text="${card.address.address2}"></span>,
+													</div>
+													<div>
+														<span th:text="${card.address.city}"></span>, <span
+															th:text="${card.address.state}"></span>,
+													</div>
+													<div>
+														<span th:text="${card.address.pincode}"></span>, <span
+															th:text="${card.address.country}"></span>
+													</div>
+
+
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-8"></div>
+												<div class="col-4  text-left">
+													<div class="btn-group">
+														<a class="btn btn-secondary btn-sm"
+															th:href="@{/manage_card/edit(cardNo=${card.cardId.cardNo})}"><span
+															th:text="#{commerce.btn.edit}">Edit</span></a> <a
+															class="btn btn-danger btn-sm"
+															th:href="@{/manage_card/delete(cardNo=${card.cardId.cardNo})}"><span
+															th:text="#{commerce.screen.btn.submit.delete}">Delete</span></a>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</th:block>
+						</div>
+						<div class="row">
+							<div class="col-12"></div>
+						</div>
+						<div class="form-control text-left">
+							<a href="add_Card.html" th:href="@{/add_card}"
+								class="btn btn-primary btn-sm"><span th:text="#{commerce.btn.add.card}">Add a card</span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+</body>
+</html>

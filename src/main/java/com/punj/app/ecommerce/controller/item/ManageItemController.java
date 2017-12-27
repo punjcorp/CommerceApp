@@ -16,6 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +34,6 @@ import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
 import com.punj.app.ecommerce.domains.item.ids.AttributeId;
 import com.punj.app.ecommerce.domains.item.ids.ItemImageId;
-import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
@@ -61,12 +62,6 @@ public class ManageItemController {
 	@GetMapping("/add_item")
 	public String showItem(@RequestParam("styleNumber") String styleNo, Model model, HttpSession session) {
 
-		Password pwd = (Password) session.getAttribute("userDetails");
-		if (pwd == null) {
-			logger.error("The user object in session not found");
-			return "error";
-		}
-
 		BigInteger styleNumber = new BigInteger(styleNo);
 
 		Item style = itemService.getStyle(styleNumber);
@@ -85,14 +80,11 @@ public class ManageItemController {
 	}
 
 	@PostMapping("/add_item")
-	public String addItem(@ModelAttribute ItemBean itemBean, Model model, HttpSession session) {
+	public String addItem(@ModelAttribute ItemBean itemBean, Model model, HttpSession session,
+			Authentication authentication) {
 
-		Password pwd = (Password) session.getAttribute("userDetails");
-		if (pwd == null) {
-			logger.error("The user object in session not found");
-			return "error";
-		}
-
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
 		List<AttributeId> attributeIds = new ArrayList<AttributeId>();
@@ -101,7 +93,7 @@ public class ManageItemController {
 		String[] sizes = itemBean.getItemSizeSelected();
 		int totalSkus = colors.length * sizes.length;
 
-		this.updateBeanInDomain(itemBean, item, itemOptions, pwd.getPasswordId().getUsername());
+		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername());
 		logger.info("The item details has been updated in domains object from the bean objects");
 
 		this.updateItemAttributes(itemBean, item, attributeIds);
@@ -327,12 +319,12 @@ public class ManageItemController {
 		String[] colors = itemBean.getItemColorSelected();
 		String[] sizes = itemBean.getItemSizeSelected();
 
-		AttributeId attributeId=null;
+		AttributeId attributeId = null;
 		String[] splittedData = new String[2];
 		for (String color : colors) {
 			splittedData = color.split("_");
 			if (splittedData.length > 1) {
-				attributeId=new AttributeId();
+				attributeId = new AttributeId();
 				attributeId.setAttributeId(new BigInteger(splittedData[0]));
 				attributeId.setValue(splittedData[1]);
 				itemAttributes.add(attributeId);
@@ -342,7 +334,7 @@ public class ManageItemController {
 		for (String size : sizes) {
 			splittedData = size.split("_");
 			if (splittedData.length > 1) {
-				attributeId=new AttributeId();
+				attributeId = new AttributeId();
 				attributeId.setAttributeId(new BigInteger(splittedData[0]));
 				attributeId.setValue(splittedData[1]);
 				itemAttributes.add(attributeId);

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.register.title}"></title>
+
+<!-- This is to include all the needed css and javascripts -->
+<div th:replace="common/header:: header"></div>
+
+
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-10 mx-auto text-center">
+
+				<div class="card">
+					<div class="card-header">
+						<h3 th:text="#{commerce.screen.register.header}">Create
+							Account</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+							<form class="form" action="#" th:action="@{/register}"
+								th:object="${registerUserBean}" method="post">
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{firstName}"
+												class="form-control input-sm" placeholder="First Name"
+												th:placeholder="#{commerce.screen.register.firstname}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{lastName}"
+												class="form-control input-sm" placeholder="Last Name"
+												th:placeholder="#{commerce.screen.register.lastname}"></input>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<input type="email" th:field="*{email}"
+										class="form-control input-sm" placeholder="Email Address"
+										th:placeholder="#{commerce.screen.register.email}"></input>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="password" th:field="*{password}"
+												class="form-control input-sm" placeholder="Password"
+												th:placeholder="#{commerce.screen.register.password}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="password" th:field="*{confirmPassword}"
+												class="form-control input-sm" placeholder="Confirm Password"
+												th:placeholder="#{commerce.screen.register.confirm.password}"></input>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{address1}"
+										class="form-control input-sm" placeholder="Address Line 1"
+										th:placeholder="#{commerce.screen.address.line1}"></input>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+
+										<div class="form-group">
+											<input type="text" th:field="*{address2}"
+												class="form-control input-sm" placeholder="Address Line 2"
+												th:placeholder="#{commerce.screen.address.line2}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<select th:field="*{addressType}"
+												class="form-control input-sm">
+												<option value="" selected="selected"><span
+														th:text="#{commerce.screen.address.type}">Select
+														Address Type</span></option>
+												<option value="Home"><span
+														th:text="#{commerce.screen.address.home}">Home</span></option>
+												<option value="Work"><span
+														th:text="#{commerce.screen.address.work}">Work</span></option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{phone1}"
+												class="form-control input-sm" placeholder="Home Phone"
+												th:placeholder="#{commerce.screen.register.phone1}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{phone2}"
+												class="form-control input-sm" placeholder="Work Phone"
+												th:placeholder="#{commerce.screen.register.phone2}"></input>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{city}"
+												class="form-control input-sm" placeholder="City"
+												th:placeholder="#{commerce.screen.address.city}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{state}"
+												class="form-control input-sm" placeholder="State"
+												th:placeholder="#{commerce.screen.address.state}"></input>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{country}"
+												class="form-control input-sm" placeholder="Country"
+												th:placeholder="#{commerce.screen.address.country}"></input>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<input type="text" th:field="*{pincode}"
+												class="form-control input-sm" placeholder="Pincode"
+												th:placeholder="#{commerce.screen.address.pincode}"></input>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-3 col-sm-3 col-md-3">
+
+										<input type="submit" value="Register"
+											th:value="#{commerce.btn.register}"
+											class="btn btn-info btn-block"></input>
+									</div>
+								</div>
+
+							</form>
+						</div>
+					</div>
+					<div class="card-footer text-muted">
+						<span th:text="#{commerce.screen.register.existing.user}"></span><span>
+						</span> <a href="/register" th:href="@{/login}"><span
+							th:text="#{commerce.link.signin}">Sign In</span></a>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

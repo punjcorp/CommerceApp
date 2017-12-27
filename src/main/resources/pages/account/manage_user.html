@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.manage.account.title}">Manage
+	User</title>
+
+
+<div th:replace="common/header:: header"></div>
+
+
+
+</head>
+<body>
+	<!-- This is to include the top navigation bar -->
+	<div th:include="common/navbar :: navbarMenu"></div>
+
+
+	<div class="row mt-2 border border-primary">
+		<div class="col-1 flex-first px-0">
+
+			<div th:include="common/menu :: leftMenu"></div>
+
+		</div>
+		<div class="container">
+			<div class="col-11 text-center">
+
+				<div class="card">
+					<div class="card-header">
+						<h3 th:text="#{commerce.screen.manage.account.header}">Manage
+							Account</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+							<div th:if="${ success!=null}" th:text="${success}"
+								class="alert alert-success " role="alert"></div>
+							<div th:if="${ alert!=null}" th:text="${alert}"
+								class="alert alert-danger " role="alert"></div>
+							<form class="form" id="muform" action="#"
+								th:action="@{/manage_user}" th:object="${registerUserBean}"
+								method="post">
+								<div class="form-group">
+									<input type="text" th:field="*{firstName}"
+										class="form-control input-sm" placeholder="First Name"
+										th:placeholder="#{commerce.screen.register.firstname}"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{lastName}"
+										class="form-control input-sm" placeholder="Last Name"
+										th:placeholder="#{commerce.screen.register.lastname}"></input>
+								</div>
+
+								<div class="form-group">
+									<input type="email" th:field="*{email}"
+										class="form-control input-sm" placeholder="Email Address"
+										th:placeholder="#{commerce.screen.register.email}"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{phone1}"
+										class="form-control input-sm" placeholder="Home Phone"
+										th:placeholder="#{commerce.screen.register.phone1}"></input>
+								</div>
+								<div class="form-group">
+									<input type="text" th:field="*{phone2}"
+										class="form-control input-sm" placeholder="Work Phone"
+										th:placeholder="#{commerce.screen.register.phone2}"></input>
+								</div>
+								<div class="row">
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<input type="button" id="editbtn" value="Edit"
+											th:value="#{commerce.btn.edit}"
+											class="btn btn-info btn-block"></input>
+									</div>
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<input type="submit" value="Done"
+											th:value="#{commerce.btn.done}"
+											class="btn btn-info btn-block"></input>
+
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		$(document)
+				.ready(
+						function() {
+							$(
+									'#muform input[type=text],input[type=email],input[type=submit],input[type=password]')
+									.prop("disabled", true);
+							$('#editbtn')
+									.click(
+											function() {
+												if ($(this).val() != '') {
+													$(
+															'#muform input[type=text],input[type=email],input[type=submit],input[type=password]')
+															.prop("disabled",
+																	false);
+													$('#editbtn').prop(
+															"disabled", false);
+												}
+											});
+
+						});
+	</script>
+
+</body>
+</html>

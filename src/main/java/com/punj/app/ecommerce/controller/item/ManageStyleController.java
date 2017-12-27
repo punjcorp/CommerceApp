@@ -15,6 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +32,6 @@ import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.ids.AttributeId;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.item.ids.ItemImageId;
-import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.services.ItemService;
@@ -56,12 +57,6 @@ public class ManageStyleController {
 
 	@GetMapping("/add_style")
 	public String showStyle(Model model, HttpSession session) {
-
-		Password pwd = (Password) session.getAttribute("userDetails");
-		if (pwd == null) {
-			logger.error("The user object in session not found");
-			return "error";
-		}
 
 		ItemBean newItemBean = new ItemBean();
 
@@ -89,14 +84,10 @@ public class ManageStyleController {
 	}
 
 	@PostMapping("/add_style")
-	public String addStyle(@ModelAttribute ItemBean itemBean, Model model, HttpSession session) {
+	public String addStyle(@ModelAttribute ItemBean itemBean, Model model, HttpSession session,
+			Authentication authentication) {
 
-		Password pwd = (Password) session.getAttribute("userDetails");
-		if (pwd == null) {
-			logger.error("The user object in session not found");
-			return "error";
-		}
-
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
 		List<ItemAttribute> itemAttributes = new ArrayList<ItemAttribute>();
@@ -105,7 +96,7 @@ public class ManageStyleController {
 		itemBean.setItemId(styleNumber);
 		logger.info("The new generated style number has been assigned to the item bean object");
 
-		this.updateBeanInDomain(itemBean, item, itemOptions, itemAttributes, pwd.getPasswordId().getUsername());
+		this.updateBeanInDomain(itemBean, item, itemOptions, itemAttributes, userDetails.getUsername());
 		logger.info("The style details has been updated in domains object from the bean objects");
 
 		itemService.saveItem(item, itemOptions, itemAttributes);

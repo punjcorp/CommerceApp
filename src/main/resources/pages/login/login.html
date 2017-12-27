@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.login.title}">User Login</title>
+
+<!-- This is to include all the needed css and javascripts -->
+<div th:replace="common/header:: header"></div>
+
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-6 mx-auto text-center">
+
+				<div class="card card-primary">
+
+					<div class="card-header">
+						<h3>
+							<span th:text="#{commerce.screen.login.header}"></span>
+						</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+							<div th:if="${ alert!=null}" th:text="${alert}"
+								class="alert alert-danger" role="alert"></div>
+							<div th:if="${ success!=null}" th:text="${success}"
+								class="alert alert-success" role="alert"></div>
+							<form class="form-signin" action="#" th:action="@{/login}"
+								th:object="${loginBean}" method="post">
+
+								<input type="email" class="form-control" th:field="*{username}"
+									placeholder="Email Address"
+									th:placeholder="#{commerce.screen.login.username}"
+									required="required" autofocus=""></input> <input
+									type="password" class="form-control" th:field="*{password}"
+									placeholder="Password"
+									th:placeholder="#{commerce.screen.login.password}"
+									required="required"></input>
+								<div class="row align-items-center">
+									<div class="col">
+										<button class="btn btn-primary btn-block" type="submit"
+											th:value="#{commerce.btn.login}">Login</button>
+									</div>
+									<div class="col">
+										<span th:text="#{commerce.screen.login.newuser}">New
+											User? </span><a href="/register" th:href="@{/register}"><span> </span><span
+											th:text="#{commerce.link.signup}"> Signup now!</span></a>
+									</div>
+								</div>
+
+							</form>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>

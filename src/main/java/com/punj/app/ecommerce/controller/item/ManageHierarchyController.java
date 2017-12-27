@@ -42,12 +42,6 @@ public class ManageHierarchyController {
 	@GetMapping("/manage_hierarchy")
 	public String showHierarchy(Model model, HttpSession session) {
 
-		Password pwd = (Password) session.getAttribute("userDetails");
-		if (pwd == null) {
-			logger.error("The user object in session not found");
-			return "error";
-		}
-
 		List<Hierarchy> deptList = itemService.retrieveAllDepts();
 
 		logger.info("The dept list of all the {} departments has been retrieved successfully.", deptList.size());
@@ -55,7 +49,7 @@ public class ManageHierarchyController {
 		model.addAttribute("depts", deptList);
 		model.addAttribute("hierarchyBean", new HierarchyBean());
 
-		return "card_list";
+		return "item/add_hierarchy";
 	}
 
 }

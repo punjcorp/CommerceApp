@@ -74,6 +74,13 @@ INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name
 
 commit;
 
+
+-- -----------------------------------------------------
+-- Seed data for user role
+-- -----------------------------------------------------
+INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('ADMIN', 'This is admin role for administrators of the website', 'admin', now());
+INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('CASHIER', 'This is cashier role for cashiers ', 'admin', now());
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

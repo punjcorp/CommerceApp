@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title>Left Menu</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+	crossorigin="anonymous"></script>
+
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet"></link>
+
+</head>
+<body>
+	<div th:fragment="leftMenu">
+
+		<div>
+			<a href="#userMenu" data-toggle="collapse" aria-expanded="false"><i
+				class="material-icons md-48">account_circle</i> <i
+				class="material-icons">keyboard_arrow_down</i> </a>
+		</div>
+
+		<div class="collapse" id="userMenu">
+			<a href="../manage_user.html" th:href="@{/manage_user}"><i
+				class="material-icons md-48">person</i></a> <a
+				href="../manage_password.html" th:href="@{/manage_password}"><i
+				class="material-icons md-48">lock</i></a> <a
+				href="../manage_address.html" th:href="@{/manage_address}"><i
+				class="material-icons md-48">import_contacts</i></a> <a
+				href="../manage_card.html" th:href="@{/manage_card}"><i
+				class="material-icons md-48">credit_card</i></a>
+		</div>
+		<div sec:authorize="hasAuthority('ADMIN')">
+			<a href="#supplierMenu" data-toggle="collapse" aria-expanded="false"><i
+				class="material-icons md-48">people_outline</i> <i
+				class="material-icons">keyboard_arrow_down</i> </a>
+		</div>
+		<div class="collapse" id="supplierMenu" sec:authorize="hasAuthority('ADMIN')">
+
+			<a href="../supplier/manage_supplier.html"
+				th:href="@{/manage_supplier}"><i class="material-icons md-48">people</i></a>
+			<a href="../supplier/add_supplier.html" th:href="@{/add_supplier}"><i
+				class="material-icons md-48">person_add</i></a>
+		</div>
+
+		
+		<div sec:authorize="hasAuthority('ADMIN')">
+			<a href="#styleMenu" data-toggle="collapse" aria-expanded="false"><i
+				class="material-icons md-48">library_books</i> <i
+				class="material-icons">keyboard_arrow_down</i> </a>
+		</div>
+		<div class="collapse" id="styleMenu" sec:authorize="hasAuthority('ADMIN')">
+			<a href="../item/add_style.html" th:href="@{/add_style}"><i
+				class="material-icons md-48">queue</i></a> <a
+				href="../item/add_item.html" th:href="@{/add_item}"><i
+				class="material-icons md-48">playlist_add</i></a>
+				<a
+				href="../item/add_tax_group.html" th:href="@{/add_tax_group}"><i
+				class="material-icons md-48">account_balance</i></a>
+				<a
+				href="../item/manage_hierarchy.html" th:href="@{/manage_hierarchy}"><i
+				class="material-icons md-48">subdirectory_arrow_right</i></a>
+
+		</div>
+
+
+
+	</div>
+</body>
+</html>

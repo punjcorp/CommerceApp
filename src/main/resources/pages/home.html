@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.supplier.search}">Commerce
+	Home Page</title>
+
+<!-- This is to include all the needed css and javascripts -->
+<div th:replace="common/header:: header"></div>
+
+
+</head>
+<body>
+
+	<div class="container">
+		<!-- This is to include the top navigation bar -->
+		<div th:include="common/navbar :: navbarMenu"></div>
+
+
+		<div class="row">
+			<div class="col-1">
+				<!-- This is to include the needed left menu -->
+				<div th:include="common/menu :: leftMenu"></div>
+			</div>
+
+
+			<!-- All the main contents of the page are under this column-->
+			<div class="col-11 text-center"></div>
+		</div>
+
+
+	</div>
+
+</body>
+</html>

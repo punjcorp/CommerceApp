@@ -16,5 +16,10 @@ hs_err_pid*
 
 # eclipse and maven
 *.prefs
-.settings/org.eclipse.wst.common.project.facet.core.xml
+.settings
+logs
 target
+.settings/org.eclipse.jdt.core.prefs
+assemble/db/model/commercedb.mwb.bak
+*.log
+*.prefs
