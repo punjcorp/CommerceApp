@@ -2,29 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.edit.address.title}">Manage User Address</title>
+<title th:text="#{commerce.screen.edit.address.title}">Manage
+	User Address</title>
 
-<!-- This is to include all the needed css and javascripts -->
+<!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
-
 
 </head>
 <body>
 
-	<div class="container">
+	<div id="wrapper">
 
-		<div class="row">
-			<div class="col-1 flex-first px-0">
-				<!-- This is to include the needed left menu -->
-				<div th:include="common/menu :: leftMenu"></div>
-			
-			</div>
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
 
-			<div class="col-11 text-center">
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
 
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="container">
 				<div class="card">
 					<div class="card-header">
-						<h3><span  th:text="#{commerce.screen.edit.address.header}">Manage Address</span></h3>
+						<h3>
+							<span th:text="#{commerce.screen.edit.address.header}">Manage
+								Address</span>
+						</h3>
 					</div>
 					<div class="card-body">
 						<div class="card-text">
@@ -39,28 +46,34 @@
 									<input type="hidden" th:field="*{addressId}"
 										class="form-control input-sm"></input> <input type="text"
 										th:field="*{address1}" class="form-control input-sm"
-										placeholder="Address Line 1" th:placeholder="#{commerce.screen.address.line1}"></input>
+										placeholder="Address Line 1"
+										th:placeholder="#{commerce.screen.address.line1}"></input>
 								</div>
 								<div class="form-group">
 									<input type="text" th:field="*{address2}"
-										class="form-control input-sm" placeholder="Address Line 2" th:placeholder="#{commerce.screen.address.line2}"></input>
+										class="form-control input-sm" placeholder="Address Line 2"
+										th:placeholder="#{commerce.screen.address.line2}"></input>
 								</div>
 
 								<div class="form-group">
 									<input type="text" th:field="*{city}"
-										class="form-control input-sm" placeholder="City" th:placeholder="#{commerce.screen.address.city}"></input>
+										class="form-control input-sm" placeholder="City"
+										th:placeholder="#{commerce.screen.address.city}"></input>
 								</div>
 								<div class="form-group">
 									<input type="text" th:field="*{state}"
-										class="form-control input-sm" placeholder="State" th:placeholder="#{commerce.screen.address.state}"></input>
+										class="form-control input-sm" placeholder="State"
+										th:placeholder="#{commerce.screen.address.state}"></input>
 								</div>
 								<div class="form-group">
 									<input type="text" th:field="*{country}"
-										class="form-control input-sm" placeholder="Country" th:placeholder="#{commerce.screen.address.country}"></input>
+										class="form-control input-sm" placeholder="Country"
+										th:placeholder="#{commerce.screen.address.country}"></input>
 								</div>
 								<div class="form-group">
 									<input type="text" th:field="*{pincode}"
-										class="form-control input-sm" placeholder="Pincode" th:placeholder="#{commerce.screen.address.pincode}"></input>
+										class="form-control input-sm" placeholder="Pincode"
+										th:placeholder="#{commerce.screen.address.pincode}"></input>
 								</div>
 								<div class="form-group">
 									<select th:field="*{addressType}" class="form-control input-sm">
@@ -77,12 +90,14 @@
 								<div class="form-group">
 									<input type="password" th:field="*{password}"
 										class="form-control input-sm"
-										placeholder="Type your Current Password for verification" th:placeholder="#{commerce.screen.manage.account.empty.password}"></input>
+										placeholder="Type your Current Password for verification"
+										th:placeholder="#{commerce.screen.manage.account.empty.password}"></input>
 								</div>
 
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
-										<input type="submit" value="Save" th:value="#{commerce.screen.btn.submit.save}"
+										<input type="submit" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}"
 											class="btn btn-info btn-block"></input>
 
 									</div>
@@ -92,10 +107,16 @@
 					</div>
 
 				</div>
-
 			</div>
+
+
 		</div>
+		<!-- /#page-content-wrapper -->
 
 	</div>
+	<!-- /#wrapper -->
+
+
+
 </body>
 </html>

@@ -3,22 +3,28 @@
 <head>
 <meta charset="utf-8" />
 <title>Style Creation Page</title>
-				<!-- This is to include all the needed css and javascripts -->
-				<div th:replace="common/header:: header"></div>
+
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
 
 </head>
 <body>
 
-	<div class="container">
+	<div id="wrapper">
 
-		<div class="row">
-			<div class="col-1 flex-first px-0">
-				<!-- This is to include the needed left menu -->
-				<div th:include="common/menu :: leftMenu"></div>
-			</div>
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
 
-			<div class="col-11 mx-auto text-center">
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
 
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="container">
 				<div class="card">
 					<div class="card-header">
 						<h3>Create a Style</h3>
@@ -423,11 +429,18 @@
 						point</div>
 
 				</div>
-
 			</div>
+
+
 		</div>
+		<!-- /#page-content-wrapper -->
 
 	</div>
+	<!-- /#wrapper -->
+
+
+
+
 
 
 	<!-- Hierarchy Modal -->

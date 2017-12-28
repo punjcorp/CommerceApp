@@ -12,7 +12,7 @@ public class Utils {
 	}
 	
 	public static void main(String args[]) {
-		System.out.println("password is"+ Utils.encodePassword("amit"));
+		System.out.println("password is"+ Utils.encodePassword("sneha"));
 		
 	}
 

@@ -4,26 +4,27 @@
 <meta charset="utf-8" />
 <title th:text="#{commerce.screen.supplier.search}">Supplier
 	Management Page</title>
-
-<!-- This is to include all the needed css and javascripts -->
+<!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
-
-
 
 </head>
 <body>
 
-	<div class="container">
+	<div id="wrapper">
 
-		<div class="row">
-			<div class="col-1 flex-first px-0">
-				<!-- This is to include the needed left menu -->
-				<div th:include="common/menu :: leftMenu"></div>
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
 
-			</div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
 
-			<div class="col-11 text-center">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
 
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="container">
 				<div class="card">
 					<div class="card-header">
 						<h3 th:text="#{commerce.screen.supplier.search}">Search
@@ -173,10 +174,16 @@
 
 
 			</div>
-		</div>
 
+
+		</div>
+		<!-- /#page-content-wrapper -->
 
 	</div>
+	<!-- /#wrapper -->
+
+
+
 	<script th:inline="javascript">
 	/*<![CDATA[*/
 	

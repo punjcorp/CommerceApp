@@ -3,24 +3,27 @@
 <head>
 <meta charset="utf-8" />
 <title>Item Creation Page</title>
-
-<!-- This is to include all the needed css and javascripts -->
+<!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
-
 
 </head>
 <body>
 
-	<div class="container">
+	<div id="wrapper">
 
-		<div class="row">
-			<div class="col-1 flex-first px-0">
-				<!-- This is to include the needed left menu -->
-				<div th:include="common/menu :: leftMenu"></div>
-			</div>
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
 
-			<div class="col-11 mx-auto text-center">
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
 
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="container">
 				<div class="card">
 					<div class="card-header">
 						<h3>Create Items</h3>
@@ -30,42 +33,43 @@
 
 							<div th:if="${ alert!=null}" th:text="${alert}"
 								class="alert alert-danger " role="alert"></div>
-								
-								<!-- Success -->
-								<div class="row form-group" th:if="${SKUs !=null}">
-									<div class="col-xs-12 col-sm-12 col-md-12">
-										<div class="card alert-success">
-											<div class="card-header">
-												<div class="row">
-													<div class="col-11 text-left" th:text="${success}"></div>
-													<div class="col-1 text-right">
-														<a data-toggle="collapse" href="#msg"
-															aria-expanded="false" aria-controls="msg"><i
-															class="material-icons md-dark">keyboard_arrow_down</i></a>
 
-													</div>
-												</div>
-											</div>
-											<div id="msg" class="collapse">
-												<div class="card-body">
-													<div class="row">
-														<div class="col">
-															<th:block
-																th:each="skuItem,itrStat:${SKUs}">
-																<p>The<span th:text="${skuItem.itemId}"></span> has been created for selected color and size. </p>															
-																</th:block>
-
-														</div>
-													</div>
-
-
-
+							<!-- Success -->
+							<div class="row form-group" th:if="${SKUs !=null}">
+								<div class="col-xs-12 col-sm-12 col-md-12">
+									<div class="card alert-success">
+										<div class="card-header">
+											<div class="row">
+												<div class="col-11 text-left" th:text="${success}"></div>
+												<div class="col-1 text-right">
+													<a data-toggle="collapse" href="#msg" aria-expanded="false"
+														aria-controls="msg"><i class="material-icons md-dark">keyboard_arrow_down</i></a>
 
 												</div>
 											</div>
 										</div>
+										<div id="msg" class="collapse">
+											<div class="card-body">
+												<div class="row">
+													<div class="col">
+														<th:block th:each="skuItem,itrStat:${SKUs}">
+															<p>
+																The<span th:text="${skuItem.itemId}"></span> has been
+																created for selected color and size.
+															</p>
+														</th:block>
+
+													</div>
+												</div>
+
+
+
+
+											</div>
+										</div>
 									</div>
-								</div>								
+								</div>
+							</div>
 							<form class="form" action="#" th:action="@{/add_item}"
 								th:object="${itemBean}" method="post">
 								<div class="row">
@@ -478,9 +482,16 @@
 				</div>
 
 			</div>
+
+
 		</div>
+		<!-- /#page-content-wrapper -->
 
 	</div>
+	<!-- /#wrapper -->
+
+
+
 
 
 	<!-- Hierarchy Modal -->

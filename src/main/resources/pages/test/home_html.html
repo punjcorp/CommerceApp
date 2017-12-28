@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.supplier.search}">Commerce
+	Home Page</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
+	rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"
+	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+	crossorigin="anonymous"></script>
+
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+
+<script src="../../static/js/custom.js" th:src="@{/js/custom.js}"></script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet"></link>
+
+<script src="../../static/js/jquery-editable-select.min.js"></script>
+
+
+
+</head>
+<body>
+
+
+
+	<div id="wrapper">
+
+		<!-- Sidebar -->
+		<nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper"
+			role="navigation">
+			<ul class="nav sidebar-nav">
+				<div class="sidebar-header">
+					<div class="sidebar-brand text-left"></div>
+				</div>
+				<li><div class="valign-center">
+						<a href="#home">Home</a>
+					</div></li>
+				<li><a href="#about">About Us</a></li>
+				<li class="dropdown"><a href="#account"
+					class="dropdown-toggle offcanvas" data-toggle="dropdown">Account</a>
+					<ul class="dropdown-menu animated fadeInLeft" role="menu">
+						<li><a href="#manageaccount">Manage Account</a></li>
+						<li><a href="#changepassword">Change Password</a></li>
+						<li><a href="#manageaddress">Manage Addresses</a></li>
+						<li><a href="#managecards">Manage Cards</a></li>
+					</ul></li>
+
+
+				<li class="dropdown"><a href="#supplier"
+					class="dropdown-toggle offcanvas" data-toggle="dropdown">Supplier</a>
+					<ul class="dropdown-menu animated fadeInLeft" role="menu">
+						<li><a href="#managesupplier">Manage Supplier</a></li>
+						<li><a href="#addsupplier">Add New Supplier</a></li>
+					</ul></li>
+				<li class="dropdown"><a href="#style"
+					class="dropdown-toggle offcanvas" data-toggle="dropdown">Style</a>
+					<ul class="dropdown-menu animated fadeInLeft" role="menu">
+						<li><a href="#addstyle">Add a Style</a></li>
+						<li><a href="#additem">Add an Item</a></li>
+						<li><a href="#addhierarchy">Add Hierarchy</a></li>
+					</ul></li>
+
+				<li><a href="#contact">Contact</a></li>
+			</ul>
+		</nav>
+		<!-- /#sidebar-wrapper -->
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+
+			<nav class="navbar navbar-dark bg-dark navbar-expand-sm">
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+							role="button" data-toggle="dropdown" aria-haspopup="true"
+							aria-expanded="false"> <span
+								th:text="#{commerce.home.link.dept}">Shop by Department</span>
+						</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="#">Dept 1</a> <a
+									class="dropdown-item" href="#">Dept 2</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#"><span
+									th:text="#{commerce.home.link.recommended}">Recommend
+										Items</span></a>
+							</div></li>
+					</ul>
+					<form class="form-inline my-2 my-lg-0 navbar-nav">
+						<a href="#" class="nav-link"><i class="material-icons">account_box</i><span
+							th:text="#{commerce.home.link.account}">Your Account</span></a> <input
+							class="form-control input-sm ml-2" type="search"
+							placeholder="Search" aria-label="Search"
+							th:placeholder="#{commerce.home.label.search}"></input> <a
+							class="nav-link" href="#"><i class="material-icons">search</i></a>
+						<a class="nav-link" href="../manage_cart.html"
+							th:href="@{/manage_cart}"><i class="material-icons">shopping_cart</i></a>
+						<a class="nav-link" href="#"><i
+							class="material-icons rotate-180">exit_to_app</i></a> <a
+							class="nav-link" href="#"><i class="material-icons">exit_to_app</i></a>
+
+
+					</form>
+				</div>
+			</nav>
+
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-lg-offset-2">
+						<h1>Fancy Toggle Sidebar Navigation</h1>
+						<p>Bacon ipsum dolor sit amet tri-tip shoulder tenderloin
+							shankle. Bresaola tail pancetta ball tip doner meatloaf corned
+							beef. Kevin pastrami tri-tip prosciutto ham hock pork belly bacon
+							pork loin salami pork chop shank corned beef tenderloin meatball
+							cow. Pork bresaola meatloaf tongue, landjaeger tail andouille
+							strip steak tenderloin sausage chicken tri-tip. Pastrami tri-tip
+							kielbasa sausage porchetta pig sirloin boudin rump meatball
+							andouille chuck tenderloin biltong shank</p>
+						<p>Pig meatloaf bresaola, spare ribs venison short loin rump
+							pork loin drumstick jowl meatball brisket. Landjaeger chicken
+							fatback pork loin doner sirloin cow short ribs hamburger shoulder
+							salami pastrami. Pork swine beef ribs t-bone flank filet mignon,
+							ground round tongue. Tri-tip cow turducken shank beef shoulder
+							bresaola tongue flank leberkas ball tip.</p>
+						<p>Filet mignon brisket pancetta fatback short ribs short loin
+							prosciutto jowl turducken biltong kevin pork chop pork beef ribs
+							bresaola. Tongue beef ribs pastrami boudin. Chicken bresaola
+							kielbasa strip steak biltong. Corned beef pork loin cow pig short
+							ribs boudin bacon pork belly chicken andouille. Filet mignon
+							flank turkey tongue. Turkey ball tip kielbasa pastrami flank
+							tri-tip t-bone kevin landjaeger capicola tail fatback pork loin
+							beef jerky.</p>
+						<p>Chicken ham hock shankle, strip steak ground round meatball
+							pork belly jowl pancetta sausage spare ribs. Pork loin cow salami
+							pork belly. Tri-tip pork loin sausage jerky prosciutto t-bone
+							bresaola frankfurter sirloin pork chop ribeye corned beef chuck.
+							Short loin hamburger tenderloin, landjaeger venison porchetta
+							strip steak turducken pancetta beef cow leberkas sausage beef
+							ribs. Shoulder ham jerky kielbasa. Pig doner short loin pork
+							chop. Short ribs frankfurter rump meatloaf.</p>
+						<p>Filet mignon biltong chuck pork belly, corned beef ground
+							round ribeye short loin rump swine. Hamburger drumstick turkey,
+							shank rump biltong pork loin jowl sausage chicken. Rump pork
+							belly fatback ball tip swine doner pig. Salami jerky cow, boudin
+							pork chop sausage tongue andouille turkey.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+
+</body>
+</html>
