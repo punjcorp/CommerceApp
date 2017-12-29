@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,14 +26,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.user.Address;
-import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
-import com.punj.app.ecommerce.models.supplier.SupplierDTO;
+import com.punj.app.ecommerce.models.supplier.SupplierBeanDTO;
 import com.punj.app.ecommerce.services.SupplierService;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -169,7 +172,7 @@ public class ManageSupplierController {
 			model.addAttribute("supplierBean", supplierBean);
 
 			List<Supplier> supplierList = supplierService.getAll();
-			SupplierDTO suppliers = new SupplierDTO();
+			SupplierBeanDTO suppliers = new SupplierBeanDTO();
 
 			this.setSupplierList(supplierList, suppliers);
 
@@ -185,7 +188,7 @@ public class ManageSupplierController {
 
 	}
 
-	private void setSupplierList(List<Supplier> supplierList, SupplierDTO suppliers) {
+	private void setSupplierList(List<Supplier> supplierList, SupplierBeanDTO suppliers) {
 
 		List<SupplierBean> supplierBeanList = new ArrayList<SupplierBean>();
 
@@ -199,17 +202,36 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping("/search_supplier")
-	public String searchSupplier(@ModelAttribute SupplierBean supplierBean, Model model, HttpSession session) {
+	public String searchSupplier(@ModelAttribute SupplierBean supplierBean,
+			@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
 		try {
-			Supplier supplier = new Supplier();
-			supplier.setName(supplierBean.getName());
-			supplier = supplierService.searchSupplier(supplier);
 
-			this.updateBean(supplierBean, supplier);
+			Pager pager = supplierBean.getPager();
+			pager = new Pager();
+			if (page == null || !page.isPresent()) {
+				pager.setCurrentPageNo(1);
+			}else {
+				pager.setCurrentPageNo(page.get());
+			}
+			
+			
 
-			model.addAttribute("success", "The supplier record has been retrieved");
+			SupplierDTO supplierList = supplierService.searchSupplier(supplierBean.getName(), pager);
+			List<Supplier> suppliersList = supplierList.getSuppliers();
+
+			SupplierBeanDTO suppliers = new SupplierBeanDTO();
+
+			this.setSupplierList(suppliersList, suppliers);
+
+			Pager tmpPager = supplierList.getPager();
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
+					tmpPager.getMaxDisplayPage());
+
+			model.addAttribute("suppliers", suppliers);
 			model.addAttribute("supplierBean", supplierBean);
-			logger.info("The supplier details has been created successfully.");
+			model.addAttribute("pager", pager);
+			model.addAttribute("success", "The {" + pager.getResultSize() + "} supplier record has been retrieved");
+			logger.info("The supplier details has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while updating address", e);
 			return "error";
@@ -355,7 +377,7 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = "/bulk_supplier_action", params = { "saveSuppliers" })
-	public String saveSuppliers(@ModelAttribute SupplierDTO suppliers, Model model, HttpSession session) {
+	public String saveSuppliers(@ModelAttribute SupplierBeanDTO suppliers, Model model, HttpSession session) {
 		try {
 
 			List<SupplierBean> supplierBeans = suppliers.getSuppliers();
@@ -398,7 +420,7 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = "/bulk_supplier_action", params = { "deleteSuppliers" })
-	public String deleteSuppliers(@ModelAttribute SupplierDTO suppliers, Model model, HttpSession session) {
+	public String deleteSuppliers(@ModelAttribute SupplierBeanDTO suppliers, Model model, HttpSession session) {
 		try {
 			List<String> supplierIds = suppliers.getSupplierIds();
 

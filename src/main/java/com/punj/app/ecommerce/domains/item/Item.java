@@ -13,12 +13,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 @Entity
 public class Item implements Serializable, Cloneable {
 	@Id
+	@DocumentId
 	@Column(name = "item_id")
 	private BigInteger itemId;
+	@Field
 	private String name;
+	@Field
 	@Column(name = "long_desc")
 	private String description;
 	@Column(name = "item_level")
@@ -43,6 +50,7 @@ public class Item implements Serializable, Cloneable {
 	@OneToMany(mappedBy = "itemImageId.itemId", cascade = CascadeType.ALL)
 	private List<ItemImage> images;
 
+	//@IndexedEmbedded
 	@OneToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "hierarchy_id")
 	private Hierarchy hierarchy;

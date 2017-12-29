@@ -130,7 +130,23 @@
 												class="badge badge-secondary"><span
 													th:text="#{commerce.screen.actions.deselectall}">Deselect
 														All</span></a></td>
-											<td colspan="5"></td>
+											<td colspan="5">
+												<nav aria-label="Pagination"  th:if="${pager!=null}">
+													<ul class="pagination justify-content-end">
+														<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link"
+															href="#" tabindex="-1">First</a></li>
+																														
+															<th:block th:each="page,itrStat:${pager.displayPages}">
+														<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#" th:onclick="'searchResults(\'/search_supplier?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+														</th:block>
+														
+														
+														<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#">Last</a></li>
+														
+													</ul>
+												</nav>
+
+											</td>
 										</tr>
 
 									</tbody>
@@ -192,6 +208,17 @@
 	/*]]>*/
 	</script>
 	<script>
+	
+	
+		function searchResults(action) {
+	
+			$("#searchForm").attr("action", action);
+	
+			$('#searchForm').submit();
+		}
+
+	
+	
 		var cbCounter = 0;
 
 		function selectAll() {

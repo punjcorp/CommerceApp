@@ -11,15 +11,19 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.repositories.AddressRepository;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
+import com.punj.app.ecommerce.repositories.supplier.SupplierSearchRepository;
 import com.punj.app.ecommerce.services.SupplierService;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -30,9 +34,17 @@ public class SupplierServiceImpl implements SupplierService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private SupplierRepository supplierRepository;
+	private SupplierSearchRepository supplierSearchRepository;
 	private ItemRepository itemRepository;
 	private AddressRepository addressRepository;
 
+	@Value("${commerce.list.max.perpage}")
+	private Integer maxResultPerPage;
+	
+	@Value("${commerce.list.max.pageno}")
+	private Integer maxPageBtns;
+	
+	
 	/**
 	 * @param supplierRepository
 	 *            the supplierRepository to set
@@ -40,6 +52,15 @@ public class SupplierServiceImpl implements SupplierService {
 	@Autowired
 	public void setSupplierRepository(SupplierRepository supplierRepository) {
 		this.supplierRepository = supplierRepository;
+	}
+
+	/**
+	 * @param supplierSearchRepository
+	 *            the supplierSearchRepository to set
+	 */
+	@Autowired
+	public void setSupplierSearchRepository(SupplierSearchRepository supplierSearchRepository) {
+		this.supplierSearchRepository = supplierSearchRepository;
 	}
 
 	/**
@@ -73,21 +94,20 @@ public class SupplierServiceImpl implements SupplierService {
 	public List<Supplier> updateSupplier(List<Supplier> suppliers) {
 
 		List<Supplier> finalSuppliers = new ArrayList<Supplier>(suppliers.size());
-		Supplier actualSupplier=null;
+		Supplier actualSupplier = null;
 		for (Supplier supplier : suppliers) {
-			Integer supplierId=supplier.getSupplierId();
-			if(supplierId!=null) {
-				actualSupplier=supplierRepository.findOne(supplierId);
+			Integer supplierId = supplier.getSupplierId();
+			if (supplierId != null) {
+				actualSupplier = supplierRepository.findOne(supplierId);
 				actualSupplier.setName(supplier.getName());
 				actualSupplier.setPhone1(supplier.getPhone1());
 				actualSupplier.setPhone2(supplier.getPhone2());
 				actualSupplier.setEmail(supplier.getEmail());
-				
-			}else
-			{
-				actualSupplier=supplier;
+
+			} else {
+				actualSupplier = supplier;
 			}
-			
+
 			finalSuppliers.add(supplierRepository.save(actualSupplier));
 			logger.info("The {} supplier has been updated", supplier.getSupplierId());
 		}
@@ -143,6 +163,19 @@ public class SupplierServiceImpl implements SupplierService {
 	public void deleteAddress(Address supplierAddress) {
 		addressRepository.delete(supplierAddress);
 		logger.info("The provided address has been deleted from supplier addresses");
+	}
+
+	@Override
+	public SupplierDTO searchSupplier(String text, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage + 1;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+		
+
+		SupplierDTO suppliers = supplierSearchRepository.search(text, pager);
+		logger.info("The suppliers has been retrieved based on searched keyword");
+		return suppliers;
 	}
 
 }

@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.Field;
+
 @Entity
 @Table(name = "address_master")
 public class Address implements Serializable {
@@ -21,8 +23,11 @@ public class Address implements Serializable {
 	private String primary;
 	@Column(name = "address_type")
 	private String addressType;
+	@Field
 	private String address1;
+	@Field
 	private String address2;
+	@Field
 	private String city;
 	private String state;
 	private String country;

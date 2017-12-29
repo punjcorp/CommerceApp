@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.punj.app.ecommerce.utils.Pager;
+
 /**
  * @author admin
  *
@@ -36,6 +38,8 @@ public class ItemBean {
 
 	private List<String> imageUrlList;
 	private List<String> featureList;
+
+	private Pager pager;
 
 	public ItemBean() {
 		itemImages = new HashMap<String, String>();
@@ -296,6 +300,21 @@ public class ItemBean {
 	 */
 	public void setFeatureList(List<String> featureList) {
 		this.featureList = featureList;
+	}
+
+	/**
+	 * @return the pager
+	 */
+	public Pager getPager() {
+		return pager;
+	}
+
+	/**
+	 * @param pager
+	 *            the pager to set
+	 */
+	public void setPager(Pager pager) {
+		this.pager = pager;
 	}
 
 }

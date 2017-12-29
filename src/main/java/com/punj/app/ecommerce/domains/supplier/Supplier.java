@@ -17,24 +17,35 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 import com.punj.app.ecommerce.domains.user.Address;
 
 /**
  * @author admin
  *
  */
+@Indexed
 @Entity
 @Table(name = "supplier")
 public class Supplier implements Serializable {
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "supplier_id", updatable = false, nullable = false)
 	private Integer supplierId;
+	@Field
 	private String name;
+	@Field
 	private String phone1;
 	private String phone2;
+	@Field
 	private String email;
 
+	@IndexedEmbedded
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "supplier_address", joinColumns = @JoinColumn(name = "supplier_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
 	List<Address> addresses;

@@ -12,6 +12,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -31,10 +32,12 @@ public class SupplierBean {
 	private String phone2;
 	@NotNull
 	@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
-	@Pattern(regexp = EMAIL_PATTERN,message="{commerce.error.email}")
+	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
 	private String email;
 	@Valid
 	private List<AddressBean> addresses;
+
+	private Pager pager;
 
 	public SupplierBean() {
 		addresses = new ArrayList<AddressBean>();
@@ -130,6 +133,21 @@ public class SupplierBean {
 	 */
 	public void setAddresses(List<AddressBean> addresses) {
 		this.addresses = addresses;
+	}
+
+	/**
+	 * @return the pager
+	 */
+	public Pager getPager() {
+		return pager;
+	}
+
+	/**
+	 * @param pager
+	 *            the pager to set
+	 */
+	public void setPager(Pager pager) {
+		this.pager = pager;
 	}
 
 }

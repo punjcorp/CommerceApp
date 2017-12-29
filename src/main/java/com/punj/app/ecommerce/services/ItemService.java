@@ -10,8 +10,10 @@ import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
+import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.ids.AttributeId;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -34,5 +36,7 @@ public interface ItemService {
 	public Item getStyle(BigInteger styleNumber);
 
 	public List<Item> createSKUs(Item item, ItemOptions itemOptions, List<AttributeId> attributeIds);
+
+	public ItemDTO searchItem(String text, Pager pager);
 
 }

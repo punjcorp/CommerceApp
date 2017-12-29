@@ -51,7 +51,7 @@ public class DefaultController {
 	@GetMapping("/403")
 	public String accessError(Model model) {
 		logger.info("========================");
-		logger.info("WELCOME TO THE HOME PAGE");
+		logger.info("======ACCESS DENIED=====");
 		logger.info("========================");
 		return "access_denied";
 

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
+import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.SKUCounter;
@@ -33,9 +35,11 @@ import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
 import com.punj.app.ecommerce.repositories.item.ItemAttributeRepository;
 import com.punj.app.ecommerce.repositories.item.ItemOptionsRepository;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
+import com.punj.app.ecommerce.repositories.item.ItemSearchRepository;
 import com.punj.app.ecommerce.repositories.item.SKUCounterRepository;
 import com.punj.app.ecommerce.repositories.item.StyleCounterRepository;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -46,12 +50,19 @@ public class ItemServiceImpl implements ItemService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private ItemRepository itemRepository;
+	private ItemSearchRepository itemSearchRepository;
 	private ItemOptionsRepository itemOptionsRepository;
 	private AttributeRepository attributeRepository;
 	private ItemAttributeRepository itemAttributeRepository;
 	private HierarchyRepository hierarchyRepository;
 	private StyleCounterRepository styleRepository;
 	private SKUCounterRepository skuRepository;
+
+	@Value("${commerce.list.max.perpage}")
+	private Integer maxResultPerPage;
+	
+	@Value("${commerce.list.max.pageno}")
+	private Integer maxPageBtns;
 
 	/**
 	 * @return the itemRepository
@@ -67,6 +78,22 @@ public class ItemServiceImpl implements ItemService {
 	@Autowired
 	public void setItemRepository(ItemRepository itemRepository) {
 		this.itemRepository = itemRepository;
+	}
+
+	/**
+	 * @return the itemSearchRepository
+	 */
+	public ItemSearchRepository getItemSearchRepository() {
+		return itemSearchRepository;
+	}
+
+	/**
+	 * @param itemRepository
+	 *            the itemRepository to set
+	 */
+	@Autowired
+	public void setItemSearchRepository(ItemSearchRepository itemSearchRepository) {
+		this.itemSearchRepository = itemSearchRepository;
 	}
 
 	/**
@@ -319,7 +346,7 @@ public class ItemServiceImpl implements ItemService {
 				 */
 				// Clone a new SKU from style item
 				ItemOptions itemOptions = SerializationUtils.clone(itemOptionsOrg);
-				
+
 				itemOptions.setItemId(skuItem.getItemId());
 				itemOptions = itemOptionsRepository.save(itemOptions);
 				logger.info("The requested item options object has been saved successfully");
@@ -379,5 +406,18 @@ public class ItemServiceImpl implements ItemService {
 		}
 		logger.info("All the attributes related to Color and Size has been splitted successfully");
 
+	}
+
+	@Override
+	public ItemDTO searchItem(String text, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage + 1;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+		
+		ItemDTO items=this.itemSearchRepository.search(text, pager);
+		logger.info("The searched items has been retrieved successfully");
+
+		return items;
 	}
 }
