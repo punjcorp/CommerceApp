@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta charset="utf-8" />
 <title th:text="#{commerce.screen.supplier.search}">Commerce
@@ -35,7 +36,14 @@
 
 <script src="../../static/js/jquery-editable-select.min.js"></script>
 
-
+<link href='http://fonts.googleapis.com/css?family=Lato:400,300,700'
+	rel='stylesheet' type='text/css'>
+<!-- <link href='http://fonts.googleapis.com/css?family=GentiumBasic:400,300,700' rel='stylesheet' type='text/css'> -->
+<style>
+body {
+	font-family: 'Lato', sans-serif !important;
+}
+</style>
 
 </head>
 <body>
@@ -43,31 +51,39 @@
 	<div class="container">
 		<!-- This is to include the top navigation bar -->
 		<div>
-		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span>Shop by Department</span>
-					</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="#">Dept 1</a> <a class="dropdown-item" href="#">Dept 2</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#"><span>Recommended Items</span></a>
-						</div></li>
-				</ul>
-				<form class="form-inline my-2 my-lg-0 navbar-nav">
-					<a href="#" class="nav-link"><i class="material-icons">account_box</i><span>Your Account</span></a> <input class="form-control input-sm ml-2" type="search" placeholder="Search" aria-label="Search" /> <a class="nav-link" href="#"><i class="material-icons">search</i></a>
+			<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+							role="button" data-toggle="dropdown" aria-haspopup="true"
+							aria-expanded="false"> <span>Shop by Department</span>
+						</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="#">Dept 1</a> <a
+									class="dropdown-item" href="#">Dept 2</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#"><span>Recommended
+										Items</span></a>
+							</div></li>
+					</ul>
+					<form class="form-inline my-2 my-lg-0 navbar-nav">
+						<a href="#" class="nav-link"><i class="material-icons">account_box</i><span>Your
+								Account</span></a> <input class="form-control input-sm ml-2" type="search"
+							placeholder="Search" aria-label="Search" /> <a class="nav-link"
+							href="#"><i class="material-icons">search</i></a> <a
+							class="nav-link" href="/manage_cart"><i
+							class="material-icons">shopping_cart</i></a> <a class="nav-link"
+							href="#"> <i class="material-icons">exit_to_app</i></a>
 
-					<a class="nav-link" href="/manage_cart"><i class="material-icons">shopping_cart</i></a>
-					 <a class="nav-link" href="#"> <i class="material-icons">exit_to_app</i></a>
 
-
-				</form>
-			</div>
-		</nav>
+					</form>
+				</div>
+			</nav>
 
 
 
-	</div>
+		</div>
 
 
 		<div class="row">
@@ -75,49 +91,223 @@
 				<!-- This is to include the needed left menu -->
 				<div>
 
-			<!-- Sidebar -->
-			<nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
-				<ul class="nav sidebar-nav">
-					<div class="sidebar-header">
-						<div class="sidebar-brand text-left"></div>
-					</div>
-					<li><div class="valign-center">
-							<a href="#home">Home</a>
-						</div></li>
-					<li><a href="#about">About Us</a></li>
-					<li class="dropdown"><a href="#account" class="dropdown-toggle offcanvas" data-toggle="dropdown">Account</a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a href="#manageaccount">Manage Account</a></li>
-							<li><a href="#changepassword">Change Password</a></li>
-							<li><a href="#manageaddress">Manage Addresses</a></li>
-							<li><a href="#managecards">Manage Cards</a></li>
-						</ul></li>
+					<!-- Sidebar -->
+					<nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper"
+						role="navigation">
+						<ul class="nav sidebar-nav">
+							<div class="sidebar-header">
+								<div class="sidebar-brand text-left"></div>
+							</div>
+							<li><div class="valign-center">
+									<a href="#home">Home</a>
+								</div></li>
+							<li><a href="#about">About Us</a></li>
+							<li class="dropdown"><a href="#account"
+								class="dropdown-toggle offcanvas" data-toggle="dropdown">Account</a>
+								<ul class="dropdown-menu animated fadeInLeft" role="menu">
+									<li><a href="#manageaccount">Manage Account</a></li>
+									<li><a href="#changepassword">Change Password</a></li>
+									<li><a href="#manageaddress">Manage Addresses</a></li>
+									<li><a href="#managecards">Manage Cards</a></li>
+								</ul></li>
 
 
-					<li class="dropdown"><a href="#supplier" class="dropdown-toggle offcanvas" data-toggle="dropdown">Supplier</a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a href="#managesupplier">Manage Supplier</a></li>
-							<li><a href="#addsupplier">Add New Supplier</a></li>
-						</ul></li>
-					<li class="dropdown"><a href="#style" class="dropdown-toggle offcanvas" data-toggle="dropdown">Style</a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a href="#addstyle">Add a Style</a></li>
-							<li><a href="#additem">Add an Item</a></li>
-							<li><a href="#addhierarchy">Add Hierarchy</a></li>
-						</ul></li>
+							<li class="dropdown"><a href="#supplier"
+								class="dropdown-toggle offcanvas" data-toggle="dropdown">Supplier</a>
+								<ul class="dropdown-menu animated fadeInLeft" role="menu">
+									<li><a href="#managesupplier">Manage Supplier</a></li>
+									<li><a href="#addsupplier">Add New Supplier</a></li>
+								</ul></li>
+							<li class="dropdown"><a href="#style"
+								class="dropdown-toggle offcanvas" data-toggle="dropdown">Style</a>
+								<ul class="dropdown-menu animated fadeInLeft" role="menu">
+									<li><a href="#addstyle">Add a Style</a></li>
+									<li><a href="#additem">Add an Item</a></li>
+									<li><a href="#addhierarchy">Add Hierarchy</a></li>
+								</ul></li>
 
-					<li><a href="#contact">Contact</a></li>
-				</ul>
-			</nav>
-			<!-- /#sidebar-wrapper -->
+							<li><a href="#contact">Contact</a></li>
+						</ul>
+					</nav>
+					<!-- /#sidebar-wrapper -->
 
 
-		</div>
+				</div>
 			</div>
 
 
 			<!-- All the main contents of the page are under this column-->
-			<div class="col-11 text-center"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div>
+
+				<div class="album text-muted">
+					<div class="item">
+
+						<div class="row">
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/1.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+							</div>
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/2.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+
+							</div>
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/3.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+
+							</div>
+
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/4.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+							</div>
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/5.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+							</div>
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/6.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+
+							</div>
+
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/7.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+							</div>
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/8.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+							</div>
+							<div class="card">
+								<img class="img-thumbnail" src="../../static/images/9.jpg"
+									alt="Card image cap"></img>
+								<div class="card-body">
+									<div class="card-title">Item Name</div>
+									<p class="card-text">This is a wider card with supporting
+										text below as a natural lead-in to additional content. This
+										content is a little bit longer.</p>
+								</div>
+								<div class="card-footer">
+									<div class="btn-group">
+										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
+											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+
 		</div>
 
 

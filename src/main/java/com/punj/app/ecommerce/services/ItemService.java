@@ -39,4 +39,6 @@ public interface ItemService {
 
 	public ItemDTO searchItem(String text, Pager pager);
 
+	public ItemDTO listItems(Item itemCriteria, Pager pager);
+
 }

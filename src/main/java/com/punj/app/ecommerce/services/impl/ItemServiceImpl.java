@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.item.Attribute;
@@ -60,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
-	
+
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
 
@@ -410,14 +412,32 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	public ItemDTO searchItem(String text, Pager pager) {
-		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage + 1;
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
 		pager.setPageSize(maxResultPerPage);
 		pager.setStartCount(startCount);
 		pager.setMaxDisplayPage(maxPageBtns);
-		
-		ItemDTO items=this.itemSearchRepository.search(text, pager);
+
+		ItemDTO items = this.itemSearchRepository.search(text, pager);
 		logger.info("The searched items has been retrieved successfully");
 
 		return items;
 	}
+
+	@Override
+	public ItemDTO listItems(Item itemCriteria, Pager pager) {
+/*		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+*/
+
+		List<Item> items = this.itemRepository.findAll();
+		logger.info("The searched items has been retrieved successfully");
+
+		ItemDTO itemDTO=new ItemDTO();
+		itemDTO.setItems(items);
+		
+		return itemDTO;
+	}
+
 }

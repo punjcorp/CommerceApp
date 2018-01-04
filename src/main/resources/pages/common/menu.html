@@ -70,8 +70,8 @@
 					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#style"  id="stylemenu"
 						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.style}">Style</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
+						<li><a id="manageitem" th:href="@{/search_item}"><span th:text="#{commerce.home.menu.search.item}">Search Items</span></a></li>
 							<li><a id="addstyle" th:href="@{/add_style}"><span th:text="#{commerce.home.menu.add.style}">Add New Style</span></a></li>
-							<li><a id="additem" th:href="@{/add_item}"><span th:text="#{commerce.home.menu.add.item}">Add New Item</span></a></li>
 							<li><a id="addhierarchy" th:href="@{/add_hierachy}"><span th:text="#{commerce.home.menu.add.hierarchy}">Add Hierarchy</span></a></li>
 						</ul></li>
 

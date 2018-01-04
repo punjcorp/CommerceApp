@@ -63,13 +63,23 @@ body {
 
 .album {
 	padding-top: 3rem;
+	padding-left: 2rem;
 	padding-bottom: 3rem;
-	background-color: #f7f7f7;
 }
 
 .album .card {
 	float: left;
 	width: 31.333%;
+	padding: .75rem;
+	margin-bottom: 1rem;
+	margin-left: 1rem;
+	box-sizing: border-box;
+	border-radius: 5px; 
+}
+
+.album .item .card {
+	float: left;
+	width: 23%;
 	padding: .75rem;
 	margin-bottom: 1rem;
 	margin-left: 1rem;
@@ -364,12 +374,12 @@ a[href*="#style"]::before {
 	font-size: 48px;
 }
 
-a[id="addstyle"]::before {
-	content: "queue" !important;
+a[id="manageitem"]::before {
+	content: "view_list" !important;
 }
 
-a[id="additem"]::before {
-	content: "playlist_add" !important;
+a[id="addstyle"]::before {
+	content: "queue" !important;
 }
 
 a[id="addhierarchy"]::before {

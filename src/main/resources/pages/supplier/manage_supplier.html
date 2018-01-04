@@ -224,8 +224,8 @@
 		function selectAll() {
 
 			$(".supplierId").prop('checked', true);
-			$("INPUT[type=text],INPUT[type=password],TEXTAREA").removeAttr(
-					"disabled");
+			$("[id^=suppliers]").removeAttr("disabled");
+			
 			$("#btnDelete").removeAttr("disabled");
 			$("#btnSave").removeAttr("disabled");
 			cbCounter = totalRecords;
@@ -235,8 +235,8 @@
 		function deselectAll() {
 
 			$(".supplierId").prop('checked', false);
-			$("INPUT[type=text],INPUT[type=password],TEXTAREA").attr(
-					"disabled", "disabled");
+			$("[id^=suppliers]").attr("disabled", "disabled");
+
 			$("#btnDelete").attr("disabled", "disabled");
 			$("#btnSave").attr("disabled", "disabled");
 

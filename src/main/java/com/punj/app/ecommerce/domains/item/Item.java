@@ -15,8 +15,9 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Indexed;
 
+@Indexed
 @Entity
 public class Item implements Serializable, Cloneable {
 	@Id
@@ -50,7 +51,7 @@ public class Item implements Serializable, Cloneable {
 	@OneToMany(mappedBy = "itemImageId.itemId", cascade = CascadeType.ALL)
 	private List<ItemImage> images;
 
-	//@IndexedEmbedded
+	// @IndexedEmbedded
 	@OneToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "hierarchy_id")
 	private Hierarchy hierarchy;

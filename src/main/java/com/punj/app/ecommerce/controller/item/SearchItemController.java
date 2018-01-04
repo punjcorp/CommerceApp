@@ -48,15 +48,52 @@ public class SearchItemController {
 		this.itemService = itemService;
 	}
 
+	@GetMapping("/list_items")
+	public String listItems(@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
+		try {
+			Pager pager = new Pager();
+			if (page == null || !page.isPresent()) {
+				pager.setCurrentPageNo(1);
+			} else {
+				pager.setCurrentPageNo(page.get());
+			}
+
+			Item itemCriteria = new Item();
+
+			ItemDTO itemList =itemService.listItems(itemCriteria, pager);
+			List<Item> itemsList = itemList.getItems();
+
+			ItemBeanDTO items = new ItemBeanDTO();
+
+			this.setItemList(itemsList, items);
+
+			Pager tmpPager = itemList.getPager();
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
+					tmpPager.getMaxDisplayPage());
+
+			model.addAttribute("items", items);
+			model.addAttribute("pager", pager);
+			model.addAttribute("success", "The {" + pager.getResultSize() + "} items record has been retrieved");
+			logger.info("The item details has been retrieved successfully.");
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving items", e);
+			return "error";
+		}
+		return "common/display";
+	}
+
 	@GetMapping("/search_item")
 	public String searchItem(Model model, HttpSession session) {
-
+		ItemBeanDTO items = new ItemBeanDTO();
+		model.addAttribute("items", items);
+		model.addAttribute("itemBean", new ItemBean());
+		logger.info("The item details has been retrieved successfully.");
 		return "item/manage_item";
 	}
 
 	@PostMapping("/search_item")
-	public String addItem(@ModelAttribute ItemBean itemBean, @RequestParam("page") Optional<Integer> page, Model model,
-			HttpSession session) {
+	public String searchItems(@ModelAttribute ItemBean itemBean, @RequestParam("page") Optional<Integer> page,
+			Model model, HttpSession session) {
 		try {
 
 			Pager pager = itemBean.getPager();
@@ -115,6 +152,7 @@ public class SearchItemController {
 			itemBeanList.add(itemBean);
 
 		}
+		items.setItems(itemBeanList);
 		logger.info("The item basic details has been set in bean List successfully");
 	}
 
