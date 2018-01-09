@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.order.add.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+
+</head>
+<body>
+
+	<div id="wrapper">
+
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+
+			<div class="card">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.order.add}">Create Purchase
+						Order</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}"
+							class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}"
+							class="alert alert-danger " role="alert"></div>
+
+						<form class="form" id="addForm" action="#"
+							th:action="@{/add_order}" th:object="${orderBean}" method="post">
+							<div class="row">
+								<div class="col-4">
+									<div class="input-group form-group text-left">
+										<input type="text" th:field="*{supplierId}"
+											class="form-control input-sm "
+											th:placeholder="#{commerce.screen.order.supplier}"
+											maxlength="80"></input><a data-toggle="modal"
+											data-target="#supplierModal" class="nav-link" href="#"><i
+											class="material-icons">search</i></a>
+										<div th:if="${#fields.hasErrors('supplierId')}"
+											th:errors="*{supplierId}" class="text-danger">Supplier
+											Error</div>
+									</div>
+								</div>
+							</div>
+							<th:block th:each="orderItem,itrStat:${orderBean.orderItems}">
+								<div class="orderitem form-group">
+									<div class="row">
+										<div class="col-3">
+											<div class="form-group">
+												<div class="input-group">
+													<input type="text"
+														th:field="${orderBean.orderItems[__${itrStat.index}__].itemId}"
+														class="form-control input-sm"
+														th:placeholder="#{commerce.screen.order.item}"
+														maxlength="150"></input><a data-toggle="modal"
+														data-target="#itemModal" class="nav-link" href="#"><i
+														class="material-icons">search</i></a>
+												</div>
+												<div
+													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].itemId')}"
+													th:errors="${orderBean.orderItems[__${itrStat.index}__].itemId}"
+													class="text-danger">Item Id Error</div>
+											</div>
+										</div>
+										<div class="col-2">
+											<div class="form-group">
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].locationId}"
+													class="form-control input-sm"
+													th:placeholder="#{commerce.screen.order.location}"
+													maxlength="150"></input>
+												<div
+													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].locationId')}"
+													th:errors="${orderBean.orderItems[__${itrStat.index}__].locationId}"
+													class="text-danger">Location Error</div>
+											</div>
+										</div>
+										<div class="col-1">
+											<div class="form-group">
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].orderedQty}"
+													class="form-control input-sm"
+													th:placeholder="#{commerce.screen.order.qty}"
+													maxlength="150"></input>
+												<div
+													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].orderedQty')}"
+													th:errors="${orderBean.orderItems[__${itrStat.index}__].orderedQty}"
+													class="text-danger">Quantity Error</div>
+											</div>
+										</div>
+										<div class="col-3">
+											<div class="form-group">
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].costAmount}"
+													class="form-control input-sm"
+													th:placeholder="#{commerce.screen.order.cost}"
+													maxlength="150"></input>
+												<div
+													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].costAmount')}"
+													th:errors="${orderBean.orderItems[__${itrStat.index}__].costAmount}"
+													class="text-danger">Unit Cost Error</div>
+											</div>
+										</div>
+										<div class="col-3">
+											<div class="form-group">
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].totalCost}"
+													class="form-control input-sm"
+													th:placeholder="#{commerce.screen.order.total.cost}"
+													maxlength="150"></input>
+												<div
+													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].totalCost')}"
+													th:errors="${orderBean.orderItems[__${itrStat.index}__].totalCost}"
+													class="text-danger">Total Cost Error</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-9 col-sm-9 col-md-9"></div>
+										<div class="col-xs-3 col-sm-3 col-md-3"
+											th:if="${itrStat.size > 1}">
+											<div class="form-group">
+												<input type="button"
+													th:onclick="'deleteItem(\'/add_order?removeOrderItem=&amp;id='+ ${itrStat.index} +'\')'"
+													class="btn btn-secondary btn-sm"
+													th:value="#{commerce.screen.btn.order.delete}"></input>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</th:block>
+
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6"></div>
+								<div class="col-xs-3 col-sm-3 col-md-3 text-right">
+									<span
+										th:text="#{commerce.screen.btn.order.estimated.total.cost}">Total
+										Estimated Cost</span>
+								</div>
+								<div class="col-xs-3 col-sm-3 col-md-3">
+									<div id="totalOrderCost">0.0</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-2 col-sm-2 col-md-2">
+									<div class="form-group">
+										<input type="submit" name="saveOrder" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}"
+											class="btn btn-info"></input>
+									</div>
+								</div>
+								<div class="col-xs-2 col-sm-2 col-md-2">
+									<div class="form-group">
+										<input type="submit" name="addOrderItem"
+											class="btn btn-secondary"
+											th:value="#{commerce.screen.btn.order.add}"></input>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+
+
+
+
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+
+
+
+	<!-- Supplier Modal -->
+	<div class="modal fade " id="supplierModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.add.order.search.supplier}">Search
+							Supplier</span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form class="form" id="searchForm" action="#"
+						th:action="@{/search_supplier}" th:object="${supplierBean}"
+						method="post">
+						<div class="row">
+							<div class="col-5">
+								<div class="form-group text-left">
+									<div class="input-group">
+										<input type="text" th:field="*{name}"
+											class="form-control input-sm"
+											th:placeholder="#{commerce.screen.supplier.search.text}"
+											placeholder="Enter keyword to search"
+											aria-describedby="searchHelp"></input> <span
+											class="input-group-btn"><input type="submit"
+											value="Search" th:value="#{commerce.screen.btn.search}"
+											class="form-control btn btn-info btn-block"></input></span>
+									</div>
+									<small id="searchHelp" class="form-text text-muted"
+										th:text="#{commerce.screen.supplier.search.keywords}">Enter
+										keywords like id/Name/Email/Address/Phone#</small>
+								</div>
+
+
+							</div>
+						</div>
+					</form>
+
+					<div class="album text-muted" th:if="${suppliers!=null}">
+						<div class="container">
+
+
+
+							<div class="row">
+
+								<th:block th:each="address,itrStat:${addresses}">
+									<div class="card">
+										<div class="address">
+											<div class="row">
+												<div class="col">
+													<input type="radio" name="addressradio" id="addressradio"
+														th:value="${address.addressId}"></input>
+												</div>
+												<div class="col-10">
+													<div th:id="'address'+${address.addressId}">
+														<div>
+															<b><span
+																th:text="#{commerce.screen.add.card.label.address}">Billing
+																	Address</span></b>
+														</div>
+														<div>
+															<span th:text="${address.address1}"></span>,
+														</div>
+														<div>
+															<span th:text="${address.address2}"></span>,
+														</div>
+														<div>
+															<span th:text="${address.city}"></span>, <span
+																th:text="${address.state}"></span>,
+														</div>
+														<div>
+															<span th:text="${address.pincode}"></span>, <span
+																th:text="${address.country}"></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</th:block>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal" value="Close"
+						th:value="#{commerce.btn.close}">Close</button>
+					<button type="button" id="supplierbtn" class="btn btn-primary"
+						value="Choose This Supplier"
+						th:value="#{commerce.btn.choose.supplier}">Choose This
+						Supplier</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade " id="itemModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.add.order.search.item}">Search
+							Item</span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form class="form" id="searchForm" action="#"
+						th:action="@{/search_item}" th:object="${itemBean}" method="post">
+						<div class="row">
+							<div class="col-5">
+								<div class="form-group text-left">
+									<div class="input-group">
+										<input type="text" th:field="*{name}"
+											class="form-control input-sm"
+											th:placeholder="#{commerce.screen.item.search.text}"
+											placeholder="Enter keyword to search"
+											aria-describedby="searchHelp"></input> <span
+											class="input-group-btn"><input type="submit"
+											value="Search" th:value="#{commerce.screen.btn.search}"
+											class="form-control btn btn-info btn-block"></input></span>
+									</div>
+									<small id="searchHelp" class="form-text text-muted"
+										th:text="#{commerce.screen.item.search.keywords}">Enter
+										keywords like Item#/Style#/Name/Description</small>
+								</div>
+							</div>
+						</div>
+					</form>
+
+					<div class="album text-muted" th:if="${items!=null}">
+						<div class="container">
+
+
+
+							<div class="row">
+
+								<th:block th:each="address,itrStat:${addresses}">
+									<div class="card">
+										<div class="address">
+											<div class="row">
+												<div class="col">
+													<input type="radio" name="addressradio" id="addressradio"
+														th:value="${address.addressId}"></input>
+												</div>
+												<div class="col-10">
+													<div th:id="'address'+${address.addressId}">
+														<div>
+															<b><span
+																th:text="#{commerce.screen.add.card.label.address}">Billing
+																	Address</span></b>
+														</div>
+														<div>
+															<span th:text="${address.address1}"></span>,
+														</div>
+														<div>
+															<span th:text="${address.address2}"></span>,
+														</div>
+														<div>
+															<span th:text="${address.city}"></span>, <span
+																th:text="${address.state}"></span>,
+														</div>
+														<div>
+															<span th:text="${address.pincode}"></span>, <span
+																th:text="${address.country}"></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</th:block>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal" value="Close"
+						th:value="#{commerce.btn.close}">Close</button>
+					<button type="button" id="supplierbtn" class="btn btn-primary"
+						value="Choose This Supplier"
+						th:value="#{commerce.btn.choose.item}">Choose This Item</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+		var totalRecords = [[${#lists.size(orderBean.orderItems)}]];
+		
+		function deleteItem(item) {
+
+			$("#addForm").attr("action", item);
+
+			$('#addForm').submit();
+		}
+
+		$("#itembtn").click(function() {
+
+			$('#addressModal').modal('toggle');
+
+		});
+
+		$("#supplierbtn").click(function() {
+
+			$('#supplierModal').modal('toggle');
+
+		});
+		
+		function sumAllCosts(){
+			var count=0;
+			var totalSum=0.0;
+			while(count<totalRecords){
+				var totalId="#orderItems"+count+"\\.totalCost";
+				totalSum=totalSum+ parseFloat($(totalId).val());
+				count++;
+			}
+			$("#totalOrderCost").html("INR "+totalSum);
+			
+		}
+		
+		$(document).ready(function() {
+			  $("[id^=orderItems]").change(function() { 
+				  
+				  var str=this.id;
+				  if (str.indexOf("orderedQty") >= 0){
+					  var index=str.replace(".orderedQty","");
+					  index=index.replace("orderItems","");
+					  var totalId="#orderItems"+index+"\\.totalCost";
+					  var costId="#orderItems"+index+"\\.costAmount";
+					  
+					  if($(this).val()!=null && $.isNumeric($(this).val())){
+						  
+						  if($(costId).val()!=null && $.isNumeric($(costId).val())){
+							  var total=$(this).val() * $(costId).val();
+							  
+							  $(totalId).val(total);
+							  
+							  sumAllCosts();
+						  }
+						  
+					  }
+					  
+					  
+				  }
+					if( str.indexOf("costAmount") >= 0){
+						
+						  var index=str.replace(".costAmount","");
+						  index=index.replace("orderItems","");
+						  var totalId="#orderItems"+index+"\\.totalCost";
+						  var qtyId="#orderItems"+index+"\\.orderedQty";						
+						
+						  if($(this).val()!=null && $.isNumeric($(this).val())){
+							  if($(qtyId).val()!=null && $.isNumeric($(qtyId).val())){
+								  var total=$(this).val() * $(qtyId).val();
+								  
+								  $(totalId).val(total);
+								  
+								  sumAllCosts();
+							  }
+							  
+						  }
+						
+				  }
+				  
+	
+			  });
+			});		
+		
+		/*]]>*/
+	</script>
+
+</body>
+</html>

@@ -386,6 +386,19 @@ a[id="addhierarchy"]::before {
 	content: "subdirectory_arrow_right" !important;
 }
 
+a[href*="#order"]::before {
+	content: "local_parking" !important;
+	font-size: 48px;
+}
+
+a[id="manageorder"]::before {
+	content: "view_list" !important;
+}
+
+a[id="addorder"]::before {
+	content: "queue" !important;
+}
+
 a[id="contact"]::before {
 	content: "feedback" !important;
 	font-size: 48px;
@@ -405,4 +418,17 @@ a[id="contact"]::before {
 	bottom: 0;
 	background-color: rgba(250, 250, 250, .8);
 	z-index: 1;
+}
+
+
+.orderitem {
+	position: relative;
+	box-sizing: border-box;
+	border: 1px solid;
+	border-radius: 5px; border-color : orange;
+	text-align: left; height : auto;
+	padding: 10px;
+	font-size: 16px;
+	height: auto;
+	border-color: orange;
 }

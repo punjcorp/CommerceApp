@@ -1,6 +1,7 @@
 package com.punj.app.ecommerce.domains.item;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import javax.persistence.Column;
@@ -16,15 +17,15 @@ public class ItemOptions implements Serializable {
 	private BigInteger itemId;
 
 	@Column(name = "unit_cost")
-	private Double unitCost;
+	private BigDecimal unitCost;
 	@Column(name = "suggested_price")
-	private Double suggestedPrice;
+	private BigDecimal suggestedPrice;
 	@Column(name = "compare_at_price")
-	private Double compareAtPrice;
+	private BigDecimal compareAtPrice;
 	@Column(name = "current_price")
-	private Double currentPrice;
+	private BigDecimal currentPrice;
 	@Column(name = "restocking_fee")
-	private Double restockingFee;
+	private BigDecimal restockingFee;
 
 	@Column(name = "discount_flag")
 	private Boolean discountFlag;
@@ -55,7 +56,7 @@ public class ItemOptions implements Serializable {
 	@Column(name = "stock_status")
 	private String stockStatus;
 	@Column(name = "shipping_weight")
-	private Double shippingWeight;
+	private BigDecimal shippingWeight;
 	@Column(name = "pack_size")
 	private String packSize;
 
@@ -77,7 +78,7 @@ public class ItemOptions implements Serializable {
 	/**
 	 * @return the unitCost
 	 */
-	public Double getUnitCost() {
+	public BigDecimal getUnitCost() {
 		return unitCost;
 	}
 
@@ -85,14 +86,14 @@ public class ItemOptions implements Serializable {
 	 * @param unitCost
 	 *            the unitCost to set
 	 */
-	public void setUnitCost(Double unitCost) {
+	public void setUnitCost(BigDecimal unitCost) {
 		this.unitCost = unitCost;
 	}
 
 	/**
 	 * @return the suggestedPrice
 	 */
-	public Double getSuggestedPrice() {
+	public BigDecimal getSuggestedPrice() {
 		return suggestedPrice;
 	}
 
@@ -100,14 +101,14 @@ public class ItemOptions implements Serializable {
 	 * @param suggestedPrice
 	 *            the suggestedPrice to set
 	 */
-	public void setSuggestedPrice(Double suggestedPrice) {
+	public void setSuggestedPrice(BigDecimal suggestedPrice) {
 		this.suggestedPrice = suggestedPrice;
 	}
 
 	/**
 	 * @return the compareAtPrice
 	 */
-	public Double getCompareAtPrice() {
+	public BigDecimal getCompareAtPrice() {
 		return compareAtPrice;
 	}
 
@@ -115,14 +116,14 @@ public class ItemOptions implements Serializable {
 	 * @param compareAtPrice
 	 *            the compareAtPrice to set
 	 */
-	public void setCompareAtPrice(Double compareAtPrice) {
+	public void setCompareAtPrice(BigDecimal compareAtPrice) {
 		this.compareAtPrice = compareAtPrice;
 	}
 
 	/**
 	 * @return the currentPrice
 	 */
-	public Double getCurrentPrice() {
+	public BigDecimal getCurrentPrice() {
 		return currentPrice;
 	}
 
@@ -130,14 +131,14 @@ public class ItemOptions implements Serializable {
 	 * @param currentPrice
 	 *            the currentPrice to set
 	 */
-	public void setCurrentPrice(Double currentPrice) {
+	public void setCurrentPrice(BigDecimal currentPrice) {
 		this.currentPrice = currentPrice;
 	}
 
 	/**
 	 * @return the restockingFee
 	 */
-	public Double getRestockingFee() {
+	public BigDecimal getRestockingFee() {
 		return restockingFee;
 	}
 
@@ -145,7 +146,7 @@ public class ItemOptions implements Serializable {
 	 * @param restockingFee
 	 *            the restockingFee to set
 	 */
-	public void setRestockingFee(Double restockingFee) {
+	public void setRestockingFee(BigDecimal restockingFee) {
 		this.restockingFee = restockingFee;
 	}
 
@@ -347,7 +348,7 @@ public class ItemOptions implements Serializable {
 	/**
 	 * @return the shippingWeight
 	 */
-	public Double getShippingWeight() {
+	public BigDecimal getShippingWeight() {
 		return shippingWeight;
 	}
 
@@ -355,7 +356,7 @@ public class ItemOptions implements Serializable {
 	 * @param shippingWeight
 	 *            the shippingWeight to set
 	 */
-	public void setShippingWeight(Double shippingWeight) {
+	public void setShippingWeight(BigDecimal shippingWeight) {
 		this.shippingWeight = shippingWeight;
 	}
 

@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.models.item;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -25,15 +26,15 @@ public class ItemOptionsBean {
 	private Boolean minAgeFlag = false;
 	private Boolean customerPromptFlag = false;
 
-	private Double unitCost = 0.0;
-	private Double suggestedPrice = 0.0;
-	private Double compareAtPrice = 0.0;
-	private Double currentPrice = 0.0;
-	private Double restockingFee = 0.0;
+	private BigDecimal unitCost;
+	private BigDecimal suggestedPrice;
+	private BigDecimal compareAtPrice;
+	private BigDecimal currentPrice;
+	private BigDecimal restockingFee;
 
 	private String packSize = "1";
-	private String stockStatus="NIL";
-	private Double shippingWeight = 0.0;
+	private String stockStatus = "NIL";
+	private BigDecimal shippingWeight;
 
 	private Integer taxGroupId;
 
@@ -70,7 +71,7 @@ public class ItemOptionsBean {
 	/**
 	 * @return the unitCost
 	 */
-	public Double getUnitCost() {
+	public BigDecimal getUnitCost() {
 		return unitCost;
 	}
 
@@ -78,14 +79,14 @@ public class ItemOptionsBean {
 	 * @param unitCost
 	 *            the unitCost to set
 	 */
-	public void setUnitCost(Double unitCost) {
+	public void setUnitCost(BigDecimal unitCost) {
 		this.unitCost = unitCost;
 	}
 
 	/**
 	 * @return the suggestedPrice
 	 */
-	public Double getSuggestedPrice() {
+	public BigDecimal getSuggestedPrice() {
 		return suggestedPrice;
 	}
 
@@ -93,14 +94,14 @@ public class ItemOptionsBean {
 	 * @param suggestedPrice
 	 *            the suggestedPrice to set
 	 */
-	public void setSuggestedPrice(Double suggestedPrice) {
+	public void setSuggestedPrice(BigDecimal suggestedPrice) {
 		this.suggestedPrice = suggestedPrice;
 	}
 
 	/**
 	 * @return the compareAtPrice
 	 */
-	public Double getCompareAtPrice() {
+	public BigDecimal getCompareAtPrice() {
 		return compareAtPrice;
 	}
 
@@ -108,14 +109,14 @@ public class ItemOptionsBean {
 	 * @param compareAtPrice
 	 *            the compareAtPrice to set
 	 */
-	public void setCompareAtPrice(Double compareAtPrice) {
+	public void setCompareAtPrice(BigDecimal compareAtPrice) {
 		this.compareAtPrice = compareAtPrice;
 	}
 
 	/**
 	 * @return the currentPrice
 	 */
-	public Double getCurrentPrice() {
+	public BigDecimal getCurrentPrice() {
 		return currentPrice;
 	}
 
@@ -123,14 +124,14 @@ public class ItemOptionsBean {
 	 * @param currentPrice
 	 *            the currentPrice to set
 	 */
-	public void setCurrentPrice(Double currentPrice) {
+	public void setCurrentPrice(BigDecimal currentPrice) {
 		this.currentPrice = currentPrice;
 	}
 
 	/**
 	 * @return the restockingFee
 	 */
-	public Double getRestockingFee() {
+	public BigDecimal getRestockingFee() {
 		return restockingFee;
 	}
 
@@ -138,7 +139,7 @@ public class ItemOptionsBean {
 	 * @param restockingFee
 	 *            the restockingFee to set
 	 */
-	public void setRestockingFee(Double restockingFee) {
+	public void setRestockingFee(BigDecimal restockingFee) {
 		this.restockingFee = restockingFee;
 	}
 
@@ -175,7 +176,7 @@ public class ItemOptionsBean {
 	/**
 	 * @return the shippingWeight
 	 */
-	public Double getShippingWeight() {
+	public BigDecimal getShippingWeight() {
 		return shippingWeight;
 	}
 
@@ -183,7 +184,7 @@ public class ItemOptionsBean {
 	 * @param shippingWeight
 	 *            the shippingWeight to set
 	 */
-	public void setShippingWeight(Double shippingWeight) {
+	public void setShippingWeight(BigDecimal shippingWeight) {
 		this.shippingWeight = shippingWeight;
 	}
 

@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * @author admin
  *
  */
-public class Pager {
+public class Pager implements Serializable {
 
 	private Integer resultSize;
 	private Integer pageSize;
@@ -33,7 +34,7 @@ public class Pager {
 		this.pageSize = pageSize;
 		this.currentPageNo = currentPageNo;
 		this.maxDisplayPage = maxDisplayPage;
-		
+
 		this.setNoOfPages();
 		this.setFirstPage();
 		this.setLastPage();
@@ -123,8 +124,8 @@ public class Pager {
 			pageList.add(start + i);
 		}
 
-		this.displayPages=pageList;
-		
+		this.displayPages = pageList;
+
 	}
 
 	/**
@@ -199,6 +200,110 @@ public class Pager {
 	 */
 	public void setStartCount(Integer startCount) {
 		this.startCount = startCount;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((currentPageNo == null) ? 0 : currentPageNo.hashCode());
+		result = prime * result + ((displayPages == null) ? 0 : displayPages.hashCode());
+		result = prime * result + ((firstPage == null) ? 0 : firstPage.hashCode());
+		result = prime * result + ((lastPage == null) ? 0 : lastPage.hashCode());
+		result = prime * result + ((maxDisplayPage == null) ? 0 : maxDisplayPage.hashCode());
+		result = prime * result + ((noOfPages == null) ? 0 : noOfPages.hashCode());
+		result = prime * result + ((pageSize == null) ? 0 : pageSize.hashCode());
+		result = prime * result + ((resultSize == null) ? 0 : resultSize.hashCode());
+		result = prime * result + ((startCount == null) ? 0 : startCount.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Pager other = (Pager) obj;
+		if (currentPageNo == null) {
+			if (other.currentPageNo != null) {
+				return false;
+			}
+		} else if (!currentPageNo.equals(other.currentPageNo)) {
+			return false;
+		}
+		if (displayPages == null) {
+			if (other.displayPages != null) {
+				return false;
+			}
+		} else if (!displayPages.equals(other.displayPages)) {
+			return false;
+		}
+		if (firstPage == null) {
+			if (other.firstPage != null) {
+				return false;
+			}
+		} else if (!firstPage.equals(other.firstPage)) {
+			return false;
+		}
+		if (lastPage == null) {
+			if (other.lastPage != null) {
+				return false;
+			}
+		} else if (!lastPage.equals(other.lastPage)) {
+			return false;
+		}
+		if (maxDisplayPage == null) {
+			if (other.maxDisplayPage != null) {
+				return false;
+			}
+		} else if (!maxDisplayPage.equals(other.maxDisplayPage)) {
+			return false;
+		}
+		if (noOfPages == null) {
+			if (other.noOfPages != null) {
+				return false;
+			}
+		} else if (!noOfPages.equals(other.noOfPages)) {
+			return false;
+		}
+		if (pageSize == null) {
+			if (other.pageSize != null) {
+				return false;
+			}
+		} else if (!pageSize.equals(other.pageSize)) {
+			return false;
+		}
+		if (resultSize == null) {
+			if (other.resultSize != null) {
+				return false;
+			}
+		} else if (!resultSize.equals(other.resultSize)) {
+			return false;
+		}
+		if (startCount == null) {
+			if (other.startCount != null) {
+				return false;
+			}
+		} else if (!startCount.equals(other.startCount)) {
+			return false;
+		}
+		return true;
 	}
 
 }

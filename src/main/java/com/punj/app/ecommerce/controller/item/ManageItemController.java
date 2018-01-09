@@ -84,7 +84,7 @@ public class ManageItemController {
 			Authentication authentication) {
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		
+
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
 		List<AttributeId> attributeIds = new ArrayList<AttributeId>();

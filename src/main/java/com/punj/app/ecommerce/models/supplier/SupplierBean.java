@@ -37,6 +37,8 @@ public class SupplierBean {
 	@Valid
 	private List<AddressBean> addresses;
 
+	private List<SupplierItemBean> items;
+
 	private Pager pager;
 
 	public SupplierBean() {
@@ -148,6 +150,21 @@ public class SupplierBean {
 	 */
 	public void setPager(Pager pager) {
 		this.pager = pager;
+	}
+
+	/**
+	 * @return the items
+	 */
+	public List<SupplierItemBean> getItems() {
+		return items;
+	}
+
+	/**
+	 * @param items
+	 *            the items to set
+	 */
+	public void setItems(List<SupplierItemBean> items) {
+		this.items = items;
 	}
 
 }
