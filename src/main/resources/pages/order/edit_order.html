@@ -3,7 +3,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.order.add.title}"></title>
+<title th:text="#{commerce.screen.order.edit.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
 
@@ -27,7 +27,7 @@
 
 			<div class="card">
 				<div class="card-header">
-					<h3 th:text="#{commerce.screen.order.add}">Create Purchase
+					<h3 th:text="#{commerce.screen.order.edit}">Update Purchase
 						Order</h3>
 				</div>
 				<div class="card-body">
@@ -38,7 +38,18 @@
 							class="alert alert-danger " role="alert"></div>
 
 						<form class="form" id="addForm" action="#"
-							th:action="@{/add_order}" th:object="${orderBean}" method="post">
+							th:action="@{/edit_order}" th:object="${orderBean}" method="post">
+							<div class="row">
+								<div class="col-2">
+									<div class="input-group form-group text-left">
+										<span th:text="#{commerce.screen.order.id}"></span> <input
+											type="hidden" th:field="*{orderId}"></input>
+									</div>
+								</div>
+								<div class="col-2">
+									<span th:text="${orderBean.orderId}"></span>
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-4">
 									<div class="input-group form-group text-left">
@@ -134,7 +145,7 @@
 												</button>
 												<button type="button"
 													th:if="${#lists.size(orderBean.orderItems)>1}"
-													th:onclick="'deleteItem(\'/add_order?removeOrderItem=&amp;id='+ ${itrStat.index} +'\')'"
+													th:onclick="'deleteItem(\'/edit_order?removeOrderItem=&amp;id='+ ${itrStat.index} +'\')'"
 													class="btn btn-secondary btn-sm">
 													<i class="material-icons">remove_circle</i>
 												</button>
@@ -156,7 +167,6 @@
 									<div id="totalOrderCost">
 										INR <span th:text="${orderBean.estimatedCost}">0.0</span>
 									</div>
-									<input type="hidden" th:field="*{estimatedCost}"></input>
 								</div>
 							</div>
 
@@ -165,6 +175,14 @@
 									<div class="form-group">
 										<input type="submit" name="saveOrder" value="Save"
 											th:value="#{commerce.screen.btn.submit.save}"
+											class="btn btn-info"></input>
+									</div>
+								</div>
+								<div class="col-xs-2 col-sm-2 col-md-2"
+									th:if="${orderBean.status=='C'}">
+									<div class="form-group">
+										<input type="submit" name="approveOrder" value="Approve"
+											th:value="#{commerce.screen.btn.submit.approve}"
 											class="btn btn-info"></input>
 									</div>
 								</div>

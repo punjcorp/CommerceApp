@@ -20,7 +20,10 @@ import javax.persistence.Table;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 /**
  * @author admin
@@ -41,24 +44,33 @@ public class Order implements Serializable {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-	@Column(name = "total_amount")
-	private BigDecimal totalAmount;
-	@Column(name = "paid_amount")
-	private BigDecimal paidAmount;
+	@Column(name = "modified_by")
+	private String modifiedBy;
+	@Column(name = "modified_date")
+	private LocalDateTime modifiedDate;
+
+	@Column(name = "total_estimated_cost")
+	private BigDecimal estimatedCost = new BigDecimal("0.0");
+
 	@Column(name = "discount_amount")
-	private BigDecimal discountAmount;
+	private BigDecimal discountAmount = new BigDecimal("0.0");
 	@Column(name = "tax_amount")
-	private BigDecimal taxAmount;
+	private BigDecimal taxAmount = new BigDecimal("0.0");
+	@Column(name = "total_amount")
+	private BigDecimal totalAmount = new BigDecimal("0.0");
+	@Column(name = "paid_amount")
+	private BigDecimal paidAmount = new BigDecimal("0.0");
 
 	@Field
 	private String status;
 
 	@Field
 	@Column(name = "supplier_id")
+	@FieldBridge(impl = IntegerBridge.class)
 	Integer supplierId;
 
 	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
-	// @JoinColumn(name = "order_id")
+	@IndexedEmbedded
 	List<OrderItem> orderItems;
 
 	/**
@@ -211,6 +223,51 @@ public class Order implements Serializable {
 		this.supplierId = supplierId;
 	}
 
+	/**
+	 * @return the estimatedCost
+	 */
+	public BigDecimal getEstimatedCost() {
+		return estimatedCost;
+	}
+
+	/**
+	 * @param estimatedCost
+	 *            the estimatedCost to set
+	 */
+	public void setEstimatedCost(BigDecimal estimatedCost) {
+		this.estimatedCost = estimatedCost;
+	}
+
+	/**
+	 * @return the modifiedBy
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	/**
+	 * @param modifiedBy
+	 *            the modifiedBy to set
+	 */
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	/**
+	 * @return the modifiedDate
+	 */
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	/**
+	 * @param modifiedDate
+	 *            the modifiedDate to set
+	 */
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -222,6 +279,7 @@ public class Order implements Serializable {
 		int result = 1;
 		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
 		result = prime * result + ((orderItems == null) ? 0 : orderItems.hashCode());
+		result = prime * result + ((supplierId == null) ? 0 : supplierId.hashCode());
 		return result;
 	}
 
@@ -254,6 +312,13 @@ public class Order implements Serializable {
 				return false;
 			}
 		} else if (!orderItems.equals(other.orderItems)) {
+			return false;
+		}
+		if (supplierId == null) {
+			if (other.supplierId != null) {
+				return false;
+			}
+		} else if (!supplierId.equals(other.supplierId)) {
 			return false;
 		}
 		return true;

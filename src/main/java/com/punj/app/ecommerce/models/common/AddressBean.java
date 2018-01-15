@@ -4,7 +4,6 @@
 package com.punj.app.ecommerce.models.common;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

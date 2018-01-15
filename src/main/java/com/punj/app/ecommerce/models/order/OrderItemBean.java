@@ -9,10 +9,6 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 
 import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
 
@@ -32,13 +28,17 @@ public class OrderItemBean {
 	private Integer orderedQty;
 
 	@Digits(integer = 8, fraction = 2)
-	private BigDecimal costAmount;
-	private BigDecimal totalCost;
+	private BigDecimal costAmount = new BigDecimal("0.0");
+	private BigDecimal totalCost = new BigDecimal("0.0");
+
 	private Integer delieveredQty;
 	private LocalDateTime delieveredDate;
 
-	private BigDecimal discountAmount;
-	private BigDecimal totalDiscountAmount;
+	private BigDecimal costActualAmount = new BigDecimal("0.0");
+	private BigDecimal totalActualCost = new BigDecimal("0.0");
+	private BigDecimal discountAmount = new BigDecimal("0.0");
+	private BigDecimal taxAmount = new BigDecimal("0.0");
+	private BigDecimal totalActualAmount = new BigDecimal("0.0");
 
 	private SupplierItemBean supplierItem;
 
@@ -178,18 +178,18 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @return the totalDiscountAmount
+	 * @return the totalActualAmount
 	 */
-	public BigDecimal getTotalDiscountAmount() {
-		return totalDiscountAmount;
+	public BigDecimal getTotalActualAmount() {
+		return totalActualAmount;
 	}
 
 	/**
-	 * @param totalDiscountAmount
-	 *            the totalDiscountAmount to set
+	 * @param totalActualAmount
+	 *            the totalActualAmount to set
 	 */
-	public void setTotalDiscountAmount(BigDecimal totalDiscountAmount) {
-		this.totalDiscountAmount = totalDiscountAmount;
+	public void setTotalActualAmount(BigDecimal totalActualAmount) {
+		this.totalActualAmount = totalActualAmount;
 	}
 
 	/**
@@ -205,6 +205,51 @@ public class OrderItemBean {
 	 */
 	public void setSupplierItem(SupplierItemBean supplierItem) {
 		this.supplierItem = supplierItem;
+	}
+
+	/**
+	 * @return the costActualAmount
+	 */
+	public BigDecimal getCostActualAmount() {
+		return costActualAmount;
+	}
+
+	/**
+	 * @param costActualAmount
+	 *            the costActualAmount to set
+	 */
+	public void setCostActualAmount(BigDecimal costActualAmount) {
+		this.costActualAmount = costActualAmount;
+	}
+
+	/**
+	 * @return the totalActualCost
+	 */
+	public BigDecimal getTotalActualCost() {
+		return totalActualCost;
+	}
+
+	/**
+	 * @param totalActualCost
+	 *            the totalActualCost to set
+	 */
+	public void setTotalActualCost(BigDecimal totalActualCost) {
+		this.totalActualCost = totalActualCost;
+	}
+
+	/**
+	 * @return the taxAmount
+	 */
+	public BigDecimal getTaxAmount() {
+		return taxAmount;
+	}
+
+	/**
+	 * @param taxAmount
+	 *            the taxAmount to set
+	 */
+	public void setTaxAmount(BigDecimal taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 
 }

@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.punj.app.ecommerce.domains.item.Hierarchy;
-import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.services.ItemService;
 

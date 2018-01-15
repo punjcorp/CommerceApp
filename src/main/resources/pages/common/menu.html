@@ -78,7 +78,7 @@
 					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#order"  id="ordermenu"
 						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.order}">Purchase Order</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-						<li><a id="manageorder" th:href="@{/search_order}"><span th:text="#{commerce.home.menu.search.order}">Search Purchase Order</span></a></li>
+						<li><a id="manageorder" th:href="@{/manage_order}"><span th:text="#{commerce.home.menu.search.order}">Search Purchase Order</span></a></li>
 							<li><a id="addorder" th:href="@{/add_order}"><span th:text="#{commerce.home.menu.add.order}">Create Purchase Order</span></a></li>
 						</ul></li>
 

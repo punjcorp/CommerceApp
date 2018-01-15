@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.order.receive.title}">Purchase
+	Order Receive</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+
+</head>
+<body>
+
+	<div id="wrapper">
+
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+
+			<div class="card">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.order.receive}">Receive
+						Purchase Order</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}"
+							class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}"
+							class="alert alert-danger " role="alert"></div>
+
+						<form class="form" id="receiveForm" action="#"
+							th:action="@{/receive_order}" th:object="${orderBean}"
+							method="post">
+							
+							<!-- This section is to display order level details-->
+							<div class="row">
+								<div class="col-2">							
+									<div class="input-group form-group text-left">
+										<span th:text="#{commerce.screen.order.id}"></span> <input
+											type="hidden" th:field="*{orderId}"></input>
+									</div>
+								</div>
+								<div class="col-2">
+									<span th:text="${orderBean.orderId}"></span>
+								</div>
+								<div class="col-2">
+									<div class="input-group form-group text-left">
+										<span th:text="#{commerce.screen.order.supplier}"></span> <input
+											type="hidden" th:field="*{supplierId}"></input>
+									</div>
+								</div>
+								<div class="col-2">
+									<span th:text="${orderBean.supplierId}"></span>
+								</div>
+							</div>
+							
+							<!-- This section is to display order level amounts-->
+													
+							<div class="orderitem form-group">
+								<div class="row">
+									<div class="col-2">
+										<div class="input-group form-group text-left">
+											<span th:text="#{commerce.screen.order.cost.total.estimated}"></span>
+
+										</div>
+									</div>
+									<div class="col-2">
+										<input type="text" th:field="*{estimatedCost}"
+											class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.order.cost.total.estimated}"
+											 maxlength="80"></input>
+									</div>
+
+									<div class="col-2">
+										<div class="input-group form-group text-left">
+											<span th:text="#{commerce.screen.order.amount.total}"></span>
+
+										</div>
+									</div>
+									<div class="col-2">
+										<input type="text" th:field="*{totalAmount}"
+											 class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.order.amount.total}"
+											maxlength="80"></input>
+									</div>
+									<div class="col-2">
+										<div class="input-group form-group text-left">
+											<span th:text="#{commerce.screen.order.amount.paid}"></span>
+
+										</div>
+									</div>
+									<div class="col-2">
+										<input type="text" th:field="*{paidAmount}"
+											 class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.order.amount.paid}"
+											maxlength="80"></input>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-2">
+										<div class="input-group form-group text-left">
+											<span
+												th:text="#{commerce.screen.order.amount.total.discount}"></span>
+
+										</div>
+									</div>
+									<div class="col-2">
+										<input type="text" th:field="*{discountAmount}"
+											 class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.order.amount.total.discount}"
+											maxlength="80"></input>
+									</div>
+									<div class="col-2">
+										<div class="input-group form-group text-left">
+											<span th:text="#{commerce.screen.order.amount.total.tax}"></span>
+
+										</div>
+									</div>
+									<div class="col-2">
+										<input type="text" th:field="*{taxAmount}" 
+											class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.order.amount.total.tax}"
+											maxlength="80"></input>
+									</div>
+								</div>
+							</div>
+							
+							
+							<!-- This section is to display order item details -->							
+							
+							<div class="orderitem form-group">
+								<th:block th:each="orderItem,itrStat:${orderBean.orderItems}">
+
+									<div class="row">
+										<div class="col-2">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.item}">
+													<span th:text="#{commerce.screen.order.item}">Item Id</span> 
+													<input type="text" 
+														th:field="${orderBean.orderItems[__${itrStat.index}__].itemId}"
+														class="form-control form-control-sm"
+														th:placeholder="#{commerce.screen.order.item}"
+														maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-1">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.location}">
+											<span th:text="#{commerce.screen.order.location}">Location</span> 
+												<input type="text" 
+													th:field="${orderBean.orderItems[__${itrStat.index}__].locationId}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.location}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-1">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.qty.ordered}">
+											<span th:text="#{commerce.screen.order.qty.ordered}">Ordered Quantity</span> 
+												<input type="text" 
+													th:field="${orderBean.orderItems[__${itrStat.index}__].orderedQty}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.qty.ordered}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.cost.estimated}">
+											<span th:text="#{commerce.screen.order.cost.estimated}">Estimated Unit Cost</span> 
+												<input type="text" 
+													th:field="${orderBean.orderItems[__${itrStat.index}__].costAmount}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.cost.estimated}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.cost.total.estimated}">
+											<span th:text="#{commerce.screen.order.cost.total.estimated}">Estimated Total Cost</span> 
+												<input type="text" 
+													th:field="${orderBean.orderItems[__${itrStat.index}__].totalCost}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.cost.total.estimated}"
+													maxlength="150"></input>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-2"></div>
+										<div class="col-1"></div>
+										<div class="col-1">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.qty.delievered}">
+											<span th:text="#{commerce.screen.order.qty.delievered}">Delievered Quantity</span> 
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].delieveredQty}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.qty.delievered}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-1">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.cost.actual}">
+											<span th:text="#{commerce.screen.order.cost.actual}">Actual Unit Cost</span> 
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].costActualAmount}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.cost.actual}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-2">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.cost.total.actual}">
+											<span th:text="#{commerce.screen.order.cost.total.actual}">Actual Total Unit Cost</span>
+												<input type="text" 
+													th:field="${orderBean.orderItems[__${itrStat.index}__].totalActualCost}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.cost.total.actual}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-1">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.discount}">
+											<span th:text="#{commerce.screen.order.discount}">Discount Amount</span>
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].discountAmount}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.discount}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-2">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.tax}">
+											<span th:text="#{commerce.screen.order.tax}">Tax Amount</span>
+												<input type="text"
+													th:field="${orderBean.orderItems[__${itrStat.index}__].taxAmount}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.tax}"
+													maxlength="150"></input>
+											</div>
+										</div>
+										<div class="col-2">
+											<div class="form-group crop" data-toggle="tooltip" data-placement="top" th:title="#{commerce.screen.order.total}">
+											<span th:text="#{commerce.screen.order.total}">Total</span>
+												<input type="text" 
+													th:field="${orderBean.orderItems[__${itrStat.index}__].totalActualAmount}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.cost.total.actual}"
+													maxlength="150"></input>
+											</div>
+										</div>
+									</div>
+
+
+								</th:block>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<div class="form-group">
+										<input type="button"
+											th:onclick="'submitForm(\'/receive_order?saveOrder=\')'"
+											id="btnSave" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}"
+											class="btn btn-info btn-sm"></input> <input type="button"
+											th:onclick="'submitForm(\'/receive_order?receiveOrder=\')'"
+											id="btnSave" value="Receive"
+											th:value="#{commerce.screen.btn.submit.receive}"
+											class="btn btn-info btn-sm"></input> <input type="button"
+											th:onclick="'submitForm(\'/receive_order?receiveAllOrder=\')'"
+											id="btnSave" value="Receive All"
+											th:value="#{commerce.screen.btn.submit.receive.all}"
+											class="btn btn-info btn-sm"></input>
+
+									</div>
+
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+
+
+
+
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+
+
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+		var totalRecords = [[${#lists.size(orderBean.orderItems)}]];
+		 
+		// Estimated Cost Controls
+		  var costId="";
+		  var qtyId="";
+		  var totalId="";
+		 
+		// Actual Cost Controls
+		  var delieveredQtyId="";
+		  var actualCostId="";
+		  var totalActualCostId="";
+		  var discountAmtId="";
+		  var taxAmtId="";
+		  var totalActualAmtId="";	
+	
+		 // Order Level Amount Controls
+		  var totalEstimatedCostId="";
+		  var totalDiscountAmtId="";
+		  var totalTaxAmtId="";
+		  var paidAmtId="";
+		  var totalAmtId="";	
+		  
+		function submitForm(action) {
+
+			$("#receiveForm").attr("action", action);
+
+			$('#receiveForm').submit();
+		}
+
+		
+		function sumAllCosts(){
+			var count=0;
+			var totalSum=0.0;
+			while(count<totalRecords){
+				var totalId="#orderItems"+count+"\\.totalCost";
+				totalSum=totalSum+ parseFloat($(totalId).val());
+				count++;
+			}
+			$("#totalOrderCost").html("INR "+totalSum);
+			
+		}
+		
+		function getControlIndex(obj){
+			
+			  var str=obj.id;
+			  var index=str.replace("orderItems","");
+			  if (str.indexOf("orderedQty") >= 0){
+				  index=index.replace(".orderedQty","");
+			  } else if(str.indexOf("costAmount") >= 0){
+				  index=index.replace(".costAmount","");
+			  }	else if(str.indexOf("delieveredQty") >= 0){
+				  index=index.replace(".delieveredQty","");
+			  } else if(str.indexOf("costActualAmount") >= 0){
+				  index=index.replace(".costActualAmount","");
+			  }	else if(str.indexOf("taxAmount") >= 0){
+				  index=index.replace(".taxAmount","");
+			  }	else if(str.indexOf("discountAmount") >= 0){
+				  index=index.replace(".discountAmount","");
+			  }		
+			  
+			  return index;
+		}
+		
+		function createControlIds(index){
+			
+			 // Estimated Cost Controls
+			  costId="#orderItems"+index+"\\.costAmount";
+			  qtyId="#orderItems"+index+"\\.orderedQty";
+			  totalId="#orderItems"+index+"\\.totalCost";
+			 
+			// Actual Cost Controls
+			  delieveredQtyId="#orderItems"+index+"\\.delieveredQty";
+			  actualCostId="#orderItems"+index+"\\.costActualAmount";
+			  totalActualCostId="#orderItems"+index+"\\.totalActualCost";
+			  discountAmtId="#orderItems"+index+"\\.discountAmount";
+			  taxAmtId="#orderItems"+index+"\\.taxAmount";
+			  totalActualAmtId="#orderItems"+index+"\\.totalActualAmount";
+			
+			// Order Level Amount Controls
+			  totalEstimatedCostId="#estimatedCost";
+			  totalDiscountAmtId="#discountAmount";
+			  totalTaxAmtId="#taxAmount";
+			  paidAmtId="#paidAmount";
+			  totalAmtId="#totalAmount";	
+
+		}
+		
+		
+		function checkNullAndNumeric(id){
+			var result=false;
+			if($(id).val()!=null && $.isNumeric($(id).val())){
+				result=true;
+			}else{
+				result=false;
+			}
+			return result;
+				
+		}
+		
+		function getFloatValue(id){
+			return parseFloat($(id).val());
+		}
+		
+		function setCalculatedActualCost(){
+			if(checkNullAndNumeric(delieveredQtyId) && checkNullAndNumeric(actualCostId)){
+				$(totalActualCostId).val(getFloatValue(delieveredQtyId)*getFloatValue(actualCostId));
+			}
+			else {
+				if(!checkNullAndNumeric(delieveredQtyId)){
+					$(delieveredQtyId).val("0");
+					$(totalActualCostId).val("0.00");
+				}
+				if(!checkNullAndNumeric(actualCostId)){
+					$(actualCostId).val("0.00");
+					$(totalActualCostId).val("0.00");
+				}				
+			}
+			
+		}
+		
+		function setCalculatedTotalCostAfterDiscount(){
+			if(!checkNullAndNumeric(discountAmtId)){
+				$(discountAmtId).val("0.00");
+			}
+			if(!checkNullAndNumeric(taxAmtId)){
+				$(taxAmtId).val("0.00");
+			}	
+			if(checkNullAndNumeric(totalActualCostId) && checkNullAndNumeric(discountAmtId) && checkNullAndNumeric(taxAmtId)){
+				$(totalActualAmtId).val(getFloatValue(totalActualCostId) - getFloatValue(discountAmtId) + getFloatValue(taxAmtId));
+			}				
+		}
+		
+		function setOrderLevelAmounts(){
+				var count=0;
+				var totalSum=0.00;
+				
+				//Sum all discounts
+				while(count<totalRecords){
+					totalSum=totalSum+ getFloatValue(discountAmtId);
+					count++;
+				}
+				$(totalDiscountAmtId).val(totalSum);
+				
+				count=0;
+				totalSum=0.00;
+				
+				//Sum all taxes
+				while(count<totalRecords){
+					totalSum=totalSum+ getFloatValue(taxAmtId);
+					count++;
+				}
+				$(totalTaxAmtId).val(totalSum);
+				
+				count=0;
+				totalSum=0.00;				
+				
+				//Sum all Totals
+				while(count<totalRecords){
+					totalSum=totalSum+ getFloatValue(totalActualAmtId);
+					count++;
+				}
+				$(totalAmtId).val(totalSum);
+								
+			  
+		}
+		
+		
+		$(document).ready(function() {
+			  $("[id^=orderItems]").change(function() { 
+				  
+				 var index=getControlIndex(this);
+				
+				 if(index!=null && index!=""){
+					 createControlIds(index);
+					 
+					 //calculate the actual total cost based actual unit cost and delievered qty
+					 setCalculatedActualCost();
+					 
+					//calculate the total cost after discount and tax
+					 setCalculatedTotalCostAfterDiscount();
+					 
+					
+					//calculate the total cost after discount and tax
+					setOrderLevelAmounts();					
+				 }
+			
+			  });
+			});		
+		
+		/*]]>*/
+	</script>
+
+</body>
+</html>

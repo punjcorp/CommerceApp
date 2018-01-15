@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.order.search.title}">Purchase
+	Order Management Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+
+</head>
+<body>
+
+	<div id="wrapper">
+
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="container">
+				<div class="card">
+					<div class="card-header">
+						<h3 th:text="#{commerce.screen.order.search}">Search Purchase
+							Order</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+							<form class="form" id="searchForm" action="#"
+								th:action="@{/search_order}" th:object="${orderBean}"
+								method="post">
+								<div class="row">
+									<div class="col-5">
+										<div class="form-group text-left">
+											<div class="input-group">
+												<input type="text" th:field="*{orderId}"
+													class="form-control form-control-sm"
+													th:placeholder="#{commerce.screen.order.search.text}"
+													placeholder="Enter keyword to search"
+													aria-describedby="searchHelp"></input> <span
+													class="input-group-btn"><input type="submit"
+													value="Search" th:value="#{commerce.screen.btn.search}"
+													class="form-control btn btn-info btn-block btn-sm"></input></span>
+											</div>
+											<small id="searchHelp" class="form-text text-muted"
+												th:text="#{commerce.screen.order.search.keywords}">Enter
+												keywords like Purchase Order id/Supplier Id/Item Id/Location
+												Id</small>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="card-text">
+							<div th:if="${ success!=null}" th:text="${success}"
+								class="alert alert-success " role="alert"></div>
+							<div th:if="${ alert!=null}" th:text="${alert}"
+								class="alert alert-danger " role="alert"></div>
+
+							<form class="form" id="bulkForm" action="#"
+								th:action="@{/bulk_order_action}" th:object="${orders}"
+								method="post">
+
+								<table class="table table-striped table-hover table-bordered">
+									<thead class="thead-light">
+										<tr>
+											<th scope="col-1" th:text="#{commerce.screen.common.id}">Select</th>
+											<th scope="col-3" th:text="#{commerce.screen.order.supplier}">Supplier
+												Id</th>
+											<th scope="col-2" th:text="#{commerce.screen.order.status}">Status</th>
+											<th scope="col-2" th:text="#{commerce.screen.order.date}">Created
+												Date</th>
+											<th scope="col-2" th:text="#{commerce.screen.order.user}">Created
+												By</th>
+											<th scope="col-2" th:text="#{commerce.screen.actions}">Actions</th>
+
+										</tr>
+									</thead>
+									<tbody>
+
+										<th:block th:each="order,itrStat:${orders.orders}">
+											<tr>
+												<td><input type="checkbox"
+													th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
+													class="form-control form-control-sm orderId"
+													th:field="*{orderIds}"
+													th:value="${orders.orders[__${itrStat.index}__].orderId}+'_'+${itrStat.index}"></input>
+												</td>
+												<td><input type="text"
+													class="form-control form-control-sm"
+													th:field="${orders.orders[__${itrStat.index}__].supplierId}"
+													disabled="disabled"></input></td>
+												<td><input type="text"
+													class="form-control form-control-sm"
+													th:field="${orders.orders[__${itrStat.index}__].status}"
+													disabled="disabled"></input></td>
+												<td><input type="text"
+													class="form-control form-control-sm"
+													th:field="${orders.orders[__${itrStat.index}__].createdDate}"
+													disabled="disabled"></input></td>
+												<td><input type="text"
+													class="form-control form-control-sm"
+													th:field="${orders.orders[__${itrStat.index}__].createdBy}"
+													disabled="disabled"></input></td>
+												<td>
+													<div class="btn-group">
+
+														<a
+															th:if="${orders.orders[__${itrStat.index}__].status=='C'}"
+															th:href="@{/approve_order(orderId=${orders.orders[__${itrStat.index}__].orderId})}"
+															href="../order/manage_order.html"
+															class="btn btn-success btn-sm"><span
+															th:text="#{commerce.screen.actions.approve}">Approve</span></a>
+														<a
+															th:if="${orders.orders[__${itrStat.index}__].status=='A'}"
+															th:href="@{/receive_order(orderId=${orders.orders[__${itrStat.index}__].orderId})}"
+															href="../order/receive_order.html"
+															class="btn btn-success btn-sm"><span
+															th:text="#{commerce.screen.actions.receive}">Receive</span></a>
+														<a
+															th:href="@{/delete_order(orderId=${orders.orders[__${itrStat.index}__].orderId})}"
+															href="../order/manage_order.html"
+															class="btn btn-danger btn-sm"><span
+															th:text="#{commerce.screen.actions.delete}">Delete</span></a>
+														<a
+															th:if="${orders.orders[__${itrStat.index}__].status=='C'}"
+															th:href="@{/edit_order(orderId=${orders.orders[__${itrStat.index}__].orderId})}"
+															href="../order/edit_order.html"
+															class="btn btn-secondary btn-sm"><span
+															th:text="#{commerce.screen.actions.edit}">Edit</span></a>
+														<a
+															th:if="${orders.orders[__${itrStat.index}__].status=='C' or orders.orders[__${itrStat.index}__].status=='A'}"
+															th:href="@{/print_order(orderId=${orders.orders[__${itrStat.index}__].orderId})}"
+															href="../order/print_order.html"
+															class="btn btn-secondary btn-sm"><span
+															th:text="#{commerce.screen.actions.print}">Print</span></a>															
+															
+													</div>
+
+												</td>
+
+											</tr>
+										</th:block>
+										<tr>
+											<td><a th:href="'javascript:selectAll()'" href="#"
+												class="badge badge-secondary"><span
+													th:text="#{commerce.screen.actions.selectall}">Select
+														All</span></a></td>
+											<td class="text-left"><a
+												th:href="'javascript:deselectAll()'" href="#"
+												class="badge badge-secondary"><span
+													th:text="#{commerce.screen.actions.deselectall}">Deselect
+														All</span></a></td>
+											<td colspan="5">
+												<nav aria-label="Pagination" th:if="${pager!=null}">
+													<ul class="pagination justify-content-end">
+														<li
+															th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a
+															class="page-link" href="#" tabindex="-1">First</a></li>
+
+														<th:block th:each="page,itrStat:${pager.displayPages}">
+															<li
+																th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a
+																class="page-link" href="#"
+																th:onclick="'searchResults(\'/search_supplier?page='+${page}+'\')'"><span
+																	th:text="${page}"></span></a></li>
+														</th:block>
+
+
+														<li
+															th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a
+															class="page-link" href="#">Last</a></li>
+
+													</ul>
+												</nav>
+
+											</td>
+										</tr>
+
+									</tbody>
+								</table>
+								<div class="row">
+									<div class="col-8">
+										<div class="form-group">
+											<input type="button"
+												th:onclick="'submitForm(\'/bulk_order_action?saveOrders=\')'"
+												id="btnSave" value="Save"
+												th:value="#{commerce.screen.btn.submit.save}"
+												class="btn btn-info btn-sm"
+												aria-describedby="bulkHelp" disabled="disabled"></input> <input
+												type="button"
+												th:onclick="'submitForm(\'/bulk_order_action?deleteOrders=\')'"
+												id="btnDelete" value="Delete"
+												th:value="#{commerce.screen.btn.submit.delete}"
+												class="btn btn-danger btn-sm"
+												aria-describedby="bulkHelp" disabled="disabled"></input> <input
+												type="button"
+												th:onclick="'submitForm(\'/bulk_order_action?approveOrders=\')'"
+												id="btnApprove" value="Approve"
+												th:value="#{commerce.screen.btn.submit.approve}"
+												class="btn btn-success btn-sm"
+												aria-describedby="bulkHelp" disabled="disabled"></input> <a
+												href="add_order.html" th:href="@{/add_order}"
+												class="btn btn-info btn-sm"><span
+												th:text="#{commerce.screen.order.add}">Add</span></a>
+												
+												<a
+												href="print_orders.html" th:href="@{/print_orders}"
+												class="btn btn-info btn-sm"><span
+												th:text="#{commerce.screen.btn.print}">Print</span></a>
+										</div>
+									</div>
+								</div>
+								<div class="row text-left">
+									<div class="col-4">
+										<small id="btnActions" class="form-text text-muted"
+											th:text="#{commerce.screen.search.action.bulk}">Please
+											select records for the actions</small>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+				</div>
+
+
+			</div>
+
+
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+
+
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	
+	    var totalRecords = [[${#lists.size(orders.orders)}]];
+	
+	/*]]>*/
+	</script>
+	<script>
+	
+	
+		function searchResults(action) {
+	
+			$("#searchForm").attr("action", action);
+	
+			$('#searchForm').submit();
+		}
+
+	
+	
+		var cbCounter = 0;
+
+		function selectAll() {
+
+			$(".orderId").prop('checked', true);
+			
+			
+			
+			$("[id^=orders]").each(function() {
+			    if(this.id.indexOf("supplierId") >= 0){
+			    	$(this).removeAttr("disabled");
+			    }
+			});
+			
+			$("#btnApprove").removeAttr("disabled");
+			$("#btnDelete").removeAttr("disabled");
+			$("#btnSave").removeAttr("disabled");
+			cbCounter = totalRecords;
+
+		}
+
+		function deselectAll() {
+
+			$(".orderId").prop('checked', false);
+			$("[id^=orders]").each(function() {
+			    if(this.id.indexOf("supplierId") >= 0){			
+				$(this).attr("disabled", "disabled");
+			    }
+			});
+			$("#btnApprove").attr("disabled", "disabled");
+			$("#btnDelete").attr("disabled", "disabled");
+			$("#btnSave").attr("disabled", "disabled");
+
+			cbCounter = 0;
+
+		}
+
+		function submitForm(action) {
+
+			$("#bulkForm").attr("action", action);
+
+			$('#bulkForm').submit();
+		}
+
+		function selectFunc(index, cb) {
+
+			if (cb.checked) {
+				$("#orders" + index + "\\.supplierId").removeAttr("disabled");
+				if (cbCounter == 0) {
+					$("#btnApprove").removeAttr("disabled");
+					$("#btnDelete").removeAttr("disabled");
+					$("#btnSave").removeAttr("disabled");
+				}
+				cbCounter++;
+			} else {
+				$("#orders" + index + "\\.supplierId")
+						.attr("disabled", "disabled");
+				if (cbCounter == 1 || cbCounter == 0) {
+					$("#btnApprove").attr("disabled", "disabled");
+					$("#btnDelete").attr("disabled", "disabled");
+					$("#btnSave").attr("disabled", "disabled");
+					
+				}
+				cbCounter--;
+
+			}
+		}
+	</script>
+
+</body>
+</html>

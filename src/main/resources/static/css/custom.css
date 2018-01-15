@@ -3,17 +3,16 @@ body {
 	background-color: #525252;
 	position: relative;
 	overflow-x: hidden;
-	
 }
-
 
 .rotate-180 {
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	transform: rotate(180deg);
 }
+
 .form-signin {
 	max-width: 330px;
 	padding: 15px;
@@ -23,7 +22,6 @@ body {
 .form-signin .form-signin-heading, .form-signin .checkbox {
 	margin-bottom: 10px;
 }
-
 
 .form-signin .form-control {
 	position: relative;
@@ -53,8 +51,10 @@ body {
 	position: relative;
 	box-sizing: border-box;
 	border: 1px solid;
-	border-radius: 5px; border-color : orange;
-	text-align: left; height : auto;
+	border-radius: 5px;
+	border-color: orange;
+	text-align: left;
+	height: auto;
 	padding: 10px;
 	font-size: 16px;
 	height: auto;
@@ -74,7 +74,7 @@ body {
 	margin-bottom: 1rem;
 	margin-left: 1rem;
 	box-sizing: border-box;
-	border-radius: 5px; 
+	border-radius: 5px;
 }
 
 .album .item .card {
@@ -84,7 +84,7 @@ body {
 	margin-bottom: 1rem;
 	margin-left: 1rem;
 	box-sizing: border-box;
-	border-radius: 5px; 
+	border-radius: 5px;
 }
 
 .album .card-text {
@@ -100,29 +100,81 @@ body {
 	margin-bottom: .25rem;
 }
 
+.material-icons.md-dark {
+	color: rgba(0, 0, 0, 0.54);
+}
 
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+.material-icons.md-dark.md-inactive {
+	color: rgba(0, 0, 0, 0.26);
+}
 
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+.material-icons.md-light {
+	color: rgba(255, 255, 255, 1);
+}
 
-.material-icons.md-18 { font-size: 8px; }
-.material-icons.md-18 { font-size: 9px; }
-.material-icons.md-18 { font-size: 10px; }
-.material-icons.md-18 { font-size: 11px; }
-.material-icons.md-18 { font-size: 12px; }
-.material-icons.md-18 { font-size: 14px; }
-.material-icons.md-18 { font-size: 16px; }
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
-.material-icons.md-60 { font-size: 60px; }
-.material-icons.md-72 { font-size: 72px; }
-.material-icons.md-84 { font-size: 84px; }
-.material-icons.md-96 { font-size: 96px; }
+.material-icons.md-light.md-inactive {
+	color: rgba(255, 255, 255, 0.3);
+}
 
+.material-icons.md-18 {
+	font-size: 8px;
+}
+
+.material-icons.md-18 {
+	font-size: 9px;
+}
+
+.material-icons.md-18 {
+	font-size: 10px;
+}
+
+.material-icons.md-18 {
+	font-size: 11px;
+}
+
+.material-icons.md-18 {
+	font-size: 12px;
+}
+
+.material-icons.md-18 {
+	font-size: 14px;
+}
+
+.material-icons.md-18 {
+	font-size: 16px;
+}
+
+.material-icons.md-18 {
+	font-size: 18px;
+}
+
+.material-icons.md-24 {
+	font-size: 24px;
+}
+
+.material-icons.md-36 {
+	font-size: 36px;
+}
+
+.material-icons.md-48 {
+	font-size: 48px;
+}
+
+.material-icons.md-60 {
+	font-size: 60px;
+}
+
+.material-icons.md-72 {
+	font-size: 72px;
+}
+
+.material-icons.md-84 {
+	font-size: 84px;
+}
+
+.material-icons.md-96 {
+	font-size: 96px;
+}
 
 .nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
 	background-color: transparent;
@@ -251,7 +303,7 @@ body {
 	display: block;
 	color: #ddd;
 	text-decoration: none;
-	align : center;
+	align: center;
 	padding: 20px 15px 10px 10px;
 }
 
@@ -323,7 +375,6 @@ body {
 .nav.sidebar-nav li a::after {
 	display: block;
 }
-
 
 a[id="home"]::before {
 	content: "home" !important;
@@ -420,15 +471,22 @@ a[id="contact"]::before {
 	z-index: 1;
 }
 
-
 .orderitem {
 	position: relative;
 	box-sizing: border-box;
 	border: 1px solid;
-	border-radius: 5px; border-color : orange;
-	text-align: left; height : auto;
+	border-radius: 5px;
+	border-color: orange;
+	text-align: left;
+	height: auto;
 	padding: 10px;
 	font-size: 16px;
 	height: auto;
 	border-color: orange;
+}
+
+.crop {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }

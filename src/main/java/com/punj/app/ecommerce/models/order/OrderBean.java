@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.models.order;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +20,22 @@ import com.punj.app.ecommerce.utils.Pager;
  */
 public class OrderBean {
 
-	private Integer orderId;
+	private BigInteger orderId;
 	@NotNull
 	private Integer supplierId;
 
 	@Valid
 	private List<OrderItemBean> orderItems;
 
-	private Integer createdBy;
+	private String createdBy;
 	private LocalDateTime createdDate;
 
-	private BigDecimal totalAmount;
-	private BigDecimal paidAmount;
-	private BigDecimal discountAmount;
-	private BigDecimal taxAmount;
-
+	private BigDecimal estimatedCost = new BigDecimal("0.0");
+	private BigDecimal discountAmount = new BigDecimal("0.0");
+	private BigDecimal taxAmount = new BigDecimal("0.0");
+	private BigDecimal totalAmount = new BigDecimal("0.0");
+	private BigDecimal paidAmount = new BigDecimal("0.0");
+	
 	private String status;
 
 	private Pager pager;
@@ -47,7 +49,7 @@ public class OrderBean {
 	/**
 	 * @return the orderId
 	 */
-	public Integer getOrderId() {
+	public BigInteger getOrderId() {
 		return orderId;
 	}
 
@@ -55,7 +57,7 @@ public class OrderBean {
 	 * @param orderId
 	 *            the orderId to set
 	 */
-	public void setOrderId(Integer orderId) {
+	public void setOrderId(BigInteger orderId) {
 		this.orderId = orderId;
 	}
 
@@ -92,7 +94,7 @@ public class OrderBean {
 	/**
 	 * @return the createdBy
 	 */
-	public Integer getCreatedBy() {
+	public String getCreatedBy() {
 		return createdBy;
 	}
 
@@ -100,7 +102,7 @@ public class OrderBean {
 	 * @param createdBy
 	 *            the createdBy to set
 	 */
-	public void setCreatedBy(Integer createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -208,5 +210,20 @@ public class OrderBean {
 	public void setPager(Pager pager) {
 		this.pager = pager;
 	}
+
+	/**
+	 * @return the estimatedCost
+	 */
+	public BigDecimal getEstimatedCost() {
+		return estimatedCost;
+	}
+
+	/**
+	 * @param estimatedCost the estimatedCost to set
+	 */
+	public void setEstimatedCost(BigDecimal estimatedCost) {
+		this.estimatedCost = estimatedCost;
+	}
+
 
 }

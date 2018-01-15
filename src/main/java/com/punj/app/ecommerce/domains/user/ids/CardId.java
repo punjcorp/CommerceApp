@@ -4,7 +4,6 @@
 package com.punj.app.ecommerce.domains.user.ids;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

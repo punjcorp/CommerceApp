@@ -4,7 +4,6 @@
 package com.punj.app.ecommerce.domains.user.ids;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;

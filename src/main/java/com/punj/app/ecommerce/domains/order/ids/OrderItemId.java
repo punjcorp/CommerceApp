@@ -29,6 +29,7 @@ public class OrderItemId implements Serializable {
 	@Column(name = "location_id")
 	private Integer location;
 
+
 	@Column(name = "item_id")
 	private BigInteger itemId;
 

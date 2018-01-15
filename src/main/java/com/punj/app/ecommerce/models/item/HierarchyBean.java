@@ -5,8 +5,6 @@ package com.punj.app.ecommerce.models.item;
 
 import java.util.List;
 
-import com.punj.app.ecommerce.models.RegisterUserBean;
-
 /**
  * @author admin
  *
