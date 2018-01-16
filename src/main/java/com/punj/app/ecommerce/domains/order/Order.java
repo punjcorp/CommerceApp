@@ -12,18 +12,21 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.bridge.builtin.IntegerBridge;
+
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 
 /**
  * @author admin
@@ -64,10 +67,10 @@ public class Order implements Serializable {
 	@Field
 	private String status;
 
-	@Field
-	@Column(name = "supplier_id")
-	@FieldBridge(impl = IntegerBridge.class)
-	Integer supplierId;
+	@IndexedEmbedded
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "supplier_id")
+	Supplier supplier;
 
 	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
@@ -209,18 +212,18 @@ public class Order implements Serializable {
 	}
 
 	/**
-	 * @return the supplierId
+	 * @return the supplier
 	 */
-	public Integer getSupplierId() {
-		return supplierId;
+	public Supplier getSupplier() {
+		return supplier;
 	}
 
 	/**
-	 * @param supplierId
-	 *            the supplierId to set
+	 * @param supplier
+	 *            the supplier to set
 	 */
-	public void setSupplierId(Integer supplierId) {
-		this.supplierId = supplierId;
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 
 	/**
@@ -279,7 +282,7 @@ public class Order implements Serializable {
 		int result = 1;
 		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
 		result = prime * result + ((orderItems == null) ? 0 : orderItems.hashCode());
-		result = prime * result + ((supplierId == null) ? 0 : supplierId.hashCode());
+		result = prime * result + ((supplier == null) ? 0 : supplier.hashCode());
 		return result;
 	}
 
@@ -314,11 +317,11 @@ public class Order implements Serializable {
 		} else if (!orderItems.equals(other.orderItems)) {
 			return false;
 		}
-		if (supplierId == null) {
-			if (other.supplierId != null) {
+		if (supplier == null) {
+			if (other.supplier != null) {
 				return false;
 			}
-		} else if (!supplierId.equals(other.supplierId)) {
+		} else if (!supplier.equals(other.supplier)) {
 			return false;
 		}
 		return true;

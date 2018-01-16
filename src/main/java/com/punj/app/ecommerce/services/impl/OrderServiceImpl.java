@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderRepository;
@@ -183,11 +184,14 @@ public class OrderServiceImpl implements OrderService {
 
 		List<Order> finalOrders = new ArrayList<Order>(orders.size());
 		Order actualOrder = null;
+		Supplier supplier = null;
 		for (Order order : orders) {
 			BigInteger orderId = order.getOrderId();
 			if (orderId != null) {
 				actualOrder = orderRepository.findOne(orderId);
-				actualOrder.setSupplierId(order.getSupplierId());
+				supplier=new Supplier();
+				supplier.setSupplierId(order.getSupplier().getSupplierId());
+				actualOrder.setSupplier(supplier);
 
 			} else {
 				actualOrder = order;
@@ -246,7 +250,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public void deleteOrderItem(OrderItem orderItem) {
-		
+
 		orderItemRepository.delete(orderItem.getOrderItemId());
 		logger.info("The selected item {} has been deleted from order {} successfully",
 				orderItem.getOrderItemId().getItemId(), orderItem.getOrderItemId().getOrder().getOrderId());
@@ -255,10 +259,10 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderDTO findAll() {
-		OrderDTO orders=new OrderDTO();
-		List<Order> orderList=orderRepository.findAll();
+		OrderDTO orders = new OrderDTO();
+		List<Order> orderList = orderRepository.findAll();
 		orders.setOrders(orderList);
-		
+
 		return orders;
 	}
 

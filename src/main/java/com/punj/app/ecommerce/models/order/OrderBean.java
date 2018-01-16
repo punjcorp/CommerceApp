@@ -12,6 +12,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -24,6 +25,8 @@ public class OrderBean {
 	@NotNull
 	private Integer supplierId;
 
+	private SupplierBean supplier;
+
 	@Valid
 	private List<OrderItemBean> orderItems;
 
@@ -35,7 +38,7 @@ public class OrderBean {
 	private BigDecimal taxAmount = new BigDecimal("0.0");
 	private BigDecimal totalAmount = new BigDecimal("0.0");
 	private BigDecimal paidAmount = new BigDecimal("0.0");
-	
+
 	private String status;
 
 	private Pager pager;
@@ -219,11 +222,26 @@ public class OrderBean {
 	}
 
 	/**
-	 * @param estimatedCost the estimatedCost to set
+	 * @param estimatedCost
+	 *            the estimatedCost to set
 	 */
 	public void setEstimatedCost(BigDecimal estimatedCost) {
 		this.estimatedCost = estimatedCost;
 	}
 
+	/**
+	 * @return the supplier
+	 */
+	public SupplierBean getSupplier() {
+		return supplier;
+	}
+
+	/**
+	 * @param supplier
+	 *            the supplier to set
+	 */
+	public void setSupplier(SupplierBean supplier) {
+		this.supplier = supplier;
+	}
 
 }

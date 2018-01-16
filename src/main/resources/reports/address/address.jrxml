@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="address" language="groovy" pageWidth="200" pageHeight="842" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f22f773c-0af5-4f43-830b-9d3472af9c89">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="pincode" class="java.lang.String">
+		<fieldDescription><![CDATA[pincode]]></fieldDescription>
+	</field>
+	<field name="addressType" class="java.lang.String">
+		<fieldDescription><![CDATA[addressType]]></fieldDescription>
+	</field>
+	<field name="addressId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[addressId]]></fieldDescription>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<fieldDescription><![CDATA[address2]]></fieldDescription>
+	</field>
+	<field name="city" class="java.lang.String">
+		<fieldDescription><![CDATA[city]]></fieldDescription>
+	</field>
+	<field name="country" class="java.lang.String">
+		<fieldDescription><![CDATA[country]]></fieldDescription>
+	</field>
+	<field name="state" class="java.lang.String">
+		<fieldDescription><![CDATA[state]]></fieldDescription>
+	</field>
+	<field name="primary" class="java.lang.String">
+		<fieldDescription><![CDATA[primary]]></fieldDescription>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<fieldDescription><![CDATA[address1]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="65" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="1" width="200" height="20" uuid="41020753-9357-4ad8-8196-6af9e9b58b59"/>
+				<textElement>
+					<paragraph lineSpacing="Fixed"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address1}+", "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="12" width="200" height="20" uuid="a08c6122-ab03-49eb-a64d-501fcee8a6f3"/>
+				<textFieldExpression><![CDATA[$F{address2}+", "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="23" width="200" height="20" uuid="e2ba7609-a3dd-4ef4-9388-630b4c4f9592"/>
+				<textElement>
+					<paragraph lineSpacing="Fixed"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{city}+", "+$F{state}+", "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="34" width="200" height="20" uuid="167c078d-635c-43b1-b500-24da83b60065"/>
+				<textElement>
+					<paragraph lineSpacing="Fixed"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{country}+", "+$F{pincode}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

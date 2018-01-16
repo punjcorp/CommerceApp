@@ -41,6 +41,9 @@ import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeanDTO;
@@ -181,7 +184,11 @@ public class ManageOrderController {
 	private void updateOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails, String status) {
 
 		order.setOrderId(orderBean.getOrderId());
-		order.setSupplierId(orderBean.getSupplierId());
+		
+		Supplier supplier=new Supplier();
+		supplier.setSupplierId(orderBean.getSupplierId());
+		order.setSupplier(supplier);
+		
 		if (userDetails != null)
 			order.setCreatedBy(userDetails.getUsername());
 		order.setCreatedDate(LocalDateTime.now());
@@ -292,7 +299,12 @@ public class ManageOrderController {
 
 	private void updateBean(OrderBean orderBean, Order order) {
 		orderBean.setOrderId(order.getOrderId());
-		orderBean.setSupplierId(order.getSupplierId());
+		orderBean.setSupplierId(order.getSupplier().getSupplierId());
+		
+		SupplierBean supplierBean=new SupplierBean();
+		this.updateSupplierBean(supplierBean,order.getSupplier());
+		orderBean.setSupplier(supplierBean);
+		
 		orderBean.setCreatedBy(order.getCreatedBy());
 		orderBean.setCreatedDate(order.getCreatedDate());
 
@@ -308,6 +320,50 @@ public class ManageOrderController {
 
 	}
 
+	/**
+	 * This method is used to set the details of retrieved suppliers to Bean object
+	 * so the details can be displayed on the screen
+	 * 
+	 * @param supplierBean
+	 * @param supplier
+	 */
+	private void updateSupplierBean(SupplierBean supplierBean, Supplier supplier) {
+
+		supplierBean.setSupplierId(supplier.getSupplierId());
+		supplierBean.setName(supplier.getName());
+		supplierBean.setEmail(supplier.getEmail());
+		supplierBean.setPhone1(supplier.getPhone1());
+		supplierBean.setPhone2(supplier.getPhone2());
+
+		List<Address> supplierAddressList = supplier.getAddresses();
+		List<AddressBean> supplierAddresses = new ArrayList<AddressBean>();
+
+		AddressBean addressBean = null;
+		if (supplierAddressList != null && supplierAddressList.size() > 0) {
+			for (Address address : supplierAddressList) {
+
+				addressBean = new AddressBean();
+
+				addressBean.setAddressId(address.getAddressId());
+				addressBean.setPrimary(address.getPrimary());
+				addressBean.setAddress1(address.getAddress1());
+				addressBean.setAddress2(address.getAddress2());
+				addressBean.setCity(address.getCity());
+				addressBean.setState(address.getState());
+				addressBean.setCountry(address.getCountry());
+				addressBean.setPincode(address.getPincode());
+				addressBean.setAddressType(address.getAddressType());
+
+				supplierAddresses.add(addressBean);
+			}
+		}
+		supplierBean.setAddresses(supplierAddresses);
+
+		logger.info("The supplier details has been updated in bean object now");
+
+	}
+	
+	
 	private void updateOrderItemsBean(OrderBean orderBean, Order order) {
 		this.updateBean(orderBean, order);
 
@@ -749,7 +805,11 @@ public class ManageOrderController {
 
 	private void receiveAllOrderItems(Order order, OrderBean orderBean, UserDetails userDetails) {
 		order.setOrderId(orderBean.getOrderId());
-		order.setSupplierId(orderBean.getSupplierId());
+		
+		Supplier supplier=new Supplier();
+		supplier.setSupplierId(orderBean.getSupplierId());
+		order.setSupplier(supplier);
+		
 		if (userDetails != null)
 			order.setCreatedBy(userDetails.getUsername());
 		order.setCreatedDate(LocalDateTime.now());
@@ -913,10 +973,11 @@ public class ManageOrderController {
 			List<OrderBean> orderCollection = new ArrayList<OrderBean>();
 			OrderBean orderBean = new OrderBean();
 			this.updateOrderItemsBean(orderBean, order);
+			List<AddressBean> primaryAddress=this.getSupplierAddress(orderBean.getSupplier().getAddresses());
 
 			orderCollection.add(orderBean);
 
-			InputStream orderReportStream = getClass().getResourceAsStream("/reports/order/purchase_order.jrxml");
+			InputStream orderReportStream = getClass().getResourceAsStream("/reports/order/purchase_order_updated.jrxml");
 
 			JasperReport jasperReport = JasperCompileManager.compileReport(orderReportStream);
 
@@ -926,9 +987,36 @@ public class ManageOrderController {
 					.getResourceAsStream("/reports/order/purchase_order_item.jrxml");
 			JasperReport jasperReportChild = JasperCompileManager.compileReport(orderReportStreamChild);
 
+			InputStream supplierReportStream = getClass()
+					.getResourceAsStream("/reports/supplier/supplier.jrxml");
+			JasperReport jasperSupplierReport= JasperCompileManager.compileReport(supplierReportStream);			
+			
+			
+			InputStream supplierAddressReportStream = getClass()
+					.getResourceAsStream("/reports/address/address.jrxml");
+			JasperReport jasperSupplierAddressReport= JasperCompileManager.compileReport(supplierAddressReportStream);
+			
+			InputStream deliveryAddressReportStream = getClass()
+					.getResourceAsStream("/reports/address/address.jrxml");
+			JasperReport jasperDelieveryAddressReport= JasperCompileManager.compileReport(deliveryAddressReportStream);
+			
+			
+			List<SupplierBean> supplierList=new ArrayList<SupplierBean>();
+			
+			supplierList.add(orderBean.getSupplier());
+			
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 
-			paramMap.put("SUBREPORT_DATA", jasperReportChild);
+			paramMap.put("ORDER_ITEM_REPORT", jasperReportChild);
+			paramMap.put("SUPPLIER_REPORT", jasperSupplierReport);
+			paramMap.put("SUPPLIER_ADDRESS_REPORT", jasperSupplierAddressReport);
+			paramMap.put("DELIVERY_ADDRESS_REPORT", jasperDelieveryAddressReport);
+			
+			paramMap.put("SUPPLIER_DATA", supplierList);
+			paramMap.put("SUPPLIER_ADDRESS_DATA", primaryAddress);
+			paramMap.put("DELIVERY_ADDRESS_DATA", primaryAddress);
+			
+			
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, orderDS);
 
@@ -942,6 +1030,18 @@ public class ManageOrderController {
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for updation", e);
 		}
+	}
+	
+	public List<AddressBean>  getSupplierAddress(List<AddressBean> addresses) {
+		List<AddressBean> primaryAddress=new ArrayList<AddressBean>();
+		for(AddressBean address:addresses) {
+			if(address.getPrimary().equals("Y")) {
+				primaryAddress.add(address);
+				break;
+			}
+		}
+		return primaryAddress;
+		
 	}
 
 }
