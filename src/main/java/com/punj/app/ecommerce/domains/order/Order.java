@@ -68,7 +68,7 @@ public class Order implements Serializable {
 	private String status;
 
 	@IndexedEmbedded
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH})
 	@JoinColumn(name = "supplier_id")
 	Supplier supplier;
 

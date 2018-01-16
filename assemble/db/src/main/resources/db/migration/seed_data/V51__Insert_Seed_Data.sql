@@ -81,6 +81,38 @@ commit;
 INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('ADMIN', 'This is admin role for administrators of the website', 'admin', now());
 INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('CASHIER', 'This is cashier role for cashiers ', 'admin', now());
 
+-- -----------------------------------------------------
+-- Seed data for user
+-- -----------------------------------------------------
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
+values('admin@gmail.com', 'admin', 'admin', '8847523677', '8968834880', 'admin@gmail.com', '0', 'A', 'admin', '2018-01-16 20:19:09');
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
+values('cashier@gmail.com', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier@gmail.com', '0', 'A', 'admin', '2018-01-16 20:19:09');
+
+-- -----------------------------------------------------
+-- Seed data for user role
+-- -----------------------------------------------------
+INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin@gmail.com', '1', '7997', 'admin', now(), now(), now());
+INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier@gmail.com', '2', '7997', 'admin', now(), now(), now());
+
+-- -----------------------------------------------------
+-- Seed data for user addresses
+-- -----------------------------------------------------
+insert into commercedb.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
+values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
+insert into commercedb.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
+values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
+
+insert into commercedb.user_address ( username, address_id)
+values('admin@gmail.com', '1');
+
+insert into commercedb.user_address ( username, address_id)
+values('cashier@gmail.com', '2');
+
+
+
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

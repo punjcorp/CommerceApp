@@ -1,0 +1,60 @@
+CREATE DATABASE  IF NOT EXISTS `sonar` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `sonar`;
+-- MySQL dump 10.13  Distrib 5.7.18, for Win64 (x86_64)
+--
+-- Host: localhost    Database: sonar
+-- ------------------------------------------------------
+-- Server version	5.7.18-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `rules_profiles`
+--
+
+DROP TABLE IF EXISTS `rules_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rules_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8_bin NOT NULL,
+  `language` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `kee` varchar(255) COLLATE utf8_bin NOT NULL,
+  `rules_updated_at` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `is_built_in` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_qprof_key` (`kee`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rules_profiles`
+--
+
+LOCK TABLES `rules_profiles` WRITE;
+/*!40000 ALTER TABLE `rules_profiles` DISABLE KEYS */;
+INSERT INTO `rules_profiles` VALUES (1,'Sonar way','cs','AWDlbsyPfBbpnGTMEdB-','2018-01-11T13:35:31+0000','2018-01-11 19:05:32','2018-01-11 19:05:32',1),(2,'Sonar way','java','AWDlbvvsfBbpnGTMEdH0','2018-01-11T14:06:54+0000','2018-01-11 19:05:44','2018-01-12 14:32:51',1),(3,'Sonar way','xml','AWDlb0vwfBbpnGTMEdQ-','2018-01-11T13:36:04+0000','2018-01-11 19:06:05','2018-01-12 14:32:51',1),(4,'Sonar way','flex','AWDlb1P_fBbpnGTMEdRC','2018-01-11T13:36:06+0000','2018-01-11 19:06:07','2018-01-11 19:06:07',1),(5,'Sonar way Recommended','js','AWDlb12zfBbpnGTMEdS8','2018-01-11T14:07:24+0000','2018-01-11 19:06:09','2018-01-11 19:37:24',1),(6,'Sonar way','js','AWDlb2o2fBbpnGTMEdWi','2018-01-11T14:07:27+0000','2018-01-11 19:06:12','2018-01-11 19:37:28',1),(7,'Sonar way','php','AWDlb3IGfBbpnGTMEdYo','2018-01-11T13:36:14+0000','2018-01-11 19:06:14','2018-01-11 19:06:14',1),(8,'PSR-2','php','AWDlb4BufBbpnGTMEdag','2018-01-11T13:36:18+0000','2018-01-11 19:06:18','2018-01-11 19:06:18',1),(9,'Drupal','php','AWDlb5dhfBbpnGTMEdbK','2018-01-11T13:36:23+0000','2018-01-11 19:06:24','2018-01-11 19:06:24',1),(10,'Sonar way','py','AWDlb6ArfBbpnGTMEdb0','2018-01-11T13:36:26+0000','2018-01-11 19:06:26','2018-01-11 19:06:26',1),(11,'Sonar way','ts','AWDlb7z6fBbpnGTMEdc2','2018-01-11T14:07:33+0000','2018-01-11 19:06:34','2018-01-11 19:37:33',1),(12,'Sonar way recommended','ts','AWDlb8MFfBbpnGTMEdd8','2018-01-11T14:07:35+0000','2018-01-11 19:06:35','2018-01-11 19:37:35',1),(13,'SonarQube Way','css','AWDlixsFQ399a3HcZJ0O','2018-01-11T14:06:27+0000','2018-01-11 19:36:27','2018-01-11 19:36:27',1),(14,'FindBugs','java','AWDlizFbQ399a3HcZJ2e','2018-01-11T14:06:32+0000','2018-01-11 19:36:33','2018-01-11 19:36:33',1),(15,'FindBugs + FB-Contrib','java','AWDli0nlQ399a3HcZKEo','2018-01-11T14:06:39+0000','2018-01-11 19:36:39','2018-01-11 19:36:39',1),(16,'FindBugs Security Audit','java','AWDli2RxQ399a3HcZKbo','2018-01-11T14:06:45+0000','2018-01-11 19:36:46','2018-01-11 19:36:46',1),(17,'FindBugs Security Minimal','java','AWDli3NGQ399a3HcZKfK','2018-01-11T14:06:49+0000','2018-01-11 19:36:50','2018-01-11 19:36:50',1),(18,'Sonar way','web','AWDli5sCQ399a3HcZKh4','2018-01-11T14:06:59+0000','2018-01-11 19:37:00','2018-01-11 19:37:00',1),(19,'SonarQube Way','scss','AWDli6WCQ399a3HcZKia','2018-01-11T14:07:02+0000','2018-01-11 19:37:03','2018-01-11 19:37:03',1),(20,'FindBugs Security JSP','jsp','AWDli8VeQ399a3HcZKlA','2018-01-11T14:07:10+0000','2018-01-11 19:37:11','2018-01-11 19:37:11',1),(21,'SonarQube Way','less','AWDljBD9Q399a3HcZKl-','2018-01-11T14:07:30+0000','2018-01-11 19:37:30','2018-01-11 19:37:30',1);
+/*!40000 ALTER TABLE `rules_profiles` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-01-16 18:57:31

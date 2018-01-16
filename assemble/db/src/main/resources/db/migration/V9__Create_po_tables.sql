@@ -16,14 +16,27 @@ DROP TABLE IF EXISTS `commercedb`.`purchase_order` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order` (
   `order_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `supplier_id` INT NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
-  `create_date` DATETIME NOT NULL,
-  `total_amount` DECIMAL NOT NULL DEFAULT 0.0,
-  `paid_amount` DECIMAL NOT NULL DEFAULT 0.0,
-  `discount_amount` DECIMAL NOT NULL DEFAULT 0.0,
-  `tax_amount` DECIMAL NOT NULL DEFAULT 0.0,
-  PRIMARY KEY (`order_id`))
+  `created_date` DATETIME NOT NULL,
+  `total_estimated_cost` DECIMAL NOT NULL,
+  `discount_amount` DECIMAL NULL DEFAULT 0.00,
+  `tax_amount` DECIMAL NULL DEFAULT 0.00,
+  `total_amount` DECIMAL NULL DEFAULT 0.00,
+  `paid_amount` DECIMAL NULL DEFAULT 0.00,
+  `status` VARCHAR(1) NOT NULL,
+  `invoice` BLOB NULL,
+  `modified_date` DATETIME NULL,
+  `modified_by` VARCHAR(50) NULL,
+  PRIMARY KEY (`order_id`),
+  CONSTRAINT `fk_purchase_order_supplier1`
+    FOREIGN KEY (`supplier_id`)
+    REFERENCES `commercedb`.`supplier` (`supplier_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_purchase_order_supplier1_idx` ON `commercedb`.`purchase_order` (`supplier_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -33,38 +46,41 @@ DROP TABLE IF EXISTS `commercedb`.`purchase_order_items` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   `order_id` BIGINT NOT NULL,
-  `supplier_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `item_id` BIGINT NOT NULL,
   `ordered_qty` INT NOT NULL,
-  `cost_amount` DECIMAL NOT NULL,
-  `total_cost` DECIMAL NOT NULL,
-  `delievered_qty` INT NULL,
+  `cost_amount` DECIMAL NOT NULL DEFAULT 0.00,
+  `total_cost` DECIMAL NOT NULL DEFAULT 0.00,
   `delievered_date` DATETIME NULL,
-  `discount_amount` DECIMAL NULL,
-  `total_discount_amount` DECIMAL NULL,
-  PRIMARY KEY (`order_id`, `supplier_id`, `item_id`, `cost_amount`),
+  `delievered_qty` INT NULL,
+  `cost_actual_amount` DECIMAL NULL DEFAULT 0.00,
+  `total_actual_cost` DECIMAL NULL DEFAULT 0.00,
+  `discount_amount` DECIMAL NULL DEFAULT 0.00,
+  `tax_amount` DECIMAL NULL DEFAULT 0.00,
+  `total_actual_amount` DECIMAL NULL DEFAULT 0.00,
+  PRIMARY KEY (`order_id`, `location_id`, `item_id`),
   CONSTRAINT `fk_purchase_order_items_purchase_order1`
     FOREIGN KEY (`order_id`)
     REFERENCES `commercedb`.`purchase_order` (`order_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_purchase_order_items_supplier1`
-    FOREIGN KEY (`supplier_id`)
-    REFERENCES `commercedb`.`supplier` (`supplier_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_purchase_order_items_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_purchase_order_items_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_purchase_order_items_purchase_order1_idx` ON `commercedb`.`purchase_order_items` (`order_id` ASC);
 
-CREATE INDEX `fk_purchase_order_items_supplier1_idx` ON `commercedb`.`purchase_order_items` (`supplier_id` ASC);
-
 CREATE INDEX `fk_purchase_order_items_item1_idx` ON `commercedb`.`purchase_order_items` (`item_id` ASC);
+
+CREATE INDEX `fk_purchase_order_items_location1_idx` ON `commercedb`.`purchase_order_items` (`location_id` ASC);
 
 
 

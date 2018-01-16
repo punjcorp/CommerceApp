@@ -26,11 +26,14 @@
 	<subDataset name="New Dataset 1" uuid="f025a9ae-8109-4f18-abc8-9586e44c1bcf"/>
 	<subDataset name="dataset1" uuid="457d94f6-820c-415b-8c37-48b8f74eb9f9"/>
 	<parameter name="SUPPLIER_DATA" class="java.util.List" isForPrompting="false"/>
+	<parameter name="SUPPLIER_ADDRESS_DATA" class="java.util.List" isForPrompting="false"/>
+	<parameter name="DELIVERY_ADDRESS_DATA" class="java.util.List" isForPrompting="false"/>
+
 	<parameter name="SUPPLIER_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
 	<parameter name="ORDER_ITEM_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
-	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["E:\\repos\\CommerceApp\\src\\main\\resources\\reports\\address\\"]]></defaultValueExpression>
-	</parameter>
+	<parameter name="SUPPLIER_ADDRESS_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="DELIVERY_ADDRESS_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+			
 	<field name="orderId" class="java.math.BigInteger"/>
 	<field name="supplier" class="com.punj.app.ecommerce.models.supplier.SupplierBean"/>
 	<field name="status" class="java.lang.String"/>
@@ -79,13 +82,13 @@
 			</subreport>
 			<subreport>
 				<reportElement x="291" y="83" width="177" height="38" uuid="55732755-fb85-4835-a7a3-c134ad0124c4"/>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "address.jasper"]]></subreportExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUPPLIER_ADDRESS_DATA})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUPPLIER_ADDRESS_REPORT}]]></subreportExpression>
 			</subreport>
 			<subreport>
 				<reportElement x="11" y="51" width="200" height="71" uuid="0203004a-86b1-4663-85a5-cfeb5a5f72cf"/>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "address.jasper"]]></subreportExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{DELIVERY_ADDRESS_DATA})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{DELIVERY_ADDRESS_REPORT}]]></subreportExpression>
 			</subreport>
 			<staticText>
 				<reportElement x="11" y="31" width="115" height="20" uuid="040003ab-cf8f-4470-941d-2fa244618a1d"/>
