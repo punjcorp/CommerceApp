@@ -6,6 +6,10 @@ package com.punj.app.ecommerce.models.item;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.money.MonetaryAmount;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author admin
  *
@@ -26,11 +30,19 @@ public class ItemOptionsBean {
 	private Boolean minAgeFlag = false;
 	private Boolean customerPromptFlag = false;
 
-	private BigDecimal unitCost;
-	private BigDecimal suggestedPrice;
-	private BigDecimal compareAtPrice;
-	private BigDecimal currentPrice;
-	private BigDecimal restockingFee;
+	@NotNull(message = "{commerce.error.amount.empty}")
+	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
+	private MonetaryAmount unitCost;
+	@NotNull(message = "{commerce.error.amount.empty}")
+	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
+	private MonetaryAmount suggestedPrice;
+	@NotNull(message = "{commerce.error.amount.empty}")
+	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
+	private MonetaryAmount compareAtPrice;
+	@NotNull(message = "{commerce.error.amount.empty}")
+	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
+	private MonetaryAmount currentPrice;
+	private MonetaryAmount restockingFee;
 
 	private String packSize = "1";
 	private String stockStatus = "NIL";
@@ -71,22 +83,21 @@ public class ItemOptionsBean {
 	/**
 	 * @return the unitCost
 	 */
-	public BigDecimal getUnitCost() {
+	public MonetaryAmount getUnitCost() {
 		return unitCost;
 	}
 
 	/**
-	 * @param unitCost
-	 *            the unitCost to set
+	 * @param unitCost the unitCost to set
 	 */
-	public void setUnitCost(BigDecimal unitCost) {
+	public void setUnitCost(MonetaryAmount unitCost) {
 		this.unitCost = unitCost;
 	}
 
 	/**
 	 * @return the suggestedPrice
 	 */
-	public BigDecimal getSuggestedPrice() {
+	public MonetaryAmount getSuggestedPrice() {
 		return suggestedPrice;
 	}
 
@@ -94,14 +105,14 @@ public class ItemOptionsBean {
 	 * @param suggestedPrice
 	 *            the suggestedPrice to set
 	 */
-	public void setSuggestedPrice(BigDecimal suggestedPrice) {
+	public void setSuggestedPrice(MonetaryAmount suggestedPrice) {
 		this.suggestedPrice = suggestedPrice;
 	}
 
 	/**
 	 * @return the compareAtPrice
 	 */
-	public BigDecimal getCompareAtPrice() {
+	public MonetaryAmount getCompareAtPrice() {
 		return compareAtPrice;
 	}
 
@@ -109,14 +120,14 @@ public class ItemOptionsBean {
 	 * @param compareAtPrice
 	 *            the compareAtPrice to set
 	 */
-	public void setCompareAtPrice(BigDecimal compareAtPrice) {
+	public void setCompareAtPrice(MonetaryAmount compareAtPrice) {
 		this.compareAtPrice = compareAtPrice;
 	}
 
 	/**
 	 * @return the currentPrice
 	 */
-	public BigDecimal getCurrentPrice() {
+	public MonetaryAmount getCurrentPrice() {
 		return currentPrice;
 	}
 
@@ -124,14 +135,14 @@ public class ItemOptionsBean {
 	 * @param currentPrice
 	 *            the currentPrice to set
 	 */
-	public void setCurrentPrice(BigDecimal currentPrice) {
+	public void setCurrentPrice(MonetaryAmount currentPrice) {
 		this.currentPrice = currentPrice;
 	}
 
 	/**
 	 * @return the restockingFee
 	 */
-	public BigDecimal getRestockingFee() {
+	public MonetaryAmount getRestockingFee() {
 		return restockingFee;
 	}
 
@@ -139,7 +150,7 @@ public class ItemOptionsBean {
 	 * @param restockingFee
 	 *            the restockingFee to set
 	 */
-	public void setRestockingFee(BigDecimal restockingFee) {
+	public void setRestockingFee(MonetaryAmount restockingFee) {
 		this.restockingFee = restockingFee;
 	}
 

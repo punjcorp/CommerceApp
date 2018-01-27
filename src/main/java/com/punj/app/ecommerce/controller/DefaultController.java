@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,15 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
+import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
@@ -62,68 +67,82 @@ public class DefaultController {
 		this.messageSource = messageSource;
 	}
 
-	@GetMapping("/home")
-	public String login(@RequestParam("page") Optional<Integer> page, Model model, Principal principal) {
+	@GetMapping(ViewPathConstants.HOME_URL)
+	public String login(@ModelAttribute SearchBean searchBean, @RequestParam("page") Optional<Integer> page,
+			Model model, Principal principal) {
 		logger.info("========================");
 		logger.info("WELCOME TO THE HOME PAGE");
 		logger.info("========================");
-		
-		
+
 		try {
+
+			ItemBeanDTO items = null;
+			ItemDTO itemList = null;
+			List<Item> itemsList = null;
+
 			Pager pager = new Pager();
-			if (page == null || !page.isPresent()) {
+			if (!page.isPresent()) {
 				pager.setCurrentPageNo(1);
 			} else {
 				pager.setCurrentPageNo(page.get());
 			}
 
-			Item itemCriteria = new Item();
-
-			ItemDTO itemList =itemService.listItems(itemCriteria, pager);
-			List<Item> itemsList = itemList.getItems();
-
-			ItemBeanDTO items = new ItemBeanDTO();
-
+			if (searchBean != null && StringUtils.isNotEmpty(searchBean.getSearchText())) {
+				itemList = itemService.searchItem(searchBean.getSearchText(), pager);
+			} else {
+				itemList = itemService.listItems(new Item(), pager);
+			}
+			
+			itemsList = itemList.getItems();
+			items = new ItemBeanDTO();
 			this.setItemList(itemsList, items);
-
+			
 			Pager tmpPager = itemList.getPager();
-/*			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage());
-*/
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
+					tmpPager.getMaxDisplayPage(),ViewPathConstants.HOME_URL);
+			
 			model.addAttribute("items", items);
+			model.addAttribute("searchBean", searchBean);
 			model.addAttribute("pager", pager);
-			model.addAttribute("success", "The {" + pager.getResultSize() + "} items record has been retrieved");
-			logger.info("The item details has been retrieved successfully.");
+
+			logger.info("The item details for home page has been retrieved successfully.");
+
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving items", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		
-		return "home";
+
+		return ViewPathConstants.HOME_PAGE;
 
 	}
 
-	@GetMapping("/403")
+	@GetMapping(ViewPathConstants.ACCESS_DENIED_URL)
 	public String accessError(Model model) {
-		logger.info("========================");
-		logger.info("======ACCESS DENIED=====");
-		logger.info("========================");
-		return "access_denied";
+		logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		logger.info("!!!!!!!!!ACCESS DENIED!!!!!!!!!!");
+		logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		return ViewPathConstants.ACCESS_DENIED_PAGE;
 
 	}
 
-	@GetMapping("/logout")
+	@GetMapping(ViewPathConstants.LOGOUT_URL)
 	public String accessError(Model model, HttpServletRequest request, HttpServletResponse response,
 			Authentication auth, Locale locale) {
 
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
-		model.addAttribute("success", messageSource.getMessage("commerce.screen.logout.success", null, locale));
-		return "redirect:/login?logout";
+		model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.logout.success", null, locale));
+		return ViewPathConstants.LOGOUT_REDIRECT_LOGIN_PAGE;
 	}
 
 	
+	/**
+	 * This method is use to convert the item details from 
+	 * Domain object to Bean objects
+	 * @param itemsList
+	 * @param items
+	 */
 	private void setItemList(List<Item> itemsList, ItemBeanDTO items) {
 		List<ItemBean> itemBeanList = new ArrayList<ItemBean>();
 		ItemBean itemBean = null;
@@ -151,6 +170,5 @@ public class DefaultController {
 		items.setItems(itemBeanList);
 		logger.info("The item basic details has been set in bean List successfully");
 	}
-	
-	
+
 }

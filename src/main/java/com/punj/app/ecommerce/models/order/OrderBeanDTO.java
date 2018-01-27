@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class OrderBeanDTO {
 
-	private static List<OrderBean> orders;
+	private List<OrderBean> orders;
 	private List<String> orderIds;
 
 	/**
@@ -19,14 +19,6 @@ public class OrderBeanDTO {
 	 */
 	public List<OrderBean> getOrders() {
 		return orders;
-	}
-
-	/**
-	 * @return the orders
-	 */
-	public static OrderBean[] getOrdersForReport() {
-		OrderBean[] ordersArray=new OrderBean[1];
-		return ordersArray;
 	}
 
 	/**

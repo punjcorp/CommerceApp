@@ -26,6 +26,10 @@
 						<div class="card-text">
 							<div th:if="${ alert!=null}" th:text="${alert}"
 								class="alert alert-danger" role="alert"></div>
+							<div th:if="${param.error}" th:text="#{commerce.screen.login.invalid.password}"
+								class="alert alert-danger" role="alert"></div>
+							<div th:if="${param.logout}" th:text="#{commerce.screen.logout.success}"
+								class="alert alert-success" role="alert"></div>
 							<div th:if="${ success!=null}" th:text="${success}"
 								class="alert alert-success" role="alert"></div>
 							<form class="form-signin" action="#" th:action="@{/login}"

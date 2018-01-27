@@ -9,10 +9,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.punj.app.ecommerce.services.UserService;
+import com.punj.app.ecommerce.utils.Utils;
 
 @Configuration
 @EnableWebSecurity
@@ -43,8 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+		auth.userDetailsService(userService).passwordEncoder(Utils.getPassEncoder());
 		auth.eraseCredentials(false);
 
 	}

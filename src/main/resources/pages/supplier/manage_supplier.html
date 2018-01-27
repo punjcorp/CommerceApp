@@ -24,8 +24,7 @@
 
 
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<div class="container">
-				<div class="card">
+				<div class="card m-5">
 					<div class="card-header">
 						<h3 th:text="#{commerce.screen.supplier.search}">Search
 							Supplier</h3>
@@ -65,6 +64,12 @@
 							<form class="form" id="bulkForm" action="#"
 								th:action="@{/bulk_supplier_action}" th:object="${suppliers}"
 								method="post">
+								<div class="row">
+									<div class="col-12 text-right">
+										<!-- This thymeleaf fragment is the body part for the page-->
+										<th:block th:include="common/display :: pagination"></th:block>
+									</div>
+								</div>
 
 								<table class="table table-striped table-hover table-bordered">
 									<thead class="thead-light">
@@ -120,60 +125,46 @@
 
 											</tr>
 										</th:block>
-										<tr>
-											<td><a th:href="'javascript:selectAll()'" href="#"
-												class="badge badge-secondary"><span
-													th:text="#{commerce.screen.actions.selectall}">Select
-														All</span></a></td>
-											<td class="text-left"><a
-												th:href="'javascript:deselectAll()'" href="#"
-												class="badge badge-secondary"><span
-													th:text="#{commerce.screen.actions.deselectall}">Deselect
-														All</span></a></td>
-											<td colspan="5">
-												<nav aria-label="Pagination"  th:if="${pager!=null}">
-													<ul class="pagination justify-content-end">
-														<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link"
-															href="#" tabindex="-1">First</a></li>
-																														
-															<th:block th:each="page,itrStat:${pager.displayPages}">
-														<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#" th:onclick="'searchResults(\'/search_supplier?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
-														</th:block>
-														
-														
-														<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#">Last</a></li>
-														
-													</ul>
-												</nav>
-
-											</td>
-										</tr>
 
 									</tbody>
 								</table>
 								<div class="row">
-									<div class="col-2">
-										<input type="button"
-											th:onclick="'submitForm(\'/bulk_supplier_action?saveSuppliers=\')'"
-											id="btnSave" value="Save"
-											th:value="#{commerce.screen.btn.submit.save}"
-											class="form-control btn btn-info btn-block"
-											aria-describedby="bulkHelp" disabled="disabled"></input>
+									<div class="col-4">
+										<div class="form-group">
+											<a th:href="'javascript:selectAll()'" href="#"
+												class="badge badge-secondary"><span
+												th:text="#{commerce.screen.actions.selectall}">Select
+													All</span></a> <a th:href="'javascript:deselectAll()'" href="#"
+												class="badge badge-secondary"><span
+												th:text="#{commerce.screen.actions.deselectall}">Deselect
+													All</span></a>
+										</div>
 									</div>
-									<div class="col-2">
-										<input type="button"
-											th:onclick="'submitForm(\'/bulk_supplier_action?deleteSuppliers=\')'"
-											id="btnDelete" value="Delete"
-											th:value="#{commerce.screen.btn.submit.delete}"
-											class="form-control btn btn-danger btn-block"
-											aria-describedby="bulkHelp" disabled="disabled"></input>
+									<div class="col-8 text-right">
+										<!-- This thymeleaf fragment is the body part for the page-->
+										<th:block th:include="common/display :: pagination"></th:block>
 									</div>
-									<div class="col-2">
-										<a href="add_supplier.html" th:href="@{/add_supplier}"
-											class="btn btn-info btn-block"><span
-											th:text="#{commerce.screen.btn.submit.add}">Add</span></a>
-									</div>
+								</div>
 
+
+								<div class="row">
+									<div class="col-12">
+										<div class="form-group">
+											<input type="button"
+												th:onclick="'submitForm(\'/bulk_supplier_action?saveSuppliers=\')'"
+												id="btnSave" value="Save"
+												th:value="#{commerce.screen.btn.submit.save}"
+												class="btn btn-info btn-sm" aria-describedby="bulkHelp"
+												disabled="disabled"></input> <input type="button"
+												th:onclick="'submitForm(\'/bulk_supplier_action?deleteSuppliers=\')'"
+												id="btnDelete" value="Delete"
+												th:value="#{commerce.screen.btn.submit.delete}"
+												class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
+												disabled="disabled"></input> <a href="add_supplier.html"
+												th:href="@{/add_supplier}" class="btn btn-info btn-sm"><span
+												th:text="#{commerce.screen.btn.submit.add}">Add</span></a>
+										</div>
+									</div>
 								</div>
 								<div class="row text-left">
 									<div class="col-4">
@@ -187,9 +178,6 @@
 					</div>
 
 				</div>
-
-
-			</div>
 
 
 		</div>

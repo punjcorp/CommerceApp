@@ -48,7 +48,7 @@ public class Supplier implements Serializable {
 	@IndexedEmbedded
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "supplier_address", joinColumns = @JoinColumn(name = "supplier_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
-	List<Address> addresses;
+	private List<Address> addresses;
 
 	/**
 	 * @return the supplierId

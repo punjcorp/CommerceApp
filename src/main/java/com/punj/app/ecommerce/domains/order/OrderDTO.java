@@ -13,8 +13,11 @@ import com.punj.app.ecommerce.utils.Pager;
  *
  */
 public class OrderDTO implements Serializable {
-	List<Order> orders;
-	Pager pager;
+
+	private static final long serialVersionUID = 9185727269398218750L;
+	
+	private List<Order> orders;
+	private Pager pager;
 
 	/**
 	 * @return the pager

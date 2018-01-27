@@ -26,8 +26,6 @@ public class Card {
 	@Column(name = "cvv_no")
 	private Integer cvvNo;
 	
-//	@Column(name = "address_id")
-//	private BigInteger addressId;
 
 	public Card() {
 		this.cardId = new CardId();
@@ -114,20 +112,6 @@ public class Card {
 		this.address = address;
 	}
 
-/*	*//**
-	 * @return the addressId
-	 *//*
-	public BigInteger getAddressId() {
-		return addressId;
-	}
-
-	*//**
-	 * @param addressId the addressId to set
-	 *//*
-	public void setAddressId(BigInteger addressId) {
-		this.addressId = addressId;
-	}
-*/	
 	
 
 }

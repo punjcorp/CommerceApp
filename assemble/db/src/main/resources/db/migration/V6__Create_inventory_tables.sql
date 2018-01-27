@@ -151,6 +151,7 @@ CREATE INDEX `fk_item_stock_details_stock_bucket1_idx` ON `commercedb`.`item_sto
 
 CREATE INDEX `fk_item_stock_details_location1_idx` ON `commercedb`.`item_stock_details` (`location_id` ASC);
 
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

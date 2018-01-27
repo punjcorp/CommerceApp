@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.domains.user.Card;
@@ -30,6 +33,7 @@ import com.punj.app.ecommerce.repositories.CardRepository;
 import com.punj.app.ecommerce.repositories.PasswordRepository;
 import com.punj.app.ecommerce.repositories.UserRepository;
 import com.punj.app.ecommerce.services.UserService;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -87,6 +91,24 @@ public class UserServiceImpl implements UserService {
 	public User getUserByUsername(String username) {
 		return userRepository.findOne(username);
 	}
+	
+	
+	private User getUserDetails(String username) {
+		
+		User user=new User();
+		user.setUsername(username);
+		user.setEmail(username);
+		
+		Password password=new Password();
+		password.setStatus("A");
+		
+		List<Password> passwordList=new ArrayList<Password>();
+		
+		user.setPasswords(passwordList);
+		
+		
+		return userRepository.findOne(Example.of(user));
+	}
 
 	public boolean deleteUserByUsername(String username) {
 		userRepository.delete(username);
@@ -119,21 +141,30 @@ public class UserServiceImpl implements UserService {
 		PasswordId passwordId=new PasswordId();
 		passwordId.setPassword(userDetails.getPassword());
 		passwordId.setUsername(userDetails.getUsername());
-		pwd.setStatus("E");
+		pwd.setStatus("A");
 		pwd.setPasswordId(passwordId);
+		pwd=passwordRepository.findOne(Example.of(pwd));
+		
+		
+		pwd.setStatus("E");
+		if (StringUtils.isNotEmpty(changedBy))
+			pwd.setModifiedBy(changedBy);
+		else
+			pwd.setModifiedBy(pwd.getPasswordId().getUsername());
 		
 		pwd = passwordRepository.save(pwd);
 
 		Password changedPassword = new Password();
 		PasswordId changedPasswordId = new PasswordId();
 
-		changedPasswordId.setPassword(newPassword);
+		changedPasswordId.setPassword(Utils.getPassEncoder().encode(newPassword));
 		changedPasswordId.setModifiedDate(LocalDateTime.now());
 		changedPasswordId.setUsername(pwd.getPasswordId().getUsername());
-		if (changedBy != null)
+		if (StringUtils.isNotEmpty(changedBy))
 			changedPassword.setModifiedBy(changedBy);
 		else
 			changedPassword.setModifiedBy(pwd.getPasswordId().getUsername());
+		
 		changedPassword.setStatus("A");
 		changedPassword.setPasswordId(changedPasswordId);
 		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}",
@@ -228,19 +259,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = this.getUserByUsername(username);
+		User user = this.getUserDetails(username);
 
-		String password = "$2a$10$dsyfqFN/BAS0mmaiN00VD.8.NRcbA/VjR8aD8Q.xZyldJy59Vt/tO";
+		String password =null;
 		List<Password> passwords = user.getPasswords();
 
-/*		for (Password passwd : passwords) {
-			if (passwd.getStatus().equals("Y")) {
-				password = passwd.getStatus();
+		for (Password passwd : passwords) {
+			if (passwd.getStatus().equals("A")) {
+				password = passwd.getPasswordId().getPassword();
 				break;
 			}
 		}
-*/
+
 		List<Role> roles = user.getRoles();
 
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -250,10 +282,8 @@ public class UserServiceImpl implements UserService {
 			authorities.add(authority);
 		}
 
-		/*GrantedAuthority authority =new SimpleGrantedAuthority("ADMIN");*/
 		
-		UserDetails userDetails = (UserDetails) new org.springframework.security.core.userdetails.User(username, password, authorities); //Arrays.asList(authority)
-		return userDetails;
+		return new org.springframework.security.core.userdetails.User(username, password, authorities); 
 	}
 
 

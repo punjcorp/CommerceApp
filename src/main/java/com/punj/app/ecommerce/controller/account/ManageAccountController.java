@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.punj.app.ecommerce.domains.user.User;
 import com.punj.app.ecommerce.models.LoginBean;
 import com.punj.app.ecommerce.models.RegisterUserBean;
 import com.punj.app.ecommerce.services.UserService;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -101,10 +103,10 @@ public class ManageAccountController {
 			Authentication authentication) {
 		logger.info("Captured the updated password for the user");
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		try {
-			if (passwordBean.getPassword() != null
-					&& encoder.matches(passwordBean.getPassword(), userDetails.getPassword())) {
+			if (StringUtils.isNotEmpty(passwordBean.getNewPassword())
+					&& StringUtils.isNotEmpty(passwordBean.getConfirmPassword())
+					&& passwordBean.getConfirmPassword().equals(passwordBean.getNewPassword())) {
 				Password pwd = new Password();
 				pwd = userService.updatePassword(userDetails, pwd, passwordBean.getNewPassword(), null);
 				session.setAttribute("userDetails", pwd);
@@ -112,9 +114,9 @@ public class ManageAccountController {
 				model.addAttribute("success",
 						messageSource.getMessage("commerce.screen.manage.password.success", null, locale));
 			} else {
-				model.addAttribute("alert",
-						messageSource.getMessage("commerce.screen.manage.password.incorrect", null, locale));
 				model.addAttribute("passwordBean", passwordBean);
+				model.addAttribute("alert",
+						messageSource.getMessage("commerce.screen.manage.password.matching.failed", null, locale));
 			}
 		} catch (Exception e) {
 			model.addAttribute("alert", "Unexpected error occured.");

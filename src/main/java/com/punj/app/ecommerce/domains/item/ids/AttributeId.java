@@ -11,24 +11,26 @@ import javax.persistence.GenerationType;
 @Embeddable
 public class AttributeId implements Serializable {
 
+	private static final long serialVersionUID = -8788715483005378087L;
+	
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "attribute_id", updatable = false, nullable = false)
-	private BigInteger attributeId;
+	private BigInteger attrId;
 	private String value;
 
 	/**
 	 * @return the attributeId
 	 */
 	public BigInteger getAttributeId() {
-		return attributeId;
+		return attrId;
 	}
 
 	/**
 	 * @param attributeId
 	 *            the attributeId to set
 	 */
-	public void setAttributeId(BigInteger attributeId) {
-		this.attributeId = attributeId;
+	public void setAttributeId(BigInteger attrId) {
+		this.attrId = attrId;
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class AttributeId implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((attributeId == null) ? 0 : attributeId.hashCode());
+		result = prime * result + ((attrId == null) ? 0 : attrId.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
@@ -77,11 +79,11 @@ public class AttributeId implements Serializable {
 			return false;
 		}
 		AttributeId other = (AttributeId) obj;
-		if (attributeId == null) {
-			if (other.attributeId != null) {
+		if (attrId == null) {
+			if (other.attrId != null) {
 				return false;
 			}
-		} else if (!attributeId.equals(other.attributeId)) {
+		} else if (!attrId.equals(other.attrId)) {
 			return false;
 		}
 		if (value == null) {

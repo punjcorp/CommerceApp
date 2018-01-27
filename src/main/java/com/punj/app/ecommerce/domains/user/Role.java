@@ -13,6 +13,8 @@ import javax.persistence.ManyToMany;
 
 @Entity
 public class Role implements Serializable {
+	
+	private static final long serialVersionUID = 2301559703587019830L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "role_id")

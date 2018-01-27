@@ -11,6 +11,8 @@ import com.punj.app.ecommerce.domains.item.StyleCounter;
 
 @Embeddable
 public class SKUCounterId implements Serializable {
+	
+	private static final long serialVersionUID = -3763829412400209829L;
 	private Integer color;
 	private Integer size;
 

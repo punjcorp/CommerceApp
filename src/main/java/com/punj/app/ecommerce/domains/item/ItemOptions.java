@@ -1,3 +1,4 @@
+
 package com.punj.app.ecommerce.domains.item;
 
 import java.io.Serializable;
@@ -17,15 +18,15 @@ public class ItemOptions implements Serializable {
 	private BigInteger itemId;
 
 	@Column(name = "unit_cost")
-	private BigDecimal unitCost;
+	private BigDecimal unitCost= new BigDecimal(0);
 	@Column(name = "suggested_price")
-	private BigDecimal suggestedPrice;
+	private BigDecimal suggestedPrice= new BigDecimal(0);
 	@Column(name = "compare_at_price")
-	private BigDecimal compareAtPrice;
+	private BigDecimal compareAtPrice= new BigDecimal(0);
 	@Column(name = "current_price")
-	private BigDecimal currentPrice;
+	private BigDecimal currentPrice= new BigDecimal(0);
 	@Column(name = "restocking_fee")
-	private BigDecimal restockingFee;
+	private BigDecimal restockingFee= new BigDecimal(0);
 
 	@Column(name = "discount_flag")
 	private Boolean discountFlag;

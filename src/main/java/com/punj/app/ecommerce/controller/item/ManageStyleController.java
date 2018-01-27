@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.item;
  * 
  */
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,12 +71,9 @@ public class ManageStyleController {
 
 		newItemBean.setItemImages(featureMap);
 
-		List<Attribute> attributeList = itemService.getNewStyleAttribute();
-		logger.info("The attribute list has been retrieved to select for the style");
-
 		List<AttributeBean> colorList = new ArrayList<AttributeBean>();
 		List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
-		this.updateAttributeBean(attributeList, colorList, sizeList);
+		this.getDefaultAttributes(colorList, sizeList);
 
 		model.addAttribute("colorList", colorList);
 		model.addAttribute("sizeList", sizeList);
@@ -82,11 +82,25 @@ public class ManageStyleController {
 
 		return "item/add_style";
 	}
+	
+	private void getDefaultAttributes(List<AttributeBean> colorList,List<AttributeBean> sizeList) {
+		List<Attribute> attributeList = itemService.getNewStyleAttribute();
+		logger.info("The attribute list has been retrieved to select for the style");
+		this.updateAttributeBean(attributeList, colorList, sizeList);
+	}
 
 	@PostMapping("/add_style")
-	public String addStyle(@ModelAttribute ItemBean itemBean, Model model, HttpSession session,
+	public String addStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
 			Authentication authentication) {
-
+		if (bindingResult.hasErrors()) {
+			List<AttributeBean> colorList = new ArrayList<AttributeBean>();
+			List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
+			this.getDefaultAttributes(colorList, sizeList);			
+			model.addAttribute("colorList", colorList);
+			model.addAttribute("sizeList", sizeList);
+			return "item/add_style";
+		}
+		
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
@@ -114,7 +128,7 @@ public class ManageStyleController {
 		model.addAttribute("colorList", colorList);
 		model.addAttribute("sizeList", sizeList);
 		model.addAttribute("itemBean", itemBean);
-		model.addAttribute("success", "The new style" + styleNumber + " has been created.");
+		model.addAttribute("success", "The new style " + styleNumber + " has been created.");
 
 		return "item/add_style";
 	}
@@ -170,11 +184,11 @@ public class ManageStyleController {
 
 		itemOptions.setItemId(itemBean.getItemId());
 
-		itemOptions.setUnitCost(itemBean.getItemOptions().getUnitCost());
-		itemOptions.setSuggestedPrice(itemBean.getItemOptions().getSuggestedPrice());
-		itemOptions.setCompareAtPrice(itemBean.getItemOptions().getCompareAtPrice());
-		itemOptions.setCurrentPrice(itemBean.getItemOptions().getCurrentPrice());
-		itemOptions.setRestockingFee(itemBean.getItemOptions().getRestockingFee());
+		itemOptions.setUnitCost(new BigDecimal(itemBean.getItemOptions().getUnitCost().getNumber().toString()));
+		itemOptions.setSuggestedPrice(new BigDecimal(itemBean.getItemOptions().getSuggestedPrice().getNumber().toString()));
+		itemOptions.setCompareAtPrice(new BigDecimal(itemBean.getItemOptions().getCompareAtPrice().getNumber().toString()));
+		itemOptions.setCurrentPrice(new BigDecimal(itemBean.getItemOptions().getCurrentPrice().getNumber().toString()));
+		itemOptions.setRestockingFee(new BigDecimal(itemBean.getItemOptions().getRestockingFee().getNumber().toString()));
 
 		itemOptions.setDiscountFlag(itemBean.getItemOptions().getDiscountFlag());
 		itemOptions.setTaxFlag(itemBean.getItemOptions().getTaxFlag());
@@ -275,6 +289,8 @@ public class ManageStyleController {
 			case 'S':
 				sizeList.add(attrBean);
 				break;
+			default:
+				logger.warn("Unknown attribute found!!");
 			}
 
 		}

@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.item.Attribute;
@@ -219,7 +222,7 @@ public class ItemServiceImpl implements ItemService {
 		List<Hierarchy> deptList = hierarchyRepository.findAll(Example.of(searchHierarchy));
 		logger.info("The requested department objects has been retrieved successfully with all the needed children");
 
-		return null;
+		return deptList;
 	}
 
 	@Override
@@ -263,7 +266,7 @@ public class ItemServiceImpl implements ItemService {
 
 		itemAttribute.setItemAttributeId(itemAttributeId);
 
-		List<Attribute> finalList = new ArrayList<Attribute>();
+		List<Attribute> finalList = new ArrayList<>();
 		List<ItemAttribute> attributeList = itemAttributeRepository.findAll(Example.of(itemAttribute));
 		for (ItemAttribute itemAttr : attributeList) {
 			finalList.add(itemAttr.getItemAttributeId().getAttribute());
@@ -285,13 +288,13 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public List<Item> createSKUs(Item item, ItemOptions itemOptionsOrg, List<AttributeId> attributeIds) {
 
-		List<BigInteger> skuItemIds = new ArrayList<BigInteger>();
+		List<BigInteger> skuItemIds = new ArrayList<>();
 
 		List<Attribute> attributeList = attributeRepository.findAll(attributeIds);
 		Collections.sort(attributeList, new AttributeComparator());
 
-		List<Attribute> colorList = new ArrayList<Attribute>();
-		List<Attribute> sizeList = new ArrayList<Attribute>();
+		List<Attribute> colorList = new ArrayList<>();
+		List<Attribute> sizeList = new ArrayList<>();
 
 		this.splitColorAndSize(attributeList, colorList, sizeList);
 
@@ -329,7 +332,7 @@ public class ItemServiceImpl implements ItemService {
 				 * Setting the item images
 				 */
 				List<ItemImage> itemImages = skuItem.getImages();
-				List<ItemImage> updatedItemImages = new ArrayList<ItemImage>();
+				List<ItemImage> updatedItemImages = new ArrayList<>();
 				ItemImageId itemImageId = null;
 				for (ItemImage itemImage : itemImages) {
 					itemImageId = itemImage.getItemImageId();
@@ -354,7 +357,7 @@ public class ItemServiceImpl implements ItemService {
 				/**
 				 * Save item attributes for color and size
 				 */
-				List<ItemAttribute> itemAttributes = new ArrayList<ItemAttribute>();
+				List<ItemAttribute> itemAttributes = new ArrayList<>();
 				ItemAttribute colorItemAttribute = new ItemAttribute();
 				ItemAttributeId colorItemAttributeId = new ItemAttributeId();
 
@@ -393,14 +396,18 @@ public class ItemServiceImpl implements ItemService {
 
 	private void splitColorAndSize(List<Attribute> attributeList, List<Attribute> colorList, List<Attribute> sizeList) {
 
+		char attributeCode;
 		for (Attribute attribute : attributeList) {
-			switch ((attribute.getCode().toCharArray())[0]) {
+			attributeCode=(attribute.getCode().toCharArray())[0];
+			switch (attributeCode) {
 			case 'C':
 				colorList.add(attribute);
 				break;
 			case 'S':
 				sizeList.add(attribute);
 				break;
+			default:
+				logger.warn("!!Unknown Attribute Found!! -> {}", attributeCode);
 			}
 
 		}
@@ -423,19 +430,36 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	public ItemDTO listItems(Item itemCriteria, Pager pager) {
-/*		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
 		pager.setPageSize(maxResultPerPage);
 		pager.setStartCount(startCount);
 		pager.setMaxDisplayPage(maxPageBtns);
-*/
 
-		List<Item> items = this.itemRepository.findAll();
+		Pageable pageable = new PageRequest(pager.getCurrentPageNo() - 1, maxResultPerPage);
+
+		Page<Item> itemsPage = this.itemRepository.findAll(pageable);
 		logger.info("The searched items has been retrieved successfully");
 
-		ItemDTO itemDTO=new ItemDTO();
+		List<Item> items = itemsPage.getContent();
+
+		ItemDTO itemDTO = new ItemDTO();
 		itemDTO.setItems(items);
-		
+
+		pager.setResultSize(new Long(itemsPage.getTotalElements()).intValue());
+
+		itemDTO.setPager(pager);
+
+		logger.info("The pager details has been set for all listed items in Item DTO object");
+
 		return itemDTO;
+	}
+
+	@Override
+	public Item getItem(BigInteger itemNumber) {
+		Item item = this.getStyle(itemNumber);
+		logger.info("The item object has been retrieved successfully for item ->{} .", itemNumber);
+		return item;
 	}
 
 }

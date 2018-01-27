@@ -75,21 +75,21 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `tax_flag` TINYINT NOT NULL DEFAULT 1,
   `ask_qty_flag` TINYINT NOT NULL DEFAULT 1,
   `ask_price_flag` TINYINT NOT NULL DEFAULT 0,
-  `unit_cost` DECIMAL NOT NULL DEFAULT 0.0,
-  `suggested_price` DECIMAL NOT NULL DEFAULT 0.0,
-  `current_price` DECIMAL NOT NULL DEFAULT 0.0,
-  `compare_at_price` DECIMAL NOT NULL,
+  `unit_cost` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
+  `suggested_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
+  `current_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
+  `compare_at_price` DECIMAL(12,2) NOT NULL,
   `return_flag` TINYINT NOT NULL DEFAULT 1,
   `desc_flag` TINYINT NOT NULL DEFAULT 0,
   `related_item_flag` TINYINT NOT NULL DEFAULT 0,
   `tax_group_id` INT NOT NULL,
-  `restocking_fee` DECIMAL NULL,
+  `restocking_fee` DECIMAL(12,2) NULL,
   `price_change_flag` TINYINT NOT NULL DEFAULT 1,
   `non_merch_flag` TINYINT NOT NULL DEFAULT 0,
   `min_age_flag` TINYINT NOT NULL DEFAULT 0,
   `stock_status` VARCHAR(20) NOT NULL DEFAULT 0,
   `customer_prompt` TINYINT NOT NULL DEFAULT 0,
-  `shipping_weight` DECIMAL NULL,
+  `shipping_weight` DECIMAL(12,2) NULL,
   `pack_size` VARCHAR(45) NULL,
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_options_item1`
@@ -113,8 +113,11 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`attribute_master` (
   `code` VARCHAR(5) NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `description` VARCHAR(150) NULL,
+  `seq_no` INT(2) NOT NULL,
   PRIMARY KEY (`attribute_id`, `value`))
 ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX `index2` ON `commercedb`.`attribute_master` (`code` ASC, `seq_no` ASC);
 
 
 -- -----------------------------------------------------
@@ -229,6 +232,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_related` (
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_related_item1_idx` ON `commercedb`.`item_related` (`item_id` ASC);
+
 
 
 

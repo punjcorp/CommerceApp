@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
@@ -74,6 +78,7 @@ public class ManageOrderController {
 	private static final Logger logger = LogManager.getLogger();
 	private OrderService orderService;
 	private MessageSource messageSource;
+	
 
 	/**
 	 * @param orderService
@@ -115,13 +120,13 @@ public class ManageOrderController {
 	}
 
 	@PostMapping(value = "/add_order", params = { "addOrderItem" })
-	public String addRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult) {
+	public String addRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale) {
 		orderBean.getOrderItems().add(new OrderItemBean());
 
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
-		this.calculateOrderCost(orderBean);
+		this.calculateOrderCost(orderBean, locale);
 
 		model.addAttribute("orderBean", orderBean);
 		model.addAttribute("supplierBean", supplierBean);
@@ -131,14 +136,14 @@ public class ManageOrderController {
 	}
 
 	@PostMapping(value = "/add_order", params = { "removeOrderItem" })
-	public String removeRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,
+	public String removeRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale,
 			final HttpServletRequest req) {
 		final Integer rowId = Integer.valueOf(req.getParameter("id"));
 		orderBean.getOrderItems().remove(rowId.intValue());
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
-		this.calculateOrderCost(orderBean);
+		this.calculateOrderCost(orderBean, locale);
 
 		model.addAttribute("orderBean", orderBean);
 		model.addAttribute("supplierBean", supplierBean);
@@ -161,7 +166,7 @@ public class ManageOrderController {
 			order = orderService.createOrder(order);
 			logger.info("The order details has been saved successfully");
 
-			this.calculateOrderCost(orderBean);
+			this.calculateOrderCost(orderBean, locale);
 			model.addAttribute("orderBean", orderBean);
 
 			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.add.success",
@@ -193,12 +198,12 @@ public class ManageOrderController {
 			order.setCreatedBy(userDetails.getUsername());
 		order.setCreatedDate(LocalDateTime.now());
 		order.setStatus(status);
-		order.setEstimatedCost(orderBean.getEstimatedCost());
-
-		order.setDiscountAmount(orderBean.getDiscountAmount());
-		order.setTaxAmount(orderBean.getTaxAmount());
-		order.setPaidAmount(orderBean.getPaidAmount());
-		order.setTotalAmount(orderBean.getTotalAmount());
+		
+		order.setEstimatedCost(BigDecimal.valueOf(orderBean.getEstimatedCost().getNumber().doubleValue()));
+		order.setDiscountAmount(BigDecimal.valueOf(orderBean.getDiscountAmount().getNumber().doubleValue()));
+		order.setTaxAmount(BigDecimal.valueOf(orderBean.getTaxAmount().getNumber().doubleValue()));
+		order.setPaidAmount(BigDecimal.valueOf(orderBean.getPaidAmount().getNumber().doubleValue()));
+		order.setTotalAmount(BigDecimal.valueOf(orderBean.getTotalAmount().getNumber().doubleValue()));
 
 		/**
 		 * Update Order Item details
@@ -220,17 +225,17 @@ public class ManageOrderController {
 			orderItem.setOrderItemId(orderItemId);
 
 			orderItem.setOrderedQty(orderItemBean.getOrderedQty());
-			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setTotalCost(orderItemBean.getTotalCost());
+			orderItem.setCostAmount(BigDecimal.valueOf(orderItemBean.getCostAmount().getNumber().doubleValue()));
+			orderItem.setTotalCost(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
 
 			orderItem.setDelieveredQty(orderItemBean.getDelieveredQty());
 			orderItem.setDelieveredDate(LocalDateTime.now());
 
-			orderItem.setActualUnitCost(orderItemBean.getCostActualAmount());
-			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setDiscountAmount(orderItemBean.getDiscountAmount());
-			orderItem.setTaxAmount(orderItemBean.getTaxAmount());
-			orderItem.setActualTotalAmount(orderItemBean.getTotalActualAmount());
+			orderItem.setActualUnitCost(BigDecimal.valueOf(orderItemBean.getCostActualAmount().getNumber().doubleValue()));
+			orderItem.setCostAmount(BigDecimal.valueOf(orderItemBean.getCostAmount().getNumber().doubleValue()));
+			orderItem.setDiscountAmount(BigDecimal.valueOf(orderItemBean.getDiscountAmount().getNumber().doubleValue()));
+			orderItem.setTaxAmount(BigDecimal.valueOf(orderItemBean.getTaxAmount().getNumber().doubleValue()));
+			orderItem.setActualTotalAmount(BigDecimal.valueOf(orderItemBean.getTotalActualAmount().getNumber().doubleValue()));
 
 			orderItems.add(orderItem);
 
@@ -243,11 +248,11 @@ public class ManageOrderController {
 	}
 
 	@GetMapping(value = "/manage_order")
-	public String manageOrder(@RequestParam("orderId") Optional<String> orderId, Model model, HttpSession session) {
+	public String manageOrder(@RequestParam("orderId") Optional<String> orderId, Model model, HttpSession session, Locale locale) {
 		logger.info("The manage method for purchase orders has been called");
 		try {
 			String searchText = null;
-			if (orderId == null || !orderId.isPresent()) {
+			if (!orderId.isPresent()) {
 				orderId = null;
 			} else {
 				searchText = orderId.get();
@@ -267,7 +272,7 @@ public class ManageOrderController {
 			}
 
 			OrderBeanDTO orders = new OrderBeanDTO();
-			this.updateOrderBeanDTO(orders, ordersDTO);
+			this.updateOrderBeanDTO(orders, ordersDTO, locale);
 
 			model.addAttribute("orders", orders);
 
@@ -281,7 +286,7 @@ public class ManageOrderController {
 
 	}
 
-	private void updateOrderBeanDTO(OrderBeanDTO orders, OrderDTO ordersDTO) {
+	private void updateOrderBeanDTO(OrderBeanDTO orders, OrderDTO ordersDTO, Locale locale) {
 
 		List<Order> orderList = ordersDTO.getOrders();
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
@@ -289,7 +294,7 @@ public class ManageOrderController {
 
 		for (Order order : orderList) {
 			orderBean = new OrderBean();
-			this.updateBean(orderBean, order);
+			this.updateBean(orderBean, order, locale);
 			orderBeanList.add(orderBean);
 		}
 
@@ -297,7 +302,7 @@ public class ManageOrderController {
 		logger.info("The purchase order details has been added to the DTO object");
 	}
 
-	private void updateBean(OrderBean orderBean, Order order) {
+	private void updateBean(OrderBean orderBean, Order order, Locale locale) {
 		orderBean.setOrderId(order.getOrderId());
 		orderBean.setSupplierId(order.getSupplier().getSupplierId());
 		
@@ -308,11 +313,28 @@ public class ManageOrderController {
 		orderBean.setCreatedBy(order.getCreatedBy());
 		orderBean.setCreatedDate(order.getCreatedDate());
 
-		orderBean.setTotalAmount(order.getTotalAmount());
-		orderBean.setPaidAmount(order.getPaidAmount());
-		orderBean.setDiscountAmount(order.getDiscountAmount());
-		orderBean.setTaxAmount(order.getTaxAmount());
-		orderBean.setEstimatedCost(order.getEstimatedCost());
+		
+		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
+	    MonetaryAmount monetaryAmt= Monetary.getDefaultAmountFactory()
+	      .setCurrency(currenyUnit).setNumber(order.getTotalAmount()).create();
+	    orderBean.setTotalAmount(monetaryAmt);
+	    
+	    monetaryAmt = Monetary.getDefaultAmountFactory()
+	  	      .setCurrency(currenyUnit).setNumber(order.getPaidAmount()).create();
+		orderBean.setPaidAmount(monetaryAmt);
+		
+	    monetaryAmt = Monetary.getDefaultAmountFactory()
+	  	      .setCurrency(currenyUnit).setNumber(order.getDiscountAmount()).create();
+	    orderBean.setDiscountAmount(monetaryAmt);
+	    
+	    monetaryAmt = Monetary.getDefaultAmountFactory()
+	  	      .setCurrency(currenyUnit).setNumber(order.getTaxAmount()).create();
+	    orderBean.setTaxAmount(monetaryAmt);
+	    
+	    monetaryAmt = Monetary.getDefaultAmountFactory()
+	  	      .setCurrency(currenyUnit).setNumber(order.getEstimatedCost()).create();
+		orderBean.setEstimatedCost(monetaryAmt);
+		
 
 		orderBean.setStatus(order.getStatus());
 
@@ -364,13 +386,17 @@ public class ManageOrderController {
 	}
 	
 	
-	private void updateOrderItemsBean(OrderBean orderBean, Order order) {
-		this.updateBean(orderBean, order);
+	private void updateOrderItemsBean(OrderBean orderBean, Order order, Locale locale) {
+		this.updateBean(orderBean, order,locale);
 
 		List<OrderItem> orderItems = order.getOrderItems();
 
 		List<OrderItemBean> orderItemBeanList = new ArrayList<OrderItemBean>();
 		OrderItemBean orderItemBean = null;
+		
+		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
+		MonetaryAmount monetaryAmt=null;
+		
 		for (OrderItem orderItem : orderItems) {
 			orderItemBean = new OrderItemBean();
 			orderItemBean.setOrderId(order.getOrderId());
@@ -378,17 +404,36 @@ public class ManageOrderController {
 			orderItemBean.setLocationId(orderItem.getOrderItemId().getLocation());
 			orderItemBean.setOrderedQty(orderItem.getOrderedQty());
 
-			orderItemBean.setCostAmount(orderItem.getCostAmount());
-			orderItemBean.setTotalCost(orderItem.getTotalCost());
+		    monetaryAmt= Monetary.getDefaultAmountFactory()
+				      .setCurrency(currenyUnit).setNumber(orderItem.getCostAmount()).create();
+		    orderItemBean.setCostAmount(monetaryAmt);
+		    
+		    monetaryAmt= Monetary.getDefaultAmountFactory()
+				      .setCurrency(currenyUnit).setNumber(orderItem.getTotalCost()).create();
+			orderItemBean.setTotalCost(monetaryAmt);
 
 			orderItemBean.setDelieveredQty(orderItem.getDelieveredQty());
 			orderItemBean.setDelieveredDate(orderItem.getDelieveredDate());
-
-			orderItemBean.setCostActualAmount(orderItem.getActualUnitCost());
-			orderItemBean.setTotalActualCost(orderItem.getTotalActualCost());
-			orderItemBean.setDiscountAmount(orderItem.getDiscountAmount());
-			orderItemBean.setTaxAmount(orderItem.getTaxAmount());
-			orderItemBean.setTotalActualAmount(orderItem.getActualTotalAmount());
+			
+		    monetaryAmt= Monetary.getDefaultAmountFactory()
+		      .setCurrency(currenyUnit).setNumber(orderItem.getActualUnitCost()).create();
+		    orderItemBean.setCostActualAmount(monetaryAmt);
+		    
+		    monetaryAmt = Monetary.getDefaultAmountFactory()
+		  	      .setCurrency(currenyUnit).setNumber(orderItem.getTotalActualCost()).create();
+		    orderItemBean.setTotalActualCost(monetaryAmt);
+			
+		    monetaryAmt = Monetary.getDefaultAmountFactory()
+		  	      .setCurrency(currenyUnit).setNumber(orderItem.getDiscountAmount()).create();
+			orderItemBean.setDiscountAmount(monetaryAmt);
+		    
+		    monetaryAmt = Monetary.getDefaultAmountFactory()
+		  	      .setCurrency(currenyUnit).setNumber(orderItem.getTaxAmount()).create();
+			orderItemBean.setTaxAmount(monetaryAmt);
+		    
+		    monetaryAmt = Monetary.getDefaultAmountFactory()
+		  	      .setCurrency(currenyUnit).setNumber(orderItem.getActualTotalAmount()).create();
+			orderItemBean.setTotalActualAmount(monetaryAmt);			
 
 			orderItemBeanList.add(orderItemBean);
 		}
@@ -409,14 +454,13 @@ public class ManageOrderController {
 
 	}
 
-	@PostMapping("/search_order")
+	@PostMapping(ViewPathConstants.SEARCH_ORDER_URL)
 	public String searchOrder(@ModelAttribute OrderBean orderBean, @RequestParam("page") Optional<Integer> page,
 			Model model, HttpSession session, Locale locale) {
 		try {
 
-			Pager pager = orderBean.getPager();
-			pager = new Pager();
-			if (page == null || !page.isPresent()) {
+			Pager pager = new Pager();
+			if (!page.isPresent()) {
 				pager.setCurrentPageNo(1);
 			} else {
 				pager.setCurrentPageNo(page.get());
@@ -425,11 +469,11 @@ public class ManageOrderController {
 			OrderDTO ordersDTO = orderService.searchOrder(orderBean.getOrderId().toString(), pager);
 
 			OrderBeanDTO orders = new OrderBeanDTO();
-			this.updateOrderBeanDTO(orders, ordersDTO);
+			this.updateOrderBeanDTO(orders, ordersDTO,locale);
 
 			Pager tmpPager = ordersDTO.getPager();
 			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage());
+					tmpPager.getMaxDisplayPage(),ViewPathConstants.SEARCH_ORDER_URL);
 
 			model.addAttribute("orders", orders);
 			model.addAttribute("orderBean", orderBean);
@@ -442,20 +486,20 @@ public class ManageOrderController {
 			logger.error("There is an error while retrieving purchase orders", e);
 			return "error";
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
 	@GetMapping("/edit_order")
-	public String editOrder(Model model, HttpSession session, final HttpServletRequest req) {
+	public String editOrder(Model model, HttpSession session, final HttpServletRequest req, Locale locale) {
 		try {
 			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
 
 			Order order = orderService.searchOrder(orderId);
 
 			OrderBean orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order);
+			this.updateOrderItemsBean(orderBean, order, locale);
 
-			this.calculateOrderCost(orderBean);
+			this.calculateOrderCost(orderBean,locale);
 
 			SupplierBean supplierBean = new SupplierBean();
 			ItemBean itemBean = new ItemBean();
@@ -472,13 +516,13 @@ public class ManageOrderController {
 	}
 
 	@PostMapping(value = "/edit_order", params = { "addOrderItem" })
-	public String addRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult) {
+	public String addRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,Locale locale) {
 		orderBean.getOrderItems().add(new OrderItemBean());
 
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
-		this.calculateOrderCost(orderBean);
+		this.calculateOrderCost(orderBean,locale);
 
 		model.addAttribute("orderBean", orderBean);
 		model.addAttribute("supplierBean", supplierBean);
@@ -489,7 +533,7 @@ public class ManageOrderController {
 	}
 
 	@PostMapping(value = "/edit_order", params = { "removeOrderItem" })
-	public String removeRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,
+	public String removeRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale,
 			final HttpServletRequest req) {
 		final Integer rowId = Integer.valueOf(req.getParameter("id"));
 		OrderItemBean orderItemBean = orderBean.getOrderItems().get(rowId.intValue());
@@ -503,7 +547,7 @@ public class ManageOrderController {
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
-		this.calculateOrderCost(orderBean);
+		this.calculateOrderCost(orderBean,locale);
 
 		model.addAttribute("orderBean", orderBean);
 		model.addAttribute("supplierBean", supplierBean);
@@ -528,7 +572,7 @@ public class ManageOrderController {
 			order = orderService.createOrder(order);
 			logger.info("The order details has been saved successfully after editing");
 
-			this.calculateOrderCost(orderBean);
+			this.calculateOrderCost(orderBean,locale);
 			model.addAttribute("orderBean", orderBean);
 
 			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
@@ -691,10 +735,13 @@ public class ManageOrderController {
 		logger.info("The order ids and list index data has been seperated");
 	}
 
-	private void calculateOrderCost(OrderBean orderBean) {
+	private void calculateOrderCost(OrderBean orderBean, Locale locale) {
 		List<OrderItemBean> orderItemList = orderBean.getOrderItems();
-		BigDecimal totalCost = new BigDecimal("0.0");
-		for (OrderItemBean orderItem : orderItemList) {
+		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
+	    MonetaryAmount totalCost = Monetary.getDefaultAmountFactory()
+	      .setCurrency(currenyUnit).setNumber(0).create();
+
+	    for (OrderItemBean orderItem : orderItemList) {
 			totalCost = totalCost.add(orderItem.getTotalCost());
 		}
 		orderBean.setEstimatedCost(totalCost);
@@ -702,16 +749,16 @@ public class ManageOrderController {
 	}
 
 	@GetMapping("/receive_order")
-	public String retrieveOrderForReceival(Model model, HttpSession session, final HttpServletRequest req) {
+	public String retrieveOrderForReceival(Model model, HttpSession session, final HttpServletRequest req, Locale locale) {
 		try {
 			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
 
 			Order order = orderService.searchOrder(orderId);
 
 			OrderBean orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order);
+			this.updateOrderItemsBean(orderBean, order, locale);
 
-			this.calculateOrderCost(orderBean);
+			this.calculateOrderCost(orderBean,locale);
 
 			SupplierBean supplierBean = new SupplierBean();
 			ItemBean itemBean = new ItemBean();
@@ -814,7 +861,9 @@ public class ManageOrderController {
 			order.setCreatedBy(userDetails.getUsername());
 		order.setCreatedDate(LocalDateTime.now());
 		order.setStatus("R");
-		order.setEstimatedCost(orderBean.getEstimatedCost());
+    
+		
+		order.setEstimatedCost(BigDecimal.valueOf(orderBean.getEstimatedCost().getNumber().doubleValue()));
 
 		/**
 		 * Update Order Item details
@@ -838,19 +887,19 @@ public class ManageOrderController {
 			orderItem.setOrderItemId(orderItemId);
 
 			orderItem.setOrderedQty(orderItemBean.getOrderedQty());
-			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setTotalCost(orderItemBean.getTotalCost());
+			orderItem.setCostAmount(BigDecimal.valueOf(orderItemBean.getCostAmount().getNumber().doubleValue()));
+			orderItem.setTotalCost(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
 
 			orderItem.setDelieveredQty(orderItemBean.getOrderedQty());
 			orderItem.setDelieveredDate(LocalDateTime.now());
 
-			orderItem.setActualUnitCost(orderItemBean.getCostAmount());
-			orderItem.setCostAmount(orderItemBean.getTotalCost());
-			orderItem.setDiscountAmount(orderItemBean.getDiscountAmount());
-			orderItem.setTaxAmount(orderItemBean.getTaxAmount());
-			orderItem.setActualTotalAmount(orderItemBean.getTotalCost());
+			orderItem.setActualUnitCost(BigDecimal.valueOf(orderItemBean.getCostAmount().getNumber().doubleValue()));
+			orderItem.setCostAmount(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
+			orderItem.setDiscountAmount(BigDecimal.valueOf(orderItemBean.getDiscountAmount().getNumber().doubleValue()));
+			orderItem.setTaxAmount(BigDecimal.valueOf(orderItemBean.getTaxAmount().getNumber().doubleValue()));
+			orderItem.setActualTotalAmount(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
 
-			totalAmount = totalAmount.add(orderItemBean.getTotalCost());
+			totalAmount = totalAmount.add(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
 
 			orderItems.add(orderItem);
 
@@ -858,8 +907,8 @@ public class ManageOrderController {
 
 		order.setOrderItems(orderItems);
 
-		order.setDiscountAmount(orderBean.getDiscountAmount());
-		order.setTaxAmount(orderBean.getTaxAmount());
+		order.setDiscountAmount(BigDecimal.valueOf(orderBean.getDiscountAmount().getNumber().doubleValue()));
+		order.setTaxAmount(BigDecimal.valueOf(orderBean.getTaxAmount().getNumber().doubleValue()));
 		order.setPaidAmount(totalAmount);
 		order.setTotalAmount(totalAmount);
 
@@ -895,7 +944,7 @@ public class ManageOrderController {
 
 			OrderBeanDTO orders = new OrderBeanDTO();
 
-			this.updateOrderBeanList(orders, ordersDTO);
+			this.updateOrderBeanList(orders, ordersDTO, locale);
 
 			InputStream orderReportStream = getClass().getResourceAsStream("/reports/order/orders.jrxml");
 
@@ -940,13 +989,13 @@ public class ManageOrderController {
 		return "order/manage_order";
 	}
 
-	private void updateOrderBeanList(OrderBeanDTO orders, OrderDTO ordersDTO) {
+	private void updateOrderBeanList(OrderBeanDTO orders, OrderDTO ordersDTO, Locale locale) {
 
 		OrderBean orderBean = null;
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
 		for (Order order : ordersDTO.getOrders()) {
 			orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order);
+			this.updateOrderItemsBean(orderBean, order, locale);
 			orderBeanList.add(orderBean);
 		}
 
@@ -957,7 +1006,7 @@ public class ManageOrderController {
 
 	@GetMapping("/print_order")
 	public void printOrder(Model model, HttpSession session, final HttpServletRequest req,
-			HttpServletResponse response) {
+			HttpServletResponse response, Locale locale) {
 		// set header as pdf
 		response.setContentType("application/pdf");
 
@@ -972,7 +1021,7 @@ public class ManageOrderController {
 
 			List<OrderBean> orderCollection = new ArrayList<OrderBean>();
 			OrderBean orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order);
+			this.updateOrderItemsBean(orderBean, order, locale);
 			List<AddressBean> primaryAddress=this.getSupplierAddress(orderBean.getSupplier().getAddresses());
 
 			orderCollection.add(orderBean);

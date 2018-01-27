@@ -31,9 +31,7 @@ public class OrderItemFieldBridge implements TwoWayFieldBridge {
 		TermVector termVector = luceneOptions.getTermVector();
 		Float boost = luceneOptions.getBoost();
 
-		Field field = new Field(name + ".locationId", String.valueOf(orderItemId.getLocation()), // store each sub
-																									// property in a
-																									// field
+		Field field = new Field(name + ".locationId", String.valueOf(orderItemId.getLocation()),
 				store, index, termVector);
 		field.setBoost(boost);
 		document.add(field);
@@ -42,17 +40,11 @@ public class OrderItemFieldBridge implements TwoWayFieldBridge {
 		field.setBoost(boost);
 		document.add(field);
 
-		field = new Field(name, objectToString(orderItemId), // store unique representation in named field
+		field = new Field(name, objectToString(orderItemId), 
 				store, index, termVector);
 		field.setBoost(boost);
 		document.add(field);
 
-		// set location
-		// luceneOptions.addFieldToDocument(name + ".locationId",
-		// String.valueOf(orderItemId.getLocation()), document);
-		// set item
-		// luceneOptions.addFieldToDocument(name + ".itemId",
-		// String.valueOf(orderItemId.getItemId()), document);
 	}
 
 	@Override

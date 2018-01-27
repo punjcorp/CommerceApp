@@ -3,13 +3,18 @@ package com.punj.app.ecommerce.controller.item;
  * 
  */
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +65,8 @@ public class ManageItemController {
 	}
 
 	@GetMapping("/add_item")
-	public String showItem(@RequestParam("styleNumber") String styleNo, Model model, HttpSession session) {
+	public String showItem(@RequestParam("styleNumber") String styleNo, Model model, HttpSession session,
+			Locale locale) {
 
 		BigInteger styleNumber = new BigInteger(styleNo);
 
@@ -69,7 +75,7 @@ public class ManageItemController {
 		List<AttributeBean> colorList = new ArrayList<AttributeBean>();
 		List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
 
-		ItemBean itemBean = this.updateBean(style, colorList, sizeList);
+		ItemBean itemBean = this.updateBean(style, colorList, sizeList, locale);
 
 		model.addAttribute("colorList", colorList);
 		model.addAttribute("sizeList", sizeList);
@@ -81,7 +87,7 @@ public class ManageItemController {
 
 	@PostMapping("/add_item")
 	public String addItem(@ModelAttribute ItemBean itemBean, Model model, HttpSession session,
-			Authentication authentication) {
+			Authentication authentication, Locale locale) {
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -93,7 +99,7 @@ public class ManageItemController {
 		String[] sizes = itemBean.getItemSizeSelected();
 		int totalSkus = colors.length * sizes.length;
 
-		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername());
+		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername(), locale);
 		logger.info("The item details has been updated in domains object from the bean objects");
 
 		this.updateItemAttributes(itemBean, item, attributeIds);
@@ -109,7 +115,8 @@ public class ManageItemController {
 		return "item/add_item";
 	}
 
-	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, String username) {
+	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, String username,
+			Locale locale) {
 
 		/**
 		 * Setting the basic information about the style
@@ -157,11 +164,14 @@ public class ManageItemController {
 		 * Setting the options information about the style
 		 */
 
-		itemOptions.setUnitCost(itemBean.getItemOptions().getUnitCost());
-		itemOptions.setSuggestedPrice(itemBean.getItemOptions().getSuggestedPrice());
-		itemOptions.setCompareAtPrice(itemBean.getItemOptions().getCompareAtPrice());
-		itemOptions.setCurrentPrice(itemBean.getItemOptions().getCurrentPrice());
-		itemOptions.setRestockingFee(itemBean.getItemOptions().getRestockingFee());
+		itemOptions.setUnitCost(new BigDecimal(itemBean.getItemOptions().getUnitCost().getNumber().toString()));
+		itemOptions.setSuggestedPrice(
+				new BigDecimal(itemBean.getItemOptions().getSuggestedPrice().getNumber().toString()));
+		itemOptions.setCompareAtPrice(
+				new BigDecimal(itemBean.getItemOptions().getCompareAtPrice().getNumber().toString()));
+		itemOptions.setCurrentPrice(new BigDecimal(itemBean.getItemOptions().getCurrentPrice().getNumber().toString()));
+		itemOptions
+				.setRestockingFee(new BigDecimal(itemBean.getItemOptions().getRestockingFee().getNumber().toString()));
 
 		itemOptions.setDiscountFlag(itemBean.getItemOptions().getDiscountFlag());
 		itemOptions.setTaxFlag(itemBean.getItemOptions().getTaxFlag());
@@ -204,6 +214,8 @@ public class ManageItemController {
 			case 'S':
 				sizeList.add(attrBean);
 				break;
+			default:
+				logger.warn("Unknown attribute found!!");
 			}
 
 		}
@@ -211,7 +223,8 @@ public class ManageItemController {
 
 	}
 
-	private ItemBean updateBean(Item style, List<AttributeBean> colorList, List<AttributeBean> sizeList) {
+	private ItemBean updateBean(Item style, List<AttributeBean> colorList, List<AttributeBean> sizeList,
+			Locale locale) {
 		ItemBean itemBean = new ItemBean();
 
 		/**
@@ -252,7 +265,6 @@ public class ManageItemController {
 			featureMap.put(image.getItemImageId().getFeatureName(), image.getImageURL());
 
 			imageUrlList.add(count, image.getImageURL());
-			;
 
 			count++;
 		}
@@ -269,11 +281,34 @@ public class ManageItemController {
 
 		ItemOptionsBean itemOptionsBean = new ItemOptionsBean();
 
-		itemOptionsBean.setUnitCost(style.getItemOptions().getUnitCost());
-		itemOptionsBean.setSuggestedPrice(style.getItemOptions().getSuggestedPrice());
-		itemOptionsBean.setCompareAtPrice(style.getItemOptions().getCompareAtPrice());
-		itemOptionsBean.setCurrentPrice(style.getItemOptions().getCurrentPrice());
-		itemOptionsBean.setRestockingFee(style.getItemOptions().getRestockingFee());
+		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
+		MonetaryAmount unitCostAmount = null;
+		MonetaryAmount suggestedAmount = null;
+		MonetaryAmount compareAtAmount = null;
+		MonetaryAmount currentAmount = null;
+		MonetaryAmount restockingAmount = null;
+
+		if (style.getItemOptions().getUnitCost() != null)
+			unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
+					.setNumber(style.getItemOptions().getUnitCost()).create();
+		if (style.getItemOptions().getSuggestedPrice() != null)
+			suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
+					.setNumber(style.getItemOptions().getSuggestedPrice()).create();
+		if (style.getItemOptions().getCompareAtPrice() != null)
+			compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
+					.setNumber(style.getItemOptions().getCompareAtPrice()).create();
+		if (style.getItemOptions().getCurrentPrice() != null)
+			currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
+					.setNumber(style.getItemOptions().getCurrentPrice()).create();
+		if (style.getItemOptions().getRestockingFee() != null)
+			restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
+					.setNumber(style.getItemOptions().getRestockingFee()).create();
+
+		itemOptionsBean.setUnitCost(unitCostAmount);
+		itemOptionsBean.setSuggestedPrice(suggestedAmount);
+		itemOptionsBean.setCompareAtPrice(compareAtAmount);
+		itemOptionsBean.setCurrentPrice(currentAmount);
+		itemOptionsBean.setRestockingFee(restockingAmount);
 
 		itemOptionsBean.setDiscountFlag(style.getItemOptions().getDiscountFlag());
 		itemOptionsBean.setTaxFlag(style.getItemOptions().getTaxFlag());
@@ -297,7 +332,7 @@ public class ManageItemController {
 
 		logger.info("The item options has been set in bean object successfully");
 
-		List<Attribute> finalList = new ArrayList<Attribute>();
+		List<Attribute> finalList = new ArrayList<>();
 		List<ItemAttribute> attributeList = style.getItemAttributes();
 		for (ItemAttribute itemAttr : attributeList) {
 			finalList.add(itemAttr.getItemAttributeId().getAttribute());

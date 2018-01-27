@@ -20,6 +20,9 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 @Entity
 public class Item implements Serializable, Cloneable {
+
+	private static final long serialVersionUID = -1367627372654767177L;
+	
 	@Id
 	@DocumentId
 	@Column(name = "item_id")

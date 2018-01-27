@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class Pager implements Serializable {
 
+	private static final long serialVersionUID = -6504656288105354223L;
+
 	private Integer resultSize;
 	private Integer pageSize;
 	private Integer currentPageNo;
@@ -20,6 +22,9 @@ public class Pager implements Serializable {
 
 	private Integer startCount;
 	private List<Integer> displayPages;
+
+	private Integer lastPageNo;
+	private String viewBasePath;
 
 	private Integer noOfPages;
 	private Boolean firstPage = false;
@@ -29,11 +34,13 @@ public class Pager implements Serializable {
 
 	}
 
-	public Pager(Integer resultSize, Integer pageSize, Integer currentPageNo, Integer maxDisplayPage) {
+	public Pager(Integer resultSize, Integer pageSize, Integer currentPageNo, Integer maxDisplayPage,
+			String viewBasePath) {
 		this.resultSize = resultSize;
 		this.pageSize = pageSize;
 		this.currentPageNo = currentPageNo;
 		this.maxDisplayPage = maxDisplayPage;
+		this.viewBasePath = viewBasePath;
 
 		this.setNoOfPages();
 		this.setFirstPage();
@@ -99,10 +106,11 @@ public class Pager implements Serializable {
 	 *            the displayPages to set
 	 */
 	public void setDisplayPages() {
-		List<Integer> pageList = new ArrayList<Integer>();
+		List<Integer> pageList = new ArrayList<>();
 
 		int halfSize = this.noOfPages / 2;
-		int start, size;
+		int start;
+		int size;
 
 		if (this.noOfPages <= this.maxDisplayPage) {
 			start = 1;
@@ -122,6 +130,7 @@ public class Pager implements Serializable {
 
 		for (int i = 0; i < size; i++) {
 			pageList.add(start + i);
+			this.lastPageNo = start + i;
 		}
 
 		this.displayPages = pageList;
@@ -202,108 +211,66 @@ public class Pager implements Serializable {
 		this.startCount = startCount;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * @return the lastPageNo
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((currentPageNo == null) ? 0 : currentPageNo.hashCode());
-		result = prime * result + ((displayPages == null) ? 0 : displayPages.hashCode());
-		result = prime * result + ((firstPage == null) ? 0 : firstPage.hashCode());
-		result = prime * result + ((lastPage == null) ? 0 : lastPage.hashCode());
-		result = prime * result + ((maxDisplayPage == null) ? 0 : maxDisplayPage.hashCode());
-		result = prime * result + ((noOfPages == null) ? 0 : noOfPages.hashCode());
-		result = prime * result + ((pageSize == null) ? 0 : pageSize.hashCode());
-		result = prime * result + ((resultSize == null) ? 0 : resultSize.hashCode());
-		result = prime * result + ((startCount == null) ? 0 : startCount.hashCode());
-		return result;
+	public Integer getLastPageNo() {
+		return lastPageNo;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @param lastPageNo
+	 *            the lastPageNo to set
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Pager other = (Pager) obj;
-		if (currentPageNo == null) {
-			if (other.currentPageNo != null) {
-				return false;
-			}
-		} else if (!currentPageNo.equals(other.currentPageNo)) {
-			return false;
-		}
-		if (displayPages == null) {
-			if (other.displayPages != null) {
-				return false;
-			}
-		} else if (!displayPages.equals(other.displayPages)) {
-			return false;
-		}
-		if (firstPage == null) {
-			if (other.firstPage != null) {
-				return false;
-			}
-		} else if (!firstPage.equals(other.firstPage)) {
-			return false;
-		}
-		if (lastPage == null) {
-			if (other.lastPage != null) {
-				return false;
-			}
-		} else if (!lastPage.equals(other.lastPage)) {
-			return false;
-		}
-		if (maxDisplayPage == null) {
-			if (other.maxDisplayPage != null) {
-				return false;
-			}
-		} else if (!maxDisplayPage.equals(other.maxDisplayPage)) {
-			return false;
-		}
-		if (noOfPages == null) {
-			if (other.noOfPages != null) {
-				return false;
-			}
-		} else if (!noOfPages.equals(other.noOfPages)) {
-			return false;
-		}
-		if (pageSize == null) {
-			if (other.pageSize != null) {
-				return false;
-			}
-		} else if (!pageSize.equals(other.pageSize)) {
-			return false;
-		}
-		if (resultSize == null) {
-			if (other.resultSize != null) {
-				return false;
-			}
-		} else if (!resultSize.equals(other.resultSize)) {
-			return false;
-		}
-		if (startCount == null) {
-			if (other.startCount != null) {
-				return false;
-			}
-		} else if (!startCount.equals(other.startCount)) {
-			return false;
-		}
-		return true;
+	public void setLastPageNo(Integer lastPageNo) {
+		this.lastPageNo = lastPageNo;
+	}
+
+	/**
+	 * @param firstPage
+	 *            the firstPage to set
+	 */
+	public void setFirstPage(Boolean firstPage) {
+		this.firstPage = firstPage;
+	}
+
+	/**
+	 * @param lastPage
+	 *            the lastPage to set
+	 */
+	public void setLastPage(Boolean lastPage) {
+		this.lastPage = lastPage;
+	}
+
+	/**
+	 * @param displayPages
+	 *            the displayPages to set
+	 */
+	public void setDisplayPages(List<Integer> displayPages) {
+		this.displayPages = displayPages;
+	}
+
+	/**
+	 * @param noOfPages
+	 *            the noOfPages to set
+	 */
+	public void setNoOfPages(Integer noOfPages) {
+		this.noOfPages = noOfPages;
+	}
+
+	/**
+	 * @return the viewBasePath
+	 */
+	public String getViewBasePath() {
+		return viewBasePath;
+	}
+
+	/**
+	 * @param viewBasePath
+	 *            the viewBasePath to set
+	 */
+	public void setViewBasePath(String viewBasePath) {
+		this.viewBasePath = viewBasePath;
 	}
 
 }

@@ -30,6 +30,7 @@ import com.punj.app.ecommerce.domains.user.ids.PasswordId;
 import com.punj.app.ecommerce.models.LoginBean;
 import com.punj.app.ecommerce.models.RegisterUserBean;
 import com.punj.app.ecommerce.services.UserService;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -143,7 +144,7 @@ public class LoginController {
 		newPassword.setModifiedBy("admin");
 		newPassword.setStatus("A");
 
-		newPasswordId.setPassword(registerUserBean.getPassword());
+		newPasswordId.setPassword(Utils.encodePassword(registerUserBean.getPassword()));
 		newPasswordId.setUsername(registerUserBean.getEmail());
 		newPasswordId.setModifiedDate(LocalDateTime.now());
 		newPassword.setPasswordId(newPasswordId);

@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.NotBlank;
+
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -18,17 +22,23 @@ import com.punj.app.ecommerce.utils.Pager;
 public class ItemBean {
 
 	private BigInteger itemId;
+
+	@NotBlank(message = "{commerce.error.string.empty}")
 	private String name;
 	private String longDesc;
 	private Integer itemLevel;
 	private BigInteger parentItemId;
+	@NotBlank(message = "{commerce.error.option.empty}")
 	private String itemType;
+
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
 
 	private HierarchyBean hierarchy;
+
+	@Valid
 	private ItemOptionsBean itemOptions;
 
 	private Map<String, String> itemImages;
@@ -36,6 +46,7 @@ public class ItemBean {
 	private String[] itemSizeSelected;
 	private String[] itemColorSelected;
 
+	// @NotBlank(message = "{commerce.error.string.empty}")
 	private List<String> imageUrlList;
 	private List<String> featureList;
 
@@ -316,5 +327,6 @@ public class ItemBean {
 	public void setPager(Pager pager) {
 		this.pager = pager;
 	}
+
 
 }

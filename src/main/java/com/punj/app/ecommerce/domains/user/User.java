@@ -36,7 +36,7 @@ public class User {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-	@OneToMany(mappedBy = "passwordId.username", cascade = CascadeType.ALL)
+	@OneToMany( mappedBy = "passwordId.username", cascade = CascadeType.ALL)
 	private List<Password> passwords;
 
 	@OneToMany(mappedBy = "cardId.username", cascade = CascadeType.REFRESH)
@@ -46,7 +46,7 @@ public class User {
 	@JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "username"), inverseJoinColumns = @JoinColumn(name = "address_id"))
 	private List<Address> addresses;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "username"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<Role> roles;
 

@@ -6,6 +6,8 @@ package com.punj.app.ecommerce.common;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class BuildSearchIndex implements ApplicationListener<ApplicationReadyEvent> {
 
+	private static final Logger logger = LogManager.getLogger();
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -32,7 +36,10 @@ public class BuildSearchIndex implements ApplicationListener<ApplicationReadyEve
 			FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
 			fullTextEntityManager.createIndexer().startAndWait();
 		} catch (InterruptedException e) {
-			System.out.println("An error occurred trying to build the serach index: " + e.toString());
+			logger.error("An error occurred trying to build the serach index: " ,e);
+			// Restore interrupted state...
+		    Thread.currentThread().interrupt();
+
 		}
 		return;
 	}

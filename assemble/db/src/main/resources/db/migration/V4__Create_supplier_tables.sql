@@ -25,6 +25,31 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `commercedb`.`supplier_item`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`supplier_item` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`supplier_item` (
+  `item_id` BIGINT NOT NULL,
+  `supplier_id` INT NOT NULL,
+  `unit_cost` DECIMAL(12,2) NOT NULL,
+  PRIMARY KEY (`item_id`, `supplier_id`),
+  CONSTRAINT `fk_supplier_item_item1`
+    FOREIGN KEY (`item_id`)
+    REFERENCES `commercedb`.`item` (`item_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_supplier_item_supplier1`
+    FOREIGN KEY (`supplier_id`)
+    REFERENCES `commercedb`.`supplier` (`supplier_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_supplier_item_supplier1_idx` ON `commercedb`.`supplier_item` (`supplier_id` ASC);
+
+
+-- -----------------------------------------------------
 -- Table `commercedb`.`supplier_addresses`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`supplier_address` ;
@@ -46,30 +71,28 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`supplier_address` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
--- Table `commercedb`.`supplier_item`
+-- Table `commercedb`.`supplier_address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`supplier_item` ;
+DROP TABLE IF EXISTS `commercedb`.`supplier_address` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`supplier_item` (
-  `item_id` BIGINT NOT NULL,
+CREATE TABLE IF NOT EXISTS `commercedb`.`supplier_address` (
   `supplier_id` INT NOT NULL,
-  PRIMARY KEY (`item_id`, `supplier_id`),
-  CONSTRAINT `fk_supplier_item_item1`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_supplier_item_supplier1`
+  `address_id` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`supplier_id`, `address_id`),
+  CONSTRAINT `fk_supplier_addresses_supplier1`
     FOREIGN KEY (`supplier_id`)
     REFERENCES `commercedb`.`supplier` (`supplier_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_supplier_addresses_address_master1`
+    FOREIGN KEY (`address_id`)
+    REFERENCES `commercedb`.`address_master` (`address_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_supplier_item_supplier1_idx` ON `commercedb`.`supplier_item` (`supplier_id` ASC);
-
+CREATE INDEX `fk_supplier_addresses_address_master1_idx` ON `commercedb`.`supplier_address` (`address_id` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

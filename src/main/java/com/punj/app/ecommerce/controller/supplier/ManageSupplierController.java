@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.user.Address;
@@ -201,14 +202,13 @@ public class ManageSupplierController {
 		logger.info("The supplier details has been added to the DTO object");
 	}
 
-	@PostMapping("/search_supplier")
+	@PostMapping(ViewPathConstants.SEARCH_SUPPLIER_URL)
 	public String searchSupplier(@ModelAttribute SupplierBean supplierBean,
 			@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
 		try {
 
-			Pager pager = supplierBean.getPager();
-			pager = new Pager();
-			if (page == null || !page.isPresent()) {
+			Pager pager = new Pager();
+			if ( !page.isPresent()) {
 				pager.setCurrentPageNo(1);
 			}else {
 				pager.setCurrentPageNo(page.get());
@@ -225,7 +225,7 @@ public class ManageSupplierController {
 
 			Pager tmpPager = supplierList.getPager();
 			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage());
+					tmpPager.getMaxDisplayPage(),ViewPathConstants.SEARCH_SUPPLIER_URL);
 
 			model.addAttribute("suppliers", suppliers);
 			model.addAttribute("supplierBean", supplierBean);
@@ -236,7 +236,7 @@ public class ManageSupplierController {
 			logger.error("There is an error while updating address", e);
 			return "error";
 		}
-		return "supplier/manage_supplier";
+		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}
 
 	/**

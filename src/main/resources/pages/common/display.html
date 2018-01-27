@@ -27,168 +27,100 @@
 
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<th:block th:fragment="content">
-
-				<div class="album text-muted">
+				<div class="album text-muted"
+					th:if="${items!=null and items.items!=null and #lists.size(items.items)>0}">
 					<div class="item">
 						<div class="row">
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/1.jpg" th:src="@{/images/1.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
-							</div>
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/2.jpg" th:src="@{/images/2.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
+							<div class="col-12 text-right">
+								<nav aria-label="Pagination" th:if="${pager!=null}">
+									<ul class="pagination pagination-sm justify-content-end">
+										<li
+											th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a
+											class="page-link" href="#" th:href="@{/home(page=1)}"
+											tabindex="-1">First</a></li>
 
+										<th:block th:each="page,itrStat:${pager.displayPages}">
+											<li
+												th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a
+												class="page-link" href="#" th:href="@{/home(page=${page})}"><span
+													th:text="${page}"></span></a></li>
+										</th:block>
+
+
+										<li
+											th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a
+											class="page-link" href="#"
+											th:href="@{/home(page=${pager.lastPageNo})}">Last</a></li>
+
+									</ul>
+								</nav>
 
 							</div>
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/3.jpg" th:src="@{/images/3.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+						</div>
+
+
+						<div class="row">
+
+							<th:block th:each="item,itrStat:${items.items}">
+
+								<div class="card">
+									<img class="img-thumbnail" src="../../static/images/1.jpg"
+										th:src="@{/images/1.jpg}" alt="Card image cap"></img>
+									<div class="card-body">
+										<div class="card-title">
+											<span th:text="${items.items[__${itrStat.index}__].name}">Item
+												Name</span>
+										</div>
+										<p class="card-text">
+											<span th:text="${items.items[__${itrStat.index}__].longDesc}">Item
+												Description</span>
+										</p>
 									</div>
-								</div>
-
-
-							</div>
-
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/4.jpg" th:src="@{/images/4.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
+									<div class="card-footer">
+										<div class="btn-group">
+											<a href="#" class="btn btn-success btn-sm"
+												th:text="#{commerce.screen.btn.submit.add.cart}">Add to
+												Cart</a> 
+<!-- 												<a href="#" class="btn btn-secondary btn-sm"
+												th:text="#{commerce.screen.btn.submit.add.wishlist}">Add
+												to Wishlist</a> -->
+												<a href="#" th:href="@{/item_detail(itemNumber=${items.items[__${itrStat.index}__].itemId})}" class="btn btn-info btn-sm"
+												th:text="#{commerce.screen.btn.submit.item.details}">Go
+												to Details</a>
+										</div>
 									</div>
 								</div>
 
+							</th:block>
+						</div>
+						<div class="row">
+							<div class="col-12 text-right">
+								<th:block th:fragment="pagination">
+
+									<nav aria-label="Pagination" th:if="${pager!=null}">
+										<ul class="pagination pagination-sm justify-content-end">
+											<li
+												th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a
+												class="page-link" href="#" th:href="@{${pager.viewBasePath}(page=1)}"
+												tabindex="-1">First</a></li>
+
+											<th:block th:each="page,itrStat:${pager.displayPages}">
+												<li
+													th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a
+													class="page-link" href="#" th:href="@{${pager.viewBasePath}(page=${page})}"><span
+														th:text="${page}"></span></a></li>
+											</th:block>
+
+
+											<li
+												th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a
+												class="page-link" href="#"
+												th:href="@{${pager.viewBasePath}(page=${pager.lastPageNo})}">Last</a></li>
+
+										</ul>
+									</nav>
+								</th:block>
 							</div>
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/5.jpg" th:src="@{/images/5.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
-
-							</div>
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/6.jpg" th:src="@{/images/6.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
-
-
-							</div>
-
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/7.jpg" th:src="@{/images/7.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
-
-							</div>
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/8.jpg" th:src="@{/images/8.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
-
-							</div>
-							<div class="card">
-								<img class="img-thumbnail" src="../../static/images/9.jpg"  th:src="@{/images/9.jpg}"
-									alt="Card image cap"></img>
-								<div class="card-body">
-									<div class="card-title">Item Name</div>
-									<p class="card-text">This is a wider card with supporting
-										text below as a natural lead-in to additional content. This
-										content is a little bit longer.</p>
-								</div>
-								<div class="card-footer">
-									<div class="btn-group">
-										<a href="#" class="btn btn-success btn-sm">Add to Cart</a> <a
-											href="#" class="btn btn-secondary btn-sm">Add to Wishlist</a>
-									</div>
-								</div>
-
-							</div>
-
 						</div>
 					</div>
 				</div>

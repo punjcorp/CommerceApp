@@ -34,6 +34,8 @@ public interface ItemService {
 	public List<Attribute> getStyleAttribute(BigInteger styleNumber);
 
 	public Item getStyle(BigInteger styleNumber);
+	
+	public Item getItem(BigInteger itemNumber);
 
 	public List<Item> createSKUs(Item item, ItemOptions itemOptions, List<AttributeId> attributeIds);
 

@@ -26,6 +26,9 @@ import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
 @Indexed
 @Table(name = "purchase_order_items")
 public class OrderItem implements Serializable {
+
+	private static final long serialVersionUID = 7080804777591754919L;
+
 	@EmbeddedId
 	@FieldBridge(impl = OrderItemFieldBridge.class)
 	@DocumentId
@@ -222,28 +225,24 @@ public class OrderItem implements Serializable {
 		this.actualTotalAmount = actualTotalAmount;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((actualTotalAmount == null) ? 0 : actualTotalAmount.hashCode());
-		result = prime * result + ((actualUnitCost == null) ? 0 : actualUnitCost.hashCode());
-		result = prime * result + ((costAmount == null) ? 0 : costAmount.hashCode());
-		result = prime * result + ((delieveredDate == null) ? 0 : delieveredDate.hashCode());
-		result = prime * result + ((delieveredQty == null) ? 0 : delieveredQty.hashCode());
-		result = prime * result + ((discountAmount == null) ? 0 : discountAmount.hashCode());
 		result = prime * result + ((orderItemId == null) ? 0 : orderItemId.hashCode());
 		result = prime * result + ((orderedQty == null) ? 0 : orderedQty.hashCode());
-		result = prime * result + ((taxAmount == null) ? 0 : taxAmount.hashCode());
 		result = prime * result + ((totalActualCost == null) ? 0 : totalActualCost.hashCode());
-		result = prime * result + ((totalCost == null) ? 0 : totalCost.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -258,48 +257,6 @@ public class OrderItem implements Serializable {
 			return false;
 		}
 		OrderItem other = (OrderItem) obj;
-		if (actualTotalAmount == null) {
-			if (other.actualTotalAmount != null) {
-				return false;
-			}
-		} else if (!actualTotalAmount.equals(other.actualTotalAmount)) {
-			return false;
-		}
-		if (actualUnitCost == null) {
-			if (other.actualUnitCost != null) {
-				return false;
-			}
-		} else if (!actualUnitCost.equals(other.actualUnitCost)) {
-			return false;
-		}
-		if (costAmount == null) {
-			if (other.costAmount != null) {
-				return false;
-			}
-		} else if (!costAmount.equals(other.costAmount)) {
-			return false;
-		}
-		if (delieveredDate == null) {
-			if (other.delieveredDate != null) {
-				return false;
-			}
-		} else if (!delieveredDate.equals(other.delieveredDate)) {
-			return false;
-		}
-		if (delieveredQty == null) {
-			if (other.delieveredQty != null) {
-				return false;
-			}
-		} else if (!delieveredQty.equals(other.delieveredQty)) {
-			return false;
-		}
-		if (discountAmount == null) {
-			if (other.discountAmount != null) {
-				return false;
-			}
-		} else if (!discountAmount.equals(other.discountAmount)) {
-			return false;
-		}
 		if (orderItemId == null) {
 			if (other.orderItemId != null) {
 				return false;
@@ -314,13 +271,6 @@ public class OrderItem implements Serializable {
 		} else if (!orderedQty.equals(other.orderedQty)) {
 			return false;
 		}
-		if (taxAmount == null) {
-			if (other.taxAmount != null) {
-				return false;
-			}
-		} else if (!taxAmount.equals(other.taxAmount)) {
-			return false;
-		}
 		if (totalActualCost == null) {
 			if (other.totalActualCost != null) {
 				return false;
@@ -328,16 +278,7 @@ public class OrderItem implements Serializable {
 		} else if (!totalActualCost.equals(other.totalActualCost)) {
 			return false;
 		}
-		if (totalCost == null) {
-			if (other.totalCost != null) {
-				return false;
-			}
-		} else if (!totalCost.equals(other.totalCost)) {
-			return false;
-		}
 		return true;
 	}
-
-
 
 }

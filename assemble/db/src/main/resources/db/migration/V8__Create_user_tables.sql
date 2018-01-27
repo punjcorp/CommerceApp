@@ -231,6 +231,7 @@ ENGINE = InnoDB;
 
 CREATE INDEX `fk_user_credit_debit_user_address1_idx` ON `commercedb`.`user_credit_debit` (`address_id` ASC);
 
+
 -- -----------------------------------------------------
 -- Table `commercedb`.`user_address`
 -- -----------------------------------------------------
@@ -253,6 +254,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_address` (
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_user_address_user1_idx` ON `commercedb`.`user_address` (`username` ASC);
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

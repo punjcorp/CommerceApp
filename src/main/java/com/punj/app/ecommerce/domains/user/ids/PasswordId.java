@@ -16,6 +16,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class PasswordId implements Serializable {
 
+	private static final long serialVersionUID = -196041099827025244L;
+	
 	private String username;
 	private String password;
 	@Column(name = "modified_date")
@@ -74,6 +76,58 @@ public class PasswordId implements Serializable {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((modifiedDate == null) ? 0 : modifiedDate.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		PasswordId other = (PasswordId) obj;
+		if (modifiedDate == null) {
+			if (other.modifiedDate != null) {
+				return false;
+			}
+		} else if (!modifiedDate.equals(other.modifiedDate)) {
+			return false;
+		}
+		if (password == null) {
+			if (other.password != null) {
+				return false;
+			}
+		} else if (!password.equals(other.password)) {
+			return false;
+		}
+		if (username == null) {
+			if (other.username != null) {
+				return false;
+			}
+		} else if (!username.equals(other.username)) {
+			return false;
+		}
+		return true;
 	}
 
 }

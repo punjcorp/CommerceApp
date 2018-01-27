@@ -148,16 +148,17 @@ public class ManageAddressController {
 
 			logger.info("The address has been deleted now");
 
+			List<Address> addresses = userService.getAddressByUsername(userDetails.getUsername());
+			logger.info("The address list of {} addresses for the current user has been retrieved.", addresses.size());
+
+			model.addAttribute("addresses", addresses);
+			model.addAttribute("addressBean", addressBean);
+			
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while deleting address.", e);
 			model.addAttribute("alert",
 					messageSource.getMessage("commerce.screen.manage.address.deletion.failed", null, locale));
 		}
-		List<Address> addresses = userService.getAddressByUsername(userDetails.getUsername());
-		logger.info("The address list of {} addresses for the current user has been retrieved.", addresses.size());
-
-		model.addAttribute("addresses", addresses);
-		model.addAttribute("addressBean", addressBean);
 
 		return "account/address_list";
 	}

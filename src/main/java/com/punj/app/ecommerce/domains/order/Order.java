@@ -70,11 +70,11 @@ public class Order implements Serializable {
 	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH})
 	@JoinColumn(name = "supplier_id")
-	Supplier supplier;
+	private Supplier supplier;
 
 	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
-	List<OrderItem> orderItems;
+	private List<OrderItem> orderItems;
 
 	/**
 	 * @return the orderId

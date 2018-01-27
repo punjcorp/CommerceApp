@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
   `style_id` MEDIUMINT(7) ZEROFILL NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`style_id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1000000;
 
 alter table commercedb.style_generator auto_increment=1000000;
 

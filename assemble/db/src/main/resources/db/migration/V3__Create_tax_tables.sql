@@ -9,6 +9,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 USE `commercedb` ;
 
+
 -- -----------------------------------------------------
 -- Table `commercedb`.`tax_group`
 -- -----------------------------------------------------
@@ -78,27 +79,27 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tax_group_rule` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`tax_group_id`, `tax_location_id`, `tax_authority_id`),
+  PRIMARY KEY (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`),
   CONSTRAINT `fk_tax_group_rule_tax_authority1`
     FOREIGN KEY (`tax_authority_id`)
     REFERENCES `commercedb`.`tax_authority` (`tax_authority_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_tax_group_rule_tax_group1`
-    FOREIGN KEY (`tax_group_id`)
-    REFERENCES `commercedb`.`tax_group` (`tax_group_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_tax_group_rule_tax_location1`
     FOREIGN KEY (`tax_location_id`)
     REFERENCES `commercedb`.`tax_location` (`tax_location_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tax_group_rule_tax_group1`
+    FOREIGN KEY (`tax_group_id`)
+    REFERENCES `commercedb`.`tax_group` (`tax_group_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_tax_group_rule_tax_group1_idx` ON `commercedb`.`tax_group_rule` (`tax_group_id` ASC);
-
 CREATE INDEX `fk_tax_group_rule_tax_location1_idx` ON `commercedb`.`tax_group_rule` (`tax_location_id` ASC);
+
+CREATE INDEX `fk_tax_group_rule_tax_group1_idx` ON `commercedb`.`tax_group_rule` (`tax_group_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -109,8 +110,8 @@ DROP TABLE IF EXISTS `commercedb`.`tax_bracket` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`tax_bracket` (
   `tax_bracket_id` INT NOT NULL AUTO_INCREMENT,
   `seq_no` INT(2) NOT NULL,
-  `breakpoint` DECIMAL NULL,
-  `tax_amount` DECIMAL NULL,
+  `breakpoint` DECIMAL(12,2) NULL,
+  `tax_amount` DECIMAL(12,2) NULL,
   `created_date` DATETIME NULL,
   `created_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
@@ -125,16 +126,19 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `commercedb`.`tax_rate_rule` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`tax_rate_rule` (
-  `tax_rate_rule_id` INT NOT NULL AUTO_INCREMENT,
   `tax_group_id` INT NOT NULL,
+  `tax_location_id` INT NOT NULL,
+  `tax_authority_id` INT NOT NULL,
+  `tax_group_rule_seq` INT(2) NOT NULL,
+  `tax_rate_rule_id` INT NOT NULL AUTO_INCREMENT,
   `tax_bracket_id` INT NOT NULL,
   `seq_no` INT(2) NOT NULL,
-  `min_taxable_amt` DECIMAL NULL,
-  `max_taxable_amt` DECIMAL NULL,
+  `min_taxable_amt` DECIMAL(12,2) NULL,
+  `max_taxable_amt` DECIMAL(12,2) NULL,
   `effective_date` DATETIME NOT NULL,
   `expiry_date` DATETIME NOT NULL,
-  `percentage` DECIMAL NULL,
-  `amount` DECIMAL NULL,
+  `percentage` DECIMAL(12,2) NULL,
+  `amount` DECIMAL(12,2) NULL,
   `type_code` VARCHAR(30) NOT NULL,
   `status` VARCHAR(5) NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
@@ -142,19 +146,21 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tax_rate_rule` (
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   PRIMARY KEY (`tax_rate_rule_id`),
-  CONSTRAINT `fk_tax_rate_rule_tax_group1`
-    FOREIGN KEY (`tax_group_id`)
-    REFERENCES `commercedb`.`tax_group` (`tax_group_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_tax_rate_rule_tax_bracket1`
     FOREIGN KEY (`tax_bracket_id`)
     REFERENCES `commercedb`.`tax_bracket` (`tax_bracket_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tax_rate_rule_tax_group_rule1`
+    FOREIGN KEY (`tax_group_id` , `tax_location_id` , `tax_authority_id` , `tax_group_rule_seq`)
+    REFERENCES `commercedb`.`tax_group_rule` (`tax_group_id` , `tax_location_id` , `tax_authority_id` , `seq_no`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_tax_rate_rule_tax_bracket1_idx` ON `commercedb`.`tax_rate_rule` (`tax_bracket_id` ASC);
+
+CREATE INDEX `fk_tax_rate_rule_tax_group_rule1_idx` ON `commercedb`.`tax_rate_rule` (`tax_group_id` ASC, `tax_location_id` ASC, `tax_authority_id` ASC, `tax_group_rule_seq` ASC);
 
 
 -- -----------------------------------------------------

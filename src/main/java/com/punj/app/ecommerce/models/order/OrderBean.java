@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.money.MonetaryAmount;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -33,11 +34,11 @@ public class OrderBean {
 	private String createdBy;
 	private LocalDateTime createdDate;
 
-	private BigDecimal estimatedCost = new BigDecimal("0.0");
-	private BigDecimal discountAmount = new BigDecimal("0.0");
-	private BigDecimal taxAmount = new BigDecimal("0.0");
-	private BigDecimal totalAmount = new BigDecimal("0.0");
-	private BigDecimal paidAmount = new BigDecimal("0.0");
+	private MonetaryAmount estimatedCost;
+	private MonetaryAmount discountAmount;
+	private MonetaryAmount taxAmount;
+	private MonetaryAmount totalAmount;
+	private MonetaryAmount paidAmount;
 
 	private String status;
 
@@ -127,7 +128,7 @@ public class OrderBean {
 	/**
 	 * @return the totalAmount
 	 */
-	public BigDecimal getTotalAmount() {
+	public MonetaryAmount getTotalAmount() {
 		return totalAmount;
 	}
 
@@ -135,14 +136,14 @@ public class OrderBean {
 	 * @param totalAmount
 	 *            the totalAmount to set
 	 */
-	public void setTotalAmount(BigDecimal totalAmount) {
+	public void setTotalAmount(MonetaryAmount totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
 	/**
 	 * @return the paidAmount
 	 */
-	public BigDecimal getPaidAmount() {
+	public MonetaryAmount getPaidAmount() {
 		return paidAmount;
 	}
 
@@ -150,14 +151,14 @@ public class OrderBean {
 	 * @param paidAmount
 	 *            the paidAmount to set
 	 */
-	public void setPaidAmount(BigDecimal paidAmount) {
+	public void setPaidAmount(MonetaryAmount paidAmount) {
 		this.paidAmount = paidAmount;
 	}
 
 	/**
 	 * @return the discountAmount
 	 */
-	public BigDecimal getDiscountAmount() {
+	public MonetaryAmount getDiscountAmount() {
 		return discountAmount;
 	}
 
@@ -165,14 +166,14 @@ public class OrderBean {
 	 * @param discountAmount
 	 *            the discountAmount to set
 	 */
-	public void setDiscountAmount(BigDecimal discountAmount) {
+	public void setDiscountAmount(MonetaryAmount discountAmount) {
 		this.discountAmount = discountAmount;
 	}
 
 	/**
 	 * @return the taxAmount
 	 */
-	public BigDecimal getTaxAmount() {
+	public MonetaryAmount getTaxAmount() {
 		return taxAmount;
 	}
 
@@ -180,7 +181,7 @@ public class OrderBean {
 	 * @param taxAmount
 	 *            the taxAmount to set
 	 */
-	public void setTaxAmount(BigDecimal taxAmount) {
+	public void setTaxAmount(MonetaryAmount taxAmount) {
 		this.taxAmount = taxAmount;
 	}
 
@@ -217,7 +218,7 @@ public class OrderBean {
 	/**
 	 * @return the estimatedCost
 	 */
-	public BigDecimal getEstimatedCost() {
+	public MonetaryAmount getEstimatedCost() {
 		return estimatedCost;
 	}
 
@@ -225,7 +226,7 @@ public class OrderBean {
 	 * @param estimatedCost
 	 *            the estimatedCost to set
 	 */
-	public void setEstimatedCost(BigDecimal estimatedCost) {
+	public void setEstimatedCost(MonetaryAmount estimatedCost) {
 		this.estimatedCost = estimatedCost;
 	}
 
