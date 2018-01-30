@@ -2,12 +2,11 @@ package com.punj.app.ecommerce.domains.inventory.ids;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.item.Item;
 
 @Embeddable
@@ -19,9 +18,8 @@ public class ItemStockId implements Serializable {
 	@JoinColumn(name = "item_id")
 	private Item item;
 
-	@ManyToOne
-	@JoinColumn(name = "location_id")
-	private Location location;
+	@Column(name = "location_id")
+	private Integer locationId;
 
 	/**
 	 * @return the item
@@ -39,18 +37,18 @@ public class ItemStockId implements Serializable {
 	}
 
 	/**
-	 * @return the location
+	 * @return the locationId
 	 */
-	public Location getLocation() {
-		return location;
+	public Integer getLocationId() {
+		return locationId;
 	}
 
 	/**
-	 * @param location
-	 *            the location to set
+	 * @param locationId
+	 *            the locationId to set
 	 */
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 	/*
@@ -63,7 +61,7 @@ public class ItemStockId implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((item == null) ? 0 : item.hashCode());
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((locationId == null) ? 0 : locationId.hashCode());
 		return result;
 	}
 
@@ -91,11 +89,11 @@ public class ItemStockId implements Serializable {
 		} else if (!item.equals(other.item)) {
 			return false;
 		}
-		if (location == null) {
-			if (other.location != null) {
+		if (locationId == null) {
+			if (other.locationId != null) {
 				return false;
 			}
-		} else if (!location.equals(other.location)) {
+		} else if (!locationId.equals(other.locationId)) {
 			return false;
 		}
 		return true;

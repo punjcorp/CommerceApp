@@ -19,6 +19,8 @@ truncate commercedb.item_options;
 truncate commercedb.item;
 truncate commercedb.sku_generator;
 truncate commercedb.style_generator;
+truncate commercedb.item_stock_details;
+truncate commercedb.item_stock;
 
 
 -- -----------------------------------------------------
@@ -471,6 +473,78 @@ values('10000090102', '4', 'Red');
 insert into commercedb.item_attributes( item_id, attribute_id, `value`)
 values('10000090102', '2', 'M');
 commit;
+
+
+-- -----------------------------------------------------
+-- Seed data for item stock 
+-- -----------------------------------------------------
+DROP PROCEDURE IF EXISTS commercedb.p_inv_seed_data;
+
+DELIMITER //
+CREATE PROCEDURE commercedb.p_inv_seed_data()
+BEGIN
+	DECLARE no_more_rows BOOLEAN DEFAULT FALSE; 
+	DECLARE v_item BIGINT;
+	DECLARE v_location INTEGER(4);   
+    DECLARE v_bucket INTEGER;
+	DECLARE c_item CURSOR FOR
+        select item_id from commercedb.item where item_level='2';
+	DECLARE  c_location CURSOR FOR 
+		select location_id from commercedb.location ;
+	DECLARE  c_bucket CURSOR FOR 
+		select stock_bucket_id from commercedb.stock_bucket ;        
+	DECLARE CONTINUE HANDLER FOR NOT FOUND
+	SET no_more_rows := TRUE;    
+            
+	TRUNCATE commercedb.item_stock;
+    TRUNCATE commercedb.item_stock_details;
+			
+	OPEN c_item;
+			
+	get_item: LOOP
+		FETCH c_item INTO v_item;
+		IF no_more_rows THEN
+			CLOSE c_item;
+			LEAVE get_item;
+		END IF;
+
+		OPEN c_location;
+           
+        get_location: LOOP
+			FETCH c_location INTO v_location;
+            IF no_more_rows THEN
+				SET no_more_rows := FALSE;
+				CLOSE c_location;
+				LEAVE get_location;
+			END IF;
+			
+            INSERT INTO commercedb.item_stock(item_id, location_id, total_qty, non_sellable_qty,reserved_qty, stock_on_hand) VALUES(v_item,v_location,0,0,0,0);
+
+			OPEN c_bucket;
+			get_bucket: LOOP
+				FETCH c_bucket INTO v_bucket;
+				IF no_more_rows THEN
+					SET no_more_rows := FALSE;
+					CLOSE c_bucket;
+					LEAVE get_bucket;
+				END IF;
+            
+				INSERT INTO commercedb.item_stock_details(item_id, location_id, stock_bucket_id, total_qty) VALUES(v_item,v_location,v_bucket,0);
+			END LOOP get_bucket;
+            
+		END LOOP get_location;
+	END LOOP get_item;
+	
+    COMMIT;
+    
+END//
+DELIMITER ;
+
+CALL commercedb.p_inv_seed_data();
+
+DROP PROCEDURE commercedb.p_inv_seed_data;
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 

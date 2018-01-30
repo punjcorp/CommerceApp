@@ -36,6 +36,9 @@ import com.punj.app.ecommerce.domains.supplier.Supplier;
 @Entity
 @Table(name = "purchase_order")
 public class Order implements Serializable {
+
+	private static final long serialVersionUID = 4660114320145237621L;
+
 	@Id
 	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -68,7 +71,7 @@ public class Order implements Serializable {
 	private String status;
 
 	@IndexedEmbedded
-	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "supplier_id")
 	private Supplier supplier;
 

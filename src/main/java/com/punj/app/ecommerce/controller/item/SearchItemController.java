@@ -67,7 +67,7 @@ public class SearchItemController {
 	}
 
 	@GetMapping(ViewPathConstants.LIST_ITEM_URL)
-	public String listItems(@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
+	public String listItems(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
 		try {
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
@@ -90,12 +90,12 @@ public class SearchItemController {
 					tmpPager.getMaxDisplayPage(), ViewPathConstants.LIST_ITEM_URL);
 
 			model.addAttribute("items", items);
-			model.addAttribute("pager", pager);
-			model.addAttribute("success", "The {" + pager.getResultSize() + "} items record has been retrieved");
+			model.addAttribute(MVCConstants.PAGER, pager);
+			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} items record has been retrieved");
 			logger.info("All the items has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving items", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.DISPLAY_PAGE;
 	}
@@ -109,7 +109,7 @@ public class SearchItemController {
 
 	@PostMapping(ViewPathConstants.SEARCH_ITEM_URL)
 	public String searchItems(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
-			@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
+			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.MANAGE_ITEM_PAGE;
 		try {
@@ -134,13 +134,13 @@ public class SearchItemController {
 
 			model.addAttribute("items", items);
 			model.addAttribute("searchBean", searchBean);
-			model.addAttribute("pager", pager);
+			model.addAttribute(MVCConstants.PAGER, pager);
 			model.addAttribute(MVCConstants.SUCCESS,
 					"The {" + pager.getResultSize() + "} items record has been retrieved");
 			logger.info("The searched item details has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving items", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 
 		return ViewPathConstants.MANAGE_ITEM_PAGE;
@@ -189,7 +189,7 @@ public class SearchItemController {
 
 				model.addAttribute("colorList", colorList);
 				model.addAttribute("sizeList", sizeList);
-				model.addAttribute("itemBean", itemBean);
+				model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 
 				logger.info("All the items details has been retrieved successfully and ready for detail page.");
 			} else {

@@ -40,4 +40,6 @@ public interface OrderService {
 
 	public OrderDTO findAll();
 	
+	public Order receiveOrder(BigInteger orderId, String username);
+	
 }

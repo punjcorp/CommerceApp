@@ -407,6 +407,17 @@ a[id="managecard"]::before {
 	content: "credit_card" !important;
 }
 
+a[href*="#inventory"]::before {
+	content: "swap_horiz" !important;
+	font-size: 48px;
+}
+a[id="manageinventory"]::before {
+	content: "store" !important;
+}
+
+a[id="addinventory"]::before {
+	content: "repeat_one" !important;
+}
 a[href*="#supplier"]::before {
 	content: "people_outline" !important;
 	font-size: 48px;

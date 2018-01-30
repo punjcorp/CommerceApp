@@ -68,7 +68,7 @@ public class DefaultController {
 	}
 
 	@GetMapping(ViewPathConstants.HOME_URL)
-	public String login(@ModelAttribute SearchBean searchBean, @RequestParam("page") Optional<Integer> page,
+	public String login(@ModelAttribute SearchBean searchBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page,
 			Model model, Principal principal) {
 		logger.info("========================");
 		logger.info("WELCOME TO THE HOME PAGE");
@@ -103,7 +103,7 @@ public class DefaultController {
 			
 			model.addAttribute("items", items);
 			model.addAttribute("searchBean", searchBean);
-			model.addAttribute("pager", pager);
+			model.addAttribute(MVCConstants.PAGER, pager);
 
 			logger.info("The item details for home page has been retrieved successfully.");
 
@@ -144,7 +144,7 @@ public class DefaultController {
 	 * @param items
 	 */
 	private void setItemList(List<Item> itemsList, ItemBeanDTO items) {
-		List<ItemBean> itemBeanList = new ArrayList<ItemBean>();
+		List<ItemBean> itemBeanList = new ArrayList<>();
 		ItemBean itemBean = null;
 		HierarchyBean hierarchyBean = null;
 		for (Item item : itemsList) {

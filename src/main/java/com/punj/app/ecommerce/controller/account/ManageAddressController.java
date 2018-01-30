@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.domains.user.User;
 import com.punj.app.ecommerce.models.RegisterUserBean;
@@ -56,16 +58,16 @@ public class ManageAddressController {
 	}
 
 	@GetMapping("/manage_address")
-	public String showAddress(Model model, HttpSession session,Authentication authentication) {
+	public String showAddress(Model model, HttpSession session, Authentication authentication) {
 
 		RegisterUserBean addressBean = new RegisterUserBean();
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		
+
 		List<Address> addresses = userService.getAddressByUsername(userDetails.getUsername());
 
 		logger.info("The address list of {} addresses for the current user has been retrieved.", addresses.size());
 
-		model.addAttribute("addresses", addresses);
+		model.addAttribute(MVCConstants.ADDRESSES_PARAM, addresses);
 		model.addAttribute("addressBean", addressBean);
 		return "account/address_list";
 	}
@@ -79,7 +81,7 @@ public class ManageAddressController {
 			logger.info("The empty address bean has been created");
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while creating empty address.", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 
 		return "account/add_address";
@@ -104,11 +106,11 @@ public class ManageAddressController {
 			userService.saveUser(user);
 
 			model.addAttribute("addressBean", addressBean);
-			model.addAttribute("success",
+			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.add.address.success", null, locale));
 		} catch (Exception e) {
 			logger.error("There is an error while updating address", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		return "account/add_address";
 	}
@@ -122,7 +124,7 @@ public class ManageAddressController {
 			logger.info("The primary address details has been updated in addressBean");
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while saving address.", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		model.addAttribute("addressBean", addressBean);
 		return "account/edit_address";
@@ -143,7 +145,7 @@ public class ManageAddressController {
 			userService.saveUser(user);
 
 			model.addAttribute("addressBean", addressBean);
-			model.addAttribute("success",
+			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.manage.address.deleted", null, locale));
 
 			logger.info("The address has been deleted now");
@@ -151,9 +153,9 @@ public class ManageAddressController {
 			List<Address> addresses = userService.getAddressByUsername(userDetails.getUsername());
 			logger.info("The address list of {} addresses for the current user has been retrieved.", addresses.size());
 
-			model.addAttribute("addresses", addresses);
+			model.addAttribute(MVCConstants.ADDRESSES_PARAM, addresses);
 			model.addAttribute("addressBean", addressBean);
-			
+
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while deleting address.", e);
 			model.addAttribute("alert",
@@ -172,11 +174,11 @@ public class ManageAddressController {
 			address = this.updateAddressInDomain(address, addressBean);
 			userService.updateAddress(address);
 			model.addAttribute("addressBean", addressBean);
-			model.addAttribute("success",
+			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.edit.address.updated", null, locale));
 		} catch (Exception e) {
 			logger.error("There is an error while updating address", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		return "account/edit_address";
 	}

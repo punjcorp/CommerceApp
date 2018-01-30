@@ -1,76 +1,68 @@
 package com.punj.app.ecommerce.domains.inventory.ids;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
-import com.punj.app.ecommerce.domains.common.Location;
-import com.punj.app.ecommerce.domains.inventory.StockBucket;
-import com.punj.app.ecommerce.domains.item.Item;
 
 @Embeddable
 public class ItemStockBucketId implements Serializable {
 
 	private static final long serialVersionUID = -6208130341400297143L;
 
-	@OneToOne
-	@JoinColumn(name = "item_id")
-	private Item item;
+	@Column(name = "item_id")
+	private BigInteger itemId;
 
-	@ManyToOne
-	@JoinColumn(name = "location_id")
-	private Location location;
+	@Column(name = "location_id")
+	private Integer locationId;
 
-	@ManyToOne
-	@JoinColumn(name = "stock_bucket_id")
-	private StockBucket stockBucket;
+	@Column(name = "stock_bucket_id")
+	private Integer stockBucketId;
 
 	/**
-	 * @return the item
+	 * @return the itemId
 	 */
-	public Item getItem() {
-		return item;
+	public BigInteger getItemId() {
+		return itemId;
 	}
 
 	/**
-	 * @param item
-	 *            the item to set
+	 * @param itemId
+	 *            the itemId to set
 	 */
-	public void setItem(Item item) {
-		this.item = item;
+	public void setItemId(BigInteger itemId) {
+		this.itemId = itemId;
 	}
 
 	/**
-	 * @return the location
+	 * @return the locationId
 	 */
-	public Location getLocation() {
-		return location;
+	public Integer getLocationId() {
+		return locationId;
 	}
 
 	/**
-	 * @param location
-	 *            the location to set
+	 * @param locationId
+	 *            the locationId to set
 	 */
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 	/**
-	 * @return the stockBucket
+	 * @return the stockBucketId
 	 */
-	public StockBucket getStockBucket() {
-		return stockBucket;
+	public Integer getStockBucketId() {
+		return stockBucketId;
 	}
 
 	/**
-	 * @param stockBucket
-	 *            the stockBucket to set
+	 * @param stockBucketId
+	 *            the stockBucketId to set
 	 */
-	public void setStockBucket(StockBucket stockBucket) {
-		this.stockBucket = stockBucket;
+	public void setStockBucketId(Integer stockBucketId) {
+		this.stockBucketId = stockBucketId;
 	}
 
 	/*
@@ -82,9 +74,9 @@ public class ItemStockBucketId implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((item == null) ? 0 : item.hashCode());
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((stockBucket == null) ? 0 : stockBucket.hashCode());
+		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
+		result = prime * result + ((locationId == null) ? 0 : locationId.hashCode());
+		result = prime * result + ((stockBucketId == null) ? 0 : stockBucketId.hashCode());
 		return result;
 	}
 
@@ -105,25 +97,25 @@ public class ItemStockBucketId implements Serializable {
 			return false;
 		}
 		ItemStockBucketId other = (ItemStockBucketId) obj;
-		if (item == null) {
-			if (other.item != null) {
+		if (itemId == null) {
+			if (other.itemId != null) {
 				return false;
 			}
-		} else if (!item.equals(other.item)) {
+		} else if (!itemId.equals(other.itemId)) {
 			return false;
 		}
-		if (location == null) {
-			if (other.location != null) {
+		if (locationId == null) {
+			if (other.locationId != null) {
 				return false;
 			}
-		} else if (!location.equals(other.location)) {
+		} else if (!locationId.equals(other.locationId)) {
 			return false;
 		}
-		if (stockBucket == null) {
-			if (other.stockBucket != null) {
+		if (stockBucketId == null) {
+			if (other.stockBucketId != null) {
 				return false;
 			}
-		} else if (!stockBucket.equals(other.stockBucket)) {
+		} else if (!stockBucketId.equals(other.stockBucketId)) {
 			return false;
 		}
 		return true;

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
@@ -77,7 +78,7 @@ public class ManageStyleController {
 
 		model.addAttribute("colorList", colorList);
 		model.addAttribute("sizeList", sizeList);
-		model.addAttribute("itemBean", newItemBean);
+		model.addAttribute(MVCConstants.ITEM_BEAN, newItemBean);
 		logger.info("The default style object has been added to display on the screen");
 
 		return "item/add_style";
@@ -127,8 +128,8 @@ public class ManageStyleController {
 		itemBean.setItemId(styleNumber);
 		model.addAttribute("colorList", colorList);
 		model.addAttribute("sizeList", sizeList);
-		model.addAttribute("itemBean", itemBean);
-		model.addAttribute("success", "The new style " + styleNumber + " has been created.");
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
+		model.addAttribute(MVCConstants.SUCCESS, "The new style " + styleNumber + " has been created.");
 
 		return "item/add_style";
 	}

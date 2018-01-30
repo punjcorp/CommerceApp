@@ -27,6 +27,7 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
@@ -78,7 +80,6 @@ public class ManageOrderController {
 	private static final Logger logger = LogManager.getLogger();
 	private OrderService orderService;
 	private MessageSource messageSource;
-	
 
 	/**
 	 * @param orderService
@@ -98,7 +99,7 @@ public class ManageOrderController {
 		this.messageSource = messageSource;
 	}
 
-	@GetMapping(value = "/add_order")
+	@GetMapping(value = ViewPathConstants.ADD_ORDER_URL)
 	public String addOrder(Model model, HttpSession session) {
 		logger.info("The add method for new purchase order has been called");
 		try {
@@ -106,21 +107,22 @@ public class ManageOrderController {
 			SupplierBean supplierBean = new SupplierBean();
 			ItemBean itemBean = new ItemBean();
 
-			model.addAttribute("orderBean", orderBean);
-			model.addAttribute("supplierBean", supplierBean);
-			model.addAttribute("itemBean", itemBean);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 			logger.info("The empty purchase order object bean has been created");
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while creating empty purchase order.", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 
-		return "order/add_order";
+		return ViewPathConstants.ADD_ORDER_PAGE;
 
 	}
 
-	@PostMapping(value = "/add_order", params = { "addOrderItem" })
-	public String addRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale) {
+	@PostMapping(value = ViewPathConstants.ADD_ORDER_URL, params = { MVCConstants.ADD_ORDER_ITEM_PARAM })
+	public String addRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,
+			Locale locale) {
 		orderBean.getOrderItems().add(new OrderItemBean());
 
 		SupplierBean supplierBean = new SupplierBean();
@@ -128,35 +130,35 @@ public class ManageOrderController {
 
 		this.calculateOrderCost(orderBean, locale);
 
-		model.addAttribute("orderBean", orderBean);
-		model.addAttribute("supplierBean", supplierBean);
-		model.addAttribute("itemBean", itemBean);
+		model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 
-		return "order/add_order";
+		return ViewPathConstants.ADD_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/add_order", params = { "removeOrderItem" })
-	public String removeRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale,
-			final HttpServletRequest req) {
-		final Integer rowId = Integer.valueOf(req.getParameter("id"));
+	@PostMapping(value = ViewPathConstants.ADD_ORDER_URL, params = { MVCConstants.REMOVE_ORDER_ITEM_PARAM })
+	public String removeRow(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,
+			Locale locale, final HttpServletRequest req) {
+		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.ID_PARAM));
 		orderBean.getOrderItems().remove(rowId.intValue());
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
 		this.calculateOrderCost(orderBean, locale);
 
-		model.addAttribute("orderBean", orderBean);
-		model.addAttribute("supplierBean", supplierBean);
-		model.addAttribute("itemBean", itemBean);
-		return "order/add_order";
+		model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
+		return ViewPathConstants.ADD_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/add_order", params = { "saveOrder" })
+	@PostMapping(value = ViewPathConstants.ADD_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrder(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult,
 			@ModelAttribute SupplierBean supplierBean, @ModelAttribute ItemBean itemBean, Model model,
-			HttpSession session, Locale locale, Authentication authentication) {
+			Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors())
-			return "order/add_order";
+			return ViewPathConstants.ADD_ORDER_PAGE;
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -167,16 +169,16 @@ public class ManageOrderController {
 			logger.info("The order details has been saved successfully");
 
 			this.calculateOrderCost(orderBean, locale);
-			model.addAttribute("orderBean", orderBean);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.add.success",
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.add.success",
 					new Object[] { order.getOrderId() }, locale));
 
 		} catch (Exception e) {
 			logger.error("There is an error while creating new purchase order", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/add_order";
+		return ViewPathConstants.ADD_ORDER_PAGE;
 	}
 
 	/**
@@ -189,16 +191,16 @@ public class ManageOrderController {
 	private void updateOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails, String status) {
 
 		order.setOrderId(orderBean.getOrderId());
-		
-		Supplier supplier=new Supplier();
+
+		Supplier supplier = new Supplier();
 		supplier.setSupplierId(orderBean.getSupplierId());
 		order.setSupplier(supplier);
-		
+
 		if (userDetails != null)
 			order.setCreatedBy(userDetails.getUsername());
 		order.setCreatedDate(LocalDateTime.now());
 		order.setStatus(status);
-		
+
 		order.setEstimatedCost(BigDecimal.valueOf(orderBean.getEstimatedCost().getNumber().doubleValue()));
 		order.setDiscountAmount(BigDecimal.valueOf(orderBean.getDiscountAmount().getNumber().doubleValue()));
 		order.setTaxAmount(BigDecimal.valueOf(orderBean.getTaxAmount().getNumber().doubleValue()));
@@ -209,7 +211,7 @@ public class ManageOrderController {
 		 * Update Order Item details
 		 */
 		List<OrderItemBean> orderItemBeanList = orderBean.getOrderItems();
-		List<OrderItem> orderItems = new ArrayList<OrderItem>();
+		List<OrderItem> orderItems = new ArrayList<>();
 		OrderItem orderItem = null;
 		OrderItemId orderItemId = null;
 
@@ -231,11 +233,14 @@ public class ManageOrderController {
 			orderItem.setDelieveredQty(orderItemBean.getDelieveredQty());
 			orderItem.setDelieveredDate(LocalDateTime.now());
 
-			orderItem.setActualUnitCost(BigDecimal.valueOf(orderItemBean.getCostActualAmount().getNumber().doubleValue()));
+			orderItem.setActualUnitCost(
+					BigDecimal.valueOf(orderItemBean.getCostActualAmount().getNumber().doubleValue()));
 			orderItem.setCostAmount(BigDecimal.valueOf(orderItemBean.getCostAmount().getNumber().doubleValue()));
-			orderItem.setDiscountAmount(BigDecimal.valueOf(orderItemBean.getDiscountAmount().getNumber().doubleValue()));
+			orderItem
+					.setDiscountAmount(BigDecimal.valueOf(orderItemBean.getDiscountAmount().getNumber().doubleValue()));
 			orderItem.setTaxAmount(BigDecimal.valueOf(orderItemBean.getTaxAmount().getNumber().doubleValue()));
-			orderItem.setActualTotalAmount(BigDecimal.valueOf(orderItemBean.getTotalActualAmount().getNumber().doubleValue()));
+			orderItem.setActualTotalAmount(
+					BigDecimal.valueOf(orderItemBean.getTotalActualAmount().getNumber().doubleValue()));
 
 			orderItems.add(orderItem);
 
@@ -247,14 +252,13 @@ public class ManageOrderController {
 
 	}
 
-	@GetMapping(value = "/manage_order")
-	public String manageOrder(@RequestParam("orderId") Optional<String> orderId, Model model, HttpSession session, Locale locale) {
+	@GetMapping(value = ViewPathConstants.MANAGE_ORDER_URL)
+	public String manageOrder(@RequestParam(MVCConstants.ORDER_ID_PARAM) Optional<String> orderId, Model model, HttpSession session,
+			Locale locale) {
 		logger.info("The manage method for purchase orders has been called");
 		try {
 			String searchText = null;
-			if (!orderId.isPresent()) {
-				orderId = null;
-			} else {
+			if (orderId.isPresent()) {
 				searchText = orderId.get();
 			}
 
@@ -262,10 +266,11 @@ public class ManageOrderController {
 			pager.setCurrentPageNo(1);
 
 			OrderBean orderBean = new OrderBean();
-			model.addAttribute("orderBean", orderBean);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 			OrderDTO ordersDTO = null;
 
-			if (orderId != null) {
+			
+			if (searchText!=null) {
 				ordersDTO = orderService.searchOrder(searchText, pager);
 			} else {
 				ordersDTO = orderService.searchAllOrders(pager);
@@ -274,22 +279,22 @@ public class ManageOrderController {
 			OrderBeanDTO orders = new OrderBeanDTO();
 			this.updateOrderBeanDTO(orders, ordersDTO, locale);
 
-			model.addAttribute("orders", orders);
+			model.addAttribute(MVCConstants.ORDERS_BEAN, orders);
 
 			logger.info("The purchase order details bean has been retrieved");
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while retrieving purchase orders.", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 
 	}
 
 	private void updateOrderBeanDTO(OrderBeanDTO orders, OrderDTO ordersDTO, Locale locale) {
 
 		List<Order> orderList = ordersDTO.getOrders();
-		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
+		List<OrderBean> orderBeanList = new ArrayList<>();
 		OrderBean orderBean = null;
 
 		for (Order order : orderList) {
@@ -305,36 +310,29 @@ public class ManageOrderController {
 	private void updateBean(OrderBean orderBean, Order order, Locale locale) {
 		orderBean.setOrderId(order.getOrderId());
 		orderBean.setSupplierId(order.getSupplier().getSupplierId());
-		
-		SupplierBean supplierBean=new SupplierBean();
-		this.updateSupplierBean(supplierBean,order.getSupplier());
+
+		SupplierBean supplierBean = new SupplierBean();
+		this.updateSupplierBean(supplierBean, order.getSupplier());
 		orderBean.setSupplier(supplierBean);
-		
+
 		orderBean.setCreatedBy(order.getCreatedBy());
 		orderBean.setCreatedDate(order.getCreatedDate());
 
-		
 		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
-	    MonetaryAmount monetaryAmt= Monetary.getDefaultAmountFactory()
-	      .setCurrency(currenyUnit).setNumber(order.getTotalAmount()).create();
-	    orderBean.setTotalAmount(monetaryAmt);
-	    
-	    monetaryAmt = Monetary.getDefaultAmountFactory()
-	  	      .setCurrency(currenyUnit).setNumber(order.getPaidAmount()).create();
+		MonetaryAmount monetaryAmt = Money.of(order.getTotalAmount(),currenyUnit);
+		orderBean.setTotalAmount(monetaryAmt);
+
+		monetaryAmt = Money.of(order.getPaidAmount(),currenyUnit);
 		orderBean.setPaidAmount(monetaryAmt);
-		
-	    monetaryAmt = Monetary.getDefaultAmountFactory()
-	  	      .setCurrency(currenyUnit).setNumber(order.getDiscountAmount()).create();
-	    orderBean.setDiscountAmount(monetaryAmt);
-	    
-	    monetaryAmt = Monetary.getDefaultAmountFactory()
-	  	      .setCurrency(currenyUnit).setNumber(order.getTaxAmount()).create();
-	    orderBean.setTaxAmount(monetaryAmt);
-	    
-	    monetaryAmt = Monetary.getDefaultAmountFactory()
-	  	      .setCurrency(currenyUnit).setNumber(order.getEstimatedCost()).create();
+
+		monetaryAmt = Money.of(order.getDiscountAmount(),currenyUnit);
+		orderBean.setDiscountAmount(monetaryAmt);
+
+		monetaryAmt = Money.of(order.getTaxAmount(),currenyUnit);
+		orderBean.setTaxAmount(monetaryAmt);
+
+		monetaryAmt = Money.of(order.getEstimatedCost(),currenyUnit);
 		orderBean.setEstimatedCost(monetaryAmt);
-		
 
 		orderBean.setStatus(order.getStatus());
 
@@ -358,10 +356,10 @@ public class ManageOrderController {
 		supplierBean.setPhone2(supplier.getPhone2());
 
 		List<Address> supplierAddressList = supplier.getAddresses();
-		List<AddressBean> supplierAddresses = new ArrayList<AddressBean>();
+		List<AddressBean> supplierAddresses = new ArrayList<>();
 
 		AddressBean addressBean = null;
-		if (supplierAddressList != null && supplierAddressList.size() > 0) {
+		if (supplierAddressList != null && !supplierAddressList.isEmpty()) {
 			for (Address address : supplierAddressList) {
 
 				addressBean = new AddressBean();
@@ -384,19 +382,18 @@ public class ManageOrderController {
 		logger.info("The supplier details has been updated in bean object now");
 
 	}
-	
-	
+
 	private void updateOrderItemsBean(OrderBean orderBean, Order order, Locale locale) {
-		this.updateBean(orderBean, order,locale);
+		this.updateBean(orderBean, order, locale);
 
 		List<OrderItem> orderItems = order.getOrderItems();
 
-		List<OrderItemBean> orderItemBeanList = new ArrayList<OrderItemBean>();
+		List<OrderItemBean> orderItemBeanList = new ArrayList<>();
 		OrderItemBean orderItemBean = null;
-		
+
 		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
-		MonetaryAmount monetaryAmt=null;
-		
+		MonetaryAmount monetaryAmt = null;
+
 		for (OrderItem orderItem : orderItems) {
 			orderItemBean = new OrderItemBean();
 			orderItemBean.setOrderId(order.getOrderId());
@@ -404,36 +401,29 @@ public class ManageOrderController {
 			orderItemBean.setLocationId(orderItem.getOrderItemId().getLocation());
 			orderItemBean.setOrderedQty(orderItem.getOrderedQty());
 
-		    monetaryAmt= Monetary.getDefaultAmountFactory()
-				      .setCurrency(currenyUnit).setNumber(orderItem.getCostAmount()).create();
-		    orderItemBean.setCostAmount(monetaryAmt);
-		    
-		    monetaryAmt= Monetary.getDefaultAmountFactory()
-				      .setCurrency(currenyUnit).setNumber(orderItem.getTotalCost()).create();
+			monetaryAmt = Money.of(orderItem.getCostAmount(),currenyUnit);
+			orderItemBean.setCostAmount(monetaryAmt);
+
+			monetaryAmt = Money.of(orderItem.getTotalCost(),currenyUnit);
 			orderItemBean.setTotalCost(monetaryAmt);
 
 			orderItemBean.setDelieveredQty(orderItem.getDelieveredQty());
 			orderItemBean.setDelieveredDate(orderItem.getDelieveredDate());
-			
-		    monetaryAmt= Monetary.getDefaultAmountFactory()
-		      .setCurrency(currenyUnit).setNumber(orderItem.getActualUnitCost()).create();
-		    orderItemBean.setCostActualAmount(monetaryAmt);
-		    
-		    monetaryAmt = Monetary.getDefaultAmountFactory()
-		  	      .setCurrency(currenyUnit).setNumber(orderItem.getTotalActualCost()).create();
-		    orderItemBean.setTotalActualCost(monetaryAmt);
-			
-		    monetaryAmt = Monetary.getDefaultAmountFactory()
-		  	      .setCurrency(currenyUnit).setNumber(orderItem.getDiscountAmount()).create();
+
+			monetaryAmt = Money.of(orderItem.getActualUnitCost(),currenyUnit);
+			orderItemBean.setCostActualAmount(monetaryAmt);
+
+			monetaryAmt = Money.of(orderItem.getTotalActualCost(),currenyUnit);
+			orderItemBean.setTotalActualCost(monetaryAmt);
+
+			monetaryAmt = Money.of(orderItem.getDiscountAmount(),currenyUnit);
 			orderItemBean.setDiscountAmount(monetaryAmt);
-		    
-		    monetaryAmt = Monetary.getDefaultAmountFactory()
-		  	      .setCurrency(currenyUnit).setNumber(orderItem.getTaxAmount()).create();
+
+			monetaryAmt = Money.of(orderItem.getTaxAmount(),currenyUnit);
 			orderItemBean.setTaxAmount(monetaryAmt);
-		    
-		    monetaryAmt = Monetary.getDefaultAmountFactory()
-		  	      .setCurrency(currenyUnit).setNumber(orderItem.getActualTotalAmount()).create();
-			orderItemBean.setTotalActualAmount(monetaryAmt);			
+
+			monetaryAmt = Money.of(orderItem.getActualTotalAmount(),currenyUnit);
+			orderItemBean.setTotalActualAmount(monetaryAmt);
 
 			orderItemBeanList.add(orderItemBean);
 		}
@@ -455,7 +445,7 @@ public class ManageOrderController {
 	}
 
 	@PostMapping(ViewPathConstants.SEARCH_ORDER_URL)
-	public String searchOrder(@ModelAttribute OrderBean orderBean, @RequestParam("page") Optional<Integer> page,
+	public String searchOrder(@ModelAttribute OrderBean orderBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page,
 			Model model, HttpSession session, Locale locale) {
 		try {
 
@@ -469,73 +459,74 @@ public class ManageOrderController {
 			OrderDTO ordersDTO = orderService.searchOrder(orderBean.getOrderId().toString(), pager);
 
 			OrderBeanDTO orders = new OrderBeanDTO();
-			this.updateOrderBeanDTO(orders, ordersDTO,locale);
+			this.updateOrderBeanDTO(orders, ordersDTO, locale);
 
 			Pager tmpPager = ordersDTO.getPager();
 			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(),ViewPathConstants.SEARCH_ORDER_URL);
+					tmpPager.getMaxDisplayPage(), ViewPathConstants.SEARCH_ORDER_URL);
 
-			model.addAttribute("orders", orders);
-			model.addAttribute("orderBean", orderBean);
-			model.addAttribute("pager", pager);
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.search.result",
+			model.addAttribute(MVCConstants.ORDERS_BEAN, orders);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+			model.addAttribute(MVCConstants.PAGER, pager);
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.search.result",
 					new Object[] { pager.getResultSize() }, locale));
 
 			logger.info("The purchase order details has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase orders", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@GetMapping("/edit_order")
+	@GetMapping(ViewPathConstants.EDIT_ORDER_URL)
 	public String editOrder(Model model, HttpSession session, final HttpServletRequest req, Locale locale) {
 		try {
-			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
+			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			Order order = orderService.searchOrder(orderId);
 
 			OrderBean orderBean = new OrderBean();
 			this.updateOrderItemsBean(orderBean, order, locale);
 
-			this.calculateOrderCost(orderBean,locale);
+			this.calculateOrderCost(orderBean, locale);
 
 			SupplierBean supplierBean = new SupplierBean();
 			ItemBean itemBean = new ItemBean();
-			model.addAttribute("orderBean", orderBean);
-			model.addAttribute("supplierBean", supplierBean);
-			model.addAttribute("itemBean", itemBean);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 
 			logger.info("The selected purchase order has been retrieved successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for updation", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/edit_order";
+		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/edit_order", params = { "addOrderItem" })
-	public String addRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,Locale locale) {
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.ADD_ORDER_ITEM_PARAM })
+	public String addRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,
+			Locale locale) {
 		orderBean.getOrderItems().add(new OrderItemBean());
 
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
-		this.calculateOrderCost(orderBean,locale);
+		this.calculateOrderCost(orderBean, locale);
 
-		model.addAttribute("orderBean", orderBean);
-		model.addAttribute("supplierBean", supplierBean);
-		model.addAttribute("itemBean", itemBean);
+		model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 		logger.info("A new purchase order item has been added to your purchase order");
 
-		return "order/edit_order";
+		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/edit_order", params = { "removeOrderItem" })
-	public String removeRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale,
-			final HttpServletRequest req) {
-		final Integer rowId = Integer.valueOf(req.getParameter("id"));
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.REMOVE_ORDER_ITEM_PARAM })
+	public String removeRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult,
+			Locale locale, final HttpServletRequest req) {
+		final Integer rowId = Integer.valueOf(req.getParameter(MVCConstants.ID_PARAM));
 		OrderItemBean orderItemBean = orderBean.getOrderItems().get(rowId.intValue());
 		OrderItem orderItem = new OrderItem();
 
@@ -547,22 +538,22 @@ public class ManageOrderController {
 		SupplierBean supplierBean = new SupplierBean();
 		ItemBean itemBean = new ItemBean();
 
-		this.calculateOrderCost(orderBean,locale);
+		this.calculateOrderCost(orderBean, locale);
 
-		model.addAttribute("orderBean", orderBean);
-		model.addAttribute("supplierBean", supplierBean);
-		model.addAttribute("itemBean", itemBean);
+		model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 
 		logger.info("The selected purchase order item has been deleted now");
-		return "order/edit_order";
+		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/edit_order", params = { "saveOrder" })
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrderAfterEdit(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult,
 			@ModelAttribute SupplierBean supplierBean, @ModelAttribute ItemBean itemBean, Model model,
 			HttpSession session, Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors())
-			return "order/edit_order";
+			return ViewPathConstants.EDIT_ORDER_PAGE;
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -572,60 +563,60 @@ public class ManageOrderController {
 			order = orderService.createOrder(order);
 			logger.info("The order details has been saved successfully after editing");
 
-			this.calculateOrderCost(orderBean,locale);
-			model.addAttribute("orderBean", orderBean);
+			this.calculateOrderCost(orderBean, locale);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
 
 		} catch (Exception e) {
 			logger.error("There is an error while updating purchase order", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/edit_order";
+		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
 
-	@GetMapping("/approve_order")
+	@GetMapping(ViewPathConstants.APPROVE_ORDER_URL)
 	public String approveOrder(Model model, HttpSession session, final HttpServletRequest req) {
 		try {
-			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
+			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			orderService.approveOrder(orderId);
 
 			logger.info("The selected purchase order has been deleted successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while deleteing purchase order", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@GetMapping("/delete_order")
+	@GetMapping(ViewPathConstants.DELETE_ORDER_URL)
 	public String deleteOrder(Model model, HttpSession session, final HttpServletRequest req) {
 		try {
-			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
+			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			orderService.deleteOrder(orderId);
 
 			logger.info("The selected purchase order has been deleted successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while deleteing purchase order", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/bulk_order_action", params = { "saveOrders" })
+	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.SAVE_ORDERS_PARAM })
 	public String saveOrders(@ModelAttribute OrderBeanDTO orders, Model model, HttpSession session, Locale locale) {
 		try {
 
 			List<OrderBean> orderBeans = orders.getOrders();
 
 			List<String> orderIds = orders.getOrderIds();
-			Map<BigInteger, Integer> idIndex = new HashMap<BigInteger, Integer>(orderIds.size());
+			Map<BigInteger, Integer> idIndex = new HashMap<>(orderIds.size());
 
 			this.getSelectedIds(orderIds, idIndex);
 
-			List<OrderBean> finalOrderBeans = new ArrayList<OrderBean>(idIndex.size());
+			List<OrderBean> finalOrderBeans = new ArrayList<>(idIndex.size());
 
 			Set<BigInteger> ids = idIndex.keySet();
 			Integer index = null;
@@ -638,7 +629,7 @@ public class ManageOrderController {
 			}
 			logger.info("The modified list of purchase orders has been updated in beans");
 
-			List<Order> orderList = new ArrayList<Order>(finalOrderBeans.size());
+			List<Order> orderList = new ArrayList<>(finalOrderBeans.size());
 			Order order = null;
 			for (OrderBean orderBean : finalOrderBeans) {
 				order = new Order();
@@ -648,28 +639,28 @@ public class ManageOrderController {
 			logger.info("The purchase order details has been updated in Domain objects");
 
 			orderService.updateOrders(orderList);
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
 
 			logger.info("The bulk update operation for purchase order is completed.");
 		} catch (Exception e) {
 			logger.error("There is an error while updating bulk purchase order basic details", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/bulk_order_action", params = { "approveOrders" })
+	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.APPROVE_ORDERS_PARAM })
 	public String approveOrders(@ModelAttribute OrderBeanDTO orders, Model model, HttpSession session, Locale locale) {
 		try {
 
 			List<OrderBean> orderBeans = orders.getOrders();
 
 			List<String> orderIds = orders.getOrderIds();
-			Map<BigInteger, Integer> idIndex = new HashMap<BigInteger, Integer>(orderIds.size());
+			Map<BigInteger, Integer> idIndex = new HashMap<>(orderIds.size());
 
 			this.getSelectedIds(orderIds, idIndex);
 
-			List<OrderBean> finalOrderBeans = new ArrayList<OrderBean>(idIndex.size());
+			List<OrderBean> finalOrderBeans = new ArrayList<>(idIndex.size());
 
 			Set<BigInteger> ids = idIndex.keySet();
 			Integer index = null;
@@ -682,7 +673,7 @@ public class ManageOrderController {
 			}
 			logger.info("The selected list of purchase orders has been marked approved in beans");
 
-			List<Order> orderList = new ArrayList<Order>(finalOrderBeans.size());
+			List<Order> orderList = new ArrayList<>(finalOrderBeans.size());
 			Order order = null;
 			for (OrderBean orderBean : finalOrderBeans) {
 				order = new Order();
@@ -692,41 +683,41 @@ public class ManageOrderController {
 			logger.info("The purchase order details has been updated in Domain objects");
 
 			orderService.approveOrders(orderList);
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
 
 			logger.info("The bulk update operation for purchase order is completed.");
 		} catch (Exception e) {
 			logger.error("There is an error while updating bulk purchase order basic details", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/bulk_order_action", params = { "deleteOrders" })
+	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.DELETE_ORDERS_PARAM })
 	public String deleteOrders(@ModelAttribute OrderBeanDTO orders, Model model, HttpSession session, Locale locale) {
 		try {
 			List<String> orderIds = orders.getOrderIds();
 
-			Map<BigInteger, Integer> idIndexMap = new HashMap<BigInteger, Integer>(orderIds.size());
+			Map<BigInteger, Integer> idIndexMap = new HashMap<>(orderIds.size());
 
 			this.getSelectedIds(orderIds, idIndexMap);
 
 			Set<BigInteger> ids = idIndexMap.keySet();
 
 			orderService.deleteOrders(ids);
-			model.addAttribute("success",
+			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.delete.success", null, locale));
 
 			logger.info("The bulk delete operation for purchase order is completed.");
 		} catch (Exception e) {
 			logger.error("There is an error while deleting bulk purchase orders", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
 	private void getSelectedIds(List<String> orderIds, Map<BigInteger, Integer> idIndex) {
-		String splittedData[] = null;
+		String[] splittedData = null;
 		for (String id : orderIds) {
 			splittedData = id.split("_");
 			idIndex.put(new BigInteger(splittedData[0]), new Integer(splittedData[1]));
@@ -738,41 +729,39 @@ public class ManageOrderController {
 	private void calculateOrderCost(OrderBean orderBean, Locale locale) {
 		List<OrderItemBean> orderItemList = orderBean.getOrderItems();
 		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
-	    MonetaryAmount totalCost = Monetary.getDefaultAmountFactory()
-	      .setCurrency(currenyUnit).setNumber(0).create();
+		MonetaryAmount totalCost = Money.of(0,currenyUnit);
 
-	    for (OrderItemBean orderItem : orderItemList) {
+		for (OrderItemBean orderItem : orderItemList) {
 			totalCost = totalCost.add(orderItem.getTotalCost());
 		}
 		orderBean.setEstimatedCost(totalCost);
 		logger.info("The total cost based on all items cost has been calculated");
 	}
 
-	@GetMapping("/receive_order")
-	public String retrieveOrderForReceival(Model model, HttpSession session, final HttpServletRequest req, Locale locale) {
+	@GetMapping(ViewPathConstants.RECEIVE_ORDER_URL)
+	public String retrieveOrderForReceival(Model model, HttpSession session, final HttpServletRequest req,
+			Locale locale) {
 		try {
-			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
+			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			Order order = orderService.searchOrder(orderId);
 
 			OrderBean orderBean = new OrderBean();
 			this.updateOrderItemsBean(orderBean, order, locale);
 
-			this.calculateOrderCost(orderBean,locale);
+			this.calculateOrderCost(orderBean, locale);
 
-			SupplierBean supplierBean = new SupplierBean();
-			ItemBean itemBean = new ItemBean();
-			model.addAttribute("orderBean", orderBean);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 
 			logger.info("The selected purchase order has been retrieved successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for receival", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/receive_order";
+		return ViewPathConstants.RECEIVE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/receive_order", params = { "saveOrder" })
+	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrderForReceival(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult,
 			Model model, HttpSession session, Locale locale, Authentication authentication) {
 		/*
@@ -788,17 +777,18 @@ public class ManageOrderController {
 
 			orderService.createOrder(order);
 
-			model.addAttribute("orderBean", orderBean);
-
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage(
+					"commerce.screen.order.receive.save.success", new Object[] { order.getOrderId() }, locale));
 			logger.info("The purchase order details has been saved successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while saving order details during receipt", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/receive_order";
+		return ViewPathConstants.RECEIVE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/receive_order", params = { "receiveOrder" })
+	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ORDER_PARAM })
 	public String receiveOrder(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult, Model model,
 			HttpSession session, Locale locale, Authentication authentication) {
 		/*
@@ -807,24 +797,27 @@ public class ManageOrderController {
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+			if(userDetails==null)
+				return ViewPathConstants.ERROR_PAGE;
 			Order order = new Order();
 
 			this.updateOrderStatusToReceive(order, orderBean, userDetails);
 
 			orderService.createOrder(order);
+			orderService.receiveOrder(order.getOrderId(), userDetails.getUsername());
 
-			model.addAttribute("orderBean", orderBean);
-
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage(
+					"commerce.screen.order.receive.receive.success", new Object[] { order.getOrderId() }, locale));
 			logger.info("The purchase order details has been saved successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while saving order details during receipt", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/receive_order";
+		return ViewPathConstants.RECEIVE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = "/receive_order", params = { "receiveAllOrder" })
+	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ALL_ORDERS_PARAM })
 	public String receiveAllOrder(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult, Model model,
 			HttpSession session, Locale locale, Authentication authentication) {
 		/*
@@ -840,36 +833,38 @@ public class ManageOrderController {
 
 			orderService.createOrder(order);
 
-			model.addAttribute("orderBean", orderBean);
+			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 
 			logger.info("The purchase order details has been saved successfully");
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage(
+					"commerce.screen.order.receive.receive.all.success", new Object[] { order.getOrderId() }, locale));
+
 		} catch (Exception e) {
 			logger.error("There is an error while saving order details during receipt", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/receive_order";
+		return ViewPathConstants.RECEIVE_ORDER_PAGE;
 	}
 
 	private void receiveAllOrderItems(Order order, OrderBean orderBean, UserDetails userDetails) {
 		order.setOrderId(orderBean.getOrderId());
-		
-		Supplier supplier=new Supplier();
+
+		Supplier supplier = new Supplier();
 		supplier.setSupplierId(orderBean.getSupplierId());
 		order.setSupplier(supplier);
-		
+
 		if (userDetails != null)
 			order.setCreatedBy(userDetails.getUsername());
 		order.setCreatedDate(LocalDateTime.now());
-		order.setStatus("R");
-    
-		
+		order.setStatus(MVCConstants.STATUS_RECEIVED);
+
 		order.setEstimatedCost(BigDecimal.valueOf(orderBean.getEstimatedCost().getNumber().doubleValue()));
 
 		/**
 		 * Update Order Item details
 		 */
 		List<OrderItemBean> orderItemBeanList = orderBean.getOrderItems();
-		List<OrderItem> orderItems = new ArrayList<OrderItem>();
+		List<OrderItem> orderItems = new ArrayList<>();
 		OrderItem orderItem = null;
 		OrderItemId orderItemId = null;
 
@@ -895,7 +890,8 @@ public class ManageOrderController {
 
 			orderItem.setActualUnitCost(BigDecimal.valueOf(orderItemBean.getCostAmount().getNumber().doubleValue()));
 			orderItem.setCostAmount(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
-			orderItem.setDiscountAmount(BigDecimal.valueOf(orderItemBean.getDiscountAmount().getNumber().doubleValue()));
+			orderItem
+					.setDiscountAmount(BigDecimal.valueOf(orderItemBean.getDiscountAmount().getNumber().doubleValue()));
 			orderItem.setTaxAmount(BigDecimal.valueOf(orderItemBean.getTaxAmount().getNumber().doubleValue()));
 			orderItem.setActualTotalAmount(BigDecimal.valueOf(orderItemBean.getTotalCost().getNumber().doubleValue()));
 
@@ -917,28 +913,31 @@ public class ManageOrderController {
 	}
 
 	private void updateOrderStatusToReceive(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, "R");
+		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_RECEIVED);
 	}
 
 	private void createApprovedOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, "A");
+		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_APPROVED);
 	}
 
 	private void createOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, "C");
+		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_CREATED);
 
 	}
 
 	private void createBulkOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, "C");
+		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_CREATED);
 
 	}
 
-	@GetMapping(value = "/print_orders")
+	@GetMapping(value = ViewPathConstants.PRINT_ORDERS_URL)
 	public String printOrders(Model model, HttpSession session, Locale locale, Authentication authentication) {
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			
+			if(userDetails ==null)
+				return ViewPathConstants.ERROR_PAGE;
 
 			OrderDTO ordersDTO = orderService.findAll();
 
@@ -946,18 +945,18 @@ public class ManageOrderController {
 
 			this.updateOrderBeanList(orders, ordersDTO, locale);
 
-			InputStream orderReportStream = getClass().getResourceAsStream("/reports/order/orders.jrxml");
+			InputStream orderReportStream = getClass().getResourceAsStream(MVCConstants.ORDERS_REPORT);
 
 			JasperReport jasperReport = JasperCompileManager.compileReport(orderReportStream);
 
 			JRBeanCollectionDataSource orderDS = new JRBeanCollectionDataSource(orders.getOrders());
 
-			InputStream orderReportStreamChild = getClass().getResourceAsStream("/reports/order/order_items.jrxml");
+			InputStream orderReportStreamChild = getClass().getResourceAsStream(MVCConstants.ORDERS_ITEMS_REPORT);
 			JasperReport jasperReportChild = JasperCompileManager.compileReport(orderReportStreamChild);
 
-			Map<String, Object> paramMap = new HashMap<String, Object>();
+			Map<String, Object> paramMap = new HashMap<>();
 
-			paramMap.put("SUBREPORT_DIR", jasperReportChild);
+			paramMap.put(MVCConstants.SUB_REPORT_DIR, jasperReportChild);
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, orderDS);
 
@@ -965,16 +964,16 @@ public class ManageOrderController {
 			JRPdfExporter exporter = new JRPdfExporter();
 
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("employeeReport.pdf"));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(MVCConstants.ORDERS_REPORT_NAME));
 
 			SimplePdfReportConfiguration reportConfig = new SimplePdfReportConfiguration();
 			reportConfig.setSizePageToContent(true);
 			reportConfig.setForceLineBreakPolicy(false);
 
 			SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
-			exportConfig.setMetadataAuthor("admin");
+			exportConfig.setMetadataAuthor(userDetails.getUsername());
 			exportConfig.setEncrypted(true);
-			exportConfig.setAllowedPermissionsHint("PRINTING");
+			exportConfig.setAllowedPermissionsHint(MVCConstants.REPORT_PERMISSION_PRINTING);
 
 			exporter.setConfiguration(reportConfig);
 			exporter.setConfiguration(exportConfig);
@@ -984,15 +983,15 @@ public class ManageOrderController {
 			logger.info("The purchase order details has been saved successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while saving order details during receipt", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "order/manage_order";
+		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
 	private void updateOrderBeanList(OrderBeanDTO orders, OrderDTO ordersDTO, Locale locale) {
 
 		OrderBean orderBean = null;
-		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
+		List<OrderBean> orderBeanList = new ArrayList<>();
 		for (Order order : ordersDTO.getOrders()) {
 			orderBean = new OrderBean();
 			this.updateOrderItemsBean(orderBean, order, locale);
@@ -1004,69 +1003,64 @@ public class ManageOrderController {
 		logger.info("The Order details has been updated in Order Beans");
 	}
 
-	@GetMapping("/print_order")
-	public void printOrder(Model model, HttpSession session, final HttpServletRequest req,
-			HttpServletResponse response, Locale locale) {
+	@GetMapping(ViewPathConstants.PRINT_ORDER_URL)
+	public void printOrder(Model model, HttpSession session, final HttpServletRequest req, HttpServletResponse response,
+			Locale locale) {
 		// set header as pdf
-		response.setContentType("application/pdf");
+		response.setContentType(MVCConstants.REPORT_OUTPUT_PDF);
 
 		try {
 			// set input and output stream
 			ServletOutputStream servletOutputStream = response.getOutputStream();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			BigInteger orderId = new BigInteger(req.getParameter("orderId"));
+			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			Order order = orderService.searchOrder(orderId);
 
-			List<OrderBean> orderCollection = new ArrayList<OrderBean>();
+			List<OrderBean> orderCollection = new ArrayList<>();
 			OrderBean orderBean = new OrderBean();
 			this.updateOrderItemsBean(orderBean, order, locale);
-			List<AddressBean> primaryAddress=this.getSupplierAddress(orderBean.getSupplier().getAddresses());
+			List<AddressBean> primaryAddress = this.getSupplierAddress(orderBean.getSupplier().getAddresses());
 
 			orderCollection.add(orderBean);
 
-			InputStream orderReportStream = getClass().getResourceAsStream("/reports/order/purchase_order_updated.jrxml");
+			InputStream orderReportStream = getClass()
+					.getResourceAsStream(MVCConstants.ORDER_REPORT);
 
 			JasperReport jasperReport = JasperCompileManager.compileReport(orderReportStream);
 
 			JRBeanCollectionDataSource orderDS = new JRBeanCollectionDataSource(orderCollection);
 
 			InputStream orderReportStreamChild = getClass()
-					.getResourceAsStream("/reports/order/purchase_order_item.jrxml");
+					.getResourceAsStream(MVCConstants.ORDER_ITEMS_REPORT);
 			JasperReport jasperReportChild = JasperCompileManager.compileReport(orderReportStreamChild);
 
-			InputStream supplierReportStream = getClass()
-					.getResourceAsStream("/reports/supplier/supplier.jrxml");
-			JasperReport jasperSupplierReport= JasperCompileManager.compileReport(supplierReportStream);			
-			
-			
-			InputStream supplierAddressReportStream = getClass()
-					.getResourceAsStream("/reports/address/address.jrxml");
-			JasperReport jasperSupplierAddressReport= JasperCompileManager.compileReport(supplierAddressReportStream);
-			
-			InputStream deliveryAddressReportStream = getClass()
-					.getResourceAsStream("/reports/address/address.jrxml");
-			JasperReport jasperDelieveryAddressReport= JasperCompileManager.compileReport(deliveryAddressReportStream);
-			
-			
-			List<SupplierBean> supplierList=new ArrayList<SupplierBean>();
-			
+			InputStream supplierReportStream = getClass().getResourceAsStream(MVCConstants.SUPPLIER_REPORT);
+			JasperReport jasperSupplierReport = JasperCompileManager.compileReport(supplierReportStream);
+
+			InputStream supplierAddressReportStream = getClass().getResourceAsStream(MVCConstants.ADDRESS_REPORT);
+			JasperReport jasperSupplierAddressReport = JasperCompileManager.compileReport(supplierAddressReportStream);
+
+			InputStream deliveryAddressReportStream = getClass().getResourceAsStream(MVCConstants.ADDRESS_REPORT);
+			JasperReport jasperDelieveryAddressReport = JasperCompileManager.compileReport(deliveryAddressReportStream);
+
+			List<SupplierBean> supplierList = new ArrayList<>();
+
 			supplierList.add(orderBean.getSupplier());
-			
-			Map<String, Object> paramMap = new HashMap<String, Object>();
 
-			paramMap.put("ORDER_ITEM_REPORT", jasperReportChild);
-			paramMap.put("SUPPLIER_REPORT", jasperSupplierReport);
-			paramMap.put("SUPPLIER_ADDRESS_REPORT", jasperSupplierAddressReport);
-			paramMap.put("DELIVERY_ADDRESS_REPORT", jasperDelieveryAddressReport);
-			
-			paramMap.put("SUPPLIER_DATA", supplierList);
-			paramMap.put("SUPPLIER_ADDRESS_DATA", primaryAddress);
-			paramMap.put("DELIVERY_ADDRESS_DATA", primaryAddress);
-			
-			
+			Map<String, Object> paramMap = new HashMap<>();
 
+			paramMap.put(MVCConstants.ORDER_ITEM_REPORT_PARAM, jasperReportChild);
+			paramMap.put(MVCConstants.SUPPLIER_REPORT_PARAM, jasperSupplierReport);
+			paramMap.put(MVCConstants.SUPPLIER_ADDRESS_REPORT_PARAM, jasperSupplierAddressReport);
+			paramMap.put(MVCConstants.DELIVERY_ADDRESS_REPORT_PARAM, jasperDelieveryAddressReport);
+
+			paramMap.put(MVCConstants.SUPPLIER_DATA_PARAM, supplierList);
+			paramMap.put(MVCConstants.SUPPLIER_ADDRESS_DATA_PARAM, primaryAddress);
+			paramMap.put(MVCConstants.DELIVERY_ADDRESS_DATA_PARAM, primaryAddress);
+
+		
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, orderDS);
 
 			// export to pdf
@@ -1080,17 +1074,17 @@ public class ManageOrderController {
 			logger.error("There is an error while retrieving purchase order for updation", e);
 		}
 	}
-	
-	public List<AddressBean>  getSupplierAddress(List<AddressBean> addresses) {
-		List<AddressBean> primaryAddress=new ArrayList<AddressBean>();
-		for(AddressBean address:addresses) {
-			if(address.getPrimary().equals("Y")) {
+
+	public List<AddressBean> getSupplierAddress(List<AddressBean> addresses) {
+		List<AddressBean> primaryAddress = new ArrayList<>();
+		for (AddressBean address : addresses) {
+			if (address.getPrimary().equals(MVCConstants.YES)) {
 				primaryAddress.add(address);
 				break;
 			}
 		}
 		return primaryAddress;
-		
+
 	}
 
 }

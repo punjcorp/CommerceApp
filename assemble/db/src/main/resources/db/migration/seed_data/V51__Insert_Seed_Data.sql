@@ -81,6 +81,32 @@ commit;
 
 
 -- -----------------------------------------------------
+-- Seed data for inventory
+-- -----------------------------------------------------
+truncate commercedb.stock_reason_code;
+truncate commercedb.stock_bucket;
+
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+values('Stock on Hand', 'ON_HAND', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+values('With Supplier', 'AT_SUPPLIER', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+values('Sold', 'SOLD', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+values('Shipped', 'SHIPPED', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+values('Not Sellable', 'NON SELLABLE', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
+
+
+insert into commercedb.stock_reason_code(reason_code, `name`, from_bucket_id, to_bucket_id, from_stock_action, to_stock_action, created_by, created_date)
+values('STKIN', 'Stock In', NULL, '1', NULL, 'ADD', 'admin', '2018-01-27 11:23:31');
+insert into commercedb.stock_reason_code(reason_code, `name`, from_bucket_id, to_bucket_id, from_stock_action, to_stock_action, created_by, created_date)
+values('STKOUT', 'Stock Out', '1', NULL, 'SUBTRACT', NULL, 'admin', '2018-01-27 11:23:31');
+
+
+
+
+-- -----------------------------------------------------
 -- Seed data for item_hierarchy
 -- -----------------------------------------------------
 truncate `commercedb`.`item_hierarchy`;

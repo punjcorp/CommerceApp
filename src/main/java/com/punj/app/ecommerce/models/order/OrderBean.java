@@ -3,7 +3,6 @@
  */
 package com.punj.app.ecommerce.models.order;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,8 +12,11 @@ import javax.money.MonetaryAmount;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.javamoney.moneta.Money;
+
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.utils.Pager;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -34,18 +36,18 @@ public class OrderBean {
 	private String createdBy;
 	private LocalDateTime createdDate;
 
-	private MonetaryAmount estimatedCost;
-	private MonetaryAmount discountAmount;
-	private MonetaryAmount taxAmount;
-	private MonetaryAmount totalAmount;
-	private MonetaryAmount paidAmount;
+	private MonetaryAmount estimatedCost=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount discountAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount taxAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount totalAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount paidAmount=Money.of(0, Utils.getLocaleCurrency());
 
 	private String status;
 
 	private Pager pager;
 
 	public OrderBean() {
-		orderItems = new ArrayList<OrderItemBean>();
+		orderItems = new ArrayList<>();
 		orderItems.add(new OrderItemBean());
 
 	}

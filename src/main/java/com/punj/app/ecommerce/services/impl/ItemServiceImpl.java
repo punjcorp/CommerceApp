@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
@@ -238,12 +239,6 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public BigInteger generateNewSKU() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<Attribute> getNewStyleAttribute() {
 
 		List<Attribute> attributeList = attributeRepository.findAll();
@@ -286,6 +281,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
+	@Transactional
 	public List<Item> createSKUs(Item item, ItemOptions itemOptionsOrg, List<AttributeId> attributeIds) {
 
 		List<BigInteger> skuItemIds = new ArrayList<>();
@@ -398,7 +394,7 @@ public class ItemServiceImpl implements ItemService {
 
 		char attributeCode;
 		for (Attribute attribute : attributeList) {
-			attributeCode=(attribute.getCode().toCharArray())[0];
+			attributeCode = (attribute.getCode().toCharArray())[0];
 			switch (attributeCode) {
 			case 'C':
 				colorList.add(attribute);

@@ -40,6 +40,9 @@ public class ItemStockJournal implements Serializable {
 	@JoinColumn(name = "item_id")
 	private Item item;
 
+	@Column(name = "location_id")
+	private Integer locationId;
+
 	private String functionality;
 	private Integer qty;
 
@@ -151,6 +154,21 @@ public class ItemStockJournal implements Serializable {
 	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the locationId
+	 */
+	public Integer getLocationId() {
+		return locationId;
+	}
+
+	/**
+	 * @param locationId
+	 *            the locationId to set
+	 */
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 	/*

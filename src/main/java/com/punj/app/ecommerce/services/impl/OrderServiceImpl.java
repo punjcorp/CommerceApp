@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
+import com.punj.app.ecommerce.domains.inventory.StockReason;
+import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
@@ -23,7 +28,9 @@ import com.punj.app.ecommerce.repositories.order.OrderItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderRepository;
 import com.punj.app.ecommerce.repositories.order.OrderSearchRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
+import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.OrderService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -40,11 +47,29 @@ public class OrderServiceImpl implements OrderService {
 	private ItemRepository itemRepository;
 	private OrderSearchRepository orderSearchRepository;
 
+	private InventoryService inventoryService;
+
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @return the inventoryService
+	 */
+	public InventoryService getInventoryService() {
+		return inventoryService;
+	}
+
+	/**
+	 * @param inventoryService
+	 *            the inventoryService to set
+	 */
+	@Autowired
+	public void setInventoryService(InventoryService inventoryService) {
+		this.inventoryService = inventoryService;
+	}
 
 	/**
 	 * @param supplierRepository
@@ -189,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
 			BigInteger orderId = order.getOrderId();
 			if (orderId != null) {
 				actualOrder = orderRepository.findOne(orderId);
-				supplier=new Supplier();
+				supplier = new Supplier();
 				supplier.setSupplierId(order.getSupplier().getSupplierId());
 				actualOrder.setSupplier(supplier);
 
@@ -264,6 +289,59 @@ public class OrderServiceImpl implements OrderService {
 		orders.setOrders(orderList);
 
 		return orders;
+	}
+
+	@Override
+	@Transactional
+	public Order receiveOrder(BigInteger orderId, String username) {
+
+		Order order = this.orderRepository.findOne(orderId);
+		logger.debug("The order details retrieved from database", orderId);
+
+		order.setStatus("R");
+		order = this.orderRepository.save(order);
+		logger.debug("The order status has been marked as R now", orderId);
+
+		List<OrderItem> orderItems = order.getOrderItems();
+		List<ItemStockJournal> inventoryDetails=this.createStockDetails(orderItems, username);
+
+		this.inventoryService.updateInventory(inventoryDetails);
+		logger.debug("The order items inventory has been updated successfully", orderId);
+
+		logger.info("The order {} has been marked as received successfully.", orderId);
+		return order;
+	}
+
+	private List<ItemStockJournal> createStockDetails(List<OrderItem> orderItems, String username) {
+
+		List<ItemStockJournal> itemStockDetails = new ArrayList<>(orderItems.size());
+		ItemStockJournal itemStockJournal = null;
+		Item item = null;
+
+		for (OrderItem orderItem : orderItems) {
+			itemStockJournal = new ItemStockJournal();
+			itemStockJournal.setCreatedBy(username);
+			itemStockJournal.setCreatedDate(LocalDateTime.now());
+
+			itemStockJournal.setLocationId(orderItem.getOrderItemId().getLocation());
+
+			item = new Item();
+			item.setItemId(orderItem.getOrderItemId().getItemId());
+			itemStockJournal.setItem(item);
+
+			StockReason stockReason = new StockReason();
+			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
+			itemStockJournal.setReasonCode(stockReason);
+			
+			itemStockJournal.setFunctionality(ServiceConstants.RECEIVE_ORDER_FUNCTIONALITY);
+			itemStockJournal.setQty(orderItem.getDelieveredQty());
+			
+			itemStockDetails.add(itemStockJournal);
+		}
+
+		logger.info("The stock details has been created from Order Item details");
+		return itemStockDetails;
+
 	}
 
 }

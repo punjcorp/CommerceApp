@@ -16,19 +16,19 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.User;
 import com.punj.app.ecommerce.models.LoginBean;
 import com.punj.app.ecommerce.models.RegisterUserBean;
 import com.punj.app.ecommerce.services.UserService;
-import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -82,7 +82,8 @@ public class ManageAccountController {
 		newUser = this.updateUserDomain(registerUserBean, newUser);
 
 		newUser = userService.saveUser(newUser);
-		model.addAttribute("success", messageSource.getMessage("commerce.screen.manage.account.success", null, locale));
+		model.addAttribute(MVCConstants.SUCCESS,
+				messageSource.getMessage("commerce.screen.manage.account.success", null, locale));
 
 		logger.info("The user details has been successfully updated");
 
@@ -111,7 +112,7 @@ public class ManageAccountController {
 				pwd = userService.updatePassword(userDetails, pwd, passwordBean.getNewPassword(), null);
 				session.setAttribute("userDetails", pwd);
 				model.addAttribute("passwordBean", passwordBean);
-				model.addAttribute("success",
+				model.addAttribute(MVCConstants.SUCCESS,
 						messageSource.getMessage("commerce.screen.manage.password.success", null, locale));
 			} else {
 				model.addAttribute("passwordBean", passwordBean);
@@ -122,7 +123,7 @@ public class ManageAccountController {
 			model.addAttribute("alert", "Unexpected error occured.");
 			model.addAttribute("passwordBean", passwordBean);
 			logger.error("The error has occured while updating the new password", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		return "account/manage_password";
 	}
@@ -138,8 +139,8 @@ public class ManageAccountController {
 		newUserBean.setEmail(loggedInUser.getEmail());
 		newUserBean.setFirstName(loggedInUser.getFirstname());
 		newUserBean.setLastName(loggedInUser.getLastname());
-		newUserBean.setPhone1(loggedInUser.getPhone1().toString());
-		newUserBean.setPhone2(loggedInUser.getPhone2().toString());
+		newUserBean.setPhone1(loggedInUser.getPhone1());
+		newUserBean.setPhone2(loggedInUser.getPhone2());
 
 		return newUserBean;
 

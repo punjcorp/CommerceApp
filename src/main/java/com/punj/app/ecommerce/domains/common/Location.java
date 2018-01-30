@@ -4,7 +4,6 @@
 package com.punj.app.ecommerce.domains.common;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -19,10 +18,13 @@ import javax.persistence.Id;
  */
 @Entity
 public class Location implements Serializable {
+
+	private static final long serialVersionUID = 8138910737341574080L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "location_id", updatable = false, nullable = false)
-	private BigInteger locationId;
+	private Integer locationId;
 
 	@Column(name = "created_by")
 	private String createdBy;
@@ -54,7 +56,7 @@ public class Location implements Serializable {
 	/**
 	 * @return the locationId
 	 */
-	public BigInteger getLocationId() {
+	public Integer getLocationId() {
 		return locationId;
 	}
 
@@ -62,7 +64,7 @@ public class Location implements Serializable {
 	 * @param locationId
 	 *            the locationId to set
 	 */
-	public void setLocationId(BigInteger locationId) {
+	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
 	}
 

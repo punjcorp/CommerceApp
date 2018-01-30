@@ -8,8 +8,8 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
 
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.3/css/bootstrap.min.css}" />
 <link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
 	rel="stylesheet" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -27,10 +27,10 @@
 	crossorigin="anonymous"></script>
 
 <script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"
 	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
 	crossorigin="anonymous"
-	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+	th:href="@{/webjars/bootstrap/4.0.0-beta.3/js/bootstrap.min.js}"></script>
 
 <script src="../../static/js/custom.js" th:src="@{/js/custom.js}"></script>
 
@@ -51,6 +51,7 @@
 							<a id="home" th:href="@{/home}"><span th:text="#{commerce.home.link.home}">Home</span></a>
 						</div></li>
 					<li><a id="about" th:href="@{/aboutus}"><span th:text="#{commerce.home.menu.about}">About Us</span></a></li>
+
 					<li class="dropdown"  sec:authorize="isAuthenticated()"><a href="#account" id="accountmenu"
 						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.account}">Account</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
@@ -60,6 +61,12 @@
 							<li><a id="managecard" th:href="@{/manage_card}"><span th:text="#{commerce.home.menu.manage.card}">Manage Cards</span></a></li>
 						</ul></li>
 
+					<li class="dropdown"  ><a href="#inventory"  id="inventorymenu"
+						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.inventory}">Inventory Adjustment</span></a>
+						<ul class="dropdown-menu animated fadeInLeft" role="menu">
+							<li><a id="manageinventory" th:href="@{/manage_inv_adjust}"><span th:text="#{commerce.home.menu.search.inventory}">Search Inventory Adjustment</span></a></li>
+							<li><a id="addinventory" th:href="@{/add_inv_adjust}"><span th:text="#{commerce.home.menu.add.inventory}">Create Inventory Adjustment</span></a></li>
+						</ul></li>
 
 					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#supplier"  id="suppliermenu"
 						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.supplier}">Supplier</span></a>

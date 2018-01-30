@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
@@ -72,14 +73,14 @@ public class ManageItemController {
 
 		Item style = itemService.getStyle(styleNumber);
 
-		List<AttributeBean> colorList = new ArrayList<AttributeBean>();
-		List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
+		List<AttributeBean> colorList = new ArrayList<>();
+		List<AttributeBean> sizeList = new ArrayList<>();
 
 		ItemBean itemBean = this.updateBean(style, colorList, sizeList, locale);
 
 		model.addAttribute("colorList", colorList);
 		model.addAttribute("sizeList", sizeList);
-		model.addAttribute("itemBean", itemBean);
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 		logger.info("The default SKU object has been added to display on the screen");
 
 		return "item/add_item";
@@ -93,30 +94,28 @@ public class ManageItemController {
 
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
-		List<AttributeId> attributeIds = new ArrayList<AttributeId>();
+		List<AttributeId> attributeIds = new ArrayList<>();
 
 		String[] colors = itemBean.getItemColorSelected();
 		String[] sizes = itemBean.getItemSizeSelected();
-		int totalSkus = colors.length * sizes.length;
 
-		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername(), locale);
+		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername());
 		logger.info("The item details has been updated in domains object from the bean objects");
 
-		this.updateItemAttributes(itemBean, item, attributeIds);
+		this.updateItemAttributes(itemBean, attributeIds);
 		logger.info("The item attribute list has been updated in Domain objects");
 
 		List<Item> finalSKUs = itemService.createSKUs(item, itemOptions, attributeIds);
 		logger.info("The item SKUs  has been saved successfully");
 
 		model.addAttribute("SKUs", finalSKUs);
-		model.addAttribute("itemBean", itemBean);
-		model.addAttribute("success", "The new SKU(s) has been created successfully.");
+		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
+		model.addAttribute(MVCConstants.SUCCESS, "The new SKU(s) has been created successfully.");
 
 		return "item/add_item";
 	}
 
-	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, String username,
-			Locale locale) {
+	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, String username) {
 
 		/**
 		 * Setting the basic information about the style
@@ -140,7 +139,7 @@ public class ManageItemController {
 		 * Setting the images for the style
 		 */
 		Map<String, String> images = itemBean.getItemImages();
-		List<ItemImage> itemImages = new ArrayList<ItemImage>();
+		List<ItemImage> itemImages = new ArrayList<>();
 		List<String> imageUrlList = itemBean.getImageUrlList();
 		for (String featureName : itemBean.getFeatureList()) {
 			ItemImage itemImage = new ItemImage();
@@ -256,8 +255,8 @@ public class ManageItemController {
 		/**
 		 * Setting the images for the item
 		 */
-		List<String> featureList = new ArrayList<String>();
-		List<String> imageUrlList = new ArrayList<String>();
+		List<String> featureList = new ArrayList<>();
+		List<String> imageUrlList = new ArrayList<>();
 		List<ItemImage> images = style.getImages();
 		int count = 0;
 		for (ItemImage image : images) {
@@ -347,7 +346,7 @@ public class ManageItemController {
 
 	}
 
-	private void updateItemAttributes(ItemBean itemBean, Item item, List<AttributeId> itemAttributes) {
+	private void updateItemAttributes(ItemBean itemBean, List<AttributeId> itemAttributes) {
 		/**
 		 * Setting the item attributes
 		 */
@@ -355,7 +354,7 @@ public class ManageItemController {
 		String[] sizes = itemBean.getItemSizeSelected();
 
 		AttributeId attributeId = null;
-		String[] splittedData = new String[2];
+		String[] splittedData = null;
 		for (String color : colors) {
 			splittedData = color.split("_");
 			if (splittedData.length > 1) {

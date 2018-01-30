@@ -6,6 +6,7 @@ var accountmenuStatus=0;
 var suppliermenuStatus=0;
 var stylemenuStatus=0;
 var ordermenuStatus=0;
+var inventorymenuStatus=0;
 
 $(document).ready(function() {
 	$('.offcanvas').click(function() {
@@ -19,11 +20,13 @@ $(document).ready(function() {
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}
 		}
 		if(this.id=='stylemenu'){
@@ -32,11 +35,13 @@ $(document).ready(function() {
 				suppliermenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}
 		}
 
@@ -46,11 +51,13 @@ $(document).ready(function() {
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}
 		}
 		if(this.id=='ordermenu'){
@@ -59,15 +66,31 @@ $(document).ready(function() {
 				accountmenuStatus=0;
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
+				inventorymenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				accountmenuStatus=0;
 				stylemenuStatus=0;
 				ordermenuStatus=0;
+				inventorymenuStatus=0;
 			}
 		}		
-		
-		menuStatus=suppliermenuStatus+stylemenuStatus+accountmenuStatus+ordermenuStatus;
+		if(this.id=='inventorymenu'){
+			if(inventorymenuStatus==0){
+				ordermenuStatus=0;
+				accountmenuStatus=0;
+				suppliermenuStatus=0;
+				stylemenuStatus=0;
+				inventorymenuStatus=1;
+			}else{
+				suppliermenuStatus=0;
+				accountmenuStatus=0;
+				stylemenuStatus=0;
+				ordermenuStatus=0;
+				inventorymenuStatus=0;
+			}
+		}				
+		menuStatus=suppliermenuStatus+stylemenuStatus+accountmenuStatus+ordermenuStatus+inventorymenuStatus;
 		if(menuStatus<1){
 			$('#wrapper').toggleClass('toggled');
 		}

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.User;
@@ -112,7 +113,8 @@ public class LoginController {
 		logger.info("The user details has been successfully registered");
 
 		model.addAttribute("loginBean", new LoginBean());
-		model.addAttribute("success", messageSource.getMessage("commerce.screen.register.success", null, locale));
+		model.addAttribute(MVCConstants.SUCCESS,
+				messageSource.getMessage("commerce.screen.register.success", null, locale));
 		return "login/login";
 	}
 

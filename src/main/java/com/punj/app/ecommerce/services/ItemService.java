@@ -27,7 +27,6 @@ public interface ItemService {
 
 	public BigInteger generateNewStyle();
 
-	public BigInteger generateNewSKU();
 
 	public List<Attribute> getNewStyleAttribute();
 

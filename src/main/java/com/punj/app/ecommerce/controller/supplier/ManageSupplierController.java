@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
@@ -67,57 +68,57 @@ public class ManageSupplierController {
 		this.messageSource = messageSource;
 	}
 
-	@GetMapping(value = "/add_supplier")
+	@GetMapping(value = ViewPathConstants.ADD_SUPPLIER_URL)
 	public String addSupplier(Model model, HttpSession session) {
 		logger.info("The add method for new supplier has been called");
 		try {
 			SupplierBean supplierBean = new SupplierBean();
 
-			model.addAttribute("supplierBean", supplierBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The empty supplier object bean has been created");
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while creating empty supplier.", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
 
-		return "supplier/add_supplier";
+		return ViewPathConstants.ADD_SUPPLIER_PAGE;
 
 	}
 
-	@PostMapping(value = "/add_supplier", params = { "addSupplierAddress" })
+	@PostMapping(value = ViewPathConstants.ADD_SUPPLIER_URL, params = { MVCConstants.ADD_SUPPLIER_ADDRESS_PARAM })
 	public String addRow(@ModelAttribute SupplierBean supplierBean, Model model, final BindingResult bindingResult) {
 		supplierBean.getAddresses().add(new AddressBean());
-		model.addAttribute("supplierBean", supplierBean);
-		return "supplier/add_supplier";
+		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+		return ViewPathConstants.ADD_SUPPLIER_PAGE;
 	}
 
-	@PostMapping(value = "/add_supplier", params = { "removeSupplierAddress" })
+	@PostMapping(value = ViewPathConstants.ADD_SUPPLIER_URL, params = { MVCConstants.REMOVE_SUPPLIER_ADDRESS_PARAM })
 	public String removeRow(@ModelAttribute SupplierBean supplierBean, Model model, final BindingResult bindingResult,
 			final HttpServletRequest req) {
-		final Integer rowId = Integer.valueOf(req.getParameter("id"));
+		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.ID_PARAM));
 		supplierBean.getAddresses().remove(rowId.intValue());
-		return "supplier/add_supplier";
+		return ViewPathConstants.ADD_SUPPLIER_PAGE;
 	}
 
-	@PostMapping(value = "/add_supplier", params = { "saveSupplier" })
+	@PostMapping(value = ViewPathConstants.ADD_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIER_PARAM })
 	public String saveSupplier(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult,
 			Model model, HttpSession session, Locale locale) {
 		if (bindingResult.hasErrors())
-			return "supplier/add_supplier";
+			return ViewPathConstants.ADD_SUPPLIER_PAGE;
 		try {
 			Supplier supplier = new Supplier();
 			this.updateDomain(supplierBean, supplier);
 
 			supplier = supplierService.createSupplier(supplier);
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.supplier.add.success",
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.supplier.add.success",
 					new Object[] { supplier.getSupplierId() }, locale));
-			model.addAttribute("supplierBean", supplierBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The supplier details has been created successfully.");
 		} catch (Exception e) {
-			logger.error("There is an error while updating address", e);
-			return "error";
+			logger.error("There is an error while updating supplier details", e);
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "supplier/add_supplier";
+		return ViewPathConstants.ADD_SUPPLIER_PAGE;
 	}
 
 	/**
@@ -135,18 +136,16 @@ public class ManageSupplierController {
 		supplier.setPhone1(supplierBean.getPhone1());
 		supplier.setPhone2(supplierBean.getPhone2());
 
-		List<Address> supplierAddresses = new ArrayList<Address>();
 		List<AddressBean> addresses = supplierBean.getAddresses();
 
-		Supplier newSupplier = new Supplier();
 
-		List<Address> supplierAddressList = new ArrayList<Address>();
+		List<Address> supplierAddressList = new ArrayList<>();
 		Address address = null;
 		for (AddressBean addressBean : addresses) {
 
 			address = new Address();
 
-			address.setPrimary("Y");
+			address.setPrimary(MVCConstants.YES);
 			address.setAddressId(addressBean.getAddressId());
 			address.setAddress1(addressBean.getAddress1());
 			address.setAddress2(addressBean.getAddress2());
@@ -164,34 +163,34 @@ public class ManageSupplierController {
 
 	}
 
-	@GetMapping(value = "/manage_supplier")
+	@GetMapping(value = ViewPathConstants.MANAGE_SUPPLIER_URL)
 	public String manageSupplier(Model model, HttpSession session) {
 		logger.info("The add method for new supplier has been called");
 		try {
 
 			SupplierBean supplierBean = new SupplierBean();
-			model.addAttribute("supplierBean", supplierBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 
 			List<Supplier> supplierList = supplierService.getAll();
 			SupplierBeanDTO suppliers = new SupplierBeanDTO();
 
 			this.setSupplierList(supplierList, suppliers);
 
-			model.addAttribute("suppliers", suppliers);
+			 model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
 
 			logger.info("The empty supplier object bean has been created");
 		} catch (Exception e) {
-			logger.error("An unknown error has occurred while creating empty supplier.", e);
-			return "error";
+			logger.error("An unknown error has occurred while retrieving all the suppliers.", e);
+			return ViewPathConstants.ERROR_PAGE;
 		}
 
-		return "supplier/manage_supplier";
+		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 
 	}
 
 	private void setSupplierList(List<Supplier> supplierList, SupplierBeanDTO suppliers) {
 
-		List<SupplierBean> supplierBeanList = new ArrayList<SupplierBean>();
+		List<SupplierBean> supplierBeanList = new ArrayList<>();
 
 		for (Supplier supplier : supplierList) {
 			SupplierBean supplierBean = new SupplierBean();
@@ -204,7 +203,7 @@ public class ManageSupplierController {
 
 	@PostMapping(ViewPathConstants.SEARCH_SUPPLIER_URL)
 	public String searchSupplier(@ModelAttribute SupplierBean supplierBean,
-			@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
+			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
 		try {
 
 			Pager pager = new Pager();
@@ -227,14 +226,14 @@ public class ManageSupplierController {
 			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
 					tmpPager.getMaxDisplayPage(),ViewPathConstants.SEARCH_SUPPLIER_URL);
 
-			model.addAttribute("suppliers", suppliers);
-			model.addAttribute("supplierBean", supplierBean);
-			model.addAttribute("pager", pager);
-			model.addAttribute("success", "The {" + pager.getResultSize() + "} supplier record has been retrieved");
+			 model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+			model.addAttribute(MVCConstants.PAGER, pager);
+			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} supplier record has been retrieved");
 			logger.info("The supplier details has been retrieved successfully.");
 		} catch (Exception e) {
-			logger.error("There is an error while updating address", e);
-			return "error";
+			logger.error("There is an error while searching for suppliers", e);
+			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}
@@ -255,10 +254,10 @@ public class ManageSupplierController {
 		supplierBean.setPhone2(supplier.getPhone2());
 
 		List<Address> supplierAddressList = supplier.getAddresses();
-		List<AddressBean> supplierAddresses = new ArrayList<AddressBean>();
+		List<AddressBean> supplierAddresses = new ArrayList<>();
 
 		AddressBean addressBean = null;
-		if (supplierAddressList != null && supplierAddressList.size() > 0) {
+		if (supplierAddressList != null && !supplierAddressList.isEmpty()) {
 			for (Address address : supplierAddressList) {
 
 				addressBean = new AddressBean();
@@ -282,10 +281,10 @@ public class ManageSupplierController {
 
 	}
 
-	@GetMapping("/edit_supplier")
+	@GetMapping(ViewPathConstants.EDIT_SUPPLIER_URL)
 	public String editSupplier(Model model, HttpSession session, final HttpServletRequest req) {
 		try {
-			Integer supplierId = Integer.valueOf(req.getParameter("supplierId"));
+			Integer supplierId = Integer.valueOf(req.getParameter(MVCConstants.SUPPLIER_ID_PARAM));
 
 			SupplierBean supplierBean = new SupplierBean();
 			Supplier supplier = new Supplier();
@@ -296,28 +295,28 @@ public class ManageSupplierController {
 
 			this.updateBean(supplierBean, supplier);
 
-			model.addAttribute("supplierBean", supplierBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The requested supplier for updation has been set in bean object for display");
 		} catch (Exception e) {
-			logger.error("There is an error while updating address", e);
-			return "error";
+			logger.error("There is an error while retrieving supplier for editing", e);
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "supplier/edit_supplier";
+		return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 	}
 
-	@PostMapping(value = "/edit_supplier", params = { "addSupplierAddress" })
+	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.ADD_SUPPLIER_ADDRESS_PARAM })
 	public String addRowForEdit(@ModelAttribute SupplierBean supplierBean, Model model,
 			final BindingResult bindingResult) {
 		supplierBean.getAddresses().add(new AddressBean());
-		model.addAttribute("supplierBean", supplierBean);
+		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 		logger.info("A new address during for Supplier Edit screen has been added.");
-		return "supplier/edit_supplier";
+		return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 	}
 
-	@PostMapping(value = "/edit_supplier", params = { "removeSupplierAddress" })
+	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.REMOVE_SUPPLIER_ADDRESS_PARAM })
 	public String removeRowForEdit(@ModelAttribute SupplierBean supplierBean, Model model,
 			final BindingResult bindingResult, final HttpServletRequest req) {
-		final Integer rowId = Integer.valueOf(req.getParameter("id"));
+		final Integer rowId = Integer.valueOf(req.getParameter(MVCConstants.ID_PARAM));
 
 		AddressBean addressBean = supplierBean.getAddresses().get(rowId);
 		Address supplierAddress = new Address();
@@ -328,7 +327,7 @@ public class ManageSupplierController {
 
 		supplierBean.getAddresses().remove(rowId.intValue());
 		logger.info("The selected address during for Supplier Edit screen has been deleted.");
-		return "supplier/edit_supplier";
+		return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 	}
 
 	private void updateSupplierAddressDomain(Integer supplierId, AddressBean addressBean, Address address) {
@@ -340,54 +339,54 @@ public class ManageSupplierController {
 
 	}
 
-	@PostMapping(value = "/edit_supplier", params = { "saveSupplier" })
+	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIER_PARAM })
 	public String saveSupplierAfterEdit(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult,
 			Model model, HttpSession session, Locale locale) {
 		if (bindingResult.hasErrors())
-			return "supplier/edit_supplier";
+			return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 		try {
 			Supplier supplier = new Supplier();
 			this.updateDomain(supplierBean, supplier);
 
 			supplier = supplierService.createSupplier(supplier);
-			model.addAttribute("success", messageSource.getMessage("commerce.screen.supplier.add.success",
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.supplier.add.success",
 					new Object[] { supplier.getSupplierId() }, locale));
-			model.addAttribute("supplierBean", supplierBean);
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The supplier details has been saved after edit successfully.");
 		} catch (Exception e) {
-			logger.error("There is an error while updating address", e);
-			return "error";
+			logger.error("There is an error while saving supplier after editing", e);
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "supplier/edit_supplier";
+		return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 	}
 
-	@GetMapping("/delete_supplier")
+	@GetMapping(ViewPathConstants.DELETE_SUPPLIER_URL)
 	public String deleteSupplier(Model model, HttpSession session, final HttpServletRequest req) {
 		try {
-			Integer supplierId = Integer.valueOf(req.getParameter("supplierId"));
+			Integer supplierId = Integer.valueOf(req.getParameter(MVCConstants.SUPPLIER_ID_PARAM));
 
 			supplierService.delete(supplierId);
 
 			logger.info("The requested supplier for deletion has been deleted successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while deleteing supplier", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "supplier/manage_supplier";
+		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}
 
-	@PostMapping(value = "/bulk_supplier_action", params = { "saveSuppliers" })
+	@PostMapping(value = ViewPathConstants.BULK_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIERS_PARAM })
 	public String saveSuppliers(@ModelAttribute SupplierBeanDTO suppliers, Model model, HttpSession session) {
 		try {
 
 			List<SupplierBean> supplierBeans = suppliers.getSuppliers();
 
 			List<String> supplierIds = suppliers.getSupplierIds();
-			Map<Integer, Integer> idIndex = new HashMap<Integer, Integer>(supplierIds.size());
+			Map<Integer, Integer> idIndex = new HashMap<>(supplierIds.size());
 
 			this.getSelectedIds(supplierIds, idIndex);
 
-			List<SupplierBean> finalSupplierBeans = new ArrayList<SupplierBean>(idIndex.size());
+			List<SupplierBean> finalSupplierBeans = new ArrayList<>(idIndex.size());
 
 			Set<Integer> ids = idIndex.keySet();
 			Integer index = null;
@@ -400,7 +399,7 @@ public class ManageSupplierController {
 			}
 			logger.info("The modified list of suppliers has been updated in beans");
 
-			List<Supplier> supplierList = new ArrayList<Supplier>(finalSupplierBeans.size());
+			List<Supplier> supplierList = new ArrayList<>(finalSupplierBeans.size());
 			Supplier supplier = null;
 			for (SupplierBean supplierBean : finalSupplierBeans) {
 				supplier = new Supplier();
@@ -410,38 +409,38 @@ public class ManageSupplierController {
 			logger.info("The supplier details has been updated in Domain objects");
 
 			supplierService.updateSupplier(supplierList);
-			model.addAttribute("success", "The selected suppliers basic details has been updated");
+			model.addAttribute(MVCConstants.SUCCESS, "The selected suppliers basic details has been updated");
 			logger.info("The selected suppliers basic details has been updated successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while updating supplier basic details", e);
-			return "error";
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "supplier/manage_supplier";
+		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}
 
-	@PostMapping(value = "/bulk_supplier_action", params = { "deleteSuppliers" })
+	@PostMapping(value = ViewPathConstants.BULK_SUPPLIER_URL, params = { MVCConstants.DELETE_SUPPLIERS_PARAM })
 	public String deleteSuppliers(@ModelAttribute SupplierBeanDTO suppliers, Model model, HttpSession session) {
 		try {
 			List<String> supplierIds = suppliers.getSupplierIds();
 
-			Map<Integer, Integer> idIndexMap = new HashMap<Integer, Integer>(supplierIds.size());
+			Map<Integer, Integer> idIndexMap = new HashMap<>(supplierIds.size());
 
 			this.getSelectedIds(supplierIds, idIndexMap);
 
 			Set<Integer> ids = idIndexMap.keySet();
 
 			supplierService.deleteSuppliers(ids);
-			model.addAttribute("success", "The supplier record has been retrieved");
+			model.addAttribute(MVCConstants.SUCCESS, "The supplier record has been retrieved");
 			logger.info("The supplier details has been created successfully.");
 		} catch (Exception e) {
-			logger.error("There is an error while updating address", e);
-			return "error";
+			logger.error("There is an error while deleting supplier", e);
+			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "supplier/manage_supplier";
+		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}
 
 	private void getSelectedIds(List<String> supplierIds, Map<Integer, Integer> idIndex) {
-		String splittedData[] = null;
+		String[] splittedData = null;
 		for (String id : supplierIds) {
 			splittedData = id.split("_");
 			idIndex.put(new Integer(splittedData[0]), new Integer(splittedData[1]));

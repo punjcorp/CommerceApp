@@ -3,15 +3,16 @@
  */
 package com.punj.app.ecommerce.models.order;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.money.MonetaryAmount;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.javamoney.moneta.Money;
+
 import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -28,18 +29,18 @@ public class OrderItemBean {
 	@NotNull
 	private Integer orderedQty;
 
-	@Digits(integer = 8, fraction = 2)
-	private MonetaryAmount costAmount;
-	private MonetaryAmount totalCost;
+	// @Digits(integer = 8, fraction = 2)
+	private MonetaryAmount costAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount totalCost=Money.of(0, Utils.getLocaleCurrency());
 
 	private Integer delieveredQty;
 	private LocalDateTime delieveredDate;
 
-	private MonetaryAmount costActualAmount;
-	private MonetaryAmount totalActualCost;
-	private MonetaryAmount discountAmount;
-	private MonetaryAmount taxAmount;
-	private MonetaryAmount totalActualAmount;
+	private MonetaryAmount costActualAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount totalActualCost=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount discountAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount taxAmount=Money.of(0, Utils.getLocaleCurrency());
+	private MonetaryAmount totalActualAmount=Money.of(0, Utils.getLocaleCurrency());
 
 	private SupplierItemBean supplierItem;
 
