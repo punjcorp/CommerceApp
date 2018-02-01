@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
  *
  */
 public class InvAdjustItemBean {
+	private BigInteger invAdjustId;
 	@NotNull
 	private BigInteger itemId;
 	@NotNull
@@ -21,6 +22,21 @@ public class InvAdjustItemBean {
 
 	private Integer fromAvailable;
 	private Integer toAvailable;
+
+	/**
+	 * @return the invAdjustId
+	 */
+	public BigInteger getInvAdjustId() {
+		return invAdjustId;
+	}
+
+	/**
+	 * @param invAdjustId
+	 *            the invAdjustId to set
+	 */
+	public void setInvAdjustId(BigInteger invAdjustId) {
+		this.invAdjustId = invAdjustId;
+	}
 
 	/**
 	 * @return the itemId

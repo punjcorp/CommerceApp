@@ -116,6 +116,8 @@ public final class ViewPathConstants {
 	public static final String EDIT_INV_ADJUST_URL ="/edit_inv_adjust";
 	public static final String EDIT_INV_ADJUST_PAGE ="inventory/edit_inv_adjust";
 	
+	public static final String APPROVE_INV_ADJUST_URL ="/approve_inv_adjust";
+	
 	public static final String ADD_INV_ADJUST_URL ="/add_inv_adjust";
 	public static final String ADD_INV_ADJUST_PAGE ="inventory/add_inv_adjust";	
 	

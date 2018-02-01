@@ -25,5 +25,8 @@ public final class ServiceConstants {
 	
 	public static final String RECEIVE_ORDER_FUNCTIONALITY="RECEIVE_ORDER";
 	public static final String STOCK_ADJUSTMENT_FUNCTIONALITY="STOCK_ADJUSTMENT";
+	
+	public static final String STOCK_ADJUSTMENT_STATUS_CREATED="C";
+	public static final String STOCK_ADJUSTMENT_STATUS_APPROVED="A";
 
 }

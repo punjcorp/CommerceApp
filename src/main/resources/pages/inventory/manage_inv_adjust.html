@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.inventory.manage.title}">Inventory
+	Adjustment Management Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+
+</head>
+<body>
+
+	<div id="wrapper">
+
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+
+
+
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card content-container">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.inventory.search}">Search
+						Inventory Adjustment</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<form class="form" id="searchForm" action="#"
+							th:action="@{/search_inv_adjust}" th:object="${searchBean}"
+							method="post">
+							<div class="row">
+								<div class="col-7">
+									<div class="form-group text-left">
+										<div class="input-group">
+											<input type="text" th:field="*{searchText}"
+												class="form-control form-control-sm"
+												th:placeholder="#{commerce.screen.search.text}"
+												placeholder="Enter keyword to search"
+												aria-describedby="searchHelp"></input>
+											<div class="input-group-append">
+												<input type="submit" value="Search"
+													th:value="#{commerce.screen.btn.search}"
+													class="form-control btn btn-info btn-block btn-sm"></input>
+												<a
+													th:if="${invAdjusts==null or invAdjusts.invAdjusts==null or #lists.size(invAdjusts.invAdjusts)&lt;1}"
+													href="add_inv_adjust.html" th:href="@{/add_inv_adjust}"
+													class="btn btn-success btn-sm"><span
+													th:text="#{commerce.screen.btn.submit.add.inv.adjust}">Add
+														Inventory Adjustment</span></a>
+											</div>
+										</div>
+										<small id="searchHelp" class="form-text text-muted"
+											th:text="#{commerce.screen.inventory.search.keywords}">Enter
+											keywords like Inventory
+											Adjustment#/Description/Item#/Location#/Reason Code#</small>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}"
+							class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}"
+							class="alert alert-danger " role="alert"></div>
+
+						<form class="form" id="bulkForm" action="#"
+							th:action="@{/bulk_inv_adjust_action}" th:object="${invAdjusts}"
+							method="post"
+							th:if="${invAdjusts!=null and invAdjusts.invAdjusts!=null and #lists.size(invAdjusts.invAdjusts)>0}">
+
+							<div class="row">
+								<div class="col-12 text-right">
+										<!-- This thymeleaf fragment is the body part for the page-->
+										<th:block th:include="common/display :: pagination"></th:block>
+								</div>
+							</div>
+							
+							
+
+							<table class="table table-striped table-hover table-bordered">
+								<thead class="thead-light">
+									<tr>
+										<th scope="col" th:text="#{commerce.screen.common.id}">Select</th>
+										<th scope="col" th:text="#{commerce.screen.common.location}">Location</th>
+										<th scope="col" 
+											th:text="#{commerce.screen.common.description}">Description</th>
+										<th scope="col" th:text="#{commerce.screen.common.status}">Status</th>
+										<th scope="col" 
+											th:text="#{commerce.screen.common.created.date}">Created
+											Date</th>
+										<th scope="col" 
+											th:text="#{commerce.screen.common.created.by}">Created
+											By</th>
+										<th scope="col" th:text="#{commerce.screen.actions}">Actions</th>
+
+									</tr>
+								</thead>
+								
+
+				 		<tbody>
+							<th:block th:each="invAdjust,itrStat:${invAdjusts.invAdjusts}">
+										<tr>
+											<td >
+										 <input type="checkbox"
+												th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
+												class="form-control input-sm invAdjustId"
+												th:field="*{invAdjustIds}"
+												th:value="${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId}+'_'+${itrStat.index}"></input> 
+											</td>
+											<td ><input type="text"
+												class="form-control form-control-sm"
+												th:field="${invAdjusts.invAdjusts[__${itrStat.index}__].locationId}"
+												disabled="disabled"></input></td>
+											<td ><textarea class="form-control form-control-sm"
+													th:field="${invAdjusts.invAdjusts[__${itrStat.index}__].description}"
+													disabled="disabled"></textarea></td>
+											<td ><input type="text"
+												class="form-control form-control-sm"
+												th:field="${invAdjusts.invAdjusts[__${itrStat.index}__].status}"
+												disabled="disabled"></input></td>
+											<td ><input type="text"
+												class="form-control form-control-sm"
+												th:field="${invAdjusts.invAdjusts[__${itrStat.index}__].createdDate}"
+												disabled="disabled"></input></td>
+											<td ><input type="text"
+												class="form-control form-control-sm"
+												th:field="${invAdjusts.invAdjusts[__${itrStat.index}__].createdBy}"
+												disabled="disabled"></input></td>
+											<td >
+												<div class="btn-group">
+													<a
+														th:if="${invAdjusts.invAdjusts[__${itrStat.index}__].status=='C'}"
+														th:href="@{/edit_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
+														href="../inventory/edit_inv_adjust.html"
+														class="btn btn-info btn-sm"><span
+														th:text="#{commerce.screen.actions.edit}">Edit</span></a>
+													<a
+														th:if="${invAdjusts.invAdjusts[__${itrStat.index}__].status=='C'}"
+														th:href="@{/approve_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
+														href="../inventory/manage_inv_adjust.html"
+														class="btn btn-success btn-sm"><span
+														th:text="#{commerce.screen.actions.approve}">Approve</span></a>
+													<a
+														th:if="${invAdjusts.invAdjusts[__${itrStat.index}__].status=='C'}"
+														th:href="@{/delete_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
+														href="../inventory/manage_inv_adjust.html"
+														class="btn btn-danger btn-sm"><span
+														th:text="#{commerce.screen.actions.delete}">Delete</span></a>
+													 <a
+														th:href="@{/print_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
+														href="../inventory/inv_adjust.html"
+														class="btn btn-secondary btn-sm"><span
+														th:text="#{commerce.screen.actions.print}">Print</span></a>
+
+												</div>
+
+											</td>
+
+										</tr>
+									</th:block> 
+								</tbody>
+
+							</table>
+									
+									<div class="row">
+										<div class="col-4">
+										<div class="form-group">
+										<a th:href="'javascript:selectAll()'" href="#"
+											class="badge badge-secondary"><span
+												th:text="#{commerce.screen.actions.selectall}">Select
+													All</span></a> <a
+											th:href="'javascript:deselectAll()'" href="#"
+											class="badge badge-secondary"><span
+												th:text="#{commerce.screen.actions.deselectall}">Deselect
+													All</span></a></div></div>
+										<div class="col-8 text-right">
+											<!-- This thymeleaf fragment is the body part for the page-->
+											<th:block th:include="common/display :: pagination"></th:block>
+										</div>
+									</div>
+
+							<div class="row">
+								<div class="col-8">
+									<div class="form-group">
+										<input type="button"
+											th:onclick="'submitForm(\'/bulk_inv_adjust_action?saveInvAdjusts=\')'"
+											id="btnSave" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}"
+											class="btn btn-info btn-sm" aria-describedby="bulkHelp"
+											disabled="disabled"></input> 
+											<input type="button"
+											th:onclick="'submitForm(\'/bulk_inv_adjust_action?approveInvAdjusts=\')'"
+											id="btnApprove" value="Approve"
+											th:value="#{commerce.screen.btn.submit.approve}"
+											class="btn btn-success btn-sm" aria-describedby="bulkHelp"
+											disabled="disabled"></input>
+											<input type="button"
+											th:onclick="'submitForm(\'/bulk_inv_adjust_action?deleteInvAdjusts=\')'"
+											id="btnDelete" value="Delete"
+											th:value="#{commerce.screen.btn.submit.delete}"
+											class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
+											disabled="disabled"></input>  <a
+											id="btnPrint" href="print_orders.html"
+											th:href="@{/print_inv_adjusts}" class="btn btn-secondary btn-sm"><span
+											th:text="#{commerce.screen.btn.print}">Print</span></a> <a
+											href="../inventory/add_inv_adjust.html"
+											th:href="@{/add_inv_adjust}" class="btn btn-info btn-sm"><span
+											th:text="#{commerce.screen.btn.submit.add.inv.adjust}">Add</span></a>
+									</div>
+								</div>
+							</div>
+							<div class="row text-left">
+								<div class="col-4">
+									<small id="btnActions" class="form-text text-muted"
+										th:text="#{commerce.screen.search.action.bulk}">Please
+										select records for the actions</small>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+
+
+
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+
+
+	<script th:inline="javascript" th:if="${invAdjusts!=null}">
+	/*<![CDATA[*/
+	
+	    var totalRecords = [[${#lists.size(invAdjusts.invAdjusts)}]];
+	
+	/*]]>*/
+	</script>
+	<script>
+	
+	
+		function searchResults(action) {
+	
+			$("#searchForm").attr("action", action);
+	
+			$('#searchForm').submit();
+		}
+
+	
+	
+		var cbCounter = 0;
+
+		function selectAll() {
+
+			$(".invAdjustId").prop('checked', true);
+
+			$("[id^=invAdjusts]").each(function() {
+			    if(this.id.indexOf("description") >= 0){
+			    	$(this).removeAttr("disabled");
+			    }
+			});
+			
+			$("#btnApprove").removeAttr("disabled");
+			$("#btnDelete").removeAttr("disabled");
+			$("#btnSave").removeAttr("disabled");
+			$("#btnPrint").removeAttr("disabled");
+			cbCounter = totalRecords;
+
+		}
+
+		function deselectAll() {
+
+			$(".invAdjustId").prop('checked', false);
+			$("[id^=invAdjusts]").each(function() {
+			    if(this.id.indexOf("description") >= 0){			
+				$(this).attr("disabled", "disabled");
+			    }
+			});
+			$("#btnApprove").attr("disabled", "disabled");
+			$("#btnDelete").attr("disabled", "disabled");
+			$("#btnSave").attr("disabled", "disabled");
+			$("#btnPrint").attr("disabled", "disabled");
+			
+			cbCounter = 0;
+
+		}
+
+		function submitForm(action) {
+
+			$("#bulkForm").attr("action", action);
+
+			$('#bulkForm').submit();
+		}
+
+		function selectFunc(index, cb) {
+
+			if (cb.checked) {
+				$("#invAdjusts" + index + "\\.description").removeAttr("disabled");
+				if (cbCounter == 0) {
+					$("#btnApprove").removeAttr("disabled");
+					$("#btnDelete").removeAttr("disabled");
+					$("#btnSave").removeAttr("disabled");
+					$("#btnPrint").removeAttr("disabled");
+				}
+				cbCounter++;
+			} else {
+				$("#invAdjusts" + index + "\\.description")
+						.attr("disabled", "disabled");
+				if (cbCounter == 1 || cbCounter == 0) {
+					$("#btnApprove").attr("disabled", "disabled");
+					$("#btnDelete").attr("disabled", "disabled");
+					$("#btnSave").attr("disabled", "disabled");
+					$("#btnPrint").attr("disabled", "disabled");
+				}
+				cbCounter--;
+
+			}
+		}
+	</script>
+
+</body>
+</html>

@@ -20,10 +20,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 /**
  * @author admin
  *
  */
+@Indexed
 @Entity
 @Table(name = "stock_adjustment")
 public class StockAdjustment implements Serializable {
@@ -31,13 +37,16 @@ public class StockAdjustment implements Serializable {
 	private static final long serialVersionUID = -2702423814300979765L;
 
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "stock_adjust_id", updatable = false, nullable = false)
 	private BigInteger stockAdjustId;
 
+	@Field
 	@Column(name = "location_id")
 	private Integer locationId;
 
+	@Field
 	private String description;
 	private String status;
 
@@ -45,6 +54,7 @@ public class StockAdjustment implements Serializable {
 	@JoinColumn(name = "reason_code_id", nullable = false)
 	private StockReason stockReason;
 
+	@Field
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -55,6 +65,7 @@ public class StockAdjustment implements Serializable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
+	@IndexedEmbedded
 	@OneToMany(mappedBy = "stockAdjustmentItemId.stockAdjustment", cascade = CascadeType.ALL)
 	private List<StockAdjustmentItem> stockAdjustItems;
 

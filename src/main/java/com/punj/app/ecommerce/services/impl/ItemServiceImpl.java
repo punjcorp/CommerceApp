@@ -202,7 +202,7 @@ public class ItemServiceImpl implements ItemService {
 
 		item = itemRepository.save(item);
 		logger.info("The requested item object has been saved successfully");
-		itemOptions = itemOptionsRepository.save(itemOptions);
+		itemOptionsRepository.save(itemOptions);
 		logger.info("The requested item options object has been saved successfully");
 
 		itemAttributeRepository.save(itemAttributes);
@@ -347,7 +347,7 @@ public class ItemServiceImpl implements ItemService {
 				ItemOptions itemOptions = SerializationUtils.clone(itemOptionsOrg);
 
 				itemOptions.setItemId(skuItem.getItemId());
-				itemOptions = itemOptionsRepository.save(itemOptions);
+				itemOptionsRepository.save(itemOptions);
 				logger.info("The requested item options object has been saved successfully");
 
 				/**
@@ -372,7 +372,7 @@ public class ItemServiceImpl implements ItemService {
 				sizeItemAttribute.setItemAttributeId(sizeItemAttributeId);
 				itemAttributes.add(sizeItemAttribute);
 
-				itemAttributes = itemAttributeRepository.save(itemAttributes);
+				itemAttributeRepository.save(itemAttributes);
 				logger.info("The requested item attributes has been saved successfully");
 
 				skuCounter.setStatus("Y");
@@ -442,7 +442,7 @@ public class ItemServiceImpl implements ItemService {
 		ItemDTO itemDTO = new ItemDTO();
 		itemDTO.setItems(items);
 
-		pager.setResultSize(new Long(itemsPage.getTotalElements()).intValue());
+		pager.setResultSize((int)itemsPage.getTotalElements());
 
 		itemDTO.setPager(pager);
 

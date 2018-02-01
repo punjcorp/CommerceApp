@@ -1,97 +1,98 @@
-
 <!DOCTYPE html>
-<title>My Example</title>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title>Left Menu</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
 
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
-<link href="../static/css/custom.css" th:href="@{/css/custom.css}"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous"/>
+
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
 	rel="stylesheet" />
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet"></link>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-	crossorigin="anonymous"
-	th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+	crossorigin="anonymous"></script>
 <script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
-	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
-	crossorigin="anonymous"
-	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
+<script src="../../js/jquery-editable-select.min.js"
+	th:src="@{/js/jquery-editable-select.min.js}"></script>
 
-<!-- Latest compiled and minified Bootstrap CSS -->
-
-
-<style>
-body {
-padding-top: 1em;
-}	
-</style> <div class="container-fluid">
-		
-<div id="faq" role="tablist" aria-multiselectable="true">
-
-<div class="card">
-<div class="card-header" role="tab" id="questionOne">
-<h5 class="card-title">
-<a data-toggle="collapse" data-parent="#faq" href="#answerOne" aria-expanded="true" aria-controls="answerOne">
-What if my boots are too big for my feet?
-</a>
-</h5>
-</div>
-<div id="answerOne" class="collapse show" role="tabcard" aria-labelledby="questionOne">
-<div class="card-body">
-Stuff your boots with newspaper or tissue.
-</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-header" role="tab" id="questionTwo">
-<h5 class="card-title">
-<a class="collapsed" data-toggle="collapse" data-parent="#faq" href="#answerTwo" aria-expanded="false" aria-controls="answerTwo">
-Can I wear my boots inside?
-</a>
-</h5>
-</div>
-<div id="answerTwo" class="collapse" role="tabcard" aria-labelledby="questionTwo">
-<div class="card-body">
-No. Your mama should've told you about this.
-</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-header" role="tab" id="questionThree">
-<h5 class="card-title">
-<a class="collapsed" data-toggle="collapse" data-parent="#faq" href="#answerThree" aria-expanded="true" aria-controls="answerThree">
-What if my boots get slippery when wet?
-</a>
-</h5>
-</div>
-<div id="answerThree" class="collapse in" role="tabcard" aria-labelledby="questionThree">
-<div class="card-body">
-Keep your boots dry.
-</div>
-</div>
-</div>
-
-</div>
-
-</div>
-		
-<!-- jQuery library -->
+<script src="../../static/js/custom.js" th:src="@{/js/custom.js}"></script>
 
 
-<!-- Latest compiled and minified Bootstrap JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
-<!-- Initialize Bootstrap functionality -->
-<script>
-// Initialize tooltip component
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+</head>
+<body>
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th scope="col" class="col-1">Select</th>
+				<th scope="col" class="col-1">Location</th>
+				<th scope="col" class="col-3">Description</th>
+				<th scope="col" class="col-1">Status</th>
+				<th scope="col" class="col-2">Created Date</th>
+				<th scope="col" class="col-2">Created By</th>
+				<th scope="col" class="col-2">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Select</td>
+				<td>Location</td>
+				<td>Description</td>
+				<td>Status</td>
+				<td>CreatedDate</td>
+				<td>Created
+					By</td>
+				<td>Actions</td>
+			</tr>
 
-// Initialize popover component
-$(function () {
-  $('[data-toggle="popover"]').popover()
-})
-</script> 
+		</tbody>
+	</table>
+<table class="table table-hover table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td colspan="2">Larry the Bird</td>
+      <td>@twitter</td>
+    </tr>
+  </tbody>
+</table>	
+	
+</body>
+</html>

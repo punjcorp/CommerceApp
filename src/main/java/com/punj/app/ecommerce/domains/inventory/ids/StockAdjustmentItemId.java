@@ -10,8 +10,12 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
 
+@Indexed
 @Embeddable
 public class StockAdjustmentItemId implements Serializable {
 
@@ -21,9 +25,11 @@ public class StockAdjustmentItemId implements Serializable {
 	@JoinColumn(name = "stock_adjust_id")
 	private StockAdjustment stockAdjustment;
 
+	@Field
 	@Column(name = "item_id")
 	private BigInteger itemId;
 
+	@Field
 	@Column(name = "reason_code_id")
 	private Integer reasonCodeId;
 

@@ -9,12 +9,17 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
+
 import com.punj.app.ecommerce.domains.inventory.ids.StockAdjustmentItemId;
 
 /**
  * @author admin
  *
  */
+@Indexed
 @Entity
 @Table(name = "stock_adjustment_items")
 public class StockAdjustmentItem implements Serializable {
@@ -22,6 +27,8 @@ public class StockAdjustmentItem implements Serializable {
 	private static final long serialVersionUID = -8507413669072471638L;
 
 	@EmbeddedId
+	@FieldBridge(impl = StockAdjustmentItemFieldBridge.class)
+	@DocumentId
 	private StockAdjustmentItemId stockAdjustmentItemId;
 
 	private Integer qty;

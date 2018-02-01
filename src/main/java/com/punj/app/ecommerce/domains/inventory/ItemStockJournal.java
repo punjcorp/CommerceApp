@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.domains.inventory;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -14,8 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.punj.app.ecommerce.domains.item.Item;
 
 /**
  * @author admin
@@ -36,9 +35,8 @@ public class ItemStockJournal implements Serializable {
 	@JoinColumn(name = "reason_code_id")
 	private StockReason reasonCode;
 
-	@ManyToOne
-	@JoinColumn(name = "item_id")
-	private Item item;
+	@Column(name = "item_id")
+	private BigInteger itemId;
 
 	@Column(name = "location_id")
 	private Integer locationId;
@@ -82,18 +80,18 @@ public class ItemStockJournal implements Serializable {
 	}
 
 	/**
-	 * @return the item
+	 * @return the itemId
 	 */
-	public Item getItem() {
-		return item;
+	public BigInteger getItemId() {
+		return itemId;
 	}
 
 	/**
-	 * @param item
-	 *            the item to set
+	 * @param itemId
+	 *            the itemId to set
 	 */
-	public void setItem(Item item) {
-		this.item = item;
+	public void setItemId(BigInteger itemId) {
+		this.itemId = itemId;
 	}
 
 	/**

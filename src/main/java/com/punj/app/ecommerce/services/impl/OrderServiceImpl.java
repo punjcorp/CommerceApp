@@ -327,7 +327,7 @@ public class OrderServiceImpl implements OrderService {
 
 			item = new Item();
 			item.setItemId(orderItem.getOrderItemId().getItemId());
-			itemStockJournal.setItem(item);
+			itemStockJournal.setItemId(item.getItemId());
 
 			StockReason stockReason = new StockReason();
 			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);

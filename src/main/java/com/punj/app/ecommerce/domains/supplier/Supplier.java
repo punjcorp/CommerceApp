@@ -32,6 +32,9 @@ import com.punj.app.ecommerce.domains.user.Address;
 @Entity
 @Table(name = "supplier")
 public class Supplier implements Serializable {
+	
+	private static final long serialVersionUID = -6283311597096431119L;
+	
 	@Id
 	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)

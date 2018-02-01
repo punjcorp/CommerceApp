@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +27,12 @@ import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustmentItem;
 import com.punj.app.ecommerce.domains.inventory.StockBucket;
+import com.punj.app.ecommerce.domains.inventory.StockDTO;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.inventory.ids.ItemStockBucketId;
 import com.punj.app.ecommerce.domains.inventory.ids.ItemStockId;
+import com.punj.app.ecommerce.domains.inventory.ids.StockAdjustmentItemId;
 import com.punj.app.ecommerce.domains.item.Item;
-import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.inventory.ItemStockBucketRepository;
 import com.punj.app.ecommerce.repositories.inventory.ItemStockJournalRepository;
@@ -37,8 +41,10 @@ import com.punj.app.ecommerce.repositories.inventory.StockAdjustmentItemReposito
 import com.punj.app.ecommerce.repositories.inventory.StockAdjustmentRepository;
 import com.punj.app.ecommerce.repositories.inventory.StockBucketRepository;
 import com.punj.app.ecommerce.repositories.inventory.StockReasonRepository;
+import com.punj.app.ecommerce.repositories.inventory.StockSearchRepository;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -56,12 +62,29 @@ public class InventoryServiceImpl implements InventoryService {
 	private StockAdjustmentRepository stockAdjustmentRepository;
 	private StockAdjustmentItemRepository stockAdjustmentItemRepository;
 	private LocationRepository locationRepository;
+	private StockSearchRepository stockSearchRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @return the stockSearchRepository
+	 */
+	public StockSearchRepository getStockSearchRepository() {
+		return stockSearchRepository;
+	}
+
+	/**
+	 * @param stockSearchRepository
+	 *            the stockSearchRepository to set
+	 */
+	@Autowired
+	public void setStockSearchRepository(StockSearchRepository stockSearchRepository) {
+		this.stockSearchRepository = stockSearchRepository;
+	}
 
 	/**
 	 * @return the stockAdjustmentRepository
@@ -200,7 +223,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 			stockReason = itemStockJournal.getReasonCode();
 			stockReason = this.stockReasonRepository.findOne(Example.of(stockReason));
-			
+
 			itemStockJournal.setReasonCode(stockReason);
 
 			itemStockJournal = this.itemStockJournalRepository.save(itemStockJournal);
@@ -216,7 +239,9 @@ public class InventoryServiceImpl implements InventoryService {
 	private void updateItemStockAndBuckets(ItemStockJournal itemStockJournal) {
 
 		ItemStockId itemStockId = new ItemStockId();
-		itemStockId.setItem(itemStockJournal.getItem());
+		Item item=new Item();
+		item.setItemId(itemStockJournal.getItemId());
+		itemStockId.setItem(item);
 		itemStockId.setLocationId(itemStockJournal.getLocationId());
 
 		ItemStock itemStock = this.itemStockRepository.findOne(itemStockId);
@@ -293,7 +318,7 @@ public class InventoryServiceImpl implements InventoryService {
 		Integer bucketId = stockBucket.getBucketId();
 
 		ItemStockBucketId itemStockBucketId = new ItemStockBucketId();
-		itemStockBucketId.setItemId(itemStockJournal.getItem().getItemId());
+		itemStockBucketId.setItemId(itemStockJournal.getItemId());
 		itemStockBucketId.setLocationId(itemStockJournal.getLocationId());
 		itemStockBucketId.setStockBucketId(bucketId);
 
@@ -413,7 +438,8 @@ public class InventoryServiceImpl implements InventoryService {
 			stockAdjustmentId = stockAdjustment.getStockAdjustId();
 			logger.debug("The stock adjustment id is -> {} <-", stockAdjustmentId);
 
-			List<ItemStockJournal> inventoryDetails=this.createStockDetails(stockAdjustment, stockAdjustment.getCreatedBy());
+			List<ItemStockJournal> inventoryDetails = this.createStockDetails(stockAdjustment,
+					stockAdjustment.getCreatedBy());
 			this.updateInventory(inventoryDetails);
 
 		}
@@ -436,7 +462,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 			item = new Item();
 			item.setItemId(stockAdjustmentItem.getStockAdjustmentItemId().getItemId());
-			itemStockJournal.setItem(item);
+			itemStockJournal.setItemId(item.getItemId());
 
 			StockReason stockReason = new StockReason();
 			stockReason.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getReasonCodeId());
@@ -451,6 +477,111 @@ public class InventoryServiceImpl implements InventoryService {
 		logger.info("The stock details has been created for Inventory Adjustment");
 		return itemStockDetails;
 
+	}
+
+	@Override
+	public StockDTO listStockAdjustments(StockAdjustment stockAdjustmentCriteria, Pager pager) {
+		StockDTO stockDTO = null;
+		try {
+
+			int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+			pager.setPageSize(maxResultPerPage);
+			pager.setStartCount(startCount);
+			pager.setMaxDisplayPage(maxPageBtns);
+
+			Pageable pageable = new PageRequest(pager.getCurrentPageNo() - 1, maxResultPerPage);
+
+			Page<StockAdjustment> stockAdjustmentsPage = this.stockAdjustmentRepository.findAll(pageable);
+			logger.info("The searched stock adjustments has been retrieved successfully from database");
+
+			List<StockAdjustment> stockAdjustments = stockAdjustmentsPage.getContent();
+
+			stockDTO = new StockDTO();
+			stockDTO.setStockAdjustments(stockAdjustments);
+
+			pager.setResultSize((int) stockAdjustmentsPage.getTotalElements());
+
+			stockDTO.setPager(pager);
+
+			logger.info("The Stock Adjustments and pager has been set in DTO object successfully");
+		} catch (Exception e) {
+			logger.error("There was an error while searching for all the Stock Adjustments", e);
+		}
+		return stockDTO;
+	}
+
+	@Override
+	public StockDTO searchStockAdjustments(String text, Pager pager) {
+
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+
+		StockDTO stockDTO = this.stockSearchRepository.search(text, pager);
+		logger.info("The search Stock Adjustments has been set in DTO object successfully");
+
+		return stockDTO;
+	}
+
+	@Override
+	public Boolean approveStockAdjustment(BigInteger stockAdjustmentId) {
+		Boolean result = Boolean.FALSE;
+		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
+		if (stockAdjustment != null && !StringUtils.isEmpty(stockAdjustment.getStatus())
+				&& stockAdjustment.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+			stockAdjustment.setStatus(ServiceConstants.STOCK_ADJUSTMENT_STATUS_APPROVED);
+			stockAdjustment = this.stockAdjustmentRepository.save(stockAdjustment);
+			if (stockAdjustment != null) {
+				result = Boolean.TRUE;
+				logger.info("The Stock Adjustment has been approved successfully");
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Boolean deleteStockAdjustment(BigInteger stockAdjustmentId) {
+		Boolean result = Boolean.FALSE;
+		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
+		if (stockAdjustment != null && !StringUtils.isEmpty(stockAdjustment.getStatus())
+				&& stockAdjustment.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+			this.stockAdjustmentRepository.delete(stockAdjustmentId);
+			result = Boolean.TRUE;
+			logger.info("The Stock Adjustment has been deleted successfully");
+		}
+		if (!result)
+			logger.info("The Stock Adjustment was not deleted due to some pre defined condition.");
+		return result;
+	}
+
+	@Override
+	public StockAdjustment editStockAdjustment(BigInteger stockAdjustmentId) {
+		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
+		if (stockAdjustment != null
+				&& stockAdjustment.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+			logger.info("The Stock Adjustment has been retrieved successfully for editing");
+		} else {
+			stockAdjustment = null;
+			logger.info("The Stock Adjustment cannot be retrieved for editing");
+		}
+		return stockAdjustment;
+	}
+
+	@Override
+	public Boolean deleteStockAdjustmentItem(BigInteger stockAdjustmentId, BigInteger itemId, Integer reasonCodeId) {
+
+		StockAdjustment stockAdjustment = new StockAdjustment();
+		stockAdjustment.setStockAdjustId(stockAdjustmentId);
+
+		StockAdjustmentItemId stockAdjustmentItemId = new StockAdjustmentItemId();
+		stockAdjustmentItemId.setStockAdjustment(stockAdjustment);
+		stockAdjustmentItemId.setItemId(itemId);
+		stockAdjustmentItemId.setReasonCodeId(reasonCodeId);
+		
+		this.stockAdjustmentItemRepository.delete(stockAdjustmentItemId);
+		logger.info("The Stock Adjustment Item has been deleted successfully");
+		return Boolean.TRUE;
 	}
 
 }

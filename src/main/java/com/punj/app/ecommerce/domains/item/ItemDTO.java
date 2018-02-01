@@ -12,8 +12,8 @@ import com.punj.app.ecommerce.utils.Pager;
  *
  */
 public class ItemDTO {
-	List<Item> items;
-	Pager pager;
+	private List<Item> items;
+	private Pager pager;
 
 	/**
 	 * @return the items

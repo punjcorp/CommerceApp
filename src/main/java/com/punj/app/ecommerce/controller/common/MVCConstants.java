@@ -26,6 +26,9 @@ public final class MVCConstants {
 	public static final String STATUS_CREATED="C";
 	public static final String STATUS_ACTIVE="A";
 
+	public static final String ACTION_NEW="NEW";
+	public static final String ACTION_EDIT="EDIT";
+
 	
 	public static final String REPORT_OUTPUT_PDF="application/pdf";
 	public static final String SUB_REPORT_DIR="SUBREPORT_DIR";
@@ -42,11 +45,12 @@ public final class MVCConstants {
 	public static final String ORDER_ID_PARAM= "orderId";
 		
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
-	public static final String ORDER_REPORT="/reports/order/purchase_order_updated.jrxml";
-	public static final String ORDERS_REPORT_NAME="order_list_report.pdf";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";
+	public static final String ORDER_REPORT="/reports/order/purchase_order.jrxml";
 	public static final String ORDER_ITEMS_REPORT="/reports/order/purchase_order_item.jrxml";
-	
+	public static final String ORDERS_REPORT_NAME="order_list_report.pdf";
+
+
 	public static final String ORDER_ITEM_REPORT_PARAM="ORDER_ITEM_REPORT";
 	public static final String SUPPLIER_REPORT_PARAM="SUPPLIER_REPORT";
 	public static final String SUPPLIER_ADDRESS_REPORT_PARAM="SUPPLIER_ADDRESS_REPORT";
@@ -70,6 +74,7 @@ public final class MVCConstants {
 	public static final String SUPPLIER_BEAN= "supplierBean";
 	public static final String ITEM_BEAN= "itemBean";
 	public static final String INV_ADJUST_BEAN= "invAdjustBean";
+	public static final String INV_ADJUSTS_BEAN= "invAdjusts";
 	public static final String SUPPLIERS_BEAN= "suppliers";
 	public static final String SEARCH_BEAN= "searchBean";
 	
@@ -86,6 +91,9 @@ public final class MVCConstants {
 	public static final String REMOVE_INV_ADJUST_ITEM_PARAM= "removeInvAdjustItem";
 	public static final String SAVE_INV_ADJUST_PARAM= "saveInvAdjust";
 	public static final String APPROVE_INV_ADJUST_PARAM= "approveInvAdjust";
+	public static final String SAVE_EDIT_INV_ADJUST_PARAM= "saveEditedInvAdjust";
+	public static final String APPROVE_EDIT_INV_ADJUST_PARAM= "approveEditedInvAdjust";
+	
 	public static final String INV_ADJUST_ID_PARAM="invAdjustId";
 	public static final String SAVE_INV_ADJUSTS_PARAM= "saveInvAdjustItems";
 	public static final String DELETE_INV_ADJUSTS_PARAM="deleteInvAdjustItems";

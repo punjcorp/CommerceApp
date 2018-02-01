@@ -25,9 +25,17 @@
 	</style>
 	<subDataset name="New Dataset 1" uuid="f025a9ae-8109-4f18-abc8-9586e44c1bcf"/>
 	<subDataset name="dataset1" uuid="457d94f6-820c-415b-8c37-48b8f74eb9f9"/>
-	<parameter name="SUBREPORT_DATA" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="SUPPLIER_DATA" class="java.util.List" isForPrompting="false"/>
+	<parameter name="SUPPLIER_ADDRESS_DATA" class="java.util.List" isForPrompting="false"/>
+	<parameter name="DELIVERY_ADDRESS_DATA" class="java.util.List" isForPrompting="false"/>
+
+	<parameter name="SUPPLIER_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="ORDER_ITEM_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="SUPPLIER_ADDRESS_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="DELIVERY_ADDRESS_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+			
 	<field name="orderId" class="java.math.BigInteger"/>
-	<field name="supplierId" class="java.lang.Integer"/>
+	<field name="supplier" class="com.punj.app.ecommerce.models.supplier.SupplierBean"/>
 	<field name="status" class="java.lang.String"/>
 	<field name="orderItems" class="java.util.List"/>
 	<group name="Order#">
@@ -61,70 +69,33 @@
 				<text><![CDATA[Order#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="291" y="10" width="77" height="20" forecolor="#000000" uuid="338cd862-b9be-4c1f-a72d-709ebf51e4d5"/>
+				<reportElement x="291" y="31" width="177" height="20" forecolor="#000000" uuid="338cd862-b9be-4c1f-a72d-709ebf51e4d5"/>
 				<textElement>
-					<font size="14" isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Supplier#]]></text>
+				<text><![CDATA[Supplier Details]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="368" y="10" width="100" height="20" forecolor="#000000" uuid="c809a4c4-3118-4437-9cad-eeafe9449b87"/>
+			<subreport>
+				<reportElement x="291" y="51" width="177" height="32" uuid="ec2476c0-5a69-48c6-9016-7b0db8016c14"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUPPLIER_DATA})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUPPLIER_REPORT}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="291" y="83" width="177" height="38" uuid="55732755-fb85-4835-a7a3-c134ad0124c4"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{SUPPLIER_ADDRESS_DATA})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUPPLIER_ADDRESS_REPORT}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="11" y="51" width="200" height="71" uuid="0203004a-86b1-4663-85a5-cfeb5a5f72cf"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{DELIVERY_ADDRESS_DATA})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{DELIVERY_ADDRESS_REPORT}]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="11" y="31" width="115" height="20" uuid="040003ab-cf8f-4470-941d-2fa244618a1d"/>
 				<textElement>
-					<font size="14"/>
+					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{supplierId}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="11" y="42" width="172" height="20" uuid="ec1acbf2-d4e0-403d-b5d8-659e60799256"/>
-				<text><![CDATA[Address Line 1]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="11" y="61" width="172" height="20" uuid="4dfecd53-ff3c-428c-adb8-2cb3d0c7e5bc"/>
-				<text><![CDATA[Address Line 2]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="11" y="80" width="96" height="20" uuid="f92648fe-f1a1-47a0-9367-aa59623eb98c"/>
-				<text><![CDATA[City]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="106" y="80" width="77" height="20" uuid="0c0f267f-b911-44b4-beaf-c99968a449f7"/>
-				<text><![CDATA[State]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="11" y="99" width="96" height="20" uuid="14a5419a-8d7d-40b6-9c59-179897e58eb4"/>
-				<text><![CDATA[Country]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="106" y="99" width="77" height="20" uuid="17373d24-176a-429c-b581-c855acd9c249"/>
-				<text><![CDATA[Pincode]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="293" y="58" width="172" height="20" uuid="50bd9980-7b86-424b-9950-34a0b82b92dc"/>
-				<text><![CDATA[Address Line 1]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="293" y="77" width="172" height="20" uuid="edac1b8a-8568-4fb1-ab3d-493d866f0764"/>
-				<text><![CDATA[Address Line 2]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="293" y="96" width="96" height="20" uuid="2e3b2879-bdba-42f6-948f-6cd0a9cbc545"/>
-				<text><![CDATA[City]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="293" y="115" width="96" height="20" uuid="ad00c89e-7c3f-4078-be84-a117aca1d4b2"/>
-				<text><![CDATA[Country]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="388" y="115" width="77" height="20" uuid="ffe6c8db-c5e4-409c-a7ea-b5ee0c94cbab"/>
-				<text><![CDATA[Pincode]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="388" y="96" width="77" height="20" uuid="3c30687c-6bf4-4e82-a18c-2563942d5821"/>
-				<text><![CDATA[State]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="293" y="39" width="172" height="20" uuid="8af86804-abb4-4340-8b54-a23ccb7842d7"/>
-				<text><![CDATA[Supplier's Name]]></text>
+				<text><![CDATA[Delivery Address]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -133,7 +104,7 @@
 			<subreport>
 				<reportElement x="0" y="0" width="574" height="57" uuid="0f8f7e23-fca4-4b66-8ca1-b1126d0399b8"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{orderItems})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DATA}]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{ORDER_ITEM_REPORT}]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

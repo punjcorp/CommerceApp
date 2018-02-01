@@ -3,7 +3,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.inventory.add.title}"></title>
+<title th:text="#{commerce.screen.inventory.edit.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
 
@@ -25,10 +25,10 @@
 
 			<!-- This thymeleaf fragment is the body part for the page-->
 
-			<div class="card">
+			<div class="card content-container">
 				<div class="card-header">
-					<h3 th:text="#{commerce.screen.inventory.add}">Create Purchase
-						Order</h3>
+					<h3 th:text="#{commerce.screen.inventory.edit}">Modify
+						Purchase Order</h3>
 				</div>
 				<div class="card-body">
 					<div class="card-text">
@@ -38,8 +38,26 @@
 							class="alert alert-danger " role="alert"></div>
 
 						<form class="form" id="addForm" action="#"
-							th:action="@{/add_inv_adjust}" th:object="${invAdjustBean}"
+							th:action="@{/edit_inv_adjust}" th:object="${invAdjustBean}"
 							method="post">
+							<div class="row">
+								<div class="col-3">
+									<label th:text="#{commerce.screen.inventory.id}"></label>
+								</div>
+								<div class="col-2">
+									<input type="hidden" th:field="*{invAdjustId}" />
+									<input type="hidden" th:field="*{createdBy}" />
+									<input type="hidden" th:field="*{createdDate}" />
+									<input type="hidden" th:field="*{status}" />
+									<h5>
+										<span th:text="${invAdjustBean.invAdjustId}"></span>
+									</h5>
+
+								</div>
+							</div>
+
+
+
 							<div class="row">
 								<div class="col-6">
 									<div class="input-group form-group text-left">
@@ -80,10 +98,6 @@
 							<div class="row">
 								<div class="col-12">
 									<div class="input-group form-group text-left">
-										<input type="hidden" th:field="*{invAdjustId}"></input>
-										<input type="hidden" th:field="*{createdBy}" />
-										<input type="hidden" th:field="*{createdDate}" />
-										<input type="hidden" th:field="*{status}" />										
 										<textarea th:field="*{description}"
 											class="form-control input-sm"
 											th:placeholder="#{commerce.screen.item.description}" rows="2">
@@ -100,6 +114,8 @@
 										<div class="col-3">
 											<div class="form-group">
 												<div class="input-group">
+													<input type="hidden"
+														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].invAdjustId}"></input>												
 													<input type="text"
 														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
 														class="form-control input-sm"
@@ -171,7 +187,7 @@
 												</button>
 												<button type="button"
 													th:if="${(#lists.size(invAdjustBean.invAdjustItems))>1}"
-													th:onclick="'deleteItem(\'/add_inv_adjust?removeInvAdjustItem=&amp;id='+ ${itrStat.index} +'\')'"
+													th:onclick="'deleteItem(\'/edit_inv_adjust?removeInvAdjustItem=&amp;id='+ ${itrStat.index} +'\')'"
 													class="btn btn-secondary btn-sm">
 													<i class="material-icons">remove_circle</i>
 												</button>
@@ -183,14 +199,17 @@
 								</th:block>
 							</div>
 							<div class="row">
-								<div class="col-xs-2 col-sm-2 col-md-2">
+								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<input type="submit" name="saveInvAdjust" value="Save"
+										<input type="submit" name="saveEditedInvAdjust" value="Save"
 											th:value="#{commerce.screen.btn.submit.save}"
 											class="btn btn-info"></input> <input type="submit"
-											name="approveInvAdjust" value="Approve"
+											name="approveEditedInvAdjust" value="Approve"
 											th:value="#{commerce.screen.btn.submit.approve}"
-											class="btn btn-info"></input>
+											class="btn btn-info"></input> <input type="submit"
+											name="printInvAdjust" value="Print"
+											th:value="#{commerce.screen.btn.print}"
+											class="btn btn-secondary"></input>
 									</div>
 								</div>
 							</div>

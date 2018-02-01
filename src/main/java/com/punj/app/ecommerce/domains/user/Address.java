@@ -11,10 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.Field;
-
+import org.hibernate.search.annotations.Indexed;
+@Indexed
 @Entity
 @Table(name = "address_master")
 public class Address implements Serializable {
+	
+	private static final long serialVersionUID = 2768790649760685698L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "address_id", updatable = false, nullable = false)
@@ -36,18 +40,6 @@ public class Address implements Serializable {
 	public Address() {
 	}
 
-	public Address(String primary, String addressType, String address1, String address2, String city, String state,
-			String country, String pincode) {
-		this.primary = primary;
-		this.addressType = addressType;
-		this.address1 = address1;
-		this.address2 = address2;
-		this.city = city;
-		this.state = state;
-		this.country = country;
-		this.pincode = pincode;
-
-	}
 
 	/**
 	 * @return the addressId
