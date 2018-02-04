@@ -253,7 +253,7 @@ public class ManageInvAdjustController {
 	}
 
 	@GetMapping(ViewPathConstants.APPROVE_INV_ADJUST_URL)
-	public String approveInvAdjust(Model model, final HttpServletRequest req, Locale locale) {
+	public String approveInvAdjust(@ModelAttribute SearchBean searchBean,Model model, final HttpServletRequest req, Locale locale) {
 		try {
 			BigInteger invAdjustId = new BigInteger(req.getParameter(MVCConstants.INV_ADJUST_ID_PARAM));
 
@@ -261,10 +261,12 @@ public class ManageInvAdjustController {
 			if (result) {
 				model.addAttribute(MVCConstants.SUCCESS, messageSource
 						.getMessage("commerce.screen.inventory.approve.success", new Object[] { invAdjustId }, locale));
+				model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 				logger.info("The selected inventory adjustment has been approved successfully");
 			} else {
 				model.addAttribute(MVCConstants.ALERT, messageSource
 						.getMessage("commerce.screen.inventory.approve.failure", new Object[] { invAdjustId }, locale));
+				model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 				logger.info("The provided inventory adjustment cannot be approved.");
 			}
 		} catch (Exception e) {
@@ -275,7 +277,7 @@ public class ManageInvAdjustController {
 	}
 
 	@GetMapping(ViewPathConstants.DELETE_INV_ADJUST_URL)
-	public String deleteOrder(Model model, final HttpServletRequest req, Locale locale) {
+	public String deleteOrder(@ModelAttribute SearchBean searchBean, Model model, final HttpServletRequest req, Locale locale) {
 		try {
 			BigInteger invAdjustId = new BigInteger(req.getParameter(MVCConstants.INV_ADJUST_ID_PARAM));
 
@@ -283,10 +285,12 @@ public class ManageInvAdjustController {
 			if (result) {
 				model.addAttribute(MVCConstants.SUCCESS, messageSource
 						.getMessage("commerce.screen.inventory.delete.success", new Object[] { invAdjustId }, locale));
+				model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 				logger.info("The selected inventory adjustment has been deleted successfully");
 			} else {
 				model.addAttribute(MVCConstants.ALERT, messageSource
 						.getMessage("commerce.screen.inventory.delete.failure", new Object[] { invAdjustId }, locale));
+				model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 				logger.info("The provided inventory adjustment cannot be deleted.");
 			}
 		} catch (Exception e) {
@@ -301,7 +305,7 @@ public class ManageInvAdjustController {
 		logger.info("The add method for new inventory adjustment has been called");
 		try {
 			BigInteger invAdjustId = new BigInteger(req.getParameter(MVCConstants.INV_ADJUST_ID_PARAM));
-			StockAdjustment stockAdjustment = this.inventoryService.editStockAdjustment(invAdjustId);
+			StockAdjustment stockAdjustment = this.inventoryService.searchStockAdjustment(invAdjustId);
 			InvAdjustBean invAdjustBean = null;
 			if (stockAdjustment != null) {
 				invAdjustBean = InventoryBeanTransformer.transformStockAdjustmentDomainWithItems(stockAdjustment);

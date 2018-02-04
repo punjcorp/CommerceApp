@@ -556,14 +556,13 @@ public class InventoryServiceImpl implements InventoryService {
 	}
 
 	@Override
-	public StockAdjustment editStockAdjustment(BigInteger stockAdjustmentId) {
+	public StockAdjustment searchStockAdjustment(BigInteger stockAdjustmentId) {
 		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
-		if (stockAdjustment != null
-				&& stockAdjustment.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
-			logger.info("The Stock Adjustment has been retrieved successfully for editing");
+		if (stockAdjustment != null) {
+			logger.info("The Stock Adjustment has been retrieved successfully for operations");
 		} else {
 			stockAdjustment = null;
-			logger.info("The Stock Adjustment cannot be retrieved for editing");
+			logger.info("The Stock Adjustment cannot be retrieved for operations");
 		}
 		return stockAdjustment;
 	}
@@ -582,6 +581,12 @@ public class InventoryServiceImpl implements InventoryService {
 		this.stockAdjustmentItemRepository.delete(stockAdjustmentItemId);
 		logger.info("The Stock Adjustment Item has been deleted successfully");
 		return Boolean.TRUE;
+	}
+
+	@Override
+	public List<StockAdjustment> listStockAdjustments() {
+
+		return this.stockAdjustmentRepository.findAll();
 	}
 
 }

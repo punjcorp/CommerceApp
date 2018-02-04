@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="inv_adjust" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4585343f-6767-4bfb-9510-c82cc0c4059f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="InventoryAdjustment"/>
+	<parameter name="INV_ADJUST_ITEMS_REPORT" class="net.sf.jasperreports.engine.JasperReport"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="invAdjustItems" class="java.util.List">
+		<fieldDescription><![CDATA[invAdjustItems]]></fieldDescription>
+	</field>
+	<field name="description" class="java.lang.String">
+		<fieldDescription><![CDATA[description]]></fieldDescription>
+	</field>
+	<field name="invAdjustId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[invAdjustId]]></fieldDescription>
+	</field>
+	<field name="createdDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[createdDate]]></fieldDescription>
+	</field>
+	<field name="createdBy" class="java.lang.String">
+		<fieldDescription><![CDATA[createdBy]]></fieldDescription>
+	</field>
+	<field name="locationId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[locationId]]></fieldDescription>
+	</field>
+	<field name="modifiedDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[modifiedDate]]></fieldDescription>
+	</field>
+	<field name="modifiedBy" class="java.lang.String">
+		<fieldDescription><![CDATA[modifiedBy]]></fieldDescription>
+	</field>
+	<field name="reasonCodeId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[reasonCodeId]]></fieldDescription>
+	</field>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[status]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<image>
+				<reportElement x="37" y="0" width="479" height="87" uuid="3b6c3d7e-d1aa-4706-ab69-ece433dda3dd"/>
+				<imageExpression><![CDATA["D:/ad/banner_cr.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="80" y="0" width="400" height="33" uuid="5ceedbe1-7cee-461f-9553-8d34272b977b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inventory Adjustment Report]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="120" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="120" backcolor="rgba(111, 171, 165, 0.4627451)" uuid="c2516757-88dc-4b1d-85f8-8780a8e18f7e"/>
+			</rectangle>
+			<textField>
+				<reportElement x="110" y="0" width="100" height="20" uuid="d07b24f8-2643-4c2c-944c-c596b8ac622e"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invAdjustId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="30" width="458" height="30" uuid="57c234c2-6a2e-48f0-aabb-7b3b696f0c97"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="70" width="180" height="20" uuid="40de6d7d-359d-4cea-b647-d3702022b513"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{createdDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="70" width="160" height="20" uuid="17c17647-2054-4aa8-b8fb-ab71c5dbdbfa"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{createdBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="0" width="180" height="20" uuid="aef2bd92-5622-4db7-8cf2-cacf4329444d"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{locationId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="100" width="160" height="20" uuid="5a9635e9-563e-4de9-8b3b-ae2404658036"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modifiedBy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="110" height="20" uuid="6e425906-0205-4928-bd01-d1b3f3a32e0f"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inventory Adjustment Id : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="360" y="100" width="180" height="20" uuid="d4a76ef6-83ec-4d7a-a1e9-7809a93ade64"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modifiedDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="0" width="80" height="20" uuid="02956171-30a5-4f28-b56c-a9292269730c"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Location : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="80" height="20" uuid="dfff0728-0919-4a46-b26c-fe13c2897acb"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="70" width="80" height="20" uuid="309f61b9-fc0a-4843-aa38-ee1bf1f1d567"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Created By : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="100" width="80" height="20" uuid="363349b1-7dc2-47cd-b62b-39c020c34426"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Modified By : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="70" width="80" height="20" uuid="b934281e-fc9f-4aab-831c-6ff8a693f3df"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Created Date : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="100" width="80" height="20" uuid="1b25f2f8-e280-431e-987c-6bc845c31e7d"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Modified Date : ]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="40" uuid="a3b55efb-7ad2-4bc7-9461-b46a48dd5138"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{invAdjustItems})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{INV_ADJUST_ITEMS_REPORT}]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="190" y="0" width="100" height="30" uuid="3170df9c-ca8f-431b-869e-97e3a4ba5f65"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="292" y="0" width="100" height="30" uuid="3f113f07-716b-43a1-8584-91a2726016f3"/>
+				<textElement textAlignment="Left">
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="461" y="0" width="94" height="20" uuid="e317ea4a-9853-4fa5-80b4-360a4859e9b5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

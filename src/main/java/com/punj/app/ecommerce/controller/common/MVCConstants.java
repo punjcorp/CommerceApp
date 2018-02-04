@@ -67,7 +67,8 @@ public final class MVCConstants {
 	
 	public static final String SUPPLIER_REPORT="/reports/supplier/supplier.jrxml";
 	public static final String ADDRESS_REPORT="/reports/address/address.jrxml";
-		
+	
+	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
 	public static final String ORDER_BEAN= "orderBean";
 	public static final String CARD_BEAN="cardBean";
@@ -97,5 +98,12 @@ public final class MVCConstants {
 	public static final String INV_ADJUST_ID_PARAM="invAdjustId";
 	public static final String SAVE_INV_ADJUSTS_PARAM= "saveInvAdjustItems";
 	public static final String DELETE_INV_ADJUSTS_PARAM="deleteInvAdjustItems";
-
+	
+	public static final String INV_ADJUST_REPORT="/reports/inventory/inv_adjust.jrxml";
+	public static final String INV_ADJUST_ITEMS_REPORT="/reports/inventory/inv_adjust_items.jrxml";	
+	public static final String INV_ADJUST_ITEMS_REPORT_PARAM="INV_ADJUST_ITEMS_REPORT";
+	
+	public static final String INV_ADJUSTMENT_REPORT="/reports/inventory/list/inv_adjustments.jrxml";
+	public static final String INV_ADJUSTMENT_ITEMS_REPORT="/reports/inventory/list/inv_adjustment_items.jrxml";	
+	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";	
 }

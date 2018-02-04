@@ -123,9 +123,20 @@ public final class ViewPathConstants {
 	
 	public static final String DELETE_INV_ADJUST_URL ="/delete_inv_adjust";
 	public static final String BULK_INV_ADJUST_URL ="/bulk_inv_adjust_action";
-	
+
+	public static final String PRINT_INV_ADJUSTS_URL = "/print_inv_adjusts";
+	public static final String PRINT_INV_ADJUST_URL = "/print_inv_adjust";	
 	/**
 	 * The inventory adjustment pages section ends
 	 */
+	/**
+	 * The lookup pages section starts
+	 */
+	public static final String LOOKUP_ITEM_URL = "/item_lookup";
+	public static final String LOOKUP_ITEM_PAGE= "/lookup/item_lookup";
+	/**
+	 * The lookup pages section ends
+	 */	
+	
 }
 

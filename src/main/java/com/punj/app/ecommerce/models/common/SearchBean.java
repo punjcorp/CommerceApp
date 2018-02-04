@@ -17,6 +17,7 @@ public class SearchBean implements Serializable {
 
 	@NotBlank(message = "{commerce.error.string.empty}")
 	private String searchText;
+	private Integer page;
 	private Pager pager;
 
 	/**
@@ -39,6 +40,21 @@ public class SearchBean implements Serializable {
 	 */
 	public Pager getPager() {
 		return pager;
+	}
+
+	/**
+	 * @return the page
+	 */
+	public Integer getPage() {
+		return page;
+	}
+
+	/**
+	 * @param page
+	 *            the page to set
+	 */
+	public void setPage(Integer page) {
+		this.page = page;
 	}
 
 	/**

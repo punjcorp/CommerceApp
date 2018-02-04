@@ -34,15 +34,12 @@
 	<field name="toAvailable" class="java.lang.Integer">
 		<fieldDescription><![CDATA[toAvailable]]></fieldDescription>
 	</field>
-	<variable name="totalCost_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
-		<variableExpression><![CDATA[$F{totalCost}]]></variableExpression>
-	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<columnHeader>
 		<band height="37" splitType="Stretch">
-			<rectangle radius="5">
+			<rectangle radius="0">
 				<reportElement mode="Opaque" x="0" y="0" width="574" height="37" backcolor="#67C6E6" uuid="0ca13e6f-cf2e-4e18-a147-92d212bde523"/>
 			</rectangle>
 			<staticText>

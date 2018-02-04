@@ -138,4 +138,15 @@ public class InventoryBeanTransformer {
 		return invAdjustBean;
 	}
 
+	public static List<InvAdjustBean> transformStockAdjustmentList(List<StockAdjustment> stockAdjustments) {
+		List<InvAdjustBean> invAdjustBeanList = new ArrayList<>(stockAdjustments.size());
+		InvAdjustBean invAdjustBean = null;
+		for (StockAdjustment stockAdjustment : stockAdjustments) {
+			invAdjustBean = InventoryBeanTransformer.transformStockAdjustmentDomainWithItems(stockAdjustment);
+			invAdjustBeanList.add(invAdjustBean);
+		}
+		logger.info("The stock adjustment list has been transformed successfully");
+		return invAdjustBeanList;
+	}
+
 }

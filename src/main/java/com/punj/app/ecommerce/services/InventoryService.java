@@ -28,18 +28,20 @@ public interface InventoryService {
 	public BigInteger createStockAdjustment(StockAdjustment stockAdjustment);
 
 	public BigInteger approveStockAdjustment(StockAdjustment stockAdjustment);
-	
+
 	public Boolean approveStockAdjustment(BigInteger stockAdjustmentId);
-	
+
 	public Boolean deleteStockAdjustment(BigInteger stockAdjustmentId);
-	
+
 	public Boolean deleteStockAdjustmentItem(BigInteger stockAdjustmentId, BigInteger itemId, Integer reasonCodeId);
-	
-	public StockAdjustment editStockAdjustment(BigInteger stockAdjustmentId);
+
+	public StockAdjustment searchStockAdjustment(BigInteger stockAdjustmentId);
 
 	public void deleteStockAdjustments(List<BigInteger> stockAdjustmentIds);
 
 	public StockDTO listStockAdjustments(StockAdjustment stockAdjustmentCriteria, Pager pager);
+
+	public List<StockAdjustment> listStockAdjustments();
 
 	public StockDTO searchStockAdjustments(String text, Pager pager);
 

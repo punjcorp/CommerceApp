@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="inv_adjust_items" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="525cfea2-72c2-4fe7-8c74-72b0fcff8208">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="InventoryAdjustment"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="invAdjustId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[invAdjustId]]></fieldDescription>
+	</field>
+	<field name="itemId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[itemId]]></fieldDescription>
+	</field>
+	<field name="toAvailable" class="java.lang.Integer">
+		<fieldDescription><![CDATA[toAvailable]]></fieldDescription>
+	</field>
+	<field name="qty" class="java.lang.Integer">
+		<fieldDescription><![CDATA[qty]]></fieldDescription>
+	</field>
+	<field name="reasonCodeId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[reasonCodeId]]></fieldDescription>
+	</field>
+	<field name="fromAvailable" class="java.lang.Integer">
+		<fieldDescription><![CDATA[fromAvailable]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="21" backcolor="rgba(61, 202, 245, 0.4745098)" uuid="70d9f2d4-6feb-4a68-a4c3-2bb92ca4bc5c"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="3f5f8d66-888f-45fe-9e2e-30b7dce41c06">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="013447f9-5327-403b-8de1-67195d4c48e2"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Item Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="0" width="100" height="20" uuid="6062a542-d5ab-4a3d-bbff-f0b23a9c2215">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="737364de-87b4-42aa-b377-9a7acecd3146"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reason Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="100" height="20" uuid="f8e4eabf-bc7f-42e0-921e-32ee3bd4cccf">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e295a5c9-79b6-497a-b422-021f1a70bc24"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="28" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="4" width="100" height="20" uuid="0414509e-b558-4283-b26e-ff5e889a33e1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="013447f9-5327-403b-8de1-67195d4c48e2"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{itemId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="4" width="100" height="20" uuid="f58b792b-ad0e-47ef-8765-c24d8a3dc1db">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="737364de-87b4-42aa-b377-9a7acecd3146"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reasonCodeId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="4" width="100" height="20" uuid="e9f09d1b-57d6-4417-841f-cb9ab90cffeb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e295a5c9-79b6-497a-b422-021f1a70bc24"/>
+				</reportElement>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

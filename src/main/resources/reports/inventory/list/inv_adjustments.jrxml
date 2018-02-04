@@ -27,7 +27,7 @@
 	</style>
 	<subDataset name="New Dataset 1" uuid="f025a9ae-8109-4f18-abc8-9586e44c1bcf"/>
 	<subDataset name="dataset1" uuid="457d94f6-820c-415b-8c37-48b8f74eb9f9"/>
-	<parameter name="SUBREPORT_DIR" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
+	<parameter name="INV_ADJUSTMENT_ITEMS_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -61,11 +61,11 @@
 	<field name="invAdjustItems" class="java.util.List">
 		<fieldDescription><![CDATA[invAdjustItems]]></fieldDescription>
 	</field>
-	<group name="Order#">
-		<groupExpression><![CDATA[$F{orderId}]]></groupExpression>
+	<group name="InvAdjust#">
+		<groupExpression><![CDATA[$F{invAdjustId}]]></groupExpression>
 		<groupHeader>
 			<band height="61">
-				<rectangle radius="5">
+				<rectangle radius="0">
 					<reportElement x="0" y="0" width="574" height="60" backcolor="#056305" uuid="cc275cd1-e4d1-421b-81da-eef8525835a6"/>
 				</rectangle>
 				<staticText>
@@ -165,7 +165,7 @@
 			<subreport>
 				<reportElement x="0" y="0" width="579" height="40" uuid="5802b0c6-6644-4b8b-baec-2ae9dad506ad"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{invAdjustItems})]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{INV_ADJUSTMENT_ITEMS_REPORT}]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
@@ -176,7 +176,7 @@
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="205" y="1" width="172" height="14" uuid="2e9f8c15-bf25-4e0a-8924-9ff28e0b7435"/>
+				<reportElement x="210" y="0" width="87" height="14" uuid="2e9f8c15-bf25-4e0a-8924-9ff28e0b7435"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>

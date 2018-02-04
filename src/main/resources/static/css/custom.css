@@ -407,6 +407,14 @@ a[id="managecard"]::before {
 	content: "credit_card" !important;
 }
 
+a[href*="#lookup"]::before {
+	content: "search" !important;
+	font-size: 48px;
+}
+a[id="lookupitem"]::before {
+	content: "queue" !important;
+}
+
 a[href*="#inventory"]::before {
 	content: "swap_horiz" !important;
 	font-size: 48px;

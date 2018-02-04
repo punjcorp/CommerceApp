@@ -7,6 +7,7 @@ var suppliermenuStatus=0;
 var stylemenuStatus=0;
 var ordermenuStatus=0;
 var inventorymenuStatus=0;
+var lookupmenuStatus=0;
 
 $(document).ready(function() {
 	$('.offcanvas').click(function() {
@@ -21,12 +22,14 @@ $(document).ready(function() {
 				accountmenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}
 		}
 		if(this.id=='stylemenu'){
@@ -36,12 +39,14 @@ $(document).ready(function() {
 				accountmenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}
 		}
 
@@ -52,12 +57,14 @@ $(document).ready(function() {
 				stylemenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				accountmenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}
 		}
 		if(this.id=='ordermenu'){
@@ -67,12 +74,14 @@ $(document).ready(function() {
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}else{
 				suppliermenuStatus=0;
 				accountmenuStatus=0;
 				stylemenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}
 		}		
 		if(this.id=='inventorymenu'){
@@ -81,6 +90,7 @@ $(document).ready(function() {
 				accountmenuStatus=0;
 				suppliermenuStatus=0;
 				stylemenuStatus=0;
+				lookupmenuStatus=0;
 				inventorymenuStatus=1;
 			}else{
 				suppliermenuStatus=0;
@@ -88,9 +98,27 @@ $(document).ready(function() {
 				stylemenuStatus=0;
 				ordermenuStatus=0;
 				inventorymenuStatus=0;
+				lookupmenuStatus=0;
 			}
-		}				
-		menuStatus=suppliermenuStatus+stylemenuStatus+accountmenuStatus+ordermenuStatus+inventorymenuStatus;
+		}
+		if(this.id=='lookupmenu'){
+			if(lookupmenuStatus==0){
+				ordermenuStatus=0;
+				accountmenuStatus=0;
+				suppliermenuStatus=0;
+				stylemenuStatus=0;
+				lookupmenuStatus=1;
+				inventorymenuStatus=0;
+			}else{
+				suppliermenuStatus=0;
+				accountmenuStatus=0;
+				stylemenuStatus=0;
+				ordermenuStatus=0;
+				inventorymenuStatus=0;
+				lookupmenuStatus=0;
+			}
+		}					
+		menuStatus=suppliermenuStatus+stylemenuStatus+accountmenuStatus+ordermenuStatus+inventorymenuStatus+lookupmenuStatus;
 		if(menuStatus<1){
 			$('#wrapper').toggleClass('toggled');
 		}

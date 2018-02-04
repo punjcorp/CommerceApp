@@ -7,6 +7,28 @@
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
 
+<!-- This thymeleaf fragment include the item lookup code-->
+<div th:include="lookup/item_lookup :: itemlookup-scripts"></div>
+
+	<script type="text/javascript">
+		var itemIndex;
+	
+		$(function() {
+			/*  Submit form using Ajax */
+			$('#itemChooseBtn').click(function(e) {
+				$('#itemModal').modal('toggle');
+				var rdItem=$('input[name="rditemId"]');
+				var checkValue=rdItem.filter(':checked').val();
+				
+				$('#invAdjustItems'+itemIndex+'\\.itemId').val(checkValue);
+			});
+		});
+		
+		function setIndex(indexValue){
+			itemIndex=indexValue;
+		}
+	</script>
+
 </head>
 <body>
 
@@ -80,10 +102,10 @@
 							<div class="row">
 								<div class="col-12">
 									<div class="input-group form-group text-left">
-										<input type="hidden" th:field="*{invAdjustId}"></input>
-										<input type="hidden" th:field="*{createdBy}" />
-										<input type="hidden" th:field="*{createdDate}" />
-										<input type="hidden" th:field="*{status}" />										
+										<input type="hidden" th:field="*{invAdjustId}"></input> <input
+											type="hidden" th:field="*{createdBy}" /> <input
+											type="hidden" th:field="*{createdDate}" /> <input
+											type="hidden" th:field="*{status}" />
 										<textarea th:field="*{description}"
 											class="form-control input-sm"
 											th:placeholder="#{commerce.screen.item.description}" rows="2">
@@ -99,15 +121,15 @@
 									<div class="row">
 										<div class="col-3">
 											<div class="form-group">
-												<div class="input-group">
-													<input type="text"
-														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
-														class="form-control input-sm"
-														th:placeholder="#{commerce.screen.order.item}"
-														maxlength="150"></input><a data-toggle="modal"
-														data-target="#itemModal" class="nav-link" href="#"><i
-														class="material-icons">search</i></a>
-												</div>
+												<input type="text"
+													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
+													class="form-control input-sm"
+													th:placeholder="#{commerce.screen.order.item}"
+													maxlength="150"></input><a data-toggle="modal"
+													data-target="#itemModal" class="nav-link" href="#" th:onclick="'setIndex('+${itrStat.index}+');'"><i
+													class="material-icons">search</i></a>
+
+
 												<div
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
@@ -139,6 +161,7 @@
 													class="form-control input-sm"
 													th:placeholder="#{commerce.screen.inventory.qty}"
 													maxlength="150"></input>
+
 												<div
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].qty')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}"
@@ -183,14 +206,19 @@
 								</th:block>
 							</div>
 							<div class="row">
-								<div class="col-xs-2 col-sm-2 col-md-2">
+								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
 										<input type="submit" name="saveInvAdjust" value="Save"
 											th:value="#{commerce.screen.btn.submit.save}"
-											class="btn btn-info"></input> <input type="submit"
+											class="btn btn-info  btn-sm"></input> <input type="submit"
 											name="approveInvAdjust" value="Approve"
 											th:value="#{commerce.screen.btn.submit.approve}"
-											class="btn btn-info"></input>
+											class="btn btn-info  btn-sm"></input> <a
+											th:if="${invAdjustBean.invAdjustId!=null}"
+											th:href="@{/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}"
+											href="../inventory/inv_adjust.html"
+											class="btn btn-secondary btn-sm"><span
+											th:text="#{commerce.screen.actions.print}">Print</span></a>
 									</div>
 								</div>
 							</div>
@@ -228,37 +256,14 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form class="form" id="searchForm" action="#"
-						th:action="@{/search_item}" th:object="${searchBean}"
-						method="post">
-						<div class="row">
-							<div class="col-5">
-								<div class="form-group text-left">
-									<div class="input-group">
-										<input type="text" th:field="*{searchText}"
-											class="form-control input-sm"
-											th:placeholder="#{Enter keyword to search}"
-											placeholder="Enter keyword to search"
-											aria-describedby="searchHelp"></input> <span
-											class="input-group-btn"><input type="submit"
-											value="Search" th:value="#{commerce.screen.btn.search}"
-											class="form-control btn btn-info btn-block"></input></span>
-									</div>
-									<small id="searchHelp" class="form-text text-muted"
-										th:text="#{commerce.screen.item.search.keywords}">Enter
-										keywords like Item#/Style#/Name/Description</small>
-								</div>
-
-
-							</div>
-						</div>
-					</form>
+					<!-- This thymeleaf fragment include the item lookup code-->
+					<div th:include="lookup/item_lookup :: itemlookup-screen"></div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal" value="Close"
 						th:value="#{commerce.btn.close}">Close</button>
-					<button type="button" id="itembtn" class="btn btn-primary"
+					<button type="button" id="itemChooseBtn" class="btn btn-primary"
 						value="Choose This Supplier"
 						th:value="#{commerce.btn.choose.item}">Choose This Item</button>
 				</div>

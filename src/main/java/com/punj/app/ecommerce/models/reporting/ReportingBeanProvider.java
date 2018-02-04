@@ -17,4 +17,6 @@ public class ReportingBeanProvider {
 
 		return new InvAdjustBean[1];
 	}
+	
+
 }
