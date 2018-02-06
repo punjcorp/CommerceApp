@@ -239,7 +239,7 @@ public class InventoryServiceImpl implements InventoryService {
 	private void updateItemStockAndBuckets(ItemStockJournal itemStockJournal) {
 
 		ItemStockId itemStockId = new ItemStockId();
-		Item item=new Item();
+		Item item = new Item();
 		item.setItemId(itemStockJournal.getItemId());
 		itemStockId.setItem(item);
 		itemStockId.setLocationId(itemStockJournal.getLocationId());
@@ -465,7 +465,8 @@ public class InventoryServiceImpl implements InventoryService {
 			itemStockJournal.setItemId(item.getItemId());
 
 			StockReason stockReason = new StockReason();
-			stockReason.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getReasonCodeId());
+			stockReason
+					.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getStockReason().getReasonCodeId());
 			itemStockJournal.setReasonCode(stockReason);
 
 			itemStockJournal.setFunctionality(ServiceConstants.STOCK_ADJUSTMENT_FUNCTIONALITY);
@@ -576,8 +577,10 @@ public class InventoryServiceImpl implements InventoryService {
 		StockAdjustmentItemId stockAdjustmentItemId = new StockAdjustmentItemId();
 		stockAdjustmentItemId.setStockAdjustment(stockAdjustment);
 		stockAdjustmentItemId.setItemId(itemId);
-		stockAdjustmentItemId.setReasonCodeId(reasonCodeId);
-		
+		StockReason stockReason = new StockReason();
+		stockReason.setReasonCodeId(reasonCodeId);
+		stockAdjustmentItemId.setStockReason(stockReason);
+
 		this.stockAdjustmentItemRepository.delete(stockAdjustmentItemId);
 		logger.info("The Stock Adjustment Item has been deleted successfully");
 		return Boolean.TRUE;
@@ -587,6 +590,39 @@ public class InventoryServiceImpl implements InventoryService {
 	public List<StockAdjustment> listStockAdjustments() {
 
 		return this.stockAdjustmentRepository.findAll();
+	}
+
+	@Override
+	public ItemStock searchItemStock(BigInteger itemId, Integer locationId) {
+		ItemStockId itemStockId = new ItemStockId();
+		itemStockId.setLocationId(locationId);
+
+		Item item = new Item();
+		item.setItemId(itemId);
+		itemStockId.setItem(item);
+
+		ItemStock itmStock = this.itemStockRepository.findOne(itemStockId);
+
+		if (itmStock != null)
+			logger.info("The stock details for {} item {} location has been retrieved successfully", itemId,
+					locationId);
+		else
+			logger.info("The stock details for {} item {} location has not been", itemId,
+					locationId);
+		return itmStock;
+	}
+
+
+	@Override
+	public StockReason searchReasonCode(Integer reasonCodeId) {
+
+		StockReason stockReason = this.stockReasonRepository.findOne(reasonCodeId);
+
+		if (stockReason != null)
+			logger.info("The Stock reason code {} details has been retrieved successfully", reasonCodeId);
+		else
+			logger.info("The Stock reason code {} details has not been retrieved", reasonCodeId);
+		return stockReason;
 	}
 
 }

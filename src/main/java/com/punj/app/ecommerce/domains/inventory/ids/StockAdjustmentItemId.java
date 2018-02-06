@@ -14,6 +14,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
+import com.punj.app.ecommerce.domains.inventory.StockReason;
 
 @Indexed
 @Embeddable
@@ -29,9 +30,9 @@ public class StockAdjustmentItemId implements Serializable {
 	@Column(name = "item_id")
 	private BigInteger itemId;
 
-	@Field
-	@Column(name = "reason_code_id")
-	private Integer reasonCodeId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "reason_code_id")
+	private StockReason stockReason;
 
 	/**
 	 * @return the stockAdjustment
@@ -64,18 +65,18 @@ public class StockAdjustmentItemId implements Serializable {
 	}
 
 	/**
-	 * @return the reasonCodeId
+	 * @return the stockReason
 	 */
-	public Integer getReasonCodeId() {
-		return reasonCodeId;
+	public StockReason getStockReason() {
+		return stockReason;
 	}
 
 	/**
-	 * @param reasonCodeId
-	 *            the reasonCodeId to set
+	 * @param stockReason
+	 *            the stockReason to set
 	 */
-	public void setReasonCodeId(Integer reasonCodeId) {
-		this.reasonCodeId = reasonCodeId;
+	public void setStockReason(StockReason stockReason) {
+		this.stockReason = stockReason;
 	}
 
 	/*
@@ -88,8 +89,8 @@ public class StockAdjustmentItemId implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
-		result = prime * result + ((reasonCodeId == null) ? 0 : reasonCodeId.hashCode());
 		result = prime * result + ((stockAdjustment == null) ? 0 : stockAdjustment.hashCode());
+		result = prime * result + ((stockReason == null) ? 0 : stockReason.hashCode());
 		return result;
 	}
 
@@ -117,18 +118,18 @@ public class StockAdjustmentItemId implements Serializable {
 		} else if (!itemId.equals(other.itemId)) {
 			return false;
 		}
-		if (reasonCodeId == null) {
-			if (other.reasonCodeId != null) {
-				return false;
-			}
-		} else if (!reasonCodeId.equals(other.reasonCodeId)) {
-			return false;
-		}
 		if (stockAdjustment == null) {
 			if (other.stockAdjustment != null) {
 				return false;
 			}
 		} else if (!stockAdjustment.equals(other.stockAdjustment)) {
+			return false;
+		}
+		if (stockReason == null) {
+			if (other.stockReason != null) {
+				return false;
+			}
+		} else if (!stockReason.equals(other.stockReason)) {
 			return false;
 		}
 		return true;

@@ -24,160 +24,160 @@
 
 
 			<!-- This thymeleaf fragment is the body part for the page-->
-				<div class="card m-5">
-					<div class="card-header">
-						<h3 th:text="#{commerce.screen.supplier.search}">Search
-							Supplier</h3>
-					</div>
-					<div class="card-body">
-						<div class="card-text">
-							<form class="form" id="searchForm" action="#"
-								th:action="@{/search_supplier}" th:object="${supplierBean}"
-								method="post">
-								<div class="row">
-									<div class="col-5">
-										<div class="form-group text-left">
-											<div class="input-group">
-												<input type="text" th:field="*{name}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.supplier.search.text}"
-													placeholder="Enter keyword to search"
-													aria-describedby="searchHelp"></input> <span
-													class="input-group-btn"><input type="submit"
-													value="Search" th:value="#{commerce.screen.btn.search}"
-													class="form-control btn btn-info btn-block"></input></span>
-											</div>
-											<small id="searchHelp" class="form-text text-muted"
-												th:text="#{commerce.screen.supplier.search.keywords}">Enter
-												keywords like id/Name/Email/Address/Phone#</small>
+			<div class="card m-5">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.supplier.search}">Search
+						Supplier</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<form class="form" id="searchForm" action="#"
+							th:action="@{/search_supplier}" th:object="${supplierBean}"
+							method="post">
+							<div class="row">
+								<div class="col-5">
+									<div class="form-group text-left">
+										<div class="input-group">
+											<input type="text" th:field="*{name}"
+												class="form-control input-sm"
+												th:placeholder="#{commerce.screen.supplier.search.text}"
+												placeholder="Enter keyword to search"
+												aria-describedby="searchHelp"></input> <span
+												class="input-group-btn"><input type="submit"
+												value="Search" th:value="#{commerce.screen.btn.search}"
+												class="form-control btn btn-info btn-block"></input></span>
 										</div>
+										<small id="searchHelp" class="form-text text-muted"
+											th:text="#{commerce.screen.supplier.search.keywords}">Enter
+											keywords like id/Name/Email/Address/Phone#</small>
 									</div>
 								</div>
-							</form>
-						</div>
-						<div class="card-text">
-							<div th:if="${ success!=null}" th:text="${success}"
-								class="alert alert-success " role="alert"></div>
-							<div th:if="${ alert!=null}" th:text="${alert}"
-								class="alert alert-danger " role="alert"></div>
+							</div>
+						</form>
+					</div>
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}"
+							class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}"
+							class="alert alert-danger " role="alert"></div>
 
-							<form class="form" id="bulkForm" action="#"
-								th:action="@{/bulk_supplier_action}" th:object="${suppliers}"
-								method="post">
-								<div class="row">
-									<div class="col-12 text-right">
-										<!-- This thymeleaf fragment is the body part for the page-->
-										<th:block th:include="common/display :: pagination"></th:block>
-									</div>
+						<form class="form" id="bulkForm" action="#"
+							th:action="@{/bulk_supplier_action}" th:object="${suppliers}"
+							method="post">
+							<div class="row">
+								<div class="col-12 text-right">
+									<!-- This thymeleaf fragment is the body part for the page-->
+									<th:block th:include="common/display :: pagination"></th:block>
 								</div>
+							</div>
 
-								<table class="table table-striped table-hover table-bordered">
-									<thead class="thead-light">
+							<table class="table table-striped table-hover table-bordered">
+								<thead class="thead-light">
+									<tr>
+										<th scope="col-1" th:text="#{commerce.screen.supplier.id}">Select</th>
+										<th scope="col-3" th:text="#{commerce.screen.supplier.name}">Supplier
+											Name</th>
+										<th scope="col-4" th:text="#{commerce.screen.supplier.email}">Email</th>
+										<th scope="col-2" th:text="#{commerce.screen.supplier.phone1}">Phone
+											1</th>
+										<th scope="col-2" th:text="#{commerce.screen.supplier.phone1}">Phone
+											2</th>
+										<th scope="col-2" th:text="#{commerce.screen.actions}">Actions</th>
+
+									</tr>
+								</thead>
+								<tbody>
+
+									<th:block th:each="supplier,itrStat:${suppliers.suppliers}">
 										<tr>
-											<th scope="col-1" th:text="#{commerce.screen.supplier.id}">Select</th>
-											<th scope="col-3" th:text="#{commerce.screen.supplier.name}">Supplier
-												Name</th>
-											<th scope="col-4" th:text="#{commerce.screen.supplier.email}">Email</th>
-											<th scope="col-2"
-												th:text="#{commerce.screen.supplier.phone1}">Phone 1</th>
-											<th scope="col-2"
-												th:text="#{commerce.screen.supplier.phone1}">Phone 2</th>
-											<th scope="col-2" th:text="#{commerce.screen.actions}">Actions</th>
+											<td><input type="checkbox"
+												th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
+												class="form-control input-sm supplierId"
+												th:field="*{supplierIds}"
+												th:value="${suppliers.suppliers[__${itrStat.index}__].supplierId}+'_'+${itrStat.index}"></input>
+											</td>
+											<td><input type="text" class="form-control input-sm"
+												th:field="${suppliers.suppliers[__${itrStat.index}__].name}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control input-sm"
+												th:field="${suppliers.suppliers[__${itrStat.index}__].email}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control input-sm"
+												th:field="${suppliers.suppliers[__${itrStat.index}__].phone1}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control input-sm"
+												th:field="${suppliers.suppliers[__${itrStat.index}__].phone2}"
+												disabled="disabled"></input></td>
+											<td>
+												<div class="btn-group">
+													<a
+														th:href="@{/edit_supplier(supplierId=${suppliers.suppliers[__${itrStat.index}__].supplierId})}"
+														href="../supplier/add_supplier.html"
+														class="btn btn-secondary btn-sm"><span
+														th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
+														th:href="@{/delete_supplier(supplierId=${suppliers.suppliers[__${itrStat.index}__].supplierId})}"
+														href="../supplier/manage_supplier.html"
+														class="btn btn-danger btn-sm"><span
+														th:text="#{commerce.screen.actions.delete}">Delete</span></a>
+												</div>
+
+											</td>
 
 										</tr>
-									</thead>
-									<tbody>
+									</th:block>
 
-										<th:block th:each="supplier,itrStat:${suppliers.suppliers}">
-											<tr>
-												<td><input type="checkbox"
-													th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
-													class="form-control input-sm supplierId"
-													th:field="*{supplierIds}"
-													th:value="${suppliers.suppliers[__${itrStat.index}__].supplierId}+'_'+${itrStat.index}"></input>
-												</td>
-												<td><input type="text" class="form-control input-sm"
-													th:field="${suppliers.suppliers[__${itrStat.index}__].name}"
-													disabled="disabled"></input></td>
-												<td><input type="text" class="form-control input-sm"
-													th:field="${suppliers.suppliers[__${itrStat.index}__].email}"
-													disabled="disabled"></input></td>
-												<td><input type="text" class="form-control input-sm"
-													th:field="${suppliers.suppliers[__${itrStat.index}__].phone1}"
-													disabled="disabled"></input></td>
-												<td><input type="text" class="form-control input-sm"
-													th:field="${suppliers.suppliers[__${itrStat.index}__].phone2}"
-													disabled="disabled"></input></td>
-												<td>
-													<div class="btn-group">
-														<a
-															th:href="@{/edit_supplier(supplierId=${suppliers.suppliers[__${itrStat.index}__].supplierId})}"
-															href="../supplier/add_supplier.html"
-															class="btn btn-secondary btn-sm"><span
-															th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
-															th:href="@{/delete_supplier(supplierId=${suppliers.suppliers[__${itrStat.index}__].supplierId})}"
-															href="../supplier/manage_supplier.html"
-															class="btn btn-danger btn-sm"><span
-															th:text="#{commerce.screen.actions.delete}">Delete</span></a>
-													</div>
-
-												</td>
-
-											</tr>
-										</th:block>
-
-									</tbody>
-								</table>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<a th:href="'javascript:selectAll()'" href="#"
-												class="badge badge-secondary"><span
-												th:text="#{commerce.screen.actions.selectall}">Select
-													All</span></a> <a th:href="'javascript:deselectAll()'" href="#"
-												class="badge badge-secondary"><span
-												th:text="#{commerce.screen.actions.deselectall}">Deselect
-													All</span></a>
-										</div>
-									</div>
-									<div class="col-8 text-right">
-										<!-- This thymeleaf fragment is the body part for the page-->
-										<th:block th:include="common/display :: pagination"></th:block>
+								</tbody>
+							</table>
+							<div class="row">
+								<div class="col-4">
+									<div class="form-group">
+										<a th:href="'javascript:selectAll()'" href="#"
+											class="badge badge-secondary"><span
+											th:text="#{commerce.screen.actions.selectall}">Select
+												All</span></a> <a th:href="'javascript:deselectAll()'" href="#"
+											class="badge badge-secondary"><span
+											th:text="#{commerce.screen.actions.deselectall}">Deselect
+												All</span></a>
 									</div>
 								</div>
+								<div class="col-8 text-right">
+									<!-- This thymeleaf fragment is the body part for the page-->
+									<th:block th:include="common/display :: pagination"></th:block>
+								</div>
+							</div>
 
 
-								<div class="row">
-									<div class="col-12">
-										<div class="form-group">
-											<input type="button"
-												th:onclick="'submitForm(\'/bulk_supplier_action?saveSuppliers=\')'"
-												id="btnSave" value="Save"
-												th:value="#{commerce.screen.btn.submit.save}"
-												class="btn btn-info btn-sm" aria-describedby="bulkHelp"
-												disabled="disabled"></input> <input type="button"
-												th:onclick="'submitForm(\'/bulk_supplier_action?deleteSuppliers=\')'"
-												id="btnDelete" value="Delete"
-												th:value="#{commerce.screen.btn.submit.delete}"
-												class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
-												disabled="disabled"></input> <a href="add_supplier.html"
-												th:href="@{/add_supplier}" class="btn btn-info btn-sm"><span
-												th:text="#{commerce.screen.btn.submit.add}">Add</span></a>
-										</div>
+							<div class="row">
+								<div class="col-12">
+									<div class="form-group">
+										<input type="button"
+											th:onclick="'submitForm(\'/bulk_supplier_action?saveSuppliers=\')'"
+											id="btnSave" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}"
+											class="btn btn-info btn-sm" aria-describedby="bulkHelp"
+											disabled="disabled"></input> <input type="button"
+											th:onclick="'submitForm(\'/bulk_supplier_action?deleteSuppliers=\')'"
+											id="btnDelete" value="Delete"
+											th:value="#{commerce.screen.btn.submit.delete}"
+											class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
+											disabled="disabled"></input> <a href="add_supplier.html"
+											th:href="@{/add_supplier}" class="btn btn-info btn-sm"><span
+											th:text="#{commerce.screen.btn.submit.add}">Add</span></a>
 									</div>
 								</div>
-								<div class="row text-left">
-									<div class="col-4">
-										<small id="btnActions" class="form-text text-muted"
-											th:text="#{commerce.screen.search.action.bulk}">Please
-											select records for the actions</small>
-									</div>
+							</div>
+							<div class="row text-left">
+								<div class="col-4">
+									<small id="btnActions" class="form-text text-muted"
+										th:text="#{commerce.screen.search.action.bulk}">Please
+										select records for the actions</small>
 								</div>
-							</form>
-						</div>
+							</div>
+						</form>
 					</div>
-
 				</div>
+
+			</div>
 
 
 		</div>

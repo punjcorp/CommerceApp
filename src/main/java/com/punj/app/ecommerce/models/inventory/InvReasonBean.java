@@ -13,6 +13,8 @@ public class InvReasonBean {
 	private String name;
 	private Integer fromBucketId;
 	private Integer toBucketId;
+	private String fromBucket;
+	private String toBucket;
 
 	/**
 	 * @return the reasonCodeId
@@ -87,6 +89,36 @@ public class InvReasonBean {
 	 */
 	public void setToBucketId(Integer toBucketId) {
 		this.toBucketId = toBucketId;
+	}
+
+	/**
+	 * @return the fromBucket
+	 */
+	public String getFromBucket() {
+		return fromBucket;
+	}
+
+	/**
+	 * @param fromBucket
+	 *            the fromBucket to set
+	 */
+	public void setFromBucket(String fromBucket) {
+		this.fromBucket = fromBucket;
+	}
+
+	/**
+	 * @return the toBucket
+	 */
+	public String getToBucket() {
+		return toBucket;
+	}
+
+	/**
+	 * @param toBucket
+	 *            the toBucket to set
+	 */
+	public void setToBucket(String toBucket) {
+		this.toBucket = toBucket;
 	}
 
 }

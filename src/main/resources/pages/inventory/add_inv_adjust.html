@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
+<meta th:name="_csrf" th:content="${_csrf.token}"/>
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
 <meta charset="utf-8" />
 <title th:text="#{commerce.screen.inventory.add.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
@@ -10,23 +12,67 @@
 <!-- This thymeleaf fragment include the item lookup code-->
 <div th:include="lookup/item_lookup :: itemlookup-scripts"></div>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 		var itemIndex;
-	
+		
 		$(function() {
-			/*  Submit form using Ajax */
 			$('#itemChooseBtn').click(function(e) {
 				$('#itemModal').modal('toggle');
 				var rdItem=$('input[name="rditemId"]');
 				var checkValue=rdItem.filter(':checked').val();
-				
 				$('#invAdjustItems'+itemIndex+'\\.itemId').val(checkValue);
+				updatechangeIndex(itemIndex);
+				
 			});
+			
+			$('#reasonCodeId').on('change', function(e) {
+				var optionSelected = $(this).val();
+				var selIndex=0;
+				$("[id^=invAdjustItems]").each(function() {
+				    if(this.id.indexOf("reasonCodeId") >= 0){			
+						$(this).val(optionSelected);
+						updatechangeIndex(selIndex);
+						selIndex++;
+				    }
+				});				
+				
+			});			
+			
 		});
 		
 		function setIndex(indexValue){
 			itemIndex=indexValue;
 		}
+		function updatechangeIndex(changeIndexVal){
+			getInventoryDetails(changeIndexVal);
+		}
+		
+		function getInventoryDetails(changedIndex){
+			var itemIdVal=$('#invAdjustItems'+changedIndex+'\\.itemId').val();
+			var locationIdVal=$('#locationId').val();
+			var reasonIdVal=$('#invAdjustItems'+changedIndex+'\\.reasonCodeId').val();
+			
+			if(itemIdVal==='' || locationIdVal==='' || reasonIdVal===''){
+				
+			}else{
+				var token = $("meta[name='_csrf']").attr("content"); 
+				var header = $("meta[name='_csrf_header']").attr("content");
+				var formdata = {'itemId' : itemIdVal, 'reasonCodeId' : reasonIdVal, 'locationId' : locationIdVal, '_csrf':token};
+				
+ 				$.post({url:'/get_item_inv',data:formdata,success:function(res) {
+						processInventoryDetails(res,changedIndex);
+					}
+				});
+				
+			}
+		}
+		
+		function processInventoryDetails(res,changedIndex){
+			var result = res;
+			$('#invAdjustItems'+changedIndex+'\\.fromAvailable').val(result.fromBucketQty);
+			$('#invAdjustItems'+changedIndex+'\\.toAvailable').val(result.toBucketQty);
+		}
+		
 	</script>
 
 </head>
@@ -121,14 +167,17 @@
 									<div class="row">
 										<div class="col-3">
 											<div class="form-group">
-												<input type="text"
-													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.order.item}"
-													maxlength="150"></input><a data-toggle="modal"
-													data-target="#itemModal" class="nav-link" href="#" th:onclick="'setIndex('+${itrStat.index}+');'"><i
-													class="material-icons">search</i></a>
-
+												<div class="input-group">
+													<input type="text"
+														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
+														class="form-control input-sm"
+														th:placeholder="#{commerce.screen.order.item}"
+														th:onchange="'updatechangeIndex('+${itrStat.index}+');'"
+														maxlength="150"></input><a data-toggle="modal"
+														data-target="#itemModal" class="nav-link" href="#"
+														th:onclick="'setIndex('+${itrStat.index}+');'"><i
+														class="material-icons">search</i></a>
+												</div>
 
 												<div
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
@@ -140,7 +189,8 @@
 											<div class="form-group">
 												<select
 													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}"
-													class="form-control input-sm">
+													class="form-control input-sm"
+													th:onchange="'updatechangeIndex('+${itrStat.index}+');'">
 													<option class="form-text text-muted" value=""
 														selected="selected"
 														th:text="#{commerce.screen.inventory.reason}"></option>

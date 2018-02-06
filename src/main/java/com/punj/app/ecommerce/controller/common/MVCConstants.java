@@ -20,6 +20,9 @@ public final class MVCConstants {
 	
 	public static final String ID_PARAM="id";
 	public static final String PAGE_PARAM="page";
+	public static final String ITEM_ID_PARAM="itemId";
+	public static final String LOCATION_ID_PARAM="locationId";
+	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
 
 	public static final String STATUS_RECEIVED="R";
 	public static final String STATUS_APPROVED="A";
@@ -94,6 +97,7 @@ public final class MVCConstants {
 	public static final String APPROVE_INV_ADJUST_PARAM= "approveInvAdjust";
 	public static final String SAVE_EDIT_INV_ADJUST_PARAM= "saveEditedInvAdjust";
 	public static final String APPROVE_EDIT_INV_ADJUST_PARAM= "approveEditedInvAdjust";
+	public static final String INV_ADJUST_ITEM_INV_PARAM= "getItemInv";
 	
 	public static final String INV_ADJUST_ID_PARAM="invAdjustId";
 	public static final String SAVE_INV_ADJUSTS_PARAM= "saveInvAdjustItems";

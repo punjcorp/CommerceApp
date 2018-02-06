@@ -6,6 +6,7 @@ package com.punj.app.ecommerce.services;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
 import com.punj.app.ecommerce.domains.inventory.StockDTO;
@@ -44,5 +45,9 @@ public interface InventoryService {
 	public List<StockAdjustment> listStockAdjustments();
 
 	public StockDTO searchStockAdjustments(String text, Pager pager);
+
+	public ItemStock searchItemStock(BigInteger itemId, Integer locationId);
+	
+	public StockReason searchReasonCode(Integer reasonCodeId);
 
 }

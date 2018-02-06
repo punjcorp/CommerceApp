@@ -36,7 +36,7 @@ public class StockAdjustmentItemFieldBridge implements TwoWayFieldBridge {
 		field.setBoost(boost);
 		document.add(field);
 
-		field = new Field(name + ".reasonCodeId", String.valueOf(stockAdjustmentItemId.getReasonCodeId()), store, index,
+		field = new Field(name + ".reasonCodeId", String.valueOf(stockAdjustmentItemId.getStockReason().getReasonCodeId()), store, index,
 				termVector);
 		field.setBoost(boost);
 		document.add(field);
@@ -54,7 +54,10 @@ public class StockAdjustmentItemFieldBridge implements TwoWayFieldBridge {
 
 		StockAdjustmentItemId stockAdjustmentItemId = new StockAdjustmentItemId();
 		stockAdjustmentItemId.setItemId(new BigInteger(fieldItemId.stringValue()));
-		stockAdjustmentItemId.setReasonCodeId(new Integer(fieldReasonCodeId.stringValue()));
+		
+		StockReason stockReason=new StockReason();
+		stockReason.setReasonCodeId(new Integer(fieldReasonCodeId.stringValue()));
+		stockAdjustmentItemId.setStockReason(stockReason);
 		return stockAdjustmentItemId;
 	}
 
@@ -64,7 +67,7 @@ public class StockAdjustmentItemFieldBridge implements TwoWayFieldBridge {
 		StringBuilder stringData = new StringBuilder();
 		stringData.append(stockAdjustmentItemId.getItemId());
 		stringData.append(" ");
-		stringData.append(stockAdjustmentItemId.getReasonCodeId());
+		stringData.append(stockAdjustmentItemId.getStockReason().getReasonCodeId());
 		return stringData.toString();
 	}
 

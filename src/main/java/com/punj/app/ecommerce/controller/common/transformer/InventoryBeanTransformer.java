@@ -9,12 +9,18 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustmentItem;
+import com.punj.app.ecommerce.domains.inventory.StockBucket;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.inventory.ids.StockAdjustmentItemId;
 import com.punj.app.ecommerce.models.inventory.InvAdjustBean;
 import com.punj.app.ecommerce.models.inventory.InvAdjustItemBean;
+import com.punj.app.ecommerce.models.inventory.InvAdjustItemInventory;
+import com.punj.app.ecommerce.models.inventory.InvReasonBean;
+import com.punj.app.ecommerce.models.inventory.ItemInventory;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 /**
  * @author admin
@@ -75,12 +81,15 @@ public class InventoryBeanTransformer {
 		List<StockAdjustmentItem> stockAdjustmentItems = new ArrayList<>(invAdjustItems.size());
 		StockAdjustmentItem stockAdjItem = null;
 		StockAdjustmentItemId stockAdjItemId = null;
+		StockReason stockReason = null;
 		for (InvAdjustItemBean invAdjustItem : invAdjustItems) {
 			stockAdjItem = new StockAdjustmentItem();
 
 			stockAdjItemId = new StockAdjustmentItemId();
 			stockAdjItemId.setItemId(invAdjustItem.getItemId());
-			stockAdjItemId.setReasonCodeId(invAdjustItem.getReasonCodeId());
+			stockReason = new StockReason();
+			stockReason.setReasonCodeId(invAdjustItem.getReasonCodeId());
+			stockAdjItemId.setStockReason(stockReason);
 			stockAdjItemId.setStockAdjustment(stockAdjustment);
 			stockAdjItem.setStockAdjustmentItemId(stockAdjItemId);
 
@@ -127,7 +136,8 @@ public class InventoryBeanTransformer {
 				invAdjustItemBean.setInvAdjustId(
 						stockAdjustmentItem.getStockAdjustmentItemId().getStockAdjustment().getStockAdjustId());
 				invAdjustItemBean.setItemId(stockAdjustmentItem.getStockAdjustmentItemId().getItemId());
-				invAdjustItemBean.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getReasonCodeId());
+				invAdjustItemBean.setReasonCodeId(
+						stockAdjustmentItem.getStockAdjustmentItemId().getStockReason().getReasonCodeId());
 				invAdjustItemBean.setQty(stockAdjustmentItem.getQty());
 				invAdjustItemBeans.add(invAdjustItemBean);
 			}
@@ -147,6 +157,79 @@ public class InventoryBeanTransformer {
 		}
 		logger.info("The stock adjustment list has been transformed successfully");
 		return invAdjustBeanList;
+	}
+
+	public static InvAdjustItemInventory transformItemStockWithReason(ItemStock itemStock, StockReason stockReason) {
+		InvAdjustItemInventory invAdjustItemInventory = new InvAdjustItemInventory();
+
+		ItemInventory itemInventory = transformItemStock(itemStock);
+		InvReasonBean invReasonCode = transformStockReason(stockReason);
+
+		invAdjustItemInventory.setItemInventory(itemInventory);
+		invAdjustItemInventory.setItemReasonBean(invReasonCode);
+		StockBucket fromStockBucket = stockReason.getFromBucket();
+		StockBucket toStockBucket = stockReason.getToBucket();
+		String fromSystemBucket=null;
+		String toSystemBucket=null;
+		if(fromStockBucket!=null) {
+			fromSystemBucket=fromStockBucket.getSystemBucket();
+			if (fromSystemBucket.equals(ServiceConstants.INV_BUCKET_NON_SELL)) {
+				invAdjustItemInventory.setFromBucketQty(itemStock.getNonSellableQty());
+			} else if (fromSystemBucket.equals(ServiceConstants.INV_BUCKET_RESERVED)) {
+				invAdjustItemInventory.setFromBucketQty(itemStock.getReservedQty());
+			} else if (fromSystemBucket.equals(ServiceConstants.INV_BUCKET_SOH)) {
+				invAdjustItemInventory.setFromBucketQty(itemStock.getStockOnHand());
+			}
+			
+		}
+		if(toStockBucket!=null) {
+			toSystemBucket=toStockBucket.getSystemBucket();
+			if (toSystemBucket.equals(ServiceConstants.INV_BUCKET_NON_SELL)) {
+				invAdjustItemInventory.setToBucketQty(itemStock.getNonSellableQty());
+			} else if (toSystemBucket.equals(ServiceConstants.INV_BUCKET_RESERVED)) {
+				invAdjustItemInventory.setToBucketQty(itemStock.getReservedQty());
+			} else if (toSystemBucket.equals(ServiceConstants.INV_BUCKET_SOH)) {
+				invAdjustItemInventory.setToBucketQty(itemStock.getStockOnHand());
+			}
+			
+		}
+
+		return invAdjustItemInventory;
+	}
+
+	public static ItemInventory transformItemStock(ItemStock itemStock) {
+		ItemInventory itemInventory = new ItemInventory();
+		itemInventory.setItemId(itemStock.getItemStockId().getItem().getItemId());
+		itemInventory.setLocationId(itemStock.getItemStockId().getLocationId());
+		itemInventory.setNonSellableQty(itemStock.getNonSellableQty());
+		itemInventory.setReservedQty(itemStock.getReservedQty());
+		itemInventory.setTotalQty(itemStock.getTotalQty());
+		itemInventory.setSohQty(itemStock.getStockOnHand());
+		logger.info("The item stock details has been trasnformed to item inventory successfully");
+		return itemInventory;
+
+	}
+
+	public static InvReasonBean transformStockReason(StockReason stockReason) {
+		InvReasonBean invReason = new InvReasonBean();
+
+		invReason.setReasonCodeId(stockReason.getReasonCodeId());
+		invReason.setReasonCode(stockReason.getReasonCode());
+		invReason.setName(stockReason.getName());
+
+		StockBucket fromBucket=stockReason.getFromBucket();
+		StockBucket toBucket=stockReason.getToBucket();
+		if(fromBucket!=null) {
+			invReason.setFromBucketId(stockReason.getFromBucket().getBucketId());
+			invReason.setFromBucket(stockReason.getFromBucket().getSystemBucket());
+		}
+		if(toBucket!=null) {
+			invReason.setToBucketId(stockReason.getToBucket().getBucketId());
+			invReason.setToBucket(stockReason.getToBucket().getSystemBucket());
+		}
+		logger.info("The stock reason details has been trasnformed to inventory reason successfully");
+		return invReason;
+
 	}
 
 }

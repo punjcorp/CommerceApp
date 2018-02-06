@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -26,17 +27,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.InventoryBeanTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.inventory.InvAdjustBean;
 import com.punj.app.ecommerce.models.inventory.InvAdjustItemBean;
+import com.punj.app.ecommerce.models.inventory.InvAdjustItemInventory;
 import com.punj.app.ecommerce.models.inventory.InvReasonBean;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -135,6 +141,29 @@ public class ManageInvAdjustController {
 		this.updateInvAdjustmentBean(invAdjustBean, model);
 
 		return ViewPathConstants.ADD_INV_ADJUST_PAGE;
+	}
+
+	@RequestMapping(value = ViewPathConstants.GET_ITEM_INV_URL, method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public InvAdjustItemInventory getItemInventory(final HttpServletRequest req) {
+		final BigInteger itemId = new BigInteger(req.getParameter(MVCConstants.ITEM_ID_PARAM));
+		final Integer locationId = Integer.parseInt(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
+		final Integer reasonCodeId = Integer.parseInt(req.getParameter(MVCConstants.REASON_CODE_ID_PARAM));
+		InvAdjustItemInventory invAdjustInventory = null;
+		StockReason stockReason = null;
+
+		ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
+		if (itemStock != null) {
+			stockReason = this.inventoryService.searchReasonCode(reasonCodeId);
+			if (stockReason != null) {
+				invAdjustInventory = InventoryBeanTransformer.transformItemStockWithReason(itemStock, stockReason);
+				logger.info("The inventory details has been transformed successfully.");
+			}
+		}
+
+		logger.info("The inventory details has been retrieved successfully.");
+		return invAdjustInventory;
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_INV_ADJUST_URL, params = { MVCConstants.SAVE_INV_ADJUST_PARAM })
@@ -253,7 +282,8 @@ public class ManageInvAdjustController {
 	}
 
 	@GetMapping(ViewPathConstants.APPROVE_INV_ADJUST_URL)
-	public String approveInvAdjust(@ModelAttribute SearchBean searchBean,Model model, final HttpServletRequest req, Locale locale) {
+	public String approveInvAdjust(@ModelAttribute SearchBean searchBean, Model model, final HttpServletRequest req,
+			Locale locale) {
 		try {
 			BigInteger invAdjustId = new BigInteger(req.getParameter(MVCConstants.INV_ADJUST_ID_PARAM));
 
@@ -277,7 +307,8 @@ public class ManageInvAdjustController {
 	}
 
 	@GetMapping(ViewPathConstants.DELETE_INV_ADJUST_URL)
-	public String deleteOrder(@ModelAttribute SearchBean searchBean, Model model, final HttpServletRequest req, Locale locale) {
+	public String deleteOrder(@ModelAttribute SearchBean searchBean, Model model, final HttpServletRequest req,
+			Locale locale) {
 		try {
 			BigInteger invAdjustId = new BigInteger(req.getParameter(MVCConstants.INV_ADJUST_ID_PARAM));
 
@@ -380,7 +411,7 @@ public class ManageInvAdjustController {
 		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM)
 				|| action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM))
 			invAdjustId = this.inventoryService.approveStockAdjustment(stockAdjustment);
-		
+
 		logger.info("The inventory adjustment values has been saved/updated based on the operation in database.");
 
 		invAdjustBean.setInvAdjustId(invAdjustId);
@@ -395,7 +426,7 @@ public class ManageInvAdjustController {
 				|| action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM))
 			model.addAttribute(MVCConstants.SUCCESS, messageSource
 					.getMessage("commerce.screen.inventory.approve.success", new Object[] { invAdjustId }, locale));
-		
+
 		logger.info("The inventory adjustment success messages are added in model objects based on the operations.");
 
 		this.updateInvAdjustmentBean(invAdjustBean, model);
@@ -408,8 +439,9 @@ public class ManageInvAdjustController {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.ADD_INV_ADJUST_PAGE;
 		try {
-			
-			this.saveInvAdjustment(invAdjustBean, model, locale, authentication, MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM);
+
+			this.saveInvAdjustment(invAdjustBean, model, locale, authentication,
+					MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM);
 			logger.info("The inventory adjustment has been updated successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while updating modified inventory adjustment", e);
@@ -424,8 +456,9 @@ public class ManageInvAdjustController {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.ADD_INV_ADJUST_PAGE;
 		try {
-			
-			this.saveInvAdjustment(invAdjustBean, model, locale, authentication, MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM);
+
+			this.saveInvAdjustment(invAdjustBean, model, locale, authentication,
+					MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM);
 			logger.info("The selected inventory adjustment has been approved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while approving selected inventory adjustment", e);
