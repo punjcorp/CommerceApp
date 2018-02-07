@@ -497,7 +497,7 @@ public class ManageOrderController {
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 
-			logger.info("The selected purchase order has been retrieved successfully");
+			logger.info("The selected purchase order has been updated successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for updation", e);
 			return ViewPathConstants.ERROR_PAGE;
@@ -551,7 +551,7 @@ public class ManageOrderController {
 	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrderAfterEdit(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult,
 			@ModelAttribute SupplierBean supplierBean, @ModelAttribute ItemBean itemBean, Model model,
-			HttpSession session, Locale locale, Authentication authentication) {
+			Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.EDIT_ORDER_PAGE;
 		try {
@@ -560,7 +560,7 @@ public class ManageOrderController {
 			Order order = new Order();
 			this.createOrderDomain(order, orderBean, userDetails);
 
-			order = orderService.createOrder(order);
+			orderService.createOrder(order);
 			logger.info("The order details has been saved successfully after editing");
 
 			this.calculateOrderCost(orderBean, locale);
@@ -582,7 +582,7 @@ public class ManageOrderController {
 
 			orderService.approveOrder(orderId);
 
-			logger.info("The selected purchase order has been deleted successfully");
+			logger.info("The selected purchase order has been approved successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while deleteing purchase order", e);
 			return ViewPathConstants.ERROR_PAGE;
@@ -683,7 +683,7 @@ public class ManageOrderController {
 			logger.info("The purchase order details has been updated in Domain objects");
 
 			orderService.approveOrders(orderList);
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
+			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.approve.success", null, locale));
 
 			logger.info("The bulk update operation for purchase order is completed.");
 		} catch (Exception e) {
@@ -753,7 +753,7 @@ public class ManageOrderController {
 
 			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 
-			logger.info("The selected purchase order has been retrieved successfully");
+			logger.info("The selected purchase order has been retrieved for receival successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for receival", e);
 			return ViewPathConstants.ERROR_PAGE;
@@ -764,9 +764,6 @@ public class ManageOrderController {
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrderForReceival(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult,
 			Model model, HttpSession session, Locale locale, Authentication authentication) {
-		/*
-		 * if (bindingResult.hasErrors()) return "order/receive_order";
-		 */
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -780,9 +777,9 @@ public class ManageOrderController {
 			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage(
 					"commerce.screen.order.receive.save.success", new Object[] { order.getOrderId() }, locale));
-			logger.info("The purchase order details has been saved successfully");
+			logger.info("The purchase order details has been saved after receiving successfully");
 		} catch (Exception e) {
-			logger.error("There is an error while saving order details during receipt", e);
+			logger.error("There is an error while saving order details during receive", e);
 			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
@@ -791,9 +788,6 @@ public class ManageOrderController {
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ORDER_PARAM })
 	public String receiveOrder(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult, Model model,
 			HttpSession session, Locale locale, Authentication authentication) {
-		/*
-		 * if (bindingResult.hasErrors()) return "order/receive_order";
-		 */
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -809,7 +803,7 @@ public class ManageOrderController {
 			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage(
 					"commerce.screen.order.receive.receive.success", new Object[] { order.getOrderId() }, locale));
-			logger.info("The purchase order details has been saved successfully");
+			logger.info("The purchase order has been received successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while saving order details during receipt", e);
 			return ViewPathConstants.ERROR_PAGE;
@@ -820,9 +814,6 @@ public class ManageOrderController {
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ALL_ORDERS_PARAM })
 	public String receiveAllOrder(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult, Model model,
 			HttpSession session, Locale locale, Authentication authentication) {
-		/*
-		 * if (bindingResult.hasErrors()) return "order/receive_order";
-		 */
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -835,12 +826,12 @@ public class ManageOrderController {
 
 			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
 
-			logger.info("The purchase order details has been saved successfully");
+			logger.info("All the purchase order details has been received successfully");
 			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage(
 					"commerce.screen.order.receive.receive.all.success", new Object[] { order.getOrderId() }, locale));
 
 		} catch (Exception e) {
-			logger.error("There is an error while saving order details during receipt", e);
+			logger.error("There is an error while receiving bulk orders", e);
 			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
@@ -980,9 +971,9 @@ public class ManageOrderController {
 
 			exporter.exportReport();
 
-			logger.info("The purchase order details has been saved successfully");
+			logger.info("The purchase order details list has been printed successfully");
 		} catch (Exception e) {
-			logger.error("There is an error while saving order details during receipt", e);
+			logger.error("There is an error while printing order details listing", e);
 			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.MANAGE_ORDER_PAGE;
@@ -1069,7 +1060,7 @@ public class ManageOrderController {
 			response.setContentLength(baos.size());
 			baos.writeTo(servletOutputStream);
 
-			logger.info("The selected purchase order has been retrieved successfully");
+			logger.info("The selected purchase order report has been printed successfully");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for updation", e);
 		}

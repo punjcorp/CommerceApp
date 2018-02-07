@@ -67,7 +67,8 @@ public class SearchItemController {
 	}
 
 	@GetMapping(ViewPathConstants.LIST_ITEM_URL)
-	public String listItems(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
+	public String listItems(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
+			HttpSession session) {
 		try {
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
@@ -91,10 +92,11 @@ public class SearchItemController {
 
 			model.addAttribute("items", items);
 			model.addAttribute(MVCConstants.PAGER, pager);
-			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} items record has been retrieved");
+			model.addAttribute(MVCConstants.SUCCESS,
+					"The {" + pager.getResultSize() + "} items record has been retrieved");
 			logger.info("All the items has been retrieved successfully.");
 		} catch (Exception e) {
-			logger.error("There is an error while retrieving items", e);
+			logger.error("There is an error while listing the items", e);
 			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.DISPLAY_PAGE;
@@ -147,7 +149,7 @@ public class SearchItemController {
 	}
 
 	private void setItemList(List<Item> itemsList, ItemBeanDTO items) {
-		List<ItemBean> itemBeanList = new ArrayList<ItemBean>();
+		List<ItemBean> itemBeanList = new ArrayList<>();
 		ItemBean itemBean = null;
 		HierarchyBean hierarchyBean = null;
 		for (Item item : itemsList) {
@@ -182,8 +184,8 @@ public class SearchItemController {
 
 				Item itemDomain = itemService.getItem(itemNumber.get());
 
-				List<AttributeBean> colorList = new ArrayList<AttributeBean>();
-				List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
+				List<AttributeBean> colorList = new ArrayList<>();
+				List<AttributeBean> sizeList = new ArrayList<>();
 
 				ItemBean itemBean = this.updateBean(itemDomain, colorList, sizeList, locale);
 
@@ -196,7 +198,7 @@ public class SearchItemController {
 				model.addAttribute(MVCConstants.ALERT, "The itemNumber is needed to retrieve the item details");
 			}
 		} catch (Exception e) {
-			logger.error("There is an error while retrieving items", e);
+			logger.error("There is an error while retrieving item details", e);
 			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.ITEM_DETAIL_PAGE;
@@ -235,8 +237,8 @@ public class SearchItemController {
 		/**
 		 * Setting the images for the item
 		 */
-		List<String> featureList = new ArrayList<String>();
-		List<String> imageUrlList = new ArrayList<String>();
+		List<String> featureList = new ArrayList<>();
+		List<String> imageUrlList = new ArrayList<>();
 		List<ItemImage> images = style.getImages();
 		int count = 0;
 		for (ItemImage image : images) {
@@ -244,7 +246,6 @@ public class SearchItemController {
 			featureMap.put(image.getItemImageId().getFeatureName(), image.getImageURL());
 
 			imageUrlList.add(count, image.getImageURL());
-			;
 
 			count++;
 		}
@@ -302,7 +303,7 @@ public class SearchItemController {
 
 		logger.info("The item options has been set in bean object successfully");
 
-		List<Attribute> finalList = new ArrayList<Attribute>();
+		List<Attribute> finalList = new ArrayList<>();
 		List<ItemAttribute> attributeList = style.getItemAttributes();
 		for (ItemAttribute itemAttr : attributeList) {
 			finalList.add(itemAttr.getItemAttributeId().getAttribute());
@@ -337,7 +338,7 @@ public class SearchItemController {
 				sizeList.add(attrBean);
 				break;
 			default:
-				logger.warn("Unknown attribute found!!");				
+				logger.warn("Unknown attribute found!!");
 			}
 
 		}

@@ -2,15 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-<meta th:name="_csrf" th:content="${_csrf.token}"/>
-<meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="utf-8" />
 <title th:text="#{commerce.screen.inventory.add.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
-<div th:replace="common/header:: header"></div>
+<th:block th:replace="common/header:: header"></th:block>
 
 <!-- This thymeleaf fragment include the item lookup code-->
-<div th:include="lookup/item_lookup :: itemlookup-scripts"></div>
+<th:block th:include="lookup/item_lookup :: itemlookup-scripts"></th:block>
 
 <script type="text/javascript">
 		var itemIndex;
@@ -24,6 +24,19 @@
 				updatechangeIndex(itemIndex);
 				
 			});
+
+			$('#locationId').on('change', function(e) {
+				var optionSelected = $(this).val();
+				var selIndex=0;
+				$("[id^=invAdjustItems]").each(function() {
+				    if(this.id.indexOf("reasonCodeId") >= 0){			
+						updatechangeIndex(selIndex);
+						selIndex++;
+				    }
+				});				
+				
+			});			
+			
 			
 			$('#reasonCodeId').on('change', function(e) {
 				var optionSelected = $(this).val();
@@ -93,7 +106,7 @@
 
 			<!-- This thymeleaf fragment is the body part for the page-->
 
-			<div class="card">
+			<div class="card content-container">
 				<div class="card-header">
 					<h3 th:text="#{commerce.screen.inventory.add}">Create Purchase
 						Order</h3>
@@ -110,55 +123,92 @@
 							method="post">
 							<div class="row">
 								<div class="col-6">
-									<div class="input-group form-group text-left">
-										<select th:field="*{locationId}" class="form-control input-sm">
-											<option class="form-text text-muted" value=""
-												selected="selected"
-												th:text="#{commerce.screen.inventory.location}">
-												Select Location</option>
-											<option th:each="location: ${invAdjustBean.locations}"
-												th:value="${location.locationId}"
-												th:text="${location.locationId} + ' - ' +${location.name}"></option>
-										</select>
-										<div th:if="${#fields.hasErrors('locationId')}"
-											th:errors="*{locationId}" class="text-danger">Location
-											Error</div>
+									<div class="form-group">
+										<label for="locationId"><small><span
+												th:text="#{commerce.screen.common.location}"></span></small></label>
+										<div class="input-group text-left">
+											<select th:field="*{locationId}"
+												class="form-control input-sm">
+												<option class="form-text text-muted" value=""
+													selected="selected"
+													th:text="#{commerce.screen.inventory.location}">
+													Select Location</option>
+												<option th:each="location: ${invAdjustBean.locations}"
+													th:value="${location.locationId}"
+													th:text="${location.locationId} + ' - ' +${location.name}"></option>
+											</select>
+										</div>
+										<small th:if="${#fields.hasErrors('locationId')}"
+											th:errors="*{locationId}" class="text-danger align-top">Location
+											Error </small>
 									</div>
 								</div>
 								<div class="col-6">
-									<div class="input-group form-group text-left">
-										<select th:field="*{reasonCodeId}"
-											class="form-control input-sm">
-											<option class="form-text text-muted" value=""
-												selected="selected"
-												th:text="#{commerce.screen.inventory.reason}">
-												Select Inventory Adjustment Reason Code</option>
-											<option th:each="reasonCode: ${invAdjustBean.reasonCodes}"
-												th:value="${reasonCode.reasonCodeId}"
-												th:text="#{${reasonCode.name}}"></option>
-										</select>
+									<div class="form-group">
+										<label for="reasonCodeId"><small><span
+												th:text="#{commerce.screen.common.reason}"></span></small></label>
+										<div class="input-group text-left">
+											<select th:field="*{reasonCodeId}"
+												class="form-control input-sm">
+												<option class="form-text text-muted" value=""
+													selected="selected"
+													th:text="#{commerce.screen.inventory.reason}">
+													Select Inventory Adjustment Reason Code</option>
+												<option th:each="reasonCode: ${invAdjustBean.reasonCodes}"
+													th:value="${reasonCode.reasonCodeId}"
+													th:text="#{${reasonCode.name}}"></option>
+											</select>
 
-										<div th:if="${#fields.hasErrors('reasonCodeId')}"
-											th:errors="*{reasonCodeId}" class="text-danger">Reason
-											Code Error</div>
+										</div>
 									</div>
+									<small th:if="${#fields.hasErrors('reasonCodeId')}"
+										th:errors="*{reasonCodeId}" class="text-danger">Reason
+										Code Error </small>
 								</div>
 
 							</div>
 							<div class="row">
 								<div class="col-12">
-									<div class="input-group form-group text-left">
-										<input type="hidden" th:field="*{invAdjustId}"></input> <input
-											type="hidden" th:field="*{createdBy}" /> <input
-											type="hidden" th:field="*{createdDate}" /> <input
-											type="hidden" th:field="*{status}" />
-										<textarea th:field="*{description}"
-											class="form-control input-sm"
-											th:placeholder="#{commerce.screen.item.description}" rows="2">
-												
+									<div class="form-group">
+										<label for="description"><small><span
+												th:text="#{commerce.screen.common.description}"></span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{invAdjustId}"></input> <input
+												type="hidden" th:field="*{createdBy}" /> <input
+												type="hidden" th:field="*{createdDate}" /> <input
+												type="hidden" th:field="*{status}" />
+											<textarea th:field="*{description}"
+												class="form-control input-sm"
+												th:placeholder="#{commerce.screen.item.description}"
+												rows="2">
 												</textarea>
+										</div>
 									</div>
 								</div>
+							</div>
+							<div class="row mx-1">
+								<div class="col-3">
+									<label><small><span
+											th:text="#{commerce.screen.order.item}"></span></small></label>
+
+								</div>
+								<div class="col-2">
+									<label><small><span
+											th:text="#{commerce.screen.common.reason}"></span></small></label>
+								</div>
+								<div class="col-2">
+									<label><small><span
+											th:text="#{commerce.screen.common.qty}"></span></small></label>
+								</div>
+								<div class="col">
+									<label><small><span
+											th:text="#{commerce.screen.common.inv.from}"></span></small></label>
+								</div>
+								<div class="col">
+									<label><small><span
+											th:text="#{commerce.screen.common.inv.to}"></span></small></label>
+								</div>
+								<div class="col-2"></div>
 							</div>
 							<div class="orderitem form-group">
 								<th:block
@@ -178,11 +228,10 @@
 														th:onclick="'setIndex('+${itrStat.index}+');'"><i
 														class="material-icons">search</i></a>
 												</div>
-
-												<div
+												<small
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
-													class="text-danger">Item Error</div>
+													class="text-danger">Item Error </small>
 											</div>
 										</div>
 										<div class="col-2">
@@ -197,43 +246,36 @@
 													<option th:each="reasonCode : ${invAdjustBean.reasonCodes}"
 														th:value="${reasonCode.reasonCodeId}"
 														th:text="#{${reasonCode.name}}"></option>
-												</select>
-												<div
+												</select> <small
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].reasonCodeId')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}"
-													class="text-danger">Reason Code Error</div>
+													class="text-danger">Reason Code Error </small>
 											</div>
 										</div>
-										<div class="col-1">
+										<div class="col-2">
 											<div class="form-group">
 												<input type="text"
 													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}"
 													class="form-control input-sm"
 													th:placeholder="#{commerce.screen.inventory.qty}"
-													maxlength="150"></input>
-
-												<div
+													maxlength="150"></input> <small
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].qty')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}"
-													class="text-danger">Quantity Error</div>
+													class="text-danger">Quantity Error </small>
 											</div>
 										</div>
-										<div class="col-2">
+										<div class="col">
 											<div class="form-group">
 												<input type="text"
 													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.inventory.from.available}"
-													maxlength="150"></input>
+													class="form-control input-sm" disabled="disabled"></input>
 											</div>
 										</div>
-										<div class="col-2">
+										<div class="col">
 											<div class="form-group">
 												<input type="text"
 													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.inventory.to.available}"
-													maxlength="150"></input>
+													class="form-control input-sm" disabled="disabled"></input>
 											</div>
 										</div>
 										<div class="col-2">
@@ -263,7 +305,7 @@
 											class="btn btn-info  btn-sm"></input> <input type="submit"
 											name="approveInvAdjust" value="Approve"
 											th:value="#{commerce.screen.btn.submit.approve}"
-											class="btn btn-info  btn-sm"></input> <a
+											class="btn btn-success  btn-sm"></input> <a
 											th:if="${invAdjustBean.invAdjustId!=null}"
 											th:href="@{/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}"
 											href="../inventory/inv_adjust.html"

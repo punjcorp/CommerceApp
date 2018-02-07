@@ -163,7 +163,7 @@ public class LoginController {
 		address.setPincode(registerUserBean.getPincode());
 		address.setAddressType(registerUserBean.getAddressType());
 		address.setPrimary("Y");
-		List<Address> addresses = new ArrayList<Address>();
+		List<Address> addresses = new ArrayList<>();
 		addresses.add(address);
 
 		newUser.setAddresses(addresses);
@@ -177,8 +177,8 @@ public class LoginController {
 		newUserBean.setEmail(loggedInUser.getEmail());
 		newUserBean.setFirstName(loggedInUser.getFirstname());
 		newUserBean.setLastName(loggedInUser.getLastname());
-		newUserBean.setPhone1(loggedInUser.getPhone1().toString());
-		newUserBean.setPhone2(loggedInUser.getPhone2().toString());
+		newUserBean.setPhone1(loggedInUser.getPhone1());
+		newUserBean.setPhone2(loggedInUser.getPhone2());
 
 		return newUserBean;
 

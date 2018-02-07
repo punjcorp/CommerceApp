@@ -81,6 +81,8 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTS_BEAN= "invAdjusts";
 	public static final String SUPPLIERS_BEAN= "suppliers";
 	public static final String SEARCH_BEAN= "searchBean";
+	public static final String COLOR_LIST_BEAN="colorList";
+	public static final String SIZE_LIST_BEAN="sizeList";
 	
 	public static final String ADD_SUPPLIER_ADDRESS_PARAM= "addSupplierAddress";
 	public static final String REMOVE_SUPPLIER_ADDRESS_PARAM= "removeSupplierAddress";

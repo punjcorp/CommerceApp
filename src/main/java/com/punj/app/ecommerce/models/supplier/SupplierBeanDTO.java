@@ -32,14 +32,12 @@ public class SupplierBeanDTO {
 	}
 
 	public static SupplierBean[] getSuppliersForReport() {
-		SupplierBean[] suppliersArray = new SupplierBean[1];
-		return suppliersArray;
+		return new SupplierBean[1];
 
 	}
 
 	public static AddressBean[] getAddressForReport() {
-		AddressBean[] addressArray = new AddressBean[1];
-		return addressArray;
+		return new AddressBean[1];
 
 	}
 

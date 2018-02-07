@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
@@ -59,7 +60,7 @@ public class ManageStyleController {
 		this.itemService = itemService;
 	}
 
-	@GetMapping("/add_style")
+	@GetMapping(ViewPathConstants.ADD_STYLE_URL)
 	public String showStyle(Model model, HttpSession session) {
 
 		ItemBean newItemBean = new ItemBean();
@@ -72,16 +73,16 @@ public class ManageStyleController {
 
 		newItemBean.setItemImages(featureMap);
 
-		List<AttributeBean> colorList = new ArrayList<AttributeBean>();
-		List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
+		List<AttributeBean> colorList = new ArrayList<>();
+		List<AttributeBean> sizeList = new ArrayList<>();
 		this.getDefaultAttributes(colorList, sizeList);
 
-		model.addAttribute("colorList", colorList);
-		model.addAttribute("sizeList", sizeList);
+		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
+		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
 		model.addAttribute(MVCConstants.ITEM_BEAN, newItemBean);
 		logger.info("The default style object has been added to display on the screen");
 
-		return "item/add_style";
+		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
 	
 	private void getDefaultAttributes(List<AttributeBean> colorList,List<AttributeBean> sizeList) {
@@ -90,22 +91,22 @@ public class ManageStyleController {
 		this.updateAttributeBean(attributeList, colorList, sizeList);
 	}
 
-	@PostMapping("/add_style")
+	@PostMapping(ViewPathConstants.ADD_STYLE_URL)
 	public String addStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
 			Authentication authentication) {
 		if (bindingResult.hasErrors()) {
-			List<AttributeBean> colorList = new ArrayList<AttributeBean>();
-			List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
+			List<AttributeBean> colorList = new ArrayList<>();
+			List<AttributeBean> sizeList = new ArrayList<>();
 			this.getDefaultAttributes(colorList, sizeList);			
-			model.addAttribute("colorList", colorList);
-			model.addAttribute("sizeList", sizeList);
-			return "item/add_style";
+			model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
+			model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
+			return ViewPathConstants.ADD_STYLE_PAGE;
 		}
 		
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
-		List<ItemAttribute> itemAttributes = new ArrayList<ItemAttribute>();
+		List<ItemAttribute> itemAttributes = new ArrayList<>();
 
 		BigInteger styleNumber = itemService.generateNewStyle();
 		itemBean.setItemId(styleNumber);
@@ -120,18 +121,18 @@ public class ManageStyleController {
 		List<Attribute> attributeList = itemService.getNewStyleAttribute();
 		logger.info("The attribute list has been retrieved to select for the style");
 
-		List<AttributeBean> colorList = new ArrayList<AttributeBean>();
-		List<AttributeBean> sizeList = new ArrayList<AttributeBean>();
+		List<AttributeBean> colorList = new ArrayList<>();
+		List<AttributeBean> sizeList = new ArrayList<>();
 
 		this.updateAttributeBean(attributeList, colorList, sizeList);
 
 		itemBean.setItemId(styleNumber);
-		model.addAttribute("colorList", colorList);
-		model.addAttribute("sizeList", sizeList);
+		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
+		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
 		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 		model.addAttribute(MVCConstants.SUCCESS, "The new style " + styleNumber + " has been created.");
 
-		return "item/add_style";
+		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
 
 	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions,
@@ -159,8 +160,8 @@ public class ManageStyleController {
 		 * Setting the images for the style
 		 */
 		Map<String, String> images = itemBean.getItemImages();
-		List<ItemImage> itemImages = new ArrayList<ItemImage>();
-		List<String> imageUrlList = itemBean.getImageUrlList();
+		List<ItemImage> itemImages = new ArrayList<>();
+
 		for (String featureName : itemBean.getFeatureList()) {
 			ItemImage itemImage = new ItemImage();
 			ItemImageId itemImageId = new ItemImageId();
@@ -217,7 +218,7 @@ public class ManageStyleController {
 		String[] colors = itemBean.getItemColorSelected();
 		String[] sizes = itemBean.getItemSizeSelected();
 
-		String[] splittedData = new String[2];
+		String[] splittedData;
 		for (String color : colors) {
 
 			splittedData = color.split("_");
@@ -299,37 +300,5 @@ public class ManageStyleController {
 
 	}
 
-	private void updateColorSizeLists(List<AttributeBean> colorList, List<AttributeBean> sizeList, String[] colors,
-			String[] sizes) {
-		String[] splittedData = new String[2];
-		for (String color : colors) {
 
-			splittedData = color.split("_");
-			if (splittedData.length > 1) {
-				AttributeBean attributeBean = new AttributeBean();
-				attributeBean.setAttributeId(new BigInteger(splittedData[0]));
-				attributeBean.setValue(splittedData[1]);
-
-				colorList.add(attributeBean);
-
-			}
-
-		}
-
-		for (String size : sizes) {
-			splittedData = size.split("_");
-			if (splittedData.length > 1) {
-				AttributeBean attributeBean = new AttributeBean();
-				attributeBean.setAttributeId(new BigInteger(splittedData[0]));
-				attributeBean.setValue(splittedData[1]);
-
-				sizeList.add(attributeBean);
-
-			}
-
-		}
-
-		logger.info("The item attributes color and sizes has been set in bean objects successfully");
-
-	}
 }

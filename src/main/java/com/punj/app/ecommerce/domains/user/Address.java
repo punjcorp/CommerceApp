@@ -37,10 +37,6 @@ public class Address implements Serializable {
 	private String country;
 	private String pincode;
 
-	public Address() {
-	}
-
-
 	/**
 	 * @return the addressId
 	 */

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -36,7 +35,7 @@ public class User {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-	@OneToMany( mappedBy = "passwordId.username", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "passwordId.username", cascade = CascadeType.ALL)
 	private List<Password> passwords;
 
 	@OneToMany(mappedBy = "cardId.username", cascade = CascadeType.REFRESH)

@@ -19,7 +19,6 @@ import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.repositories.AddressRepository;
-import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierSearchRepository;
 import com.punj.app.ecommerce.services.SupplierService;
@@ -35,16 +34,14 @@ public class SupplierServiceImpl implements SupplierService {
 	private static final Logger logger = LogManager.getLogger();
 	private SupplierRepository supplierRepository;
 	private SupplierSearchRepository supplierSearchRepository;
-	private ItemRepository itemRepository;
 	private AddressRepository addressRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
-	
+
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
-	
-	
+
 	/**
 	 * @param supplierRepository
 	 *            the supplierRepository to set
@@ -61,15 +58,6 @@ public class SupplierServiceImpl implements SupplierService {
 	@Autowired
 	public void setSupplierSearchRepository(SupplierSearchRepository supplierSearchRepository) {
 		this.supplierSearchRepository = supplierSearchRepository;
-	}
-
-	/**
-	 * @param itemRepository
-	 *            the itemRepository to set
-	 */
-	@Autowired
-	public void setItemRepository(ItemRepository itemRepository) {
-		this.itemRepository = itemRepository;
 	}
 
 	/**
@@ -171,7 +159,6 @@ public class SupplierServiceImpl implements SupplierService {
 		pager.setPageSize(maxResultPerPage);
 		pager.setStartCount(startCount);
 		pager.setMaxDisplayPage(maxPageBtns);
-		
 
 		SupplierDTO suppliers = supplierSearchRepository.search(text, pager);
 		logger.info("The suppliers has been retrieved based on searched keyword");

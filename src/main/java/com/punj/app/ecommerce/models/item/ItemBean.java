@@ -53,7 +53,7 @@ public class ItemBean {
 	private Pager pager;
 
 	public ItemBean() {
-		itemImages = new HashMap<String, String>();
+		itemImages = new HashMap<>();
 		itemOptions = new ItemOptionsBean();
 		hierarchy = new HierarchyBean();
 	}

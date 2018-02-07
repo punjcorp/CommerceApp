@@ -16,9 +16,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.user.Address;
@@ -91,22 +89,20 @@ public class UserServiceImpl implements UserService {
 	public User getUserByUsername(String username) {
 		return userRepository.findOne(username);
 	}
-	
-	
+
 	private User getUserDetails(String username) {
-		
-		User user=new User();
+
+		User user = new User();
 		user.setUsername(username);
 		user.setEmail(username);
-		
-		Password password=new Password();
+
+		Password password = new Password();
 		password.setStatus("A");
-		
-		List<Password> passwordList=new ArrayList<Password>();
-		
+
+		List<Password> passwordList = new ArrayList<>();
+
 		user.setPasswords(passwordList);
-		
-		
+
 		return userRepository.findOne(Example.of(user));
 	}
 
@@ -129,29 +125,27 @@ public class UserServiceImpl implements UserService {
 		PasswordId newPasswordId = new PasswordId();
 		newPasswordId.setUsername(username);
 		newPassword.setPasswordId(newPasswordId);
-		List<Password> passwords = passwordRepository.findAll(Example.of(newPassword));
-		return passwords;
+		return passwordRepository.findAll(Example.of(newPassword));
 	}
 
-	public Password updatePassword(UserDetails userDetails,Password pwd, String newPassword, String changedBy) {
+	public Password updatePassword(UserDetails userDetails, Password pwd, String newPassword, String changedBy) {
 
 		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}",
 				pwd.getStatus(), pwd.getModifiedBy(), pwd.getPasswordId().getUsername(),
 				pwd.getPasswordId().getPassword(), pwd.getPasswordId().getModifiedDate());
-		PasswordId passwordId=new PasswordId();
+		PasswordId passwordId = new PasswordId();
 		passwordId.setPassword(userDetails.getPassword());
 		passwordId.setUsername(userDetails.getUsername());
 		pwd.setStatus("A");
 		pwd.setPasswordId(passwordId);
-		pwd=passwordRepository.findOne(Example.of(pwd));
-		
-		
+		pwd = passwordRepository.findOne(Example.of(pwd));
+
 		pwd.setStatus("E");
 		if (StringUtils.isNotEmpty(changedBy))
 			pwd.setModifiedBy(changedBy);
 		else
 			pwd.setModifiedBy(pwd.getPasswordId().getUsername());
-		
+
 		pwd = passwordRepository.save(pwd);
 
 		Password changedPassword = new Password();
@@ -164,7 +158,7 @@ public class UserServiceImpl implements UserService {
 			changedPassword.setModifiedBy(changedBy);
 		else
 			changedPassword.setModifiedBy(pwd.getPasswordId().getUsername());
-		
+
 		changedPassword.setStatus("A");
 		changedPassword.setPasswordId(changedPasswordId);
 		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}",
@@ -211,8 +205,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Address getAddress(BigInteger addressId) {
-		Address newAddress = addressRepository.findOne(addressId);
-		return newAddress;
+		return this.addressRepository.findOne(addressId);
 	}
 
 	@Override
@@ -260,10 +253,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 		User user = this.getUserDetails(username);
 
-		String password =null;
+		String password = null;
 		List<Password> passwords = user.getPasswords();
 
 		for (Password passwd : passwords) {
@@ -275,16 +268,14 @@ public class UserServiceImpl implements UserService {
 
 		List<Role> roles = user.getRoles();
 
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		List<GrantedAuthority> authorities = new ArrayList<>();
 		GrantedAuthority authority = null;
 		for (Role role : roles) {
 			authority = new SimpleGrantedAuthority(role.getName());
 			authorities.add(authority);
 		}
 
-		
-		return new org.springframework.security.core.userdetails.User(username, password, authorities); 
+		return new org.springframework.security.core.userdetails.User(username, password, authorities);
 	}
-
 
 }

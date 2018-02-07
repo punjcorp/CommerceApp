@@ -96,9 +96,6 @@ public class ManageItemController {
 		ItemOptions itemOptions = new ItemOptions();
 		List<AttributeId> attributeIds = new ArrayList<>();
 
-		String[] colors = itemBean.getItemColorSelected();
-		String[] sizes = itemBean.getItemSizeSelected();
-
 		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername());
 		logger.info("The item details has been updated in domains object from the bean objects");
 
@@ -140,7 +137,6 @@ public class ManageItemController {
 		 */
 		Map<String, String> images = itemBean.getItemImages();
 		List<ItemImage> itemImages = new ArrayList<>();
-		List<String> imageUrlList = itemBean.getImageUrlList();
 		for (String featureName : itemBean.getFeatureList()) {
 			ItemImage itemImage = new ItemImage();
 			ItemImageId itemImageId = new ItemImageId();

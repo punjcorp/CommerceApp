@@ -13,11 +13,11 @@ import javax.validation.constraints.NotNull;
  */
 public class InvAdjustItemBean {
 	private BigInteger invAdjustId;
-	@NotNull
+	@NotNull(message = "{commerce.error.item.empty}")
 	private BigInteger itemId;
-	@NotNull
+	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer reasonCodeId;
-	@NotNull
+	@NotNull(message = "{commerce.error.qty.min.small}")
 	private Integer qty;
 
 	private Integer fromAvailable;

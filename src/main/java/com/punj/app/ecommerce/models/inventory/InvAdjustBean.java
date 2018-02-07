@@ -23,9 +23,9 @@ public class InvAdjustBean {
 
 	private String description;
 
-	@NotNull
+	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer locationId;
-	@NotNull
+
 	private Integer reasonCodeId;
 
 	private List<InvReasonBean> reasonCodes;

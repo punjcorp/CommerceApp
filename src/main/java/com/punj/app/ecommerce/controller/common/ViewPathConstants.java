@@ -40,6 +40,10 @@ public final class ViewPathConstants {
 
 	public static final String ITEM_DETAIL_URL = "/item_detail";
 	public static final String ITEM_DETAIL_PAGE = "item/item_detail";
+	
+	public static final String ADD_STYLE_URL = "/add_style";
+	public static final String ADD_STYLE_PAGE = "item/add_style";
+	
 	/**
 	 * The item pages section ends
 	 */
