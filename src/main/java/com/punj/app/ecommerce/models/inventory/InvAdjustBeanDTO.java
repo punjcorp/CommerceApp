@@ -5,6 +5,8 @@ package com.punj.app.ecommerce.models.inventory;
 
 import java.util.List;
 
+import com.punj.app.ecommerce.models.common.SearchBean;
+
 /**
  * @author admin
  *
@@ -13,6 +15,7 @@ public class InvAdjustBeanDTO {
 
 	private List<InvAdjustBean> invAdjusts;
 	private List<String> invAdjustIds;
+	private SearchBean searchBean;
 
 	/**
 	 * @return the invAdjusts
@@ -42,6 +45,21 @@ public class InvAdjustBeanDTO {
 	 */
 	public void setInvAdjustIds(List<String> invAdjustIds) {
 		this.invAdjustIds = invAdjustIds;
+	}
+
+	/**
+	 * @return the searchBean
+	 */
+	public SearchBean getSearchBean() {
+		return searchBean;
+	}
+
+	/**
+	 * @param searchBean
+	 *            the searchBean to set
+	 */
+	public void setSearchBean(SearchBean searchBean) {
+		this.searchBean = searchBean;
 	}
 
 }

@@ -28,5 +28,8 @@ public final class ServiceConstants {
 	
 	public static final String STOCK_ADJUSTMENT_STATUS_CREATED="C";
 	public static final String STOCK_ADJUSTMENT_STATUS_APPROVED="A";
+	
+	public static final String STOCK_FROM_BUCKET_IND="F";
+	public static final String STOCK_TO_BUCKET_IND="T";
 
 }

@@ -13,6 +13,8 @@ public final class ViewPathConstants {
 		throw new IllegalStateException("View Path Constant class");
 	}
 
+	public static final String REDIRECT_URL = "redirect:";
+	
 	/**
 	 * The common pages section starts
 	 */

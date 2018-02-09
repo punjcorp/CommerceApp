@@ -16,6 +16,8 @@ public class StockDTO implements Serializable {
 
 	private static final long serialVersionUID = -4166478633919243583L;
 	private List<StockAdjustment> stockAdjustments;
+	private List<StockAdjustmentItemDTO> stockAdjustmentItemDTOs;
+
 	private Pager pager;
 
 	/**
@@ -46,6 +48,21 @@ public class StockDTO implements Serializable {
 	 */
 	public void setPager(Pager pager) {
 		this.pager = pager;
+	}
+
+	/**
+	 * @return the stockAdjustmentItemDTOs
+	 */
+	public List<StockAdjustmentItemDTO> getStockAdjustmentItemDTOs() {
+		return stockAdjustmentItemDTOs;
+	}
+
+	/**
+	 * @param stockAdjustmentItemDTOs
+	 *            the stockAdjustmentItemDTOs to set
+	 */
+	public void setStockAdjustmentItemDTOs(List<StockAdjustmentItemDTO> stockAdjustmentItemDTOs) {
+		this.stockAdjustmentItemDTOs = stockAdjustmentItemDTOs;
 	}
 
 }

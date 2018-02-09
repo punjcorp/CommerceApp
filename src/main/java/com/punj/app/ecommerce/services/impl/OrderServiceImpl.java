@@ -231,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> approveOrders(List<Order> orders) {
 
-		List<Order> finalOrders = new ArrayList<Order>(orders.size());
+		List<Order> finalOrders = new ArrayList<>(orders.size());
 		Order actualOrder = null;
 		for (Order order : orders) {
 			BigInteger orderId = order.getOrderId();

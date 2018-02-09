@@ -1,311 +1,213 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="utf-8" />
 <title th:text="#{commerce.screen.inventory.edit.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
-<div th:replace="common/header:: header"></div>
-
+<th:block th:replace="common/header:: header"></th:block>
+<!-- This thymeleaf fragment include the item lookup code-->
+<th:block th:include="lookup/item_lookup :: itemlookup-scripts"></th:block>
+<script src="../../js/inv_adjust.js" th:src="@{/js/inv_adjust.js}"></script>
 </head>
 <body>
-
 	<div id="wrapper">
-
 		<!-- This thymeleaf fragment include left menu -->
 		<div th:include="common/menu:: leftMenu"></div>
-
 		<!-- Page Content -->
 		<div id="page-content-wrapper">
-
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
-
-
-
 			<!-- This thymeleaf fragment is the body part for the page-->
-
 			<div class="card content-container">
 				<div class="card-header">
-					<h3 th:text="#{commerce.screen.inventory.edit}">Modify
-						Purchase Order</h3>
+					<h3 th:text="#{commerce.screen.inventory.edit}">Modify Purchase Order</h3>
 				</div>
 				<div class="card-body">
 					<div class="card-text">
-						<div th:if="${ success!=null}" th:text="${success}"
-							class="alert alert-success " role="alert"></div>
-						<div th:if="${ alert!=null}" th:text="${alert}"
-							class="alert alert-danger " role="alert"></div>
-
-						<form class="form" id="addForm" action="#"
-							th:action="@{/edit_inv_adjust}" th:object="${invAdjustBean}"
-							method="post">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form class="form" id="addForm" action="#" th:action="@{/edit_inv_adjust}" th:object="${invAdjustBean}" method="post">
 							<div class="row">
 								<div class="col-3">
 									<label th:text="#{commerce.screen.inventory.id}"></label>
 								</div>
 								<div class="col-2">
-									<input type="hidden" th:field="*{invAdjustId}" />
-									<input type="hidden" th:field="*{createdBy}" />
-									<input type="hidden" th:field="*{createdDate}" />
-									<input type="hidden" th:field="*{status}" />
+									<input type="hidden" th:field="*{invAdjustId}" /> <input type="hidden" th:field="*{createdBy}" /> <input type="hidden"
+										th:field="*{createdDate}" /> <input type="hidden" th:field="*{status}" />
 									<h5>
 										<span th:text="${invAdjustBean.invAdjustId}"></span>
 									</h5>
-
 								</div>
 							</div>
-
-
-
 							<div class="row">
 								<div class="col-6">
-									<div class="input-group form-group text-left">
-										<select th:field="*{locationId}" class="form-control input-sm">
-											<option class="form-text text-muted" value=""
-												selected="selected"
-												th:text="#{commerce.screen.inventory.location}">
-												Select Location</option>
-											<option th:each="location: ${invAdjustBean.locations}"
-												th:value="${location.locationId}"
-												th:text="${location.locationId} + ' - ' +${location.name}"></option>
-										</select>
-										<div th:if="${#fields.hasErrors('locationId')}"
-											th:errors="*{locationId}" class="text-danger">Location
-											Error</div>
+									<div class="form-group">
+										<label for="locationId"><small><span th:text="#{commerce.screen.common.location}"></span></small></label>
+										<div class="input-group text-left">
+											<select th:field="*{locationId}" class="form-control input-sm">
+												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.location}">Select Location</option>
+												<option th:each="location: ${invAdjustBean.locations}" th:value="${location.locationId}"
+													th:text="${location.locationId} + ' - ' +${location.name}"></option>
+											</select>
+										</div>
+										<small th:if="${#fields.hasErrors('locationId')}" th:errors="*{locationId}" class="text-danger align-top">Location Error </small>
 									</div>
 								</div>
 								<div class="col-6">
-									<div class="input-group form-group text-left">
-										<select th:field="*{reasonCodeId}"
-											class="form-control input-sm">
-											<option class="form-text text-muted" value=""
-												selected="selected"
-												th:text="#{commerce.screen.inventory.reason}">
-												Select Inventory Adjustment Reason Code</option>
-											<option th:each="reasonCode: ${invAdjustBean.reasonCodes}"
-												th:value="${reasonCode.reasonCodeId}"
-												th:text="#{${reasonCode.name}}"></option>
-										</select>
-
-										<div th:if="${#fields.hasErrors('reasonCodeId')}"
-											th:errors="*{reasonCodeId}" class="text-danger">Reason
-											Code Error</div>
+									<div class="form-group">
+										<label for="reasonCodeId"><small><span th:text="#{commerce.screen.common.reason}"></span></small></label>
+										<div class="input-group text-left">
+											<select th:field="*{reasonCodeId}" class="form-control input-sm">
+												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.reason}">Select Inventory
+													Adjustment Reason Code</option>
+												<option th:each="reasonCode: ${invAdjustBean.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="#{${reasonCode.name}}"></option>
+											</select>
+										</div>
 									</div>
+									<small th:if="${#fields.hasErrors('reasonCodeId')}" th:errors="*{reasonCodeId}" class="text-danger">Reason Code Error </small>
 								</div>
-
 							</div>
 							<div class="row">
 								<div class="col-12">
-									<div class="input-group form-group text-left">
-										<textarea th:field="*{description}"
-											class="form-control input-sm"
-											th:placeholder="#{commerce.screen.item.description}" rows="2">
-												
+									<div class="form-group">
+										<label for="description"><small><span th:text="#{commerce.screen.common.description}"></span></small></label>
+										<div class="input-group text-left">
+											<textarea th:field="*{description}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.description}" rows="2">
 												</textarea>
+										</div>
 									</div>
 								</div>
 							</div>
+							<div class="row mx-1">
+								<div class="col-3">
+									<label><small><span th:text="#{commerce.screen.order.item}"></span></small></label>
+								</div>
+								<div class="col-2">
+									<label><small><span th:text="#{commerce.screen.common.reason}"></span></small></label>
+								</div>
+								<div class="col-2">
+									<label><small><span th:text="#{commerce.screen.common.qty}"></span></small></label>
+								</div>
+								<div class="col">
+									<label><small><span th:text="#{commerce.screen.common.inv.from}"></span></small></label>
+								</div>
+								<div class="col">
+									<label><small><span th:text="#{commerce.screen.common.inv.to}"></span></small></label>
+								</div>
+								<div class="col-2"></div>
+							</div>
 							<div class="orderitem form-group">
-								<th:block
-									th:each="invAdjustItem,itrStat:${invAdjustBean.invAdjustItems}">
-
+								<th:block th:each="invAdjustItem,itrStat:${invAdjustBean.invAdjustItems}">
 									<div class="row">
 										<div class="col-3">
 											<div class="form-group">
 												<div class="input-group">
-													<input type="hidden"
-														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].invAdjustId}"></input>												
-													<input type="text"
-														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
-														class="form-control input-sm"
-														th:placeholder="#{commerce.screen.order.item}"
-														maxlength="150"></input><a data-toggle="modal"
-														data-target="#itemModal" class="nav-link" href="#"><i
+													<input type="hidden" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].invAdjustId}"></input> <input type="text"
+														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}" class="form-control input-sm"
+														th:placeholder="#{commerce.screen.order.item}" th:onchange="'updatechangeIndex('+${itrStat.index}+');'" maxlength="150"></input><a
+														data-toggle="modal" data-target="#itemModal" class="nav-link" href="#" th:onclick="'setIndex('+${itrStat.index}+');'"><i
 														class="material-icons">search</i></a>
 												</div>
-												<div
-													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
-													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}"
-													class="text-danger">Item Error</div>
+												<small th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
+													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}" class="text-danger">Item Error </small>
 											</div>
 										</div>
 										<div class="col-2">
 											<div class="form-group">
-												<select
-													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}"
-													class="form-control input-sm">
-													<option class="form-text text-muted" value=""
-														selected="selected"
-														th:text="#{commerce.screen.inventory.reason}"></option>
-													<option th:each="reasonCode : ${invAdjustBean.reasonCodes}"
-														th:value="${reasonCode.reasonCodeId}"
-														th:text="#{${reasonCode.name}}"></option>
-												</select>
-												<div
-													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].reasonCodeId')}"
-													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}"
-													class="text-danger">Reason Code Error</div>
+												<select th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}" class="form-control input-sm"
+													th:onchange="'updatechangeIndex('+${itrStat.index}+');'">
+													<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.reason}"></option>
+													<option th:each="reasonCode : ${invAdjustBean.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="#{${reasonCode.name}}"></option>
+												</select> <small th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].reasonCodeId')}"
+													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}" class="text-danger">Reason Code
+													Error </small>
 											</div>
 										</div>
-										<div class="col-1">
+										<div class="col-2">
 											<div class="form-group">
-												<input type="text"
-													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.inventory.qty}"
-													maxlength="150"></input>
-												<div
+												<input type="text" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="form-control input-sm"
+													th:placeholder="#{commerce.screen.inventory.qty}" maxlength="150"></input> <small
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].qty')}"
-													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}"
-													class="text-danger">Quantity Error</div>
+													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="text-danger">Quantity Error </small>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<input type="text" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}" class="form-control input-sm"
+													disabled="disabled"></input>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<input type="text" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}" class="form-control input-sm"
+													disabled="disabled"></input>
 											</div>
 										</div>
 										<div class="col-2">
 											<div class="form-group">
-												<input type="text"
-													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.inventory.from.available}"
-													maxlength="150"></input>
-											</div>
-										</div>
-										<div class="col-2">
-											<div class="form-group">
-												<input type="text"
-													th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.inventory.to.available}"
-													maxlength="150"></input>
-											</div>
-										</div>
-										<div class="col-2">
-											<div class="form-group">
-												<button type="submit" name="addInvAdjustItem"
-													class="btn btn-secondary btn-sm">
+												<button type="submit" name="addInvAdjustItem" class="btn btn-secondary btn-sm">
 													<i class="material-icons">add_circle</i>
 												</button>
-												<button type="button"
-													th:if="${(#lists.size(invAdjustBean.invAdjustItems))>1}"
-													th:onclick="'deleteItem(\'/edit_inv_adjust?removeInvAdjustItem=&amp;id='+ ${itrStat.index} +'\')'"
-													class="btn btn-secondary btn-sm">
+												<button type="button" th:if="${(#lists.size(invAdjustBean.invAdjustItems))>1}"
+													th:onclick="'deleteItem(\'/edit_inv_adjust?removeInvAdjustItem=&amp;id='+ ${itrStat.index} +'\')'" class="btn btn-secondary btn-sm">
 													<i class="material-icons">remove_circle</i>
 												</button>
-
 											</div>
 										</div>
 									</div>
-
 								</th:block>
 							</div>
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<input type="submit" name="saveEditedInvAdjust" value="Save"
-											th:value="#{commerce.screen.btn.submit.save}"
-											class="btn btn-info"></input> <input type="submit"
-											name="approveEditedInvAdjust" value="Approve"
-											th:value="#{commerce.screen.btn.submit.approve}"
-											class="btn btn-info"></input> <input type="submit"
-											name="printInvAdjust" value="Print"
-											th:value="#{commerce.screen.btn.print}"
-											class="btn btn-secondary"></input>
+										<input type="submit" name="saveEditedInvAdjust" value="Save" th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm"></input> <input
+											type="submit" name="approveEditedInvAdjust" value="Approve" th:value="#{commerce.screen.btn.submit.approve}"
+											class="btn btn-success btn-sm"></input> <a th:if="${invAdjustBean.invAdjustId!=null}"
+											th:href="@{/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}" href="../inventory/inv_adjust.html"
+											class="btn btn-secondary btn-sm" target="_blank"><span th:text="#{commerce.screen.actions.print}">Print</span></a>
 									</div>
 								</div>
 							</div>
 						</form>
 					</div>
 				</div>
-
 			</div>
-
-
-
-
 		</div>
 		<!-- /#page-content-wrapper -->
-
 	</div>
 	<!-- /#wrapper -->
-
-
-
-
 	<!-- Item Lookup Modal -->
-	<div class="modal fade " id="itemModal" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade " id="itemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">
-						<span th:text="#{commerce.screen.lookup.item}"> Item Look
-							up</span>
+						<span th:text="#{commerce.screen.lookup.item}"> Item Look up</span>
 					</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<form class="form" id="searchForm" action="#"
-						th:action="@{/search_item}" th:object="${searchBean}"
-						method="post">
-						<div class="row">
-							<div class="col-5">
-								<div class="form-group text-left">
-									<div class="input-group">
-										<input type="text" th:field="*{searchText}"
-											class="form-control input-sm"
-											th:placeholder="#{Enter keyword to search}"
-											placeholder="Enter keyword to search"
-											aria-describedby="searchHelp"></input> <span
-											class="input-group-btn"><input type="submit"
-											value="Search" th:value="#{commerce.screen.btn.search}"
-											class="form-control btn btn-info btn-block"></input></span>
-									</div>
-									<small id="searchHelp" class="form-text text-muted"
-										th:text="#{commerce.screen.item.search.keywords}">Enter
-										keywords like Item#/Style#/Name/Description</small>
-								</div>
-
-
-							</div>
-						</div>
-					</form>
+					<!-- This thymeleaf fragment include the item lookup code-->
+					<div th:include="lookup/item_lookup :: itemlookup-screen"></div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal" value="Close"
-						th:value="#{commerce.btn.close}">Close</button>
-					<button type="button" id="itembtn" class="btn btn-primary"
-						value="Choose This Supplier"
-						th:value="#{commerce.btn.choose.item}">Choose This Item</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" value="Close" th:value="#{commerce.btn.close}">Close</button>
+					<button type="button" id="itemChooseBtn" class="btn btn-primary" value="Choose This Supplier" th:value="#{commerce.btn.choose.item}">Choose
+						This Item</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
-
 	<script type="text/javascript" th:inline="javascript">
 	/*<![CDATA[*/
 		
 		var totalRecords = [[${#lists.size(invAdjustBean.invAdjustItems)}]];
 		
-		function deleteItem(item) {
-
-			$("#addForm").attr("action", item);
-
-			$('#addForm').submit();
-		}
-
-		$("#itembtn").click(function() {
-
-			$('#itemModal').modal('toggle');
-
-		});
-		
 		/*]]>*/
 	</script>
-
 </body>
 </html>

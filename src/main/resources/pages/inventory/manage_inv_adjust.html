@@ -75,6 +75,13 @@
 							method="post"
 							th:if="${invAdjusts!=null and invAdjusts.invAdjusts!=null and #lists.size(invAdjusts.invAdjusts)>0}">
 
+							<div class="row" th:if="${invAdjusts.searchBean!=null}">
+								<div class="col-12 text-right">
+										<input type="hidden" th:field="*{searchBean.searchText}"></input>
+										<input type="hidden" th:field="*{searchBean.page}"></input>
+								</div>
+							</div>
+
 							<div class="row">
 								<div class="col-12 text-right">
 										<!-- This thymeleaf fragment is the body part for the page-->
@@ -82,7 +89,7 @@
 								</div>
 							</div>
 							
-							
+
 
 							<table class="table table-striped table-hover table-bordered">
 								<thead class="thead-light">
@@ -156,7 +163,7 @@
 													 <a
 														th:href="@{/print_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
 														href="../inventory/inv_adjust.html"
-														class="btn btn-secondary btn-sm"><span
+														class="btn btn-secondary btn-sm" target="_blank"><span
 														th:text="#{commerce.screen.actions.print}">Print</span></a>
 
 												</div>
@@ -208,8 +215,8 @@
 											class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
 											disabled="disabled"></input>  <a
 											id="btnPrint" href="print_orders.html"
-											th:href="@{/print_inv_adjusts}" class="btn btn-secondary btn-sm"><span
-											th:text="#{commerce.screen.btn.print}">Print</span></a> <a
+											th:href="@{/print_inv_adjusts}" class="btn btn-secondary btn-sm" target="_blank"><span
+											th:text="#{commerce.screen.btn.print.all}">Print All</span></a> <a
 											href="../inventory/add_inv_adjust.html"
 											th:href="@{/add_inv_adjust}" class="btn btn-info btn-sm"><span
 											th:text="#{commerce.screen.btn.submit.add.inv.adjust}">Add</span></a>
@@ -297,6 +304,14 @@
 
 		function submitForm(action) {
 
+			if(action.indexOf("deleteInvAdjusts") >= 0){
+				$("[id^=invAdjusts]").each(function() {
+				    if(this.id.indexOf("status") >= 0){
+				    	$(this).removeAttr("disabled");
+				    }
+				});
+			}
+			
 			$("#bulkForm").attr("action", action);
 
 			$('#bulkForm').submit();

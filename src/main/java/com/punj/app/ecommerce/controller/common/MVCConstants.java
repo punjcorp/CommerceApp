@@ -97,6 +97,9 @@ public final class MVCConstants {
 	public static final String REMOVE_INV_ADJUST_ITEM_PARAM= "removeInvAdjustItem";
 	public static final String SAVE_INV_ADJUST_PARAM= "saveInvAdjust";
 	public static final String APPROVE_INV_ADJUST_PARAM= "approveInvAdjust";
+	public static final String SAVE_INV_ADJS_PARAM= "saveInvAdjusts";
+	public static final String APPROVE_INV_ADJS_PARAM= "approveInvAdjusts";
+	public static final String DELETE_INV_ADJS_PARAM= "deleteInvAdjusts";
 	public static final String SAVE_EDIT_INV_ADJUST_PARAM= "saveEditedInvAdjust";
 	public static final String APPROVE_EDIT_INV_ADJUST_PARAM= "approveEditedInvAdjust";
 	public static final String INV_ADJUST_ITEM_INV_PARAM= "getItemInv";

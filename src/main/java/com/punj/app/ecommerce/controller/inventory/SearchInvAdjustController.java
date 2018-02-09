@@ -10,10 +10,12 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,8 +55,7 @@ public class SearchInvAdjustController {
 	}
 
 	@GetMapping(ViewPathConstants.SEARCH_INV_ADJUST_URL)
-	public String listInventoryAdjustments(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
-			HttpSession session) {
+	public String listInventoryAdjustments(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model) {
 		try {
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
@@ -73,13 +74,13 @@ public class SearchInvAdjustController {
 			this.setInvAdjustList(stocksList, invAdjusts);
 
 			Pager tmpPager = stockList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(), ViewPathConstants.SEARCH_INV_ADJUST_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.SEARCH_INV_ADJUST_URL);
 
+			
 			model.addAttribute(MVCConstants.INV_ADJUSTS_BEAN, invAdjusts);
 			model.addAttribute(MVCConstants.PAGER, pager);
-			model.addAttribute(MVCConstants.SUCCESS,
-					"The {" + pager.getResultSize() + "} inventory adjustment records has been retrieved");
+			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} inventory adjustment records has been retrieved");
 			logger.info("All the request inventory adjustments has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving inventory adjustments", e);
@@ -97,14 +98,18 @@ public class SearchInvAdjustController {
 
 	@PostMapping(ViewPathConstants.SEARCH_INV_ADJUST_URL)
 	public String searchInventoryAdjustments(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
-			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model) {
+			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, @ModelAttribute(MVCConstants.SUCCESS) String success, @ModelAttribute(MVCConstants.ALERT) String alert, Model model) {
 		if (bindingResult.hasErrors())
-			return ViewPathConstants.MANAGE_ITEM_PAGE;
+			return ViewPathConstants.MANAGE_INV_ADJUST_PAGE;
 		try {
 
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
-				pager.setCurrentPageNo(1);
+				if(searchBean.getPage()!=null) {
+					pager.setCurrentPageNo(searchBean.getPage());
+				}else {
+					pager.setCurrentPageNo(1);					
+				}
 			} else {
 				pager.setCurrentPageNo(page.get());
 			}
@@ -117,14 +122,26 @@ public class SearchInvAdjustController {
 			this.setInvAdjustList(stocksList, invAdjusts);
 
 			Pager tmpPager = stockList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(), ViewPathConstants.SEARCH_INV_ADJUST_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.SEARCH_INV_ADJUST_URL);
 
+			invAdjusts.setSearchBean(searchBean);
+
+			invAdjusts.getSearchBean().setPage(tmpPager.getCurrentPageNo());
+			
 			model.addAttribute(MVCConstants.INV_ADJUSTS_BEAN, invAdjusts);
 			model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 			model.addAttribute(MVCConstants.PAGER, pager);
-			model.addAttribute(MVCConstants.SUCCESS,
-					"The {" + pager.getResultSize() + "} inventory adjustment records has been retrieved");
+			if (StringUtils.isNotEmpty(success)) {
+				model.addAttribute(MVCConstants.SUCCESS, success);
+				model.addAttribute(MVCConstants.ALERT,null);
+			} else if (StringUtils.isNotEmpty(alert)) {
+				model.addAttribute(MVCConstants.SUCCESS,null);				
+				model.addAttribute(MVCConstants.ALERT, alert);
+			} else {
+				model.addAttribute(MVCConstants.ALERT,null);
+				model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} inventory adjustment records has been retrieved");
+			}
 			logger.info("All the request inventory adjustments has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving inventory adjustments", e);

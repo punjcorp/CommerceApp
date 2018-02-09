@@ -25,7 +25,9 @@ import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.inventory.ItemStockBucket;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
+import com.punj.app.ecommerce.domains.inventory.StockAdjustmentDTO;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustmentItem;
+import com.punj.app.ecommerce.domains.inventory.StockAdjustmentItemDTO;
 import com.punj.app.ecommerce.domains.inventory.StockBucket;
 import com.punj.app.ecommerce.domains.inventory.StockDTO;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
@@ -313,8 +315,8 @@ public class InventoryServiceImpl implements InventoryService {
 
 	}
 
-	private void calculateInventory(ItemStockJournal itemStockJournal, StockBucket stockBucket,
-			StockBucket otherStockBucket, String action, ItemStock itemStock) {
+	private void calculateInventory(ItemStockJournal itemStockJournal, StockBucket stockBucket, StockBucket otherStockBucket, String action,
+			ItemStock itemStock) {
 		Integer bucketId = stockBucket.getBucketId();
 
 		ItemStockBucketId itemStockBucketId = new ItemStockBucketId();
@@ -338,8 +340,7 @@ public class InventoryServiceImpl implements InventoryService {
 			}
 		}
 
-		logger.info("The stock bucket {} for system bucket {} has been updated successfully", stockBucket.getName(),
-				stockBucket.getSystemBucket());
+		logger.info("The stock bucket {} for system bucket {} has been updated successfully", stockBucket.getName(), stockBucket.getSystemBucket());
 	}
 
 	@Override
@@ -413,7 +414,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	public void deleteStockAdjustments(List<BigInteger> stockAdjustmentIds) {
-
+		
 		for (BigInteger stockAdjustmentId : stockAdjustmentIds) {
 			this.stockAdjustmentRepository.delete(stockAdjustmentId);
 			logger.debug("The stock adjustment id -> {} <- was deleted", stockAdjustmentId);
@@ -438,8 +439,7 @@ public class InventoryServiceImpl implements InventoryService {
 			stockAdjustmentId = stockAdjustment.getStockAdjustId();
 			logger.debug("The stock adjustment id is -> {} <-", stockAdjustmentId);
 
-			List<ItemStockJournal> inventoryDetails = this.createStockDetails(stockAdjustment,
-					stockAdjustment.getCreatedBy());
+			List<ItemStockJournal> inventoryDetails = this.createStockDetails(stockAdjustment, stockAdjustment.getCreatedBy());
 			this.updateInventory(inventoryDetails);
 
 		}
@@ -465,8 +465,7 @@ public class InventoryServiceImpl implements InventoryService {
 			itemStockJournal.setItemId(item.getItemId());
 
 			StockReason stockReason = new StockReason();
-			stockReason
-					.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getStockReason().getReasonCodeId());
+			stockReason.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getStockReason().getReasonCodeId());
 			itemStockJournal.setReasonCode(stockReason);
 
 			itemStockJournal.setFunctionality(ServiceConstants.STOCK_ADJUSTMENT_FUNCTIONALITY);
@@ -604,14 +603,11 @@ public class InventoryServiceImpl implements InventoryService {
 		ItemStock itmStock = this.itemStockRepository.findOne(itemStockId);
 
 		if (itmStock != null)
-			logger.info("The stock details for {} item {} location has been retrieved successfully", itemId,
-					locationId);
+			logger.info("The stock details for {} item {} location has been retrieved successfully", itemId, locationId);
 		else
-			logger.info("The stock details for {} item {} location has not been", itemId,
-					locationId);
+			logger.info("The stock details for {} item {} location has not been", itemId, locationId);
 		return itmStock;
 	}
-
 
 	@Override
 	public StockReason searchReasonCode(Integer reasonCodeId) {
@@ -624,5 +620,123 @@ public class InventoryServiceImpl implements InventoryService {
 			logger.info("The Stock reason code {} details has not been retrieved", reasonCodeId);
 		return stockReason;
 	}
+
+	@Override
+	public StockAdjustmentDTO searchStockAdjustmentWithInventory(BigInteger stockAdjustmentId) {
+		StockAdjustmentDTO stockAdjustmentDTO = null;
+		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
+
+		if (stockAdjustment != null) {
+			stockAdjustmentDTO = this.convertToDTO(stockAdjustment);
+			logger.info("The Stock Adjustment has been retrieved and set to DTO successfully for operations");
+		} else {
+			logger.info("The Stock Adjustment cannot be retrieved/set to DTO for operations");
+		}
+		return stockAdjustmentDTO;
+	}
+
+	private StockAdjustmentDTO convertToDTO(StockAdjustment stockAdjustment) {
+		StockAdjustmentDTO stockAdjustmentDTO = new StockAdjustmentDTO();
+
+		ItemStock itemStock;
+		StockAdjustmentItemDTO stockAdjustmentItemDTO;
+
+		StockReason stockReason;
+		StockBucket stockBucket;
+		List<StockAdjustmentItem> stockAdjustmentItems = stockAdjustment.getStockAdjustItems();
+		List<StockAdjustmentItemDTO> stockAdjustmentItemDTOs = new ArrayList<>(stockAdjustmentItems.size());
+
+		for (StockAdjustmentItem stockAdjustmentItem : stockAdjustmentItems) {
+
+			itemStock = this.searchItemStock(stockAdjustmentItem.getStockAdjustmentItemId().getItemId(), stockAdjustment.getLocationId());
+
+			stockAdjustmentItemDTO = new StockAdjustmentItemDTO();
+			stockAdjustmentItemDTO.setStockAdjustmentItem(stockAdjustmentItem);
+			stockReason = stockAdjustmentItem.getStockAdjustmentItemId().getStockReason();
+
+			stockBucket = stockReason.getFromBucket();
+			this.setInventoryBucketDetails(stockAdjustmentItemDTO, stockBucket, itemStock, ServiceConstants.STOCK_FROM_BUCKET_IND);
+
+			stockBucket = stockReason.getToBucket();
+			this.setInventoryBucketDetails(stockAdjustmentItemDTO, stockBucket, itemStock, ServiceConstants.STOCK_TO_BUCKET_IND);
+
+			stockAdjustmentItemDTOs.add(stockAdjustmentItemDTO);
+
+		}
+		stockAdjustment.setStockAdjustItems(null);
+		stockAdjustmentDTO.setStockAdjustment(stockAdjustment);
+		stockAdjustmentDTO.setStockAdjustmentItems(stockAdjustmentItemDTOs);
+
+		logger.info("The Stock Adjustment domain object  has been converted to DTO successfully");
+		return stockAdjustmentDTO;
+	}
+
+	private void setInventoryBucketDetails(StockAdjustmentItemDTO stockAdjustmentItemDTO, StockBucket stockBucket, ItemStock itemStock, String indicator) {
+		if (stockBucket != null) {
+			String systemBucket = stockBucket.getSystemBucket();
+			Integer qty;
+			if (systemBucket != null) {
+				if (systemBucket.equals(ServiceConstants.INV_BUCKET_NON_SELL)) {
+					qty = itemStock.getNonSellableQty();
+				} else if (systemBucket.equals(ServiceConstants.INV_BUCKET_RESERVED)) {
+					qty = itemStock.getReservedQty();
+				} else if (systemBucket.equals(ServiceConstants.INV_BUCKET_SOH)) {
+					qty = itemStock.getStockOnHand();
+				} else {
+					qty = null;
+				}
+
+				if (ServiceConstants.STOCK_FROM_BUCKET_IND.equals(indicator)) {
+					stockAdjustmentItemDTO.setFromBucket(systemBucket);
+					stockAdjustmentItemDTO.setFromQty(qty);
+				} else if (ServiceConstants.STOCK_TO_BUCKET_IND.equals(indicator)) {
+					stockAdjustmentItemDTO.setToBucket(systemBucket);
+					stockAdjustmentItemDTO.setToQty(qty);
+				}
+
+			}
+		}
+		logger.info("The Stock Adjustment item {} inventory bucket has been updated correctly", indicator);
+
+	}
+
+	@Override
+	public List<StockAdjustment> saveStockAdjustmentsDesc(List<StockAdjustment> stockAdjustments) {
+
+		List<StockAdjustment> finalStockAdjustmentList = new ArrayList<>(stockAdjustments.size());
+		StockAdjustment stockAdjustmentUpdated;
+		for (StockAdjustment stockAdjustment : stockAdjustments) {
+			stockAdjustmentUpdated = this.stockAdjustmentRepository.findOne(stockAdjustment.getStockAdjustId());
+			if(stockAdjustmentUpdated!=null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+				stockAdjustmentUpdated.setDescription(stockAdjustment.getDescription());
+				stockAdjustmentUpdated.setModifiedBy(stockAdjustment.getModifiedBy());
+				stockAdjustmentUpdated.setModifiedDate(stockAdjustment.getModifiedDate());
+				finalStockAdjustmentList.add(stockAdjustmentUpdated);
+			}
+		}
+
+		finalStockAdjustmentList = this.stockAdjustmentRepository.save(finalStockAdjustmentList);
+		logger.info("The Stock Adjustments List has been saved as provided for Description changes");
+		return finalStockAdjustmentList;
+	}
+	
+	@Override
+	public List<StockAdjustment> approveStockAdjustments(List<StockAdjustment> stockAdjustments) {
+		List<StockAdjustment> finalStockAdjustmentList = new ArrayList<>(stockAdjustments.size());
+		StockAdjustment stockAdjustmentUpdated;
+		for (StockAdjustment stockAdjustment : stockAdjustments) {
+			stockAdjustmentUpdated = this.stockAdjustmentRepository.findOne(stockAdjustment.getStockAdjustId());
+			if(stockAdjustmentUpdated!=null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+				stockAdjustmentUpdated.setStatus(ServiceConstants.STOCK_ADJUSTMENT_STATUS_APPROVED);
+				stockAdjustmentUpdated.setModifiedBy(stockAdjustment.getModifiedBy());
+				stockAdjustmentUpdated.setModifiedDate(stockAdjustment.getModifiedDate());
+				finalStockAdjustmentList.add(stockAdjustmentUpdated);
+			}
+		}
+
+		finalStockAdjustmentList = this.stockAdjustmentRepository.save(finalStockAdjustmentList);
+		logger.info("The Stock Adjustments List has been approved as filtered based on existing status");
+		return finalStockAdjustmentList;
+	}	
 
 }
