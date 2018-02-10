@@ -16,10 +16,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 /**
  * @author admin
  *
  */
+@Indexed
 @Entity
 @Table(name = "stock_reason_code")
 public class StockReason implements Serializable {
@@ -27,13 +32,16 @@ public class StockReason implements Serializable {
 	private static final long serialVersionUID = -8690012873931948210L;
 
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "reason_code_id", updatable = false, nullable = false)
 	private Integer reasonCodeId;
 
+	@Field
 	@Column(name = "reason_code")
 	private String reasonCode;
-
+	
+	@Field
 	private String name;
 
 	@Column(name = "from_stock_action")

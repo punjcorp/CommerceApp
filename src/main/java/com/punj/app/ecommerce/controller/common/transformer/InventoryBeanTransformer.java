@@ -20,14 +20,11 @@ import com.punj.app.ecommerce.domains.inventory.StockAdjustmentItem;
 import com.punj.app.ecommerce.domains.inventory.StockAdjustmentItemDTO;
 import com.punj.app.ecommerce.domains.inventory.StockBucket;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
-import com.punj.app.ecommerce.domains.inventory.ids.StockAdjustmentItemId;
-import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.models.inventory.InvAdjustBean;
 import com.punj.app.ecommerce.models.inventory.InvAdjustItemBean;
 import com.punj.app.ecommerce.models.inventory.InvAdjustItemInventory;
 import com.punj.app.ecommerce.models.inventory.InvReasonBean;
 import com.punj.app.ecommerce.models.inventory.ItemInventory;
-import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 /**
@@ -86,20 +83,19 @@ public class InventoryBeanTransformer {
 		List<InvAdjustItemBean> invAdjustItems = invAdjustBean.getInvAdjustItems();
 		List<StockAdjustmentItem> stockAdjustmentItems = new ArrayList<>(invAdjustItems.size());
 		StockAdjustmentItem stockAdjItem = null;
-		StockAdjustmentItemId stockAdjItemId = null;
 		StockReason stockReason = null;
 		for (InvAdjustItemBean invAdjustItem : invAdjustItems) {
 			stockAdjItem = new StockAdjustmentItem();
 
-			stockAdjItemId = new StockAdjustmentItemId();
-			stockAdjItemId.setItemId(invAdjustItem.getItemId());
 			stockReason = new StockReason();
 			stockReason.setReasonCodeId(invAdjustItem.getReasonCodeId());
-			stockAdjItemId.setStockReason(stockReason);
-			stockAdjItemId.setStockAdjustment(stockAdjustment);
-			stockAdjItem.setStockAdjustmentItemId(stockAdjItemId);
 
+			stockAdjItem.setLineItemId(invAdjustItem.getInvAdjustLineItemId());
+			stockAdjItem.setItemId(invAdjustItem.getItemId());
+			stockAdjItem.setStockReason(stockReason);
+			stockAdjItem.setStockAdjustment(stockAdjustment);
 			stockAdjItem.setQty(invAdjustItem.getQty());
+
 			stockAdjustmentItems.add(stockAdjItem);
 		}
 		stockAdjustment.setStockAdjustItems(stockAdjustmentItems);
@@ -138,7 +134,7 @@ public class InventoryBeanTransformer {
 			List<InvAdjustItemBean> invAdjustItemBeans = new ArrayList<>(stockAdjustmentItems.size());
 			InvAdjustItemBean invAdjustItemBean = null;
 			for (StockAdjustmentItem stockAdjustmentItem : stockAdjustmentItems) {
-				invAdjustItemBean=InventoryBeanTransformer.transformStockAdjustmentItem(stockAdjustmentItem);
+				invAdjustItemBean = InventoryBeanTransformer.transformStockAdjustmentItem(stockAdjustmentItem);
 				invAdjustItemBeans.add(invAdjustItemBean);
 			}
 			invAdjustBean.setInvAdjustItems(invAdjustItemBeans);
@@ -146,15 +142,16 @@ public class InventoryBeanTransformer {
 		}
 		return invAdjustBean;
 	}
-	
+
 	public static InvAdjustItemBean transformStockAdjustmentItem(StockAdjustmentItem stockAdjustmentItem) {
 		InvAdjustItemBean invAdjustItemBean = new InvAdjustItemBean();
-		invAdjustItemBean.setInvAdjustId(stockAdjustmentItem.getStockAdjustmentItemId().getStockAdjustment().getStockAdjustId());
-		invAdjustItemBean.setItemId(stockAdjustmentItem.getStockAdjustmentItemId().getItemId());
-		invAdjustItemBean.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getStockReason().getReasonCodeId());
+		invAdjustItemBean.setInvAdjustLineItemId(stockAdjustmentItem.getLineItemId());
+		invAdjustItemBean.setInvAdjustId(stockAdjustmentItem.getStockAdjustment().getStockAdjustId());
+		invAdjustItemBean.setItemId(stockAdjustmentItem.getItemId());
+		invAdjustItemBean.setReasonCodeId(stockAdjustmentItem.getStockReason().getReasonCodeId());
 		invAdjustItemBean.setQty(stockAdjustmentItem.getQty());
 		logger.info("The stock adjustment item details has been transformed into inventory adjustment successfully");
-		
+
 		return invAdjustItemBean;
 	}
 
@@ -244,15 +241,15 @@ public class InventoryBeanTransformer {
 
 	public static InvAdjustBean transformStockAdjustmentDTO(StockAdjustmentDTO stockAdjustmentDTO) {
 
-		StockAdjustment stockAdjustment=stockAdjustmentDTO.getStockAdjustment();
+		StockAdjustment stockAdjustment = stockAdjustmentDTO.getStockAdjustment();
 		List<StockAdjustmentItemDTO> stockAdjustmentItemDTOs = stockAdjustmentDTO.getStockAdjustmentItems();
-		
+
 		InvAdjustItemBean invAdjustItemBean;
-		List<InvAdjustItemBean> invAdjustItemBeanList=new ArrayList<>(stockAdjustmentItemDTOs.size()); 
-		for(StockAdjustmentItemDTO stockAdjustmentItemDTO:stockAdjustmentItemDTOs) {
-			
-			invAdjustItemBean=InventoryBeanTransformer.transformStockAdjustmentItem(stockAdjustmentItemDTO.getStockAdjustmentItem());
-			
+		List<InvAdjustItemBean> invAdjustItemBeanList = new ArrayList<>(stockAdjustmentItemDTOs.size());
+		for (StockAdjustmentItemDTO stockAdjustmentItemDTO : stockAdjustmentItemDTOs) {
+
+			invAdjustItemBean = InventoryBeanTransformer.transformStockAdjustmentItem(stockAdjustmentItemDTO.getStockAdjustmentItem());
+
 			invAdjustItemBean.setFromAvailable(stockAdjustmentItemDTO.getFromQty());
 			invAdjustItemBean.setToAvailable(stockAdjustmentItemDTO.getToQty());
 			invAdjustItemBeanList.add(invAdjustItemBean);
@@ -260,7 +257,7 @@ public class InventoryBeanTransformer {
 
 		InvAdjustBean invAdjustBean = InventoryBeanTransformer.transformStockAdjustmentDomain(stockAdjustment);
 		invAdjustBean.setInvAdjustItems(invAdjustItemBeanList);
-		
+
 		logger.info("The stock adjustment header has been transformed into inventory adjustment successfully");
 
 		return invAdjustBean;
@@ -275,14 +272,14 @@ public class InventoryBeanTransformer {
 		}
 
 		logger.info("The inventory adjustment ids and list index from management page has been seperated");
-		return  idIndex;
+		return idIndex;
 	}
-	
+
 	public static List<StockAdjustment> transformInvAdjustmentList(List<InvAdjustBean> invAdjustBeanList, String username) {
 		List<StockAdjustment> stockAdjustmentList = new ArrayList<>(invAdjustBeanList.size());
 		StockAdjustment stockAdjustment;
 		for (InvAdjustBean invAdjustBean : invAdjustBeanList) {
-			stockAdjustment=InventoryBeanTransformer.transformInvAdjustBean(invAdjustBean);
+			stockAdjustment = InventoryBeanTransformer.transformInvAdjustBean(invAdjustBean);
 			stockAdjustment.setModifiedDate(LocalDateTime.now());
 			stockAdjustment.setModifiedBy(username);
 			stockAdjustmentList.add(stockAdjustment);
@@ -290,7 +287,29 @@ public class InventoryBeanTransformer {
 		logger.info("The inventory adjustment list details has been transformed in Stock Adjustment Domain object list");
 		return stockAdjustmentList;
 	}
-	
-	
-	
+
+	public static void retainInvBucketQty(InvAdjustBean invAdjustBean, InvAdjustBean updatedInvAdjustBean) {
+
+		List<InvAdjustItemBean> invAdjustItems = invAdjustBean.getInvAdjustItems();
+		List<InvAdjustItemBean> updatedInvAdjustItems = updatedInvAdjustBean.getInvAdjustItems();
+		int index = 0;
+
+		List<InvAdjustItemBean> finalInvAdjustItems = new ArrayList<>(updatedInvAdjustItems.size());
+		for (InvAdjustItemBean invAdjustItem : invAdjustItems) {
+			for (InvAdjustItemBean updatedInvAdjustItem : updatedInvAdjustItems) {
+				if (invAdjustItem.getItemId().equals(updatedInvAdjustItem.getItemId())
+						&& invAdjustItem.getReasonCodeId().equals(updatedInvAdjustItem.getReasonCodeId())
+						&& invAdjustItem.getQty().equals(updatedInvAdjustItem.getQty())) {
+					updatedInvAdjustItem.setFromAvailable(invAdjustItem.getFromAvailable());
+					updatedInvAdjustItem.setToAvailable(invAdjustItem.getToAvailable());
+					finalInvAdjustItems.add(updatedInvAdjustItem);
+				}
+			}
+		}
+		updatedInvAdjustBean.setInvAdjustItems(finalInvAdjustItems);
+		
+
+		logger.info("The from and to available inventories has been updated in the bean object now");
+	}
+
 }

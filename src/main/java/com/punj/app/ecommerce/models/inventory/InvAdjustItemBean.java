@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
  */
 public class InvAdjustItemBean {
 	private BigInteger invAdjustId;
+	private BigInteger invAdjustLineItemId;
 	@NotNull(message = "{commerce.error.item.empty}")
 	private BigInteger itemId;
 	@NotNull(message = "{commerce.error.select.empty}")
@@ -111,6 +112,21 @@ public class InvAdjustItemBean {
 	 */
 	public void setToAvailable(Integer toAvailable) {
 		this.toAvailable = toAvailable;
+	}
+
+	/**
+	 * @return the invAdjustLineItemId
+	 */
+	public BigInteger getInvAdjustLineItemId() {
+		return invAdjustLineItemId;
+	}
+
+	/**
+	 * @param invAdjustLineItemId
+	 *            the invAdjustLineItemId to set
+	 */
+	public void setInvAdjustLineItemId(BigInteger invAdjustLineItemId) {
+		this.invAdjustLineItemId = invAdjustLineItemId;
 	}
 
 }

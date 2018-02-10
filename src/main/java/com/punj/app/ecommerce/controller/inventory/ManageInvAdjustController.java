@@ -133,10 +133,28 @@ public class ManageInvAdjustController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_INV_ADJUST_URL, params = { MVCConstants.REMOVE_INV_ADJUST_ITEM_PARAM })
-	public String removeRow(@ModelAttribute InvAdjustBean invAdjustBean, Model model, final BindingResult bindingResult, final HttpServletRequest req) {
+	public String removeRow(@ModelAttribute InvAdjustBean invAdjustBean, Model model, final BindingResult bindingResult, final HttpServletRequest req,
+			Locale locale) {
 		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.ID_PARAM));
-		invAdjustBean.getInvAdjustItems().remove(rowId.intValue());
+		List<InvAdjustItemBean> invAdjustItems = invAdjustBean.getInvAdjustItems();
 
+		InvAdjustItemBean invAdjustItemBean = invAdjustItems.get(rowId.intValue());
+		BigInteger lineItemId = invAdjustItemBean.getInvAdjustLineItemId();
+		Boolean result;
+		if (lineItemId != null) {
+			result = this.inventoryService.deleteStockAdjustmentItem(lineItemId);
+			if (result) {
+				invAdjustBean.getInvAdjustItems().remove(rowId.intValue());
+				logger.info("The inventory adjustment item with line item id {} was deleted successfully", lineItemId);
+			} else {
+				model.addAttribute(MVCConstants.ALERT,
+						messageSource.getMessage("commerce.screen.inventory.item.delete.failure", new Object[] { invAdjustItemBean.getItemId() }, locale));
+				logger.info("The inventory adjustment item was not deleted due to some issue");
+			}
+		} else {
+			invAdjustBean.getInvAdjustItems().remove(rowId.intValue());
+			logger.info("The inventory adjustment item was deleted successfully");
+		}
 		this.updateInvAdjustmentBean(invAdjustBean, model);
 
 		return ViewPathConstants.ADD_INV_ADJUST_PAGE;
@@ -205,10 +223,10 @@ public class ManageInvAdjustController {
 	 */
 	private void updateBeanForNewAdjustment(InvAdjustBean invAdjustBean, UserDetails userDetails, String action) {
 		invAdjustBean.setStatus(MVCConstants.STATUS_CREATED);
-		if (action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM)) {
+		if (action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM) && invAdjustBean.getInvAdjustId()==null) {
 			invAdjustBean.setCreatedDate(LocalDateTime.now());
 			invAdjustBean.setCreatedBy(userDetails.getUsername());
-		} else if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM)) {
+		} else if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM) || (action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM) && invAdjustBean.getInvAdjustId()!=null)) {
 			invAdjustBean.setModifiedDate(LocalDateTime.now());
 			invAdjustBean.setModifiedBy(userDetails.getUsername());
 		}
@@ -375,9 +393,8 @@ public class ManageInvAdjustController {
 		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.ID_PARAM));
 		InvAdjustItemBean invAdjustItem = invAdjustBean.getInvAdjustItems().get(rowId.intValue());
 		Boolean result;
-		if (invAdjustItem.getInvAdjustId() != null) {
-			result = this.inventoryService.deleteStockAdjustmentItem(invAdjustBean.getInvAdjustId(), invAdjustItem.getItemId(),
-					invAdjustItem.getReasonCodeId());
+		if (invAdjustItem.getInvAdjustLineItemId() != null) {
+			result = this.inventoryService.deleteStockAdjustmentItem(invAdjustItem.getInvAdjustLineItemId());
 			invAdjustBean.getInvAdjustItems().remove(rowId.intValue());
 			if (result) {
 				logger.info("The inventory adjustment item was deleted successfully");
@@ -398,39 +415,60 @@ public class ManageInvAdjustController {
 
 	private void saveInvAdjustment(InvAdjustBean invAdjustBean, Model model, Locale locale, Authentication authentication, String action) {
 
+		Boolean newStatus=Boolean.FALSE;
+		InvAdjustBean updatedInvAdjustBean;
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-		if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM))
+		if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM)) {
+			if(invAdjustBean.getInvAdjustId()==null) {
+				newStatus=Boolean.TRUE;
+			}
+			
 			this.updateBeanForNewAdjustment(invAdjustBean, userDetails, action);
-		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM))
-			this.updateBeanForApprovedAdjustment(invAdjustBean, userDetails);
+		}
+		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM)) {
+			this.updateBeanForApprovedAdjustment(invAdjustBean, userDetails);			
+		}
+
 
 		logger.info("The inventory adjustment values has been updated based on the operation type.");
 
 		StockAdjustment stockAdjustment = InventoryBeanTransformer.transformInvAdjustBeanWithItems(invAdjustBean);
 
 		BigInteger invAdjustId = null;
-		if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM))
-			invAdjustId = this.inventoryService.createStockAdjustment(stockAdjustment);
-		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM))
-			invAdjustId = this.inventoryService.approveStockAdjustment(stockAdjustment);
+		if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM)) {
+			stockAdjustment = this.inventoryService.createStockAdjustment(stockAdjustment);
+		}
+		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM)) {
+			stockAdjustment = this.inventoryService.approveStockAdjustment(stockAdjustment);			
+		}
+
 
 		logger.info("The inventory adjustment values has been saved/updated based on the operation in database.");
 
-		invAdjustBean.setInvAdjustId(invAdjustId);
+		updatedInvAdjustBean=InventoryBeanTransformer.transformStockAdjustmentDomainWithItems(stockAdjustment);
+		InventoryBeanTransformer.retainInvBucketQty(invAdjustBean, updatedInvAdjustBean);
+		invAdjustId=updatedInvAdjustBean.getInvAdjustId();
 
-		if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM))
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.inventory.add.success", new Object[] { invAdjustId }, locale));
-		else if (action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM))
+		if (action.equals(MVCConstants.SAVE_INV_ADJUST_PARAM)) {
+			if(newStatus) {
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.inventory.add.success", new Object[] { invAdjustId }, locale));
+			} else {
+				model.addAttribute(MVCConstants.SUCCESS,
+						messageSource.getMessage("commerce.screen.inventory.edit.save.success", new Object[] { invAdjustId }, locale));
+			}
+		}
+		else if (action.equals(MVCConstants.SAVE_EDIT_INV_ADJUST_PARAM)) {
 			model.addAttribute(MVCConstants.SUCCESS,
-					messageSource.getMessage("commerce.screen.inventory.edit.save.success", new Object[] { invAdjustId }, locale));
-		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM))
+					messageSource.getMessage("commerce.screen.inventory.edit.save.success", new Object[] { invAdjustId }, locale));			
+		}
+		else if (action.equals(MVCConstants.APPROVE_EDIT_INV_ADJUST_PARAM) || action.equals(MVCConstants.APPROVE_INV_ADJUST_PARAM)) {
 			model.addAttribute(MVCConstants.SUCCESS,
-					messageSource.getMessage("commerce.screen.inventory.approve.success", new Object[] { invAdjustId }, locale));
-
+					messageSource.getMessage("commerce.screen.inventory.approve.success", new Object[] { invAdjustId }, locale));			
+		}
 		logger.info("The inventory adjustment success messages are added in model objects based on the operations.");
 
-		this.updateInvAdjustmentBean(invAdjustBean, model);
+		this.updateInvAdjustmentBean(updatedInvAdjustBean, model);
 
 	}
 

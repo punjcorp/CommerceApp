@@ -35,11 +35,18 @@ public class Utils {
 		return Monetary.getCurrency(locale);
 	}
 
+
 	/**
 	 * Static method tester
 	 */
 	public static void main(String[] args) {
 		logger.info("password is {}", Utils.encodePassword("admin"));
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm:ss");
+		String formattedDate=LocalDateTime.now().format(formatter);
+		System.out.println("here is the output "+formattedDate);
+		LocalDateTime newDate=LocalDateTime.parse(formattedDate,formatter);
+		System.out.println("here is the new output "+newDate);
 
 	}
 

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class CustomConverterConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
+		registry.addFormatter(new LocalDateTimeFormatter());
 		registry.addConverter(new MonetaryAmountConverter());
 	}
 }

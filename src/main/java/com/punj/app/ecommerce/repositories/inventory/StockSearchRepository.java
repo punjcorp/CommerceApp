@@ -29,8 +29,7 @@ public class StockSearchRepository {
 	private EntityManager entityManager;
 
 	/**
-	 * A basic search for the entity User. The search is done by exact match per
-	 * keywords on fields name, city and email.
+	 * A basic search for the entity User. The search is done by exact match per keywords on fields name, city and email.
 	 * 
 	 * @param text
 	 *            The query text.
@@ -39,21 +38,17 @@ public class StockSearchRepository {
 
 		StockDTO stockDTO = new StockDTO();
 		// get the full text entity manager
-		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search
-				.getFullTextEntityManager(entityManager);
+		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
 
 		// create the query using Hibernate Search query DSL
-		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-				.forEntity(StockAdjustment.class).get();
+		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(StockAdjustment.class).get();
 
 		// a very basic query by keywords
-		org.apache.lucene.search.Query query = queryBuilder.keyword()
-				.onFields("stockAdjustId", "description", "createdBy")
-				.matching(text).createQuery();
+		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("stockAdjustId", "description", "createdBy", "stockAdjustItems.itemId",
+				"stockAdjustItems.stockReason.reasonCode", "stockAdjustItems.stockReason.name").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
-		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query,
-				StockAdjustment.class);
+		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, StockAdjustment.class);
 
 		jpaQuery.setFirstResult(pager.getStartCount());
 		jpaQuery.setMaxResults(pager.getPageSize());

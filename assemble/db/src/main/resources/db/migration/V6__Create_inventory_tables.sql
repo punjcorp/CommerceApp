@@ -89,67 +89,49 @@ CREATE INDEX `fk_stock_reason_code_stock_bucket2_idx` ON `commercedb`.`stock_rea
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_stock_journal`
+-- Table `commercedb`.`stock_adjustment`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_stock_journal` ;
+DROP TABLE IF EXISTS `commercedb`.`stock_adjustment` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_journal` (
-  `stock_journal_id` BIGINT NOT NULL AUTO_INCREMENT,
-  `item_id` BIGINT NOT NULL,
+CREATE TABLE IF NOT EXISTS `commercedb`.`stock_adjustment` (
+  `stock_adjust_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(150) NULL,
   `reason_code_id` INT NOT NULL,
-  `functionality` VARCHAR(45) NOT NULL,
-  `qty` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
+  `status` VARCHAR(1) NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
-  PRIMARY KEY (`stock_journal_id`),
-  CONSTRAINT `fk_stock_journal_stock_reason_code1`
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`stock_adjust_id`),
+  CONSTRAINT `fk_stock_adjustment_stock_reason_code1`
     FOREIGN KEY (`reason_code_id`)
     REFERENCES `commercedb`.`stock_reason_code` (`reason_code_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_stock_journal_item1`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
-    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_stock_journal_stock_reason_code1_idx` ON `commercedb`.`item_stock_journal` (`reason_code_id` ASC);
-
-CREATE INDEX `fk_stock_journal_item1_idx` ON `commercedb`.`item_stock_journal` (`item_id` ASC);
+CREATE INDEX `fk_stock_adjustment_stock_reason_code1_idx` ON `commercedb`.`stock_adjustment` (`reason_code_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_stock_details`
+-- Table `commercedb`.`stock_adjustment_items`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_stock_details` ;
+DROP TABLE IF EXISTS `commercedb`.`stock_adjustment_items` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_details` (
+CREATE TABLE IF NOT EXISTS `commercedb`.`stock_adjustment_items` (
+  `stock_adjust_li_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `stock_adjust_id` BIGINT NOT NULL,
+  `reason_code_id` INT NOT NULL,
   `item_id` BIGINT NOT NULL,
-  `location_id` INT(4) NOT NULL,
-  `stock_bucket_id` INT NOT NULL,
-  `total_qty` INT NOT NULL,
-  PRIMARY KEY (`item_id`, `location_id`, `stock_bucket_id`),
-  CONSTRAINT `fk_item_stock_details_item_stock1`
-    FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item_stock` (`item_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_item_stock_details_stock_bucket1`
-    FOREIGN KEY (`stock_bucket_id`)
-    REFERENCES `commercedb`.`stock_bucket` (`stock_bucket_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_item_stock_details_location1`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
+  `qty` INT NOT NULL,
+  PRIMARY KEY (`stock_adjust_li_id`),
+  CONSTRAINT `fk_stock_adjustment_items_stock_adjustment1`
+    FOREIGN KEY (`stock_adjust_id`)
+    REFERENCES `commercedb`.`stock_adjustment` (`stock_adjust_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_item_stock_details_stock_bucket1_idx` ON `commercedb`.`item_stock_details` (`stock_bucket_id` ASC);
-
-CREATE INDEX `fk_item_stock_details_location1_idx` ON `commercedb`.`item_stock_details` (`location_id` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

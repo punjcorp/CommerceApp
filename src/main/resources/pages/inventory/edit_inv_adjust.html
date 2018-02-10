@@ -104,7 +104,8 @@
 										<div class="col-3">
 											<div class="form-group">
 												<div class="input-group">
-													<input type="hidden" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].invAdjustId}"></input> <input type="text"
+													<input type="hidden" th:field="*{invAdjustItems[__${itrStat.index}__].invAdjustLineItemId}"></input><input type="hidden"
+														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].invAdjustId}"></input> <input type="text"
 														th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}" class="form-control input-sm"
 														th:placeholder="#{commerce.screen.order.item}" th:onchange="'updatechangeIndex('+${itrStat.index}+');'" maxlength="150"></input><a
 														data-toggle="modal" data-target="#itemModal" class="nav-link" href="#" th:onclick="'setIndex('+${itrStat.index}+');'"><i
@@ -121,8 +122,7 @@
 													<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.reason}"></option>
 													<option th:each="reasonCode : ${invAdjustBean.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="#{${reasonCode.name}}"></option>
 												</select> <small th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].reasonCodeId')}"
-													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}" class="text-danger">Reason Code
-													Error </small>
+													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].reasonCodeId}" class="text-danger">Reason Code Error </small>
 											</div>
 										</div>
 										<div class="col-2">
@@ -135,14 +135,16 @@
 										</div>
 										<div class="col">
 											<div class="form-group">
-												<input type="text" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}" class="form-control input-sm"
-													disabled="disabled"></input>
+												<input type="hidden" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></input> <span
+													th:id="'invAdjustItems'+${itrStat.index}+'.span.fromAvailable'"
+													th:text="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></span>
 											</div>
 										</div>
 										<div class="col">
 											<div class="form-group">
-												<input type="text" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}" class="form-control input-sm"
-													disabled="disabled"></input>
+												<input type="hidden" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></input> <span
+													th:id="'invAdjustItems'+${itrStat.index}+'.span.fromAvailable'"
+													th:text="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></span>
 											</div>
 										</div>
 										<div class="col-2">
@@ -162,8 +164,8 @@
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<input type="submit" name="saveEditedInvAdjust" value="Save" th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm"></input> <input
-											type="submit" name="approveEditedInvAdjust" value="Approve" th:value="#{commerce.screen.btn.submit.approve}"
+										<input type="submit" name="saveEditedInvAdjust" value="Save" th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm"></input>
+										<input type="submit" name="approveEditedInvAdjust" value="Approve" th:value="#{commerce.screen.btn.submit.approve}"
 											class="btn btn-success btn-sm"></input> <a th:if="${invAdjustBean.invAdjustId!=null}"
 											th:href="@{/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}" href="../inventory/inv_adjust.html"
 											class="btn btn-secondary btn-sm" target="_blank"><span th:text="#{commerce.screen.actions.print}">Print</span></a>

@@ -12,6 +12,7 @@ import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 @Table(name = "item_attributes")
 public class ItemAttribute implements Serializable {
 
+	private static final long serialVersionUID = 2244295488976495753L;
 	@EmbeddedId
 	private ItemAttributeId itemAttributeId;
 

@@ -27,19 +27,19 @@ public interface InventoryService {
 
 	public List<StockReason> listAllReasonCodes();
 
-	public BigInteger createStockAdjustment(StockAdjustment stockAdjustment);
+	public StockAdjustment createStockAdjustment(StockAdjustment stockAdjustment);
 
 	public List<StockAdjustment> saveStockAdjustmentsDesc(List<StockAdjustment> stockAdjustments);
 	
 	public List<StockAdjustment> approveStockAdjustments(List<StockAdjustment> stockAdjustments);
 
-	public BigInteger approveStockAdjustment(StockAdjustment stockAdjustment);
+	public StockAdjustment approveStockAdjustment(StockAdjustment stockAdjustment);
 
 	public Boolean approveStockAdjustment(BigInteger stockAdjustmentId);
 
 	public Boolean deleteStockAdjustment(BigInteger stockAdjustmentId);
 
-	public Boolean deleteStockAdjustmentItem(BigInteger stockAdjustmentId, BigInteger itemId, Integer reasonCodeId);
+	public Boolean deleteStockAdjustmentItem(BigInteger invAdjustLineItemId);
 
 	public StockAdjustment searchStockAdjustment(BigInteger stockAdjustmentId);
 

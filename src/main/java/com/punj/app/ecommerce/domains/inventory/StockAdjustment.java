@@ -50,8 +50,8 @@ public class StockAdjustment implements Serializable {
 	private String description;
 	private String status;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "reason_code_id", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "reason_code_id")
 	private StockReason stockReason;
 
 	@Field
@@ -66,7 +66,7 @@ public class StockAdjustment implements Serializable {
 	private LocalDateTime modifiedDate;
 
 	@IndexedEmbedded
-	@OneToMany(mappedBy = "stockAdjustmentItemId.stockAdjustment", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "stockAdjustment", cascade = CascadeType.ALL)
 	private List<StockAdjustmentItem> stockAdjustItems;
 
 	/**

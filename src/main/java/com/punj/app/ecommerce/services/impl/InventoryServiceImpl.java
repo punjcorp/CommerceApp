@@ -33,7 +33,6 @@ import com.punj.app.ecommerce.domains.inventory.StockDTO;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.inventory.ids.ItemStockBucketId;
 import com.punj.app.ecommerce.domains.inventory.ids.ItemStockId;
-import com.punj.app.ecommerce.domains.inventory.ids.StockAdjustmentItemId;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.inventory.ItemStockBucketRepository;
@@ -400,21 +399,18 @@ public class InventoryServiceImpl implements InventoryService {
 	}
 
 	@Override
-	public BigInteger createStockAdjustment(StockAdjustment stockAdjustment) {
+	public StockAdjustment createStockAdjustment(StockAdjustment stockAdjustment) {
 		stockAdjustment = this.stockAdjustmentRepository.save(stockAdjustment);
-		logger.info("The stock adjustment was created successfully");
-
-		BigInteger stockAdjustmentId = null;
 		if (stockAdjustment != null) {
-			stockAdjustmentId = stockAdjustment.getStockAdjustId();
-			logger.debug("The stock adjustment id is -> {} <-", stockAdjustmentId);
+			logger.info("The stock adjustment was created successfully");
+			logger.debug("The stock adjustment id is -> {} <-", stockAdjustment.getStockAdjustId());
 		}
-		return stockAdjustmentId;
+		return stockAdjustment;
 	}
 
 	@Override
 	public void deleteStockAdjustments(List<BigInteger> stockAdjustmentIds) {
-		
+
 		for (BigInteger stockAdjustmentId : stockAdjustmentIds) {
 			this.stockAdjustmentRepository.delete(stockAdjustmentId);
 			logger.debug("The stock adjustment id -> {} <- was deleted", stockAdjustmentId);
@@ -430,20 +426,18 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	@Transactional
-	public BigInteger approveStockAdjustment(StockAdjustment stockAdjustment) {
+	public StockAdjustment approveStockAdjustment(StockAdjustment stockAdjustment) {
 		stockAdjustment = this.stockAdjustmentRepository.save(stockAdjustment);
 		logger.info("The stock adjustment was approved successfully");
 
-		BigInteger stockAdjustmentId = null;
 		if (stockAdjustment != null) {
-			stockAdjustmentId = stockAdjustment.getStockAdjustId();
-			logger.debug("The stock adjustment id is -> {} <-", stockAdjustmentId);
+			logger.debug("The stock adjustment id is -> {} <-", stockAdjustment.getStockAdjustId());
 
 			List<ItemStockJournal> inventoryDetails = this.createStockDetails(stockAdjustment, stockAdjustment.getCreatedBy());
 			this.updateInventory(inventoryDetails);
-
 		}
-		return stockAdjustmentId;
+		
+		return stockAdjustment;
 	}
 
 	private List<ItemStockJournal> createStockDetails(StockAdjustment stockAdjustment, String username) {
@@ -461,11 +455,11 @@ public class InventoryServiceImpl implements InventoryService {
 			itemStockJournal.setLocationId(stockAdjustment.getLocationId());
 
 			item = new Item();
-			item.setItemId(stockAdjustmentItem.getStockAdjustmentItemId().getItemId());
+			item.setItemId(stockAdjustmentItem.getItemId());
 			itemStockJournal.setItemId(item.getItemId());
 
 			StockReason stockReason = new StockReason();
-			stockReason.setReasonCodeId(stockAdjustmentItem.getStockAdjustmentItemId().getStockReason().getReasonCodeId());
+			stockReason.setReasonCodeId(stockAdjustmentItem.getStockReason().getReasonCodeId());
 			itemStockJournal.setReasonCode(stockReason);
 
 			itemStockJournal.setFunctionality(ServiceConstants.STOCK_ADJUSTMENT_FUNCTIONALITY);
@@ -568,19 +562,8 @@ public class InventoryServiceImpl implements InventoryService {
 	}
 
 	@Override
-	public Boolean deleteStockAdjustmentItem(BigInteger stockAdjustmentId, BigInteger itemId, Integer reasonCodeId) {
-
-		StockAdjustment stockAdjustment = new StockAdjustment();
-		stockAdjustment.setStockAdjustId(stockAdjustmentId);
-
-		StockAdjustmentItemId stockAdjustmentItemId = new StockAdjustmentItemId();
-		stockAdjustmentItemId.setStockAdjustment(stockAdjustment);
-		stockAdjustmentItemId.setItemId(itemId);
-		StockReason stockReason = new StockReason();
-		stockReason.setReasonCodeId(reasonCodeId);
-		stockAdjustmentItemId.setStockReason(stockReason);
-
-		this.stockAdjustmentItemRepository.delete(stockAdjustmentItemId);
+	public Boolean deleteStockAdjustmentItem(BigInteger invAdjustLineItemId) {
+		this.stockAdjustmentItemRepository.delete(invAdjustLineItemId);
 		logger.info("The Stock Adjustment Item has been deleted successfully");
 		return Boolean.TRUE;
 	}
@@ -648,11 +631,11 @@ public class InventoryServiceImpl implements InventoryService {
 
 		for (StockAdjustmentItem stockAdjustmentItem : stockAdjustmentItems) {
 
-			itemStock = this.searchItemStock(stockAdjustmentItem.getStockAdjustmentItemId().getItemId(), stockAdjustment.getLocationId());
+			itemStock = this.searchItemStock(stockAdjustmentItem.getItemId(), stockAdjustment.getLocationId());
 
 			stockAdjustmentItemDTO = new StockAdjustmentItemDTO();
 			stockAdjustmentItemDTO.setStockAdjustmentItem(stockAdjustmentItem);
-			stockReason = stockAdjustmentItem.getStockAdjustmentItemId().getStockReason();
+			stockReason = stockAdjustmentItem.getStockReason();
 
 			stockBucket = stockReason.getFromBucket();
 			this.setInventoryBucketDetails(stockAdjustmentItemDTO, stockBucket, itemStock, ServiceConstants.STOCK_FROM_BUCKET_IND);
@@ -707,7 +690,7 @@ public class InventoryServiceImpl implements InventoryService {
 		StockAdjustment stockAdjustmentUpdated;
 		for (StockAdjustment stockAdjustment : stockAdjustments) {
 			stockAdjustmentUpdated = this.stockAdjustmentRepository.findOne(stockAdjustment.getStockAdjustId());
-			if(stockAdjustmentUpdated!=null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+			if (stockAdjustmentUpdated != null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
 				stockAdjustmentUpdated.setDescription(stockAdjustment.getDescription());
 				stockAdjustmentUpdated.setModifiedBy(stockAdjustment.getModifiedBy());
 				stockAdjustmentUpdated.setModifiedDate(stockAdjustment.getModifiedDate());
@@ -719,14 +702,14 @@ public class InventoryServiceImpl implements InventoryService {
 		logger.info("The Stock Adjustments List has been saved as provided for Description changes");
 		return finalStockAdjustmentList;
 	}
-	
+
 	@Override
 	public List<StockAdjustment> approveStockAdjustments(List<StockAdjustment> stockAdjustments) {
 		List<StockAdjustment> finalStockAdjustmentList = new ArrayList<>(stockAdjustments.size());
 		StockAdjustment stockAdjustmentUpdated;
 		for (StockAdjustment stockAdjustment : stockAdjustments) {
 			stockAdjustmentUpdated = this.stockAdjustmentRepository.findOne(stockAdjustment.getStockAdjustId());
-			if(stockAdjustmentUpdated!=null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+			if (stockAdjustmentUpdated != null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
 				stockAdjustmentUpdated.setStatus(ServiceConstants.STOCK_ADJUSTMENT_STATUS_APPROVED);
 				stockAdjustmentUpdated.setModifiedBy(stockAdjustment.getModifiedBy());
 				stockAdjustmentUpdated.setModifiedDate(stockAdjustment.getModifiedDate());
@@ -737,6 +720,6 @@ public class InventoryServiceImpl implements InventoryService {
 		finalStockAdjustmentList = this.stockAdjustmentRepository.save(finalStockAdjustmentList);
 		logger.info("The Stock Adjustments List has been approved as filtered based on existing status");
 		return finalStockAdjustmentList;
-	}	
+	}
 
 }

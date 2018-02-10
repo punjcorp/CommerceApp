@@ -721,6 +721,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_journal` (
   `stock_journal_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
   `reason_code_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
   `functionality` VARCHAR(45) NOT NULL,
   `qty` INT NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
@@ -735,12 +736,19 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_stock_journal` (
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_item_stock_journal_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_stock_journal_stock_reason_code1_idx` ON `commercedb`.`item_stock_journal` (`reason_code_id` ASC);
 
 CREATE INDEX `fk_stock_journal_item1_idx` ON `commercedb`.`item_stock_journal` (`item_id` ASC);
+
+CREATE INDEX `fk_item_stock_journal_location1_idx` ON `commercedb`.`item_stock_journal` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -794,7 +802,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`item_price_id`, `location_id`),
+  PRIMARY KEY (`item_price_id`),
   CONSTRAINT `fk_item_price_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
@@ -819,6 +827,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_price_history` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `item_price_id` BIGINT NOT NULL,
+  `archived_date` DATETIME NOT NULL,
   `item_id` BIGINT NOT NULL,
   `location_id` INT(4) NOT NULL,
   `price_change_type` VARCHAR(5) NOT NULL,
@@ -830,8 +839,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  `archived_date` DATETIME NOT NULL,
-  PRIMARY KEY (`item_price_id`, `location_id`, `item_id`, `archived_date`),
+  PRIMARY KEY (`item_price_id`, `archived_date`),
   CONSTRAINT `fk_item_price_history_location1`
     FOREIGN KEY (`location_id`)
     REFERENCES `commercedb`.`location` (`location_id`)
@@ -1189,7 +1197,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_item` (
   `net_amount` DECIMAL(12,2) NULL,
   `gross_amount` DECIMAL(12,2) NULL,
   `returned_qty` INT(5) NULL,
-  `upc_no` BIGINT NULL,
+  `upc_no` VARCHAR(20) NULL,
   `txn_type` VARCHAR(20) NULL,
   `inv_action_code` VARCHAR(20) NULL,
   `org_location_id` INT(4) NULL,
@@ -1561,6 +1569,52 @@ CREATE INDEX `fk_txn_tender_control_txn_master1_idx` ON `commercedb`.`txn_tender
 CREATE INDEX `fk_txn_tender_control_location_repository1_idx` ON `commercedb`.`txn_tender_control` (`from_repository_id` ASC);
 
 CREATE INDEX `fk_txn_tender_control_location_repository2_idx` ON `commercedb`.`txn_tender_control` (`to_repository_id` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`stock_adjustment`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`stock_adjustment` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`stock_adjustment` (
+  `stock_adjust_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(150) NULL,
+  `reason_code_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
+  `status` VARCHAR(1) NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`stock_adjust_id`),
+  CONSTRAINT `fk_stock_adjustment_stock_reason_code1`
+    FOREIGN KEY (`reason_code_id`)
+    REFERENCES `commercedb`.`stock_reason_code` (`reason_code_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_stock_adjustment_stock_reason_code1_idx` ON `commercedb`.`stock_adjustment` (`reason_code_id` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`stock_adjustment_items`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`stock_adjustment_items` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`stock_adjustment_items` (
+  `stock_adjust_li_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `stock_adjust_id` BIGINT NOT NULL,
+  `reason_code_id` INT NOT NULL,
+  `item_id` BIGINT NOT NULL,
+  `qty` INT NOT NULL,
+  PRIMARY KEY (`stock_adjust_li_id`),
+  CONSTRAINT `fk_stock_adjustment_items_stock_adjustment1`
+    FOREIGN KEY (`stock_adjust_id`)
+    REFERENCES `commercedb`.`stock_adjustment` (`stock_adjust_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

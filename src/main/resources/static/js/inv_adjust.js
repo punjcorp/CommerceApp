@@ -119,7 +119,11 @@ function processInventoryDetails(res, changedIndex) {
 	var result = res;
 	$('#invAdjustItems' + changedIndex + '\\.fromAvailable').val(
 			result.fromBucketQty);
+	$('#invAdjustItems' + changedIndex + '\\.span\\.fromAvailable').text(
+			result.fromBucketQty);	
 	$('#invAdjustItems' + changedIndex + '\\.toAvailable').val(
+			result.toBucketQty);
+	$('#invAdjustItems' + changedIndex + '\\.span\\.toAvailable').text(
 			result.toBucketQty);
 }
 
