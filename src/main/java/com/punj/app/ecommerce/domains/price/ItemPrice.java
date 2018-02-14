@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.item.Item;
 
 @Entity
@@ -50,9 +49,8 @@ public class ItemPrice implements Serializable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
-	@ManyToOne
-	@JoinColumn(name = "location_id")
-	private Location location;
+	@Column(name = "location_id")
+	private Integer locationId;
 
 	@ManyToOne
 	@JoinColumn(name = "item_id")
@@ -209,21 +207,6 @@ public class ItemPrice implements Serializable {
 	}
 
 	/**
-	 * @return the location
-	 */
-	public Location getLocation() {
-		return location;
-	}
-
-	/**
-	 * @param location
-	 *            the location to set
-	 */
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	/**
 	 * @return the item
 	 */
 	public Item getItem() {
@@ -236,6 +219,21 @@ public class ItemPrice implements Serializable {
 	 */
 	public void setItem(Item item) {
 		this.item = item;
+	}
+
+	/**
+	 * @return the locationId
+	 */
+	public Integer getLocationId() {
+		return locationId;
+	}
+
+	/**
+	 * @param locationId
+	 *            the locationId to set
+	 */
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 	/*

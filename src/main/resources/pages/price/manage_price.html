@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.price.manage.title}">Style/Item Price Management Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<th:block th:replace="common/header:: header"></th:block>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card content-container">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.price.search}">Search Style/Item Price</h3>
+				</div>
+				<div class="card-body">
+					<form class="form" id="manageForm" action="#" th:action="@{/manage_price}" th:object="${priceBeanDTO}" method="post">
+						<!-- SEARCH SECTION FOR PRICE STARTS -->
+						<div class="card-text">
+							<div class="row">
+								<div class="col-4">
+									<div class="form-group text-left">
+										<label for="itemId"><small><span th:text="#{commerce.screen.common.style.item}"></span></small></label>
+										<div class="input-group text-left">
+											<input type="text" th:field="*{itemId}" class="form-control input-sm"></input> <a data-toggle="modal" data-target="#itemModal"
+												class="nav-link" href="#"><i class="material-icons">search</i></a>
+										</div>
+										<small th:if="${#fields.hasErrors('itemId')}" th:errors="*{itemId}" class="text-danger align-top">Item Error </small>
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="form-group text-left">
+										<label for="locationId"><small><span th:text="#{commerce.screen.common.location}"></span></small></label>
+										<div class="input-group text-left">
+											<select th:field="*{locationId}" class="form-control input-sm">
+												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.common.select.all}">All</option>
+												<option th:each="location: ${priceBeanDTO.locations}" th:value="${location.locationId}"
+													th:text="${location.locationId} + ' - ' +${location.name}"></option>
+											</select>
+										</div>
+										<small th:if="${#fields.hasErrors('locationId')}" th:errors="*{locationId}" class="text-danger align-top">Location Error </small>
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="form-group text-left">
+										<label for="type"><small><span th:text="#{commerce.screen.price.type}">Price Type</span></small></label>
+										<div class="input-group text-left">
+											<select th:field="*{priceType}" class="form-control input-sm">
+												<option class="form-text text-muted" value="0" selected="selected" th:text="#{commerce.screen.common.select.all}">All</option>
+												<option value="1" th:text="#{commerce.screen.price.type.permanent}">Permanent</option>
+												<option value="2" th:text="#{commerce.screen.price.type.promotion}">Promotion</option>
+												<option value="3" th:text="#{commerce.screen.price.type.clearance}">Clearance</option>
+											</select>
+										</div>
+										<small th:if="${#fields.hasErrors('priceType')}" th:errors="*{priceType}" class="text-danger align-top">Price Type Error </small>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group text-left">
+										<div class="input-group">
+											<input type="button" th:onclick="'submitForm(\'/manage_price?search=\')'" id="btnSearch" value="Search"
+												th:value="#{commerce.screen.btn.search}" class="btn btn-info btn-sm"></input> <a
+												th:if="${priceBeanDTO==null or priceBeanDTO.priceBeans==null or #lists.size(priceBeanDTO.priceBeans)&lt;1}" href="add_price.html"
+												th:href="@{/add_price}" class="btn btn-success btn-sm"> <span th:text="#{commerce.screen.btn.submit.add.price}">New Price</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- SEARCH SECTION FOR PRICE ENDS -->
+						<!-- SEARCH RESULT SECTION STARTS -->
+						<div class="card-text">
+							<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+							<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						</div>
+						<!-- SEARCH RESULT SECTION ENDS -->
+						<!-- SEARCH RESULT LISTING SECTION STARTS -->
+						<div class="card-text" th:if="${priceBeanDTO!=null and priceBeanDTO.priceBeans!=null and #lists.size(priceBeanDTO.priceBeans)&gt;0}">
+							<div class="row">
+								<div class="col-12 text-right">
+									<!-- This thymeleaf fragment is the body part for the page-->
+									<th:block th:include="common/display :: pagination"></th:block>
+								</div>
+							</div>
+							<table class="table table-striped table-hover table-bordered">
+								<thead class="thead-light">
+									<tr>
+										<th scope="col" th:text="#{commerce.screen.common.id}">Select</th>
+										<th scope="col" th:text="#{commerce.screen.common.style.item}">Style/Item</th>
+										<th scope="col" th:text="#{commerce.screen.common.location}">Location</th>
+										<th scope="col" th:text="#{commerce.screen.price.type}">Price Type</th>
+										<th scope="col" th:text="#{commerce.screen.common.date.start}">Start Date</th>
+										<th scope="col" th:text="#{commerce.screen.common.date.end}">Start Date</th>
+										<th scope="col" th:text="#{commerce.screen.price.item.price}">Item Price</th>
+										<th scope="col" th:text="#{commerce.screen.price.type}">Price Type</th>
+										<th scope="col" th:text="#{commerce.screen.common.created.date}">Created Date</th>
+										<th scope="col" th:text="#{commerce.screen.actions}">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="priceBean,itrStat:${priceBeanDTO.priceBeans}">
+										<tr>
+											<td><input type="checkbox" th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'" class="form-control input-sm rdChkId"
+												th:field="*{itemPriceIds}" th:value="${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId}+'_'+${itrStat.index}"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].itemId}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].locationId}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].priceType}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].startDate}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].endDate}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceAmt}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].status}"
+												disabled="disabled"></input></td>
+											<td><input type="text" class="form-control form-control-sm" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].createdDate}"
+												disabled="disabled"></input>
+												<input type="hidden" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].createdBy}"></input>
+												</td>
+											<td>
+												<div class="btn-group" th:if="${priceBeanDTO.priceBeans[__${itrStat.index}__].status=='C'}">
+													<a th:href="@{/edit_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/edit_price.html"
+														class="btn btn-info btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
+														th:href="@{/approve_price(itemPriceIdId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}"
+														href="../price/manage_price.html" class="btn btn-success btn-sm"><span th:text="#{commerce.screen.actions.approve}">Approve</span></a> <a
+														th:href="@{/delete_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
+														class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a>
+												</div>
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+							<div class="row">
+								<div class="col-4">
+									<div class="form-group">
+										<a th:href="'javascript:selectAll()'" href="#" class="badge badge-secondary"><span th:text="#{commerce.screen.actions.selectall}">Select
+												All</span></a> <a th:href="'javascript:deselectAll()'" href="#" class="badge badge-secondary"><span
+											th:text="#{commerce.screen.actions.deselectall}">Deselect All</span></a>
+									</div>
+								</div>
+								<div class="col-8 text-right">
+									<!-- This thymeleaf fragment is the body part for the page-->
+									<th:block th:include="common/display :: pagination"></th:block>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-8">
+									<div class="form-group">
+										<input type="button" th:onclick="'submitForm(\'/bulk_price?save=\')'" id="btnSave" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
+											type="button" th:onclick="'submitForm(\'/bulk_price?approve=\')'" id="btnApprove" value="Approve"
+											th:value="#{commerce.screen.btn.submit.approve}" class="btn btn-success btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
+											type="button" th:onclick="'submitForm(\'/bulk_price?delete=\')'" id="btnDelete" value="Delete"
+											th:value="#{commerce.screen.btn.submit.delete}" class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <a
+											href="../price/add_price.html" th:href="@{/add_price}" class="btn btn-info btn-sm"><span
+											th:text="#{commerce.screen.btn.submit.add.price}">New Price</span></a>
+									</div>
+								</div>
+							</div>
+							<div class="row text-left">
+								<div class="col-4">
+									<small id="btnActions" class="form-text text-muted" th:text="#{commerce.screen.search.action.bulk}">Please select records for the
+										actions</small>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<!-- Item Lookup Modal -->
+	<div class="modal fade " id="itemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.lookup.item}"> Item Look up</span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- This thymeleaf fragment include the item lookup code-->
+					<div th:include="lookup/item_lookup :: itemlookup-screen"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" value="Close" th:value="#{commerce.btn.close}">Close</button>
+					<button type="button" id="itemChooseBtn" class="btn btn-primary" value="Choose This Supplier" th:value="#{commerce.btn.choose.item}">Choose
+						This Item</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+$(function() {
+	$('#itemChooseBtn').click(function(e) {
+		$('#itemModal').modal('toggle');
+		var rdItem = $('input[name="rditemId"]');
+		var checkValue = rdItem.filter(':checked').val();
+		$('#itemId').val(checkValue);
+	});
+
+});		
+		
+		/*]]>*/
+	</script>
+	<script th:inline="javascript" th:if="${priceBeanDTO!=null and priceBeanDTO.priceBeans!=null}">
+	/*<![CDATA[*/
+	
+	    var totalRecords = [[${#lists.size(priceBeanDTO.priceBeans)}]];
+	
+	/*]]>*/
+	</script>
+	<script>
+	
+	
+
+		var cbCounter = 0;
+
+		function selectAll() {
+
+			$(".rdChkId").prop('checked', true);
+
+			$("[id^=priceBeans]").each(function() {
+				var indexRd=this.id.replace(/[^0-9]/gi, '');
+				var statusVal=$("#priceBeans"+indexRd+"\\.status").val();
+			    if(statusVal=='C'){
+				    if(this.id.indexOf("startDate") >= 0){
+				    	$(this).removeAttr("disabled");
+				    }
+				    if(this.id.indexOf("endDate") >= 0){
+				    	$(this).removeAttr("disabled");
+				    }
+				    if(this.id.indexOf("itemPriceAmt") >= 0){
+				    	$(this).removeAttr("disabled");
+				    }			    
+			    }
+			});
+			
+			$("#btnApprove").removeAttr("disabled");
+			$("#btnDelete").removeAttr("disabled");
+			$("#btnSave").removeAttr("disabled");
+			cbCounter = totalRecords;
+
+		}
+
+		function deselectAll() {
+
+			$(".rdChkId").prop('checked', false);
+			$("[id^=priceBeans]").each(function() {
+			    if(this.id.indexOf("startDate") >= 0){			
+					$(this).attr("disabled", "disabled");
+			    }
+			    if(this.id.indexOf("endDate") >= 0){			
+					$(this).attr("disabled", "disabled");
+			    }
+			    if(this.id.indexOf("itemPriceAmt") >= 0){			
+					$(this).attr("disabled", "disabled");
+			    }			    
+			});
+			$("#btnApprove").attr("disabled", "disabled");
+			$("#btnDelete").attr("disabled", "disabled");
+			$("#btnSave").attr("disabled", "disabled");
+			
+			cbCounter = 0;
+
+		}
+
+		function submitForm(action) {
+			
+			if(action.indexOf("delete=") >= 0 || action.indexOf("approve=") >= 0){
+				$("[id^=priceBeans]").each(function() {
+				    	$(this).removeAttr("disabled");
+				});
+			}
+
+			$("#manageForm").attr("action", action);
+			$('#manageForm').submit();
+		}
+
+		function selectFunc(index, cb) {
+			if (cb.checked) {
+				$("#priceBeans" + index + "\\.startDate").removeAttr("disabled");
+				$("#priceBeans" + index + "\\.endDate").removeAttr("disabled");
+				$("#priceBeans" + index + "\\.itemPriceAmt").removeAttr("disabled");
+				if (cbCounter == 0) {
+					$("#btnApprove").removeAttr("disabled");
+					$("#btnDelete").removeAttr("disabled");
+					$("#btnSave").removeAttr("disabled");
+				}
+				cbCounter++;
+			} else {
+				$("#priceBeans" + index + "\\.startDate")
+						.attr("disabled", "disabled");
+				$("#priceBeans" + index + "\\.endDate")
+				.attr("disabled", "disabled");
+				$("#priceBeans" + index + "\\.itemPriceAmt")
+				.attr("disabled", "disabled");				
+				if (cbCounter == 1 || cbCounter == 0) {
+					$("#btnApprove").attr("disabled", "disabled");
+					$("#btnDelete").attr("disabled", "disabled");
+					$("#btnSave").attr("disabled", "disabled");
+				}
+				cbCounter--;
+			}
+		}
+	</script>
+</body>
+</html>

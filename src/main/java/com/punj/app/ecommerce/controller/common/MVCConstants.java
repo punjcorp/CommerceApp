@@ -83,6 +83,8 @@ public final class MVCConstants {
 	public static final String SEARCH_BEAN= "searchBean";
 	public static final String COLOR_LIST_BEAN="colorList";
 	public static final String SIZE_LIST_BEAN="sizeList";
+	public static final String PRICE_BEAN="priceBean";
+	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	
 	public static final String ADD_SUPPLIER_ADDRESS_PARAM= "addSupplierAddress";
 	public static final String REMOVE_SUPPLIER_ADDRESS_PARAM= "removeSupplierAddress";
@@ -91,8 +93,10 @@ public final class MVCConstants {
 	public static final String SAVE_SUPPLIERS_PARAM= "saveSuppliers";
 	public static final String DELETE_SUPPLIERS_PARAM="deleteSuppliers";
 	
-	
-	
+	public static final String SEARCH_PARAM= "search";
+	public static final String APPROVE_PARAM= "approve";
+	public static final String SAVE_PARAM= "save";
+	public static final String DELETE_PARAM= "delete";
 	public static final String ADD_INV_ADJUST_ITEM_PARAM= "addInvAdjustItem";
 	public static final String REMOVE_INV_ADJUST_ITEM_PARAM= "removeInvAdjustItem";
 	public static final String SAVE_INV_ADJUST_PARAM= "saveInvAdjust";
@@ -114,5 +118,11 @@ public final class MVCConstants {
 	
 	public static final String INV_ADJUSTMENT_REPORT="/reports/inventory/list/inv_adjustments.jrxml";
 	public static final String INV_ADJUSTMENT_ITEMS_REPORT="/reports/inventory/list/inv_adjustment_items.jrxml";	
-	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";	
+	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";
+	
+	
+	public static final String SAVE_PRICE_PARAM= "savePrice";
+	public static final String APPROVE_PRICE_PARAM= "approvePrice";
+	
+	
 }

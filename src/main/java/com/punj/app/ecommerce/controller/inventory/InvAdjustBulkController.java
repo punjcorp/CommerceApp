@@ -34,7 +34,6 @@ import com.punj.app.ecommerce.domains.inventory.StockAdjustment;
 import com.punj.app.ecommerce.models.inventory.InvAdjustBean;
 import com.punj.app.ecommerce.models.inventory.InvAdjustBeanDTO;
 import com.punj.app.ecommerce.services.InventoryService;
-import com.punj.app.ecommerce.services.common.CommonService;
 
 /**
  * @author admin
@@ -45,7 +44,6 @@ import com.punj.app.ecommerce.services.common.CommonService;
 public class InvAdjustBulkController {
 	private static final Logger logger = LogManager.getLogger();
 	private InventoryService inventoryService;
-	private CommonService commonService;
 	private MessageSource messageSource;
 
 	/**
@@ -55,15 +53,6 @@ public class InvAdjustBulkController {
 	@Autowired
 	public void setInventoryService(InventoryService inventoryService) {
 		this.inventoryService = inventoryService;
-	}
-
-	/**
-	 * @param commonService
-	 *            the commonService to set
-	 */
-	@Autowired
-	public void setCommonService(CommonService commonService) {
-		this.commonService = commonService;
 	}
 
 	/**
@@ -98,7 +87,7 @@ public class InvAdjustBulkController {
 					invAdjustBean.setInvAdjustId(id);
 					finalInvAdjustBeans.add(invAdjustBean);
 				}
-				logger.info("The selected list of inventory adjustments has been filtered for processing");
+				logger.info("The selected list of inventory adjustments has been finalized for processing");
 
 				List<StockAdjustment> stockAdjustmentList = InventoryBeanTransformer.transformInvAdjustmentList(finalInvAdjustBeans, username);
 

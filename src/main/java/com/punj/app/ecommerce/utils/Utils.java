@@ -40,7 +40,7 @@ public class Utils {
 	 * Static method tester
 	 */
 	public static void main(String[] args) {
-		logger.info("password is {}", Utils.encodePassword("admin"));
+		logger.info("password is {}", Utils.encodePassword("cashier"));
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm:ss");
 		String formattedDate=LocalDateTime.now().format(formatter);

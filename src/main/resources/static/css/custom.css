@@ -414,6 +414,17 @@ a[href*="#lookup"]::before {
 a[id="lookupitem"]::before {
 	content: "queue" !important;
 }
+a[href*="#price"]::before {
+	content: "monetization_on" !important;
+	font-size: 48px;
+}
+a[id="manageprice"]::before {
+	content: "store" !important;
+}
+
+a[id="addprice"]::before {
+	content: "attach_money" !important;
+}
 
 a[href*="#inventory"]::before {
 	content: "swap_horiz" !important;

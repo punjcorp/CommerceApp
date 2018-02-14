@@ -523,8 +523,8 @@ public class InventoryServiceImpl implements InventoryService {
 		Boolean result = Boolean.FALSE;
 		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
 		if (stockAdjustment != null && !StringUtils.isEmpty(stockAdjustment.getStatus())
-				&& stockAdjustment.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
-			stockAdjustment.setStatus(ServiceConstants.STOCK_ADJUSTMENT_STATUS_APPROVED);
+				&& stockAdjustment.getStatus().equals(ServiceConstants.STATUS_CREATED)) {
+			stockAdjustment.setStatus(ServiceConstants.STATUS_APPROVED);
 			stockAdjustment = this.stockAdjustmentRepository.save(stockAdjustment);
 			if (stockAdjustment != null) {
 				result = Boolean.TRUE;
@@ -539,7 +539,7 @@ public class InventoryServiceImpl implements InventoryService {
 		Boolean result = Boolean.FALSE;
 		StockAdjustment stockAdjustment = this.stockAdjustmentRepository.findOne(stockAdjustmentId);
 		if (stockAdjustment != null && !StringUtils.isEmpty(stockAdjustment.getStatus())
-				&& stockAdjustment.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+				&& stockAdjustment.getStatus().equals(ServiceConstants.STATUS_CREATED)) {
 			this.stockAdjustmentRepository.delete(stockAdjustmentId);
 			result = Boolean.TRUE;
 			logger.info("The Stock Adjustment has been deleted successfully");
@@ -690,7 +690,7 @@ public class InventoryServiceImpl implements InventoryService {
 		StockAdjustment stockAdjustmentUpdated;
 		for (StockAdjustment stockAdjustment : stockAdjustments) {
 			stockAdjustmentUpdated = this.stockAdjustmentRepository.findOne(stockAdjustment.getStockAdjustId());
-			if (stockAdjustmentUpdated != null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
+			if (stockAdjustmentUpdated != null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STATUS_CREATED)) {
 				stockAdjustmentUpdated.setDescription(stockAdjustment.getDescription());
 				stockAdjustmentUpdated.setModifiedBy(stockAdjustment.getModifiedBy());
 				stockAdjustmentUpdated.setModifiedDate(stockAdjustment.getModifiedDate());
@@ -704,13 +704,14 @@ public class InventoryServiceImpl implements InventoryService {
 	}
 
 	@Override
+	@Transactional
 	public List<StockAdjustment> approveStockAdjustments(List<StockAdjustment> stockAdjustments) {
 		List<StockAdjustment> finalStockAdjustmentList = new ArrayList<>(stockAdjustments.size());
 		StockAdjustment stockAdjustmentUpdated;
 		for (StockAdjustment stockAdjustment : stockAdjustments) {
 			stockAdjustmentUpdated = this.stockAdjustmentRepository.findOne(stockAdjustment.getStockAdjustId());
-			if (stockAdjustmentUpdated != null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STOCK_ADJUSTMENT_STATUS_CREATED)) {
-				stockAdjustmentUpdated.setStatus(ServiceConstants.STOCK_ADJUSTMENT_STATUS_APPROVED);
+			if (stockAdjustmentUpdated != null && stockAdjustmentUpdated.getStatus().equals(ServiceConstants.STATUS_CREATED)) {
+				stockAdjustmentUpdated.setStatus(ServiceConstants.STATUS_APPROVED);
 				stockAdjustmentUpdated.setModifiedBy(stockAdjustment.getModifiedBy());
 				stockAdjustmentUpdated.setModifiedDate(stockAdjustment.getModifiedDate());
 				finalStockAdjustmentList.add(stockAdjustmentUpdated);

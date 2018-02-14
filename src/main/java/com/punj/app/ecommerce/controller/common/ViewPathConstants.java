@@ -144,6 +144,29 @@ public final class ViewPathConstants {
 	/**
 	 * The lookup pages section ends
 	 */	
+	/**
+	 * The price event pages section starts
+	 */
+	public static final String SEARCH_PRICE_URL = "/search_price";
+	public static final String MANAGE_PRICE_URL = "/manage_price";
+	public static final String MANAGE_PRICE_PAGE = "price/manage_price";
 	
+	public static final String EDIT_PRICE_URL ="/edit_price";
+	public static final String EDIT_PRICE_PAGE ="price/edit_price";
+	
+	public static final String APPROVE_PRICE_URL ="/approve_price";
+	
+	public static final String ADD_PRICE_URL ="/add_price";
+	public static final String GET_PRICE_URL ="/get_item_price";
+	public static final String ADD_PRICE_PAGE ="price/add_price";	
+	
+	public static final String DELETE_PRICE_URL ="/delete_price";
+	public static final String BULK_PRICE_URL ="/bulk_price";
+
+	public static final String PRINT_PRICES_URL = "/print_prices";
+	public static final String PRINT_PRICE_URL = "/print_price";	
+	/**
+	 * The price event pages section ends
+	 */	
 }
 
