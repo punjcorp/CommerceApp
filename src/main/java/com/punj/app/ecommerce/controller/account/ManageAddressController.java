@@ -68,7 +68,7 @@ public class ManageAddressController {
 		logger.info("The address list of {} addresses for the current user has been retrieved.", addresses.size());
 
 		model.addAttribute(MVCConstants.ADDRESSES_PARAM, addresses);
-		model.addAttribute("addressBean", addressBean);
+		model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 		return "account/address_list";
 	}
 
@@ -77,7 +77,7 @@ public class ManageAddressController {
 		logger.info("The add method for new address has been called");
 		try {
 			RegisterUserBean addressBean = new RegisterUserBean();
-			model.addAttribute("addressBean", addressBean);
+			model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 			logger.info("The empty address bean has been created");
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while creating empty address.", e);
@@ -105,7 +105,7 @@ public class ManageAddressController {
 			user.setAddresses(addresses);
 			userService.saveUser(user);
 
-			model.addAttribute("addressBean", addressBean);
+			model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.add.address.success", null, locale));
 		} catch (Exception e) {
@@ -126,7 +126,7 @@ public class ManageAddressController {
 			logger.error("An unknown error has occurred while saving address.", e);
 			return ViewPathConstants.ERROR_PAGE;
 		}
-		model.addAttribute("addressBean", addressBean);
+		model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 		return "account/edit_address";
 
 	}
@@ -144,7 +144,7 @@ public class ManageAddressController {
 
 			userService.saveUser(user);
 
-			model.addAttribute("addressBean", addressBean);
+			model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.manage.address.deleted", null, locale));
 
@@ -154,7 +154,7 @@ public class ManageAddressController {
 			logger.info("The address list of {} addresses for the current user has been retrieved.", addresses.size());
 
 			model.addAttribute(MVCConstants.ADDRESSES_PARAM, addresses);
-			model.addAttribute("addressBean", addressBean);
+			model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while deleting address.", e);
@@ -173,7 +173,7 @@ public class ManageAddressController {
 			Address address = userService.getAddress(addressBean.getAddressId());
 			address = this.updateAddressInDomain(address, addressBean);
 			userService.updateAddress(address);
-			model.addAttribute("addressBean", addressBean);
+			model.addAttribute(MVCConstants.ADDRESS_PARAM, addressBean);
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.edit.address.updated", null, locale));
 		} catch (Exception e) {

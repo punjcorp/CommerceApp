@@ -167,6 +167,13 @@ public final class ViewPathConstants {
 	public static final String PRINT_PRICE_URL = "/print_price";	
 	/**
 	 * The price event pages section ends
-	 */	
+	 */
+	
+	public static final String LOGIN_PAGE="login/login";
+	public static final String LOGIN_URL="/login";
+	public static final String MANAGE_USER_PAGE="account/manage_user";
+	
+	public static final String REGISTER_USER_URL="/register";
+	public static final String REGISTER_USER_PAGE="login/user_register";
 }
 

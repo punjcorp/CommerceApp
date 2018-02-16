@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.User;
@@ -62,23 +63,23 @@ public class LoginController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/login")
+	@GetMapping(ViewPathConstants.LOGIN_URL)
 	public String login(Model model) {
 		model.addAttribute("loginBean", new LoginBean());
-		return "login/login";
+		return ViewPathConstants.LOGIN_PAGE;
 
 	}
 
-	@PostMapping("/login")
+	@PostMapping(ViewPathConstants.LOGIN_URL)
 	public String validateLogin(@ModelAttribute LoginBean loginBean, Model model, HttpSession session, Locale locale) {
 		logger.info("Entered details User Name {} and Password {} ", loginBean.getUsername(), loginBean.getPassword());
 		List<Password> passwords = userService.getAllPasswordsByUsername(loginBean.getUsername());
 		logger.info("Retrieved Passsword count is {} ", passwords != null ? passwords.size() : 0);
-		if (passwords != null && passwords.size() > 0) {
+		if (passwords != null && !passwords.isEmpty()) {
 
 			for (Password pwd : passwords) {
-				logger.info("The user login username is {} and password is {} with status {}",
-						pwd.getPasswordId().getUsername(), pwd.getPasswordId().getPassword(), pwd.getStatus());
+				logger.info("The user login username is {} and password is {} with status {}", pwd.getPasswordId().getUsername(),
+						pwd.getPasswordId().getPassword(), pwd.getStatus());
 
 				if (loginBean.getPassword().equals(pwd.getPasswordId().getPassword()) && pwd.getStatus().equals("A")) {
 					session.setAttribute("userDetails", pwd);
@@ -86,43 +87,34 @@ public class LoginController {
 					RegisterUserBean userBean = this.updateUserBean(loggedInUser);
 					model.addAttribute("registerUserBean", userBean);
 
-					return "account/manage_user";
+					return ViewPathConstants.MANAGE_USER_PAGE;
 				}
 			}
-			model.addAttribute("alert",
-					messageSource.getMessage("commerce.screen.login.invalid.password", null, locale));
-			return "login/login";
+			model.addAttribute("alert", messageSource.getMessage("commerce.screen.login.invalid.password", null, locale));
+			return ViewPathConstants.LOGIN_PAGE;
 		}
 		model.addAttribute("alert", messageSource.getMessage("commerce.screen.login.invalid.username", null, locale));
-		return "login/login";
+		return ViewPathConstants.LOGIN_PAGE;
 	}
 
-	@RequestMapping("/register")
+	@RequestMapping(ViewPathConstants.REGISTER_USER_URL)
 	public String registerUser(Model model) {
 		model.addAttribute("registerUserBean", new RegisterUserBean());
-		return "login/user_register";
+		return ViewPathConstants.REGISTER_USER_PAGE;
 
 	}
 
-	@PostMapping("/register")
+	@PostMapping(ViewPathConstants.REGISTER_USER_URL)
 	public String saveUserDetails(@ModelAttribute RegisterUserBean registerUserBean, Model model, Locale locale) {
 		logger.info("Captured the details for registering the user");
 		User newUser = this.updateUserDomain(registerUserBean);
 
-		newUser = userService.saveUser(newUser);
+		userService.saveUser(newUser);
 		logger.info("The user details has been successfully registered");
 
 		model.addAttribute("loginBean", new LoginBean());
-		model.addAttribute(MVCConstants.SUCCESS,
-				messageSource.getMessage("commerce.screen.register.success", null, locale));
-		return "login/login";
-	}
-
-	@RequestMapping("/users")
-	public String getAllUsers(Model model) {
-		model.addAttribute("users", userService.getAllUsers());
-		logger.info("Returning users");
-		return "account/user_list";
+		model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.register.success", null, locale));
+		return ViewPathConstants.LOGIN_PAGE;
 	}
 
 	private User updateUserDomain(RegisterUserBean registerUserBean) {
@@ -133,8 +125,7 @@ public class LoginController {
 		newUser.setLastname(registerUserBean.getLastName());
 		newUser.setPhone1(registerUserBean.getPhone1());
 		newUser.setPhone2(registerUserBean.getPhone2());
-		logger.info("The value for phone1 is {} and phone2 is {} ", registerUserBean.getPhone1(),
-				registerUserBean.getPhone2());
+		logger.info("The value for phone1 is {} and phone2 is {} ", registerUserBean.getPhone1(), registerUserBean.getPhone2());
 		newUser.setStatus("A");
 		newUser.setCreatedBy("admin");
 		newUser.setCreatedDate(LocalDateTime.now());
@@ -142,7 +133,7 @@ public class LoginController {
 
 		Password newPassword = new Password();
 		PasswordId newPasswordId = new PasswordId();
-		List passwords = new ArrayList<Password>();
+		List passwords = new ArrayList<>();
 		newPassword.setModifiedBy("admin");
 		newPassword.setStatus("A");
 

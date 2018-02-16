@@ -148,7 +148,6 @@ public class SearchPriceController {
 
 	private void updateSearchStatus(Model model,List<PriceBean> priceBeans, Locale locale) {
 		if(priceBeans!=null && !priceBeans.isEmpty()) {
-			Integer count=new Integer(priceBeans.size());
 			model.addAttribute(MVCConstants.SUCCESS,messageSource.getMessage("commerce.screen.common.search.success", null, locale));
 			logger.info("The retrieved price record count is {}.",priceBeans.size());
 		}else {

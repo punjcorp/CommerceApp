@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.View;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
@@ -106,19 +104,19 @@ public class PriceBulkController {
 						finalPriceBeans.add(priceBean);
 					}
 				}
-				logger.info("The selected list of item prices has been finalized for processing");
+				logger.info("The selected list of item prices has been finalized for approving");
 
 				List<ItemPrice> itemPriceList = PriceTransformer.transformPriceBeanList(finalPriceBeans);
-				itemPriceList=this.priceService.approveItemPriceList(itemPriceList);
+				itemPriceList = this.priceService.approveItemPriceList(itemPriceList);
 				this.updateApproveStatus(model, itemPriceList, locale);
-				this.updatePriceBeanDTO(priceBeanDTO, model); 
-				logger.info("The price approval method processing has been completed");				
+				this.updatePriceBeanDTO(priceBeanDTO, model);
+				logger.info("The price approval method processing has been completed");
 			}
 
 		} catch (Exception e) {
 			logger.error("There is an error while approving selected item prices", e);
 			this.updatePriceBeanDTO(priceBeanDTO, model);
-			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.error", null, locale));
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			return ViewPathConstants.MANAGE_PRICE_PAGE;
 		}
 		return ViewPathConstants.MANAGE_PRICE_PAGE;
@@ -170,26 +168,26 @@ public class PriceBulkController {
 		logger.info("The price bean status has been updated to approved now");
 	}
 
-	private void updateApproveStatus(Model model,List<ItemPrice> itemPriceList, Locale locale) {
-		if(itemPriceList!=null && !itemPriceList.isEmpty()) {
-			model.addAttribute(MVCConstants.SUCCESS,this.messageSource.getMessage("commerce.screen.common.approve.success", null, locale));
-			logger.info("The selected {} prices has been approved successfully",itemPriceList.size());
-		}else {
+	private void updateApproveStatus(Model model, List<ItemPrice> itemPriceList, Locale locale) {
+		if (itemPriceList != null && !itemPriceList.isEmpty()) {
+			model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.common.approve.success", null, locale));
+			logger.info("The selected {} prices has been approved successfully", itemPriceList.size());
+		} else {
 			logger.info("The selected prices were not approved");
-			model.addAttribute(MVCConstants.ALERT,this.messageSource.getMessage("commerce.screen.common.approve.failure", null, locale));
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.approve.failure", null, locale));
 		}
 	}
-	
-	private void updateDeleteStatus(Model model,List<ItemPrice> itemPriceList, Locale locale) {
-		if(itemPriceList!=null && !itemPriceList.isEmpty()) {
-			model.addAttribute(MVCConstants.SUCCESS,this.messageSource.getMessage("commerce.screen.common.delete.success", null, locale));
-			logger.info("The selected {} prices has been deleted successfully",itemPriceList.size());
-		}else {
+
+	private void updateDeleteStatus(Model model, List<ItemPrice> itemPriceList, Locale locale) {
+		if (itemPriceList != null && !itemPriceList.isEmpty()) {
+			model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.common.delete.success", null, locale));
+			logger.info("The selected {} prices has been deleted successfully", itemPriceList.size());
+		} else {
 			logger.info("The selected prices were not deleted due to some expected condition");
-			model.addAttribute(MVCConstants.ALERT,this.messageSource.getMessage("commerce.screen.common.delete.failure", null, locale));
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.delete.failure", null, locale));
 		}
-	}	
-	
+	}
+
 	@PostMapping(value = ViewPathConstants.BULK_PRICE_URL, params = { MVCConstants.DELETE_PARAM })
 	public String deletePrices(@ModelAttribute PriceBeanDTO priceBeanDTO, BindingResult bindingResult, Model model, Locale locale,
 			Authentication authentication) {
@@ -214,7 +212,6 @@ public class PriceBulkController {
 					priceBean = priceBeanList.get(index);
 					if (priceBean.getStatus().equals(MVCConstants.STATUS_CREATED)) {
 						priceBean.setItemPriceId(id);
-						this.updatePriceBeanForApproval(priceBean, userDetails.getUsername());
 						finalPriceBeans.add(priceBean);
 					}
 				}
@@ -223,18 +220,72 @@ public class PriceBulkController {
 				List<ItemPrice> itemPriceList = PriceTransformer.transformPriceBeanList(finalPriceBeans);
 				this.priceService.deleteItemPriceList(itemPriceList);
 				this.updateDeleteStatus(model, itemPriceList, locale);
-				this.updatePriceBeanDTO(priceBeanDTO, model); 
-				logger.info("The price deletion method processing has been completed");				
+				this.updatePriceBeanDTO(priceBeanDTO, model);
+				logger.info("The price deletion method processing has been completed");
 			}
 
 		} catch (Exception e) {
 			logger.error("There is an error while deleting selected item prices", e);
 			this.updatePriceBeanDTO(priceBeanDTO, model);
-			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.error", null, locale));
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			return ViewPathConstants.MANAGE_PRICE_PAGE;
 		}
 		return ViewPathConstants.MANAGE_PRICE_PAGE;
 	}
-	
-	
+
+	@PostMapping(value = ViewPathConstants.BULK_PRICE_URL, params = { MVCConstants.SAVE_PARAM })
+	public String savePrices(@ModelAttribute PriceBeanDTO priceBeanDTO, BindingResult bindingResult, Model model, Locale locale,
+			Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updatePriceBeanDTO(priceBeanDTO, model);
+			return ViewPathConstants.MANAGE_PRICE_PAGE;
+		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			if (userDetails != null) {
+
+				List<PriceBean> priceBeanList = priceBeanDTO.getPriceBeans();
+				Map<BigInteger, Integer> idIndex = CommonMVCTransformer.transformSelectedIds(priceBeanDTO.getItemPriceIds());
+
+				List<PriceBean> finalPriceBeans = new ArrayList<>(idIndex.size());
+
+				Set<BigInteger> ids = idIndex.keySet();
+				Integer index = null;
+				PriceBean priceBean = null;
+				for (BigInteger id : ids) {
+					index = idIndex.get(id);
+					priceBean = priceBeanList.get(index);
+					if (priceBean.getStatus().equals(MVCConstants.STATUS_CREATED)) {
+						priceBean.setItemPriceId(id);
+						finalPriceBeans.add(priceBean);
+					}
+				}
+				logger.info("The selected list of item prices has been finalized for processing");
+
+				List<ItemPrice> itemPriceList = PriceTransformer.transformPriceBeanList(finalPriceBeans);
+				this.priceService.saveItemPriceList(itemPriceList);
+				this.updateSaveStatus(model, itemPriceList, locale);
+				this.updatePriceBeanDTO(priceBeanDTO, model);
+				logger.info("The price save method processing has been completed");
+			}
+
+		} catch (Exception e) {
+			logger.error("There is an error while saving selected item prices", e);
+			this.updatePriceBeanDTO(priceBeanDTO, model);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			return ViewPathConstants.MANAGE_PRICE_PAGE;
+		}
+		return ViewPathConstants.MANAGE_PRICE_PAGE;
+	}
+
+	private void updateSaveStatus(Model model, List<ItemPrice> itemPriceList, Locale locale) {
+		if (itemPriceList != null && !itemPriceList.isEmpty()) {
+			model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.common.save.success", null, locale));
+			logger.info("The selected {} prices has been saved successfully", itemPriceList.size());
+		} else {
+			logger.info("The selected prices were not saved due to some expected condition");
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.save.failure", null, locale));
+		}
+	}
+
 }

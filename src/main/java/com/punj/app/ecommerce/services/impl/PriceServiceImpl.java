@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
-import com.punj.app.ecommerce.repositories.item.ItemRepository;
+import com.punj.app.ecommerce.domains.price.ItemPriceHistory;
 import com.punj.app.ecommerce.repositories.price.ItemPriceHistoryRepository;
 import com.punj.app.ecommerce.repositories.price.ItemPriceRepository;
 import com.punj.app.ecommerce.services.PriceService;
@@ -29,7 +30,6 @@ import com.punj.app.ecommerce.services.common.ServiceConstants;
 public class PriceServiceImpl implements PriceService {
 
 	private static final Logger logger = LogManager.getLogger();
-	private ItemRepository itemRepository;
 	private ItemPriceRepository itemPriceRepository;
 	private ItemPriceHistoryRepository itemPriceHistoryRepository;
 
@@ -38,15 +38,6 @@ public class PriceServiceImpl implements PriceService {
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
-
-	/**
-	 * @param itemRepository
-	 *            the itemRepository to set
-	 */
-	@Autowired
-	public void setItemRepository(ItemRepository itemRepository) {
-		this.itemRepository = itemRepository;
-	}
 
 	/**
 	 * 
@@ -96,23 +87,23 @@ public class PriceServiceImpl implements PriceService {
 
 	@Override
 	public List<ItemPrice> searchItemPrice(BigInteger itemId, Integer locationId, String priceType) {
-		
-		ItemPrice itemPrice=new ItemPrice();
-		if(itemId!=null ) {
-			Item item=new Item();
+
+		ItemPrice itemPrice = new ItemPrice();
+		if (itemId != null) {
+			Item item = new Item();
 			item.setItemId(itemId);
 			itemPrice.setItem(item);
 		}
 		itemPrice.setLocationId(locationId);
 		itemPrice.setType(priceType);
-		
-		List<ItemPrice> itemPriceList=this.itemPriceRepository.findAll(Example.of(itemPrice));
+
+		List<ItemPrice> itemPriceList = this.itemPriceRepository.findAll(Example.of(itemPrice));
 		logger.info("The item prices based on criteria has been successfully retrieved");
 		return itemPriceList;
 	}
 
 	/**
-	 * This method will approve the price list 
+	 * This method will approve the price list
 	 * 
 	 * @param List<ItemPrice>
 	 * @return the approved price details
@@ -128,6 +119,54 @@ public class PriceServiceImpl implements PriceService {
 	public void deleteItemPriceList(List<ItemPrice> itemPriceList) {
 		this.itemPriceRepository.deleteInBatch(itemPriceList);
 		logger.info("All the selected item prices has been deleted now", itemPriceList.size());
-	}	
-	
+	}
+
+	@Override
+	public List<ItemPrice> saveItemPriceList(List<ItemPrice> itemPriceList) {
+		itemPriceList = this.approveItemPriceList(itemPriceList);
+		logger.info("All the {} item prices has been saved now", itemPriceList.size());
+		return itemPriceList;
+	}
+
+	@Override
+	public Boolean approvePrice(BigInteger itemPriceId, String username) {
+		Boolean result = Boolean.FALSE;
+		ItemPrice itemPrice = this.itemPriceRepository.findOne(itemPriceId);
+		itemPrice.setStatus(ServiceConstants.STATUS_APPROVED);
+		itemPrice.setModifiedBy(username);
+		itemPrice.setModifiedDate(LocalDateTime.now());
+		itemPrice = this.itemPriceRepository.save(itemPrice);
+		if (itemPrice != null) {
+			result = Boolean.TRUE;
+			logger.info("The {} item price has been approved now", itemPriceId);
+		}
+		return result;
+	}
+
+	@Override
+	public Boolean deletePrice(BigInteger itemPriceId, String username) {
+		this.itemPriceRepository.delete(itemPriceId);
+		logger.info("The {} item price has been deleted now", itemPriceId);
+		return Boolean.TRUE;
+	}
+
+	@Override
+	public ItemPrice searchPrice(BigInteger itemPriceId) {
+		ItemPrice itemPrice = this.itemPriceRepository.findOne(itemPriceId);
+		if (itemPrice != null) {
+			logger.info("The {} item price has been retrieved", itemPrice.getItemPriceId());
+		} else {
+			logger.info("The requested item price was not retrieved", itemPriceId);
+		}
+
+		return itemPrice;
+	}
+
+	@Override
+	public ItemPriceHistory createItemPrice(ItemPriceHistory itemPriceHistory) {
+		itemPriceHistory=this.itemPriceHistoryRepository.save(itemPriceHistory);
+		logger.info("The request {} item price has been archived", itemPriceHistory.getItemPriceHistoryId());
+		return itemPriceHistory;
+	}
+
 }

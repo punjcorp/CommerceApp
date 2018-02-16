@@ -304,7 +304,7 @@ public class ManageInvAdjustController {
 	@GetMapping(ViewPathConstants.APPROVE_INV_ADJUST_URL)
 	public String approveInvAdjust(@ModelAttribute SearchBean searchBean, Model model, final HttpServletRequest req, Locale locale) {
 		try {
-			this.executeOrderAction(req, MVCConstants.APPROVE_ORDERS_PARAM, model, searchBean, locale);
+			this.executeInvAdjustAction(req, MVCConstants.APPROVE_ORDERS_PARAM, model, searchBean, locale);
 		} catch (Exception e) {
 			logger.error("There is an error while approving inventory adjustment", e);
 			return ViewPathConstants.ERROR_PAGE;
@@ -312,7 +312,7 @@ public class ManageInvAdjustController {
 		return ViewPathConstants.MANAGE_INV_ADJUST_PAGE;
 	}
 
-	private void executeOrderAction(final HttpServletRequest req, String action, Model model, SearchBean searchBean, Locale locale) {
+	private void executeInvAdjustAction(final HttpServletRequest req, String action, Model model, SearchBean searchBean, Locale locale) {
 
 		BigInteger invAdjustId = new BigInteger(req.getParameter(MVCConstants.INV_ADJUST_ID_PARAM));
 		Boolean result = Boolean.FALSE;
@@ -349,7 +349,7 @@ public class ManageInvAdjustController {
 	@GetMapping(ViewPathConstants.DELETE_INV_ADJUST_URL)
 	public String deleteOrder(@ModelAttribute SearchBean searchBean, Model model, final HttpServletRequest req, Locale locale) {
 		try {
-			this.executeOrderAction(req, MVCConstants.DELETE_ORDERS_PARAM, model, searchBean, locale);
+			this.executeInvAdjustAction(req, MVCConstants.DELETE_ORDERS_PARAM, model, searchBean, locale);
 		} catch (Exception e) {
 			logger.error("There is an error while deleting inventory adjustment", e);
 			return ViewPathConstants.ERROR_PAGE;

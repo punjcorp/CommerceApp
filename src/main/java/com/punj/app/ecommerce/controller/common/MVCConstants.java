@@ -108,6 +108,7 @@ public final class MVCConstants {
 	public static final String APPROVE_EDIT_INV_ADJUST_PARAM= "approveEditedInvAdjust";
 	public static final String INV_ADJUST_ITEM_INV_PARAM= "getItemInv";
 	
+	public static final String PRICE_ID_PARAM="itemPriceId";
 	public static final String INV_ADJUST_ID_PARAM="invAdjustId";
 	public static final String SAVE_INV_ADJUSTS_PARAM= "saveInvAdjustItems";
 	public static final String DELETE_INV_ADJUSTS_PARAM="deleteInvAdjustItems";
@@ -123,6 +124,9 @@ public final class MVCConstants {
 	
 	public static final String SAVE_PRICE_PARAM= "savePrice";
 	public static final String APPROVE_PRICE_PARAM= "approvePrice";
+	public static final String DELETE_PRICE_PARAM= "deletePrice";
+
+	public static final String ADDRESS_PARAM="addressBean";
 	
-	
+	public static final String ERROR_MSG="commerce.screen.common.error";
 }
