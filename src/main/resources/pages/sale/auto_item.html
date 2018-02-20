@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.sale.add.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<th:block th:replace="common/header:: header"></th:block>
+<!-- Enable the auto complete item lookup-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<style>
+.ui-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  display: none;
+  min-width: 160px;
+  _width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+
+  .ui-menu-item {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+
+    .ui-state-focus, .ui-state-active {
+      color: #ffffff;
+      text-decoration: none;
+      background-color: #0088cc;
+      border-radius: 0px;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      background-image: none;
+    }
+  }
+}
+
+.ui-helper-hidden-accessible { display:none; } //Hide that pesky bottom message
+</style>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/pos_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card content-container">
+				<div class="card-body">
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form id="autoCompleteForm" action="#" th:action="@{/sku_lookup}" th:object="${searchBean}" method="post">
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group">
+										<div class="input-group text-left">
+											<input type="text" th:field="*{searchText}" class="form-control input-sm"></input>
+										</div>
+										<div id="result"></div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		$(function() {
+
+			$("#searchText").autocomplete({
+				minLength : 3,
+				source : function(request, response) {
+					$.post({
+						url : "/sku_lookup",
+						data : $('form[id=autoCompleteForm]').serialize(),
+						success : function(data) {
+							response($.map(data, function(item) {
+								var dataVal="<small>"+item.itemId+"-"+item.name+"</small>";
+								var descVal=item.name;
+			                    return {
+			                    	label: dataVal, 
+			                        value : item.itemId,
+			                        desc : descVal,
+			                        pic : '/images/logo/cit-76x76.png',
+			                    }
+			                }));
+						}
+					});
+				},
+				
+				select : function(event, ui) {
+					alert("Selected: " + this.value );
+				}
+			});
+		});
+		
+		/* this allows us to pass in HTML tags to autocomplete. Without this they get escaped */
+		$[ "ui" ][ "autocomplete" ].prototype["_renderItem"] = function( ul, item) {
+			return $( "<li></li>" ) 
+			  .data( "item.autocomplete", item )
+			  .html(
+					  $('<div/>', {'class': 'row'}).append(
+						        $('<div/>', {'class': 'col-2'}).append(
+						            $('<img/>', {src: item.pic})
+						        )
+						    )
+						    .append(
+						        $('<div/>', {'class': 'col-6'}).append(
+						            $('<span/>', {html: "<b>"+item.value+"</b><br/>"+item.desc})
+						        )
+						    )
+				)
+			  .appendTo( ul );
+			};				
+	</script>
+</body>
+</html>

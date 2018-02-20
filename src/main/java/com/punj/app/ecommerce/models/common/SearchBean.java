@@ -15,6 +15,7 @@ import com.punj.app.ecommerce.utils.Pager;
  */
 public class SearchBean implements Serializable {
 
+	private static final long serialVersionUID = -1430637837387691511L;
 	@NotBlank(message = "{commerce.error.string.empty}")
 	private String searchText;
 	private Integer page;

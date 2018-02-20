@@ -386,6 +386,16 @@ a[id="about"]::before {
 	font-size: 48px;
 }
 
+a[id="pos"]::before {
+	content: "shopping_cart" !important;
+	font-size: 48px;
+}
+
+a[id="sales"]::before {
+	content: "add_shopping_cart" !important;
+	font-size: 48px;
+}
+
 a[href*="#account"]::before {
 	content: "account_circle" !important;
 	font-size: 48px;

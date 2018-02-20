@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.models.price.PriceBean;
@@ -91,16 +92,18 @@ public class PriceTransformer {
 		return priceBean;
 	}
 
-	public static ItemPrice updatePrice(ItemPrice itemPrice, String username) {
-		if (itemPrice.getItemPriceId() == null) {
+	public static ItemPrice updatePrice(ItemPrice itemPrice, String username, String action) {
+		// if it is a save or approve from the new price screen directly
+		if ((MVCConstants.ACTION_NEW_SAVE.equals(action) && itemPrice.getItemPriceId() == null)
+				|| (MVCConstants.ACTION_NEW_APPROVE.equals(action) && itemPrice.getItemPriceId() == null)) {
 			itemPrice.setCreatedBy(username);
 			itemPrice.setCreatedDate(LocalDateTime.now());
 			logger.info("The item price is updated with creation time and user successfully");
-		} else {
+		} else if (MVCConstants.ACTION_EDIT_SAVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)
+				|| (MVCConstants.ACTION_NEW_APPROVE.equals(action) && itemPrice.getItemPriceId() != null)) {
 			itemPrice.setModifiedBy(username);
 			itemPrice.setModifiedDate(LocalDateTime.now());
 			logger.info("The item price is updated with modified time and user successfully");
-
 		}
 		return itemPrice;
 	}
@@ -115,7 +118,7 @@ public class PriceTransformer {
 		logger.info("The item price list has been transformed into price bean successfully");
 		return priceBeanList;
 	}
-	
+
 	public static List<ItemPrice> transformPriceBeanList(List<PriceBean> priceBeanList) {
 		List<ItemPrice> itemPriceList = new ArrayList<>(priceBeanList.size());
 		ItemPrice itemPrice;
@@ -125,7 +128,6 @@ public class PriceTransformer {
 		}
 		logger.info("The price bean list has been transformed into item price bean successfully");
 		return itemPriceList;
-	}	
-	
+	}
 
 }

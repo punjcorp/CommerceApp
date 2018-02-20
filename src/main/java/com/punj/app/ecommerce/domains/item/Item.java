@@ -13,25 +13,38 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
+@AnalyzerDef(name = "edgeNgram", tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class), filters = {
+		@TokenFilterDef(factory = LowerCaseFilterFactory.class), // Lowercase all characters
+		@TokenFilterDef(factory = EdgeNGramFilterFactory.class, // Generate prefix tokens
+				params = { @Parameter(name = "minGramSize", value = "1"), @Parameter(name = "maxGramSize", value = "10") }) })
 @Indexed
 @Entity
 public class Item implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -1367627372654767177L;
-	
+
 	@Id
 	@DocumentId
 	@Column(name = "item_id")
 	private BigInteger itemId;
-	@Field
+	@Field(analyzer=@Analyzer(definition="edgeNgram"))
 	private String name;
 	@Field
 	@Column(name = "long_desc")
 	private String description;
+	@Field
 	@Column(name = "item_level")
 	private Integer itemLevel;
 	@Column(name = "parent_item_id")
@@ -70,9 +83,8 @@ public class Item implements Serializable, Cloneable {
 
 	}
 
-	public Item(BigInteger itemId, String name, String description, Integer itemLevel, BigInteger parentItemId,
-			String itemType, String status, String createdBy, LocalDateTime createdDate, String modifiedBy,
-			LocalDateTime modifiedDate) {
+	public Item(BigInteger itemId, String name, String description, Integer itemLevel, BigInteger parentItemId, String itemType, String status,
+			String createdBy, LocalDateTime createdDate, String modifiedBy, LocalDateTime modifiedDate) {
 
 		this.itemId = itemId;
 		this.name = name;

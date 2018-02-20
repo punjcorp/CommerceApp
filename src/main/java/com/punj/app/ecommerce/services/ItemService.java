@@ -39,6 +39,8 @@ public interface ItemService {
 	public List<Item> createSKUs(Item item, ItemOptions itemOptions, List<AttributeId> attributeIds);
 
 	public ItemDTO searchItem(String text, Pager pager);
+	
+	public ItemDTO searchSKUs(String text, Pager pager);
 
 	public ItemDTO listItems(Item itemCriteria, Pager pager);
 

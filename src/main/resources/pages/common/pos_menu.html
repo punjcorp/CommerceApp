@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title>Left Menu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous" th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0/js/bootstrap.min.js}"></script>
+<script src="../../static/js/custom.js" th:src="@{/js/custom.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<div th:fragment="leftMenu">
+			<!-- Sidebar -->
+			<nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
+				<ul class="nav sidebar-nav">
+					<li>
+						<div class="sidebar-header">
+							<div class="sidebar-brand text-left"></div>
+						</div>
+					</li>
+					<li><div class="valign-center">
+							<a id="home" th:href="@{/home}"><span th:text="#{commerce.home.link.home}">Home</span></a>
+						</div></li>
+					<li><a id="sales" th:href="@{/sales}"><span th:text="#{commerce.home.menu.sale}">Sale</span></a></li>
+				</ul>
+			</nav>
+			<!-- /#sidebar-wrapper -->
+		</div>
+	</div>
+</body>
+</html>

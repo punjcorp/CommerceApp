@@ -31,8 +31,8 @@
 					<div class="card-text">
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-						<form th:if="${ action!=null and action=='NEW'}" class="form" id="addForm" action="#" th:action="@{/add_price}" th:object="${priceBean}" method="post">
-						<form th:if="${ action!=null and action=='EDIT'}" class="form" id="addForm" action="#" th:action="@{/edit_price}" th:object="${priceBean}" method="post">
+						<form id="addForm" action="#" th:action="${ action!=null and action=='NEW'}? @{/add_price}:@{/edit_price}" th:object="${priceBean}"
+							method="post">
 							<div class="row" th:if="${ action!=null and action=='EDIT'}">
 								<div class="col-1">
 									<div class="form-group input-group text-right">

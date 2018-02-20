@@ -123,4 +123,28 @@ public class ItemLookupController {
 		logger.info("The item basic details has been set in bean List successfully");
 	}
 
+	@PostMapping(value = ViewPathConstants.SKU_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public List<ItemBean> lookupSKU(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
+			Model model, HttpSession session) {
+		ItemBeanDTO items = new ItemBeanDTO();
+		if (bindingResult.hasErrors())
+			return items.getItems();
+		try {
+
+			Pager pager = new Pager();
+			pager.setCurrentPageNo(1);
+
+			ItemDTO itemList = itemService.searchSKUs(searchBean.getSearchText(), pager);
+			List<Item> itemsList = itemList.getItems();
+			this.setItemList(itemsList, items);
+
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving skus for sku lookup screen", e);
+			return null;
+		}
+		return items.getItems();
+	}
+	
+	
 }

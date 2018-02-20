@@ -12,15 +12,20 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
+import com.punj.app.ecommerce.domains.price.ItemPriceDTO;
 import com.punj.app.ecommerce.domains.price.ItemPriceHistory;
 import com.punj.app.ecommerce.repositories.price.ItemPriceHistoryRepository;
 import com.punj.app.ecommerce.repositories.price.ItemPriceRepository;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -86,20 +91,33 @@ public class PriceServiceImpl implements PriceService {
 	}
 
 	@Override
-	public List<ItemPrice> searchItemPrice(BigInteger itemId, Integer locationId, String priceType) {
+	public ItemPriceDTO searchItemPrice(BigInteger itemId, Integer locationId, String priceType, Integer page) {
 
+		int pageNo = page - 1;
+		
+		ItemPriceDTO itemPriceDTO = new ItemPriceDTO();
 		ItemPrice itemPrice = new ItemPrice();
 		if (itemId != null) {
 			Item item = new Item();
 			item.setItemId(itemId);
 			itemPrice.setItem(item);
 		}
+		if(locationId!=null && locationId==0)
+			locationId=null;
+		if(priceType!=null && priceType.equals(ServiceConstants.OPTION_ALL))
+			priceType=null;
 		itemPrice.setLocationId(locationId);
 		itemPrice.setType(priceType);
+		Pageable pager = new PageRequest(pageNo, maxResultPerPage);
 
-		List<ItemPrice> itemPriceList = this.itemPriceRepository.findAll(Example.of(itemPrice));
+		Page<ItemPrice> itemPricePages = this.itemPriceRepository.findAll(Example.of(itemPrice), pager);
+
+		Pager finalPager = new Pager((int)itemPricePages.getTotalElements(), maxResultPerPage, page, maxPageBtns, null);
+		itemPriceDTO.setItemPriceList(itemPricePages.getContent());
+		itemPriceDTO.setPager(finalPager);
+
 		logger.info("The item prices based on criteria has been successfully retrieved");
-		return itemPriceList;
+		return itemPriceDTO;
 	}
 
 	/**
@@ -164,7 +182,7 @@ public class PriceServiceImpl implements PriceService {
 
 	@Override
 	public ItemPriceHistory createItemPrice(ItemPriceHistory itemPriceHistory) {
-		itemPriceHistory=this.itemPriceHistoryRepository.save(itemPriceHistory);
+		itemPriceHistory = this.itemPriceHistoryRepository.save(itemPriceHistory);
 		logger.info("The request {} item price has been archived", itemPriceHistory.getItemPriceHistoryId());
 		return itemPriceHistory;
 	}

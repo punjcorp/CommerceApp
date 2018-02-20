@@ -151,6 +151,7 @@ public final class ViewPathConstants {
 	public static final String MANAGE_PRICE_URL = "/manage_price";
 	public static final String MANAGE_PRICE_PAGE = "price/manage_price";
 	
+	public static final String PRICE_DETAIL_PAGE ="price/price_details";	
 	public static final String EDIT_PRICE_URL ="/edit_price";
 	public static final String EDIT_PRICE_PAGE ="price/edit_price";
 	
@@ -163,8 +164,6 @@ public final class ViewPathConstants {
 	public static final String DELETE_PRICE_URL ="/delete_price";
 	public static final String BULK_PRICE_URL ="/bulk_price";
 
-	public static final String PRINT_PRICES_URL = "/print_prices";
-	public static final String PRINT_PRICE_URL = "/print_price";	
 	/**
 	 * The price event pages section ends
 	 */
@@ -175,5 +174,22 @@ public final class ViewPathConstants {
 	
 	public static final String REGISTER_USER_URL="/register";
 	public static final String REGISTER_USER_PAGE="login/user_register";
+
+	/**
+	 * The sale screen section starts
+	 */
+
+	public static final String POS_URL="/pos";
+	public static final String SALES_URL="/sales";
+	public static final String SALES_PAGE="sale/sales";
+	public static final String AUTO_ITEM_PAGE="sale/auto_item";
+	
+	public static final String SKU_LOOKUP_URL="/sku_lookup";
+	
+	/**
+	 * The sale screen section ends
+	 */
+	
+	
 }
 

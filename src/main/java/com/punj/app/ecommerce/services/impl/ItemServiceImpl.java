@@ -419,10 +419,23 @@ public class ItemServiceImpl implements ItemService {
 		pager.setMaxDisplayPage(maxPageBtns);
 
 		ItemDTO items = this.itemSearchRepository.search(text, pager);
-		logger.info("The searched items has been retrieved successfully");
+		logger.info("The searched items has been retrieved using keyword successfully");
 
 		return items;
 	}
+	
+	@Override
+	public ItemDTO searchSKUs(String text, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+
+		ItemDTO items = this.itemSearchRepository.searchSKU(text, pager);
+		logger.info("The searched skus has been retrieved using keywords successfully");
+
+		return items;
+	}	
 
 	@Override
 	public ItemDTO listItems(Item itemCriteria, Pager pager) {

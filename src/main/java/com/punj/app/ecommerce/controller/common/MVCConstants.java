@@ -29,8 +29,13 @@ public final class MVCConstants {
 	public static final String STATUS_CREATED="C";
 	public static final String STATUS_ACTIVE="A";
 
+	public static final String ACTION_PARAM="action";
 	public static final String ACTION_NEW="NEW";
+	public static final String ACTION_NEW_SAVE="NEW_SAVE";
+	public static final String ACTION_NEW_APPROVE="NEW_APPROVE";
 	public static final String ACTION_EDIT="EDIT";
+	public static final String ACTION_EDIT_SAVE="EDIT_SAVE";
+	public static final String ACTION_EDIT_APPROVE="EDIT_APPROVE";
 
 	
 	public static final String REPORT_OUTPUT_PDF="application/pdf";
