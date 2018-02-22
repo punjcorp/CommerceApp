@@ -1,73 +1,138 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html>
 <head>
 <meta charset="utf-8" />
-<title>Left Menu</title>
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
-
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-	crossorigin="anonymous">
-
-<link href="../../static/css/custom.css" th:href="@{/css/custom.css}"
-	rel="stylesheet" />
-
-<link rel="stylesheet"
-	href="../../static/css/floating-labels.css" />
-
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-	rel="stylesheet"></link>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-	crossorigin="anonymous"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-	crossorigin="anonymous"></script>
-
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-	crossorigin="anonymous"></script>
-
-<script src="../../static/js/jquery-editable-select.min.js"
-	th:src="@{/js/jquery-editable-select.min.js}"></script>
-
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous" th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+	integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"
+	th:href="@{/webjars/bootstrap/4.0.0-beta.2/js/bootstrap.min.js}"></script>
 <script src="../../static/js/custom.js" th:src="@{/js/custom.js}"></script>
+<script src="../../static/js/fontawesome.5.0.6.all.js" th:href="@{/js/fontawesome.5.0.6.all.js}"></script>
+<style>
+.box-radio-parent {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
 
+.box-radio-parent input[type="radio"] {
+	display: none;
+}
 
+.box-radio-parent input[type="radio"]:checked+.box {
+	background-color: #8ee4af;
+}
 
+.box-radio-parent input[type="radio"]:hover+.box {
+	background-color: #379683;
+	transform: translateY(10px);
+}
+
+.box-radio-parent input[type="radio"]:hover+.box .box-text {
+	color: white;
+	transform: translateY(10px);
+}
+
+.box-radio-parent input[type="radio"]:checked+.box .box-text {
+	color: #05386B;
+	transform: translateY(10px);
+}
+
+.box-radio-parent input[type="radio"]:checked+.box .box-text:before {
+	transform: translateY(0px);
+	opacity: 1;
+}
+
+.box-radio-parent .box {
+	width: 300px;
+	height: 250px;
+	margin: 3px;
+	background-color: #05386B;
+	transition: all 250ms ease;
+	will-change: transition;
+	display: inline-block;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	font-size: 12px;
+	border-radius: 10px;
+	color: white;
+}
+
+.box-radio-parent .box:active {
+	transform: translateY(10px);
+}
+
+.box-radio-parent .box .box-text {
+	position: absolute;
+	transform: translate(0, 10px);
+	left: 0;
+	right: 0;
+	transition: all 300ms ease;
+	text-align: left;
+	font-size: 1.5em;
+	user-select: none;
+	color: white;
+	margin: 0px;
+}
+</style>
 </head>
 <body>
-   <form class="form-signin">
-      <div class="text-center mb-4">
-        <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-        <h1 class="h3 mb-3 font-weight-normal">Floating labels</h1>
-        <p>Build form controls with floating labels via the <code>:placeholder-shown</code> pseudo-element. <a href="https://caniuse.com/#feat=css-placeholder-shown">Works in latest Chrome, Safari, and Firefox.</a></p>
-      </div>
-
-      <div class="form-label-group">
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputEmail">Email address</label>
-      </div>
-
-      <div class="form-label-group">
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <label for="inputPassword">Password</label>
-      </div>
-
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-      </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
-    </form>
+	<div class="box-radio-parent">
+		<label> <input type="radio" name="radio" checked />
+			<div class="box">
+				<div class="row box-text">
+					<div class="col-3">
+						<span> <i class="fas fa-home fa-3x"></i></span>
+					</div>
+					<div class="col">
+						<div class="display-4">
+							7997</span>
+						</div>
+						<div>
+							<h3>
+								Commerce Site</span>
+							</h3>
+						</div>
+						<div>
+							<span>Kharar</span>,
+						</div>
+						<div>
+							<span>Kharar</span>, <span>Punjab</span>,
+						</div>
+						<div>
+							<span>India</span>.
+						</div>
+					</div>
+				</div>
+			</div>
+		</label> <label> <input type="radio" name="radio" />
+			<div class="box">
+				<span>Back-end 1</span>
+			</div>
+		</label> <label> <input type="radio" name="radio" />
+			<div class="box">
+				<span>Back-end 2</span>
+			</div>
+		</label> <label> <input type="radio" name="radio" />
+			<div class="box">
+				<span>Back-end 3</span>
+			</div>
+		</label> <label> <input type="radio" name="radio" />
+			<div class="box">
+				<span>Back-end 4</span>
+			</div>
+		</label> <label> <input type="radio" name="radio" />
+			<div class="box">
+				<span>Back-end 5</span>
+			</div>
+		</label>
+	</div>
 </body>
 </html>

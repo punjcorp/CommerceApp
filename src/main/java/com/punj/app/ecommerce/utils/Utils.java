@@ -4,19 +4,24 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import javax.money.MonetaryAmount;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.javamoney.moneta.Money;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class Utils {
 	private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+	private static final List<MonetaryAmount> denominations = new ArrayList<>();
 	private static final Logger logger = LogManager.getLogger();
 
 	public static String encodePassword(String password) {
@@ -39,6 +44,24 @@ public class Utils {
 
 	public static String formatCurrency(BigDecimal amount) {
 		return NumberFormat.getCurrencyInstance().format(amount);
+	}
+
+	public static List<MonetaryAmount> getDenominations() {
+		if(denominations.isEmpty()) {
+			denominations.add(Money.of(0.50,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(1,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(2,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(5,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(10,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(20,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(50,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(100,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(200,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(500,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(1000,Utils.getLocaleCurrency()));
+			denominations.add(Money.of(2000,Utils.getLocaleCurrency()));
+		}
+		return denominations;
 	}
 
 	/**

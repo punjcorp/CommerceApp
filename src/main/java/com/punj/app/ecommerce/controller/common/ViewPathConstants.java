@@ -190,6 +190,20 @@ public final class ViewPathConstants {
 	/**
 	 * The sale screen section ends
 	 */
+	/**
+	 * The daily deed section starts
+	 */
+	
+	public static final String STORE_OPEN_URL="/open_store";
+	public static final String STORE_OPEN_PAGE="dailydeeds/store_open";
+	
+	public static final String REGISTER_OPEN_URL="/open_register";
+	public static final String REGISTER_OPEN_PAGE="dailydeeds/register_open";
+	
+	/**
+	 * The daily deed section ends
+	 */
+	
 	
 	
 }

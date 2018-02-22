@@ -159,7 +159,7 @@ public class PriceController {
 	private void updateLocations(PriceBean priceBean, List<Location> locationList) {
 		List<LocationBean> locations = null;
 		if (locationList != null && !locationList.isEmpty()) {
-			locations = CommonMVCTransformer.transformLocationListDomainPartially(locationList);
+			locations = CommonMVCTransformer.transformLocationList(locationList,MVCConstants.LOC_PARTIAL);
 			priceBean.setLocations(locations);
 		}
 		logger.info("The location details has been set in Price Bean object");
@@ -310,7 +310,7 @@ public class PriceController {
 	private void updateLocations(PriceBeanDTO priceBeanDTO, List<Location> locationList) {
 		List<LocationBean> locations = null;
 		if (locationList != null && !locationList.isEmpty()) {
-			locations = CommonMVCTransformer.transformLocationListDomainPartially(locationList);
+			locations = CommonMVCTransformer.transformLocationList(locationList,MVCConstants.LOC_PARTIAL);
 			priceBeanDTO.setLocations(locations);
 		}
 		logger.info("The location details has been set in Price Bean DTO object");

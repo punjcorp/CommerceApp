@@ -67,6 +67,17 @@ public class DefaultController {
 		this.messageSource = messageSource;
 	}
 
+	@GetMapping("/pageinprogress")
+	public String pageInProgress(Model model, Principal principal) {
+		logger.info("========================");
+		logger.info("WELCOME TO THE STORE OPEN PAGE");
+		logger.info("========================");
+		return "dailydeed/store_open";
+	}	
+	
+	
+	
+	
 	@GetMapping(ViewPathConstants.HOME_URL)
 	public String login(@ModelAttribute SearchBean searchBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page,
 			Model model, Principal principal) {

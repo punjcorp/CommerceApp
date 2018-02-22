@@ -13,12 +13,16 @@ public final class MVCConstants {
 		throw new IllegalStateException("MVC Constant class");
 	}
 
+	public static final Boolean LOC_PARTIAL= Boolean.TRUE;
+	public static final Boolean LOC_FULL= Boolean.FALSE;
+	public static final String TNDR_CASH = "CASH";
 	public static final String SUCCESS = "success";
 	public static final String ALERT = "alert";
 	public static final String PAGER= "pager";
 	public static final String YES="Y";
 	
 	public static final String ID_PARAM="id";
+	public static final String TENDER_ID_PARAM="tenderId";
 	public static final String PAGE_PARAM="page";
 	public static final String ITEM_ID_PARAM="itemId";
 	public static final String LOCATION_ID_PARAM="locationId";
@@ -76,6 +80,8 @@ public final class MVCConstants {
 	public static final String SUPPLIER_REPORT="/reports/supplier/supplier.jrxml";
 	public static final String ADDRESS_REPORT="/reports/address/address.jrxml";
 	
+	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
+	public static final String LOCATION_BEANS= "locations";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
 	public static final String ORDER_BEAN= "orderBean";
@@ -125,6 +131,10 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTMENT_REPORT="/reports/inventory/list/inv_adjustments.jrxml";
 	public static final String INV_ADJUSTMENT_ITEMS_REPORT="/reports/inventory/list/inv_adjustment_items.jrxml";	
 	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";
+	
+	public static final String OPEN_STORE_PARAM= "openStore";
+	public static final String ADD_DENOMINATION_PARAM= "addDenomination";
+	public static final String REMOVE_DENOMINATION_PARAM= "removeDenomination";
 	
 	
 	public static final String SAVE_PRICE_PARAM= "savePrice";

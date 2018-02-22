@@ -35,6 +35,8 @@ public class Location implements Serializable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
+	@Column(name = "location_type")
+	private String locationType;
 	private String status;
 	private String name;
 	private String address1;
@@ -351,6 +353,21 @@ public class Location implements Serializable {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	/**
+	 * @return the locationType
+	 */
+	public String getLocationType() {
+		return locationType;
+	}
+
+	/**
+	 * @param locationType
+	 *            the locationType to set
+	 */
+	public void setLocationType(String locationType) {
+		this.locationType = locationType;
 	}
 
 	/*

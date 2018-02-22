@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.models.common.LocationBean;
-import com.punj.app.ecommerce.models.price.PriceBean;
 
 /**
  * @author admin
@@ -40,27 +39,39 @@ public class CommonMVCTransformer {
 		return idIndex;
 	}
 
-	public static List<LocationBean> transformLocationListDomainPartially(List<Location> locationList) {
+	public static List<LocationBean> transformLocationList(List<Location> locationList, Boolean partial) {
 		LocationBean locationBean = null;
 		List<LocationBean> locations = null;
 		if (locationList != null && !locationList.isEmpty()) {
 			locations = new ArrayList<>(locationList.size());
 			for (Location location : locationList) {
-				locationBean=CommonMVCTransformer.transformLocationDomainPartially(location);
+				locationBean = CommonMVCTransformer.transformLocationDomainPartially(location,partial);
 				locations.add(locationBean);
 			}
 		}
 		logger.info("All the locations from list has been transformed into location bean list");
 		return locations;
 	}
-	
-	public static LocationBean transformLocationDomainPartially(Location location) {
-		LocationBean locationBean=new LocationBean();
+
+	public static LocationBean transformLocationDomainPartially(Location location, Boolean partial) {
+		LocationBean locationBean = new LocationBean();
 		locationBean.setLocationId(location.getLocationId());
-		locationBean.setLocationType(location.getStatus());
+		locationBean.setLocationType(location.getLocationType());
 		locationBean.setName(location.getName());
-		logger.info("The locations details has been partially transformed into location bean");		
+		if (!partial) {
+			locationBean.setAddress1(location.getAddress1());
+			locationBean.setAddress2(location.getAddress2());
+			locationBean.setCity(location.getCity());
+			locationBean.setState(location.getState());
+			locationBean.setCountry(location.getCountry());
+			locationBean.setPincode(location.getPincode());
+			locationBean.setEmail(location.getEmail());
+			locationBean.setManager(location.getManager());
+			locationBean.setTelephone1(location.getTelephone1());
+			locationBean.setTelephone2(location.getTelephone2());
+		}
+		logger.info("The locations details has been partially transformed into location bean");
 		return locationBean;
 	}
-	
+
 }
