@@ -13,6 +13,9 @@ public final class ServiceConstants {
 		    throw new IllegalStateException("Service Constant class");
 		  }
 	
+	 public static final String TAX_WITHIN_STATE="I"; 
+	 public static final String TAX_OTHER_STATE="O";
+	 
 	public static final String INV_REASON_STKIN="STKIN";
 	public static final String INV_REASON_STKOUT="STKOUT";
 	

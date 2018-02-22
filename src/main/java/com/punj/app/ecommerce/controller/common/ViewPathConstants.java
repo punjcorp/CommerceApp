@@ -185,6 +185,7 @@ public final class ViewPathConstants {
 	public static final String AUTO_ITEM_PAGE="sale/auto_item";
 	
 	public static final String SKU_LOOKUP_URL="/sku_lookup";
+	public static final String SALEITEM_LOOKUP_URL="/sale_item_lookup";
 	
 	/**
 	 * The sale screen section ends

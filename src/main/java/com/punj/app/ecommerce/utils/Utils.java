@@ -1,5 +1,7 @@
 package com.punj.app.ecommerce.utils;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -35,6 +37,9 @@ public class Utils {
 		return Monetary.getCurrency(locale);
 	}
 
+	public static String formatCurrency(BigDecimal amount) {
+		return NumberFormat.getCurrencyInstance().format(amount);
+	}
 
 	/**
 	 * Static method tester
@@ -43,10 +48,10 @@ public class Utils {
 		logger.info("password is {}", Utils.encodePassword("cashier"));
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm:ss");
-		String formattedDate=LocalDateTime.now().format(formatter);
-		System.out.println("here is the output "+formattedDate);
-		LocalDateTime newDate=LocalDateTime.parse(formattedDate,formatter);
-		System.out.println("here is the new output "+newDate);
+		String formattedDate = LocalDateTime.now().format(formatter);
+		System.out.println("here is the output " + formattedDate);
+		LocalDateTime newDate = LocalDateTime.parse(formattedDate, formatter);
+		System.out.println("here is the new output " + newDate);
 
 	}
 

@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.price.ItemPrice;
@@ -35,5 +36,7 @@ public interface PriceService {
 	public ItemPrice searchPrice(BigInteger itemPriceId);
 
 	public ItemPriceHistory createItemPrice(ItemPriceHistory itemPriceHistory);
+
+	public ItemPrice getCurrentItemPrice(BigInteger itemId, Integer locationId, LocalDateTime currentDate);
 
 }

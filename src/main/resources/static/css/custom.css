@@ -1,3 +1,7 @@
+html {
+    font-size: 12px;
+}
+
 body {
 	padding-bottom: 40px;
 	background-color: #525252;
@@ -307,9 +311,8 @@ body {
 	padding: 20px 15px 10px 10px;
 }
 
-.sidebar-nav li a:hover, .sidebar-nav li a:active, .sidebar-nav li a:focus,
-	.sidebar-nav li.open a:hover, .sidebar-nav li.open a:active,
-	.sidebar-nav li.open a:focus {
+.sidebar-nav li a:hover, .sidebar-nav li a:active, .sidebar-nav li a:focus, .sidebar-nav li.open a:hover, .sidebar-nav li.open a:active, .sidebar-nav li.open a:focus
+	{
 	color: #fff;
 	text-decoration: none;
 	background-color: transparent;
@@ -421,13 +424,16 @@ a[href*="#lookup"]::before {
 	content: "search" !important;
 	font-size: 48px;
 }
+
 a[id="lookupitem"]::before {
 	content: "queue" !important;
 }
+
 a[href*="#price"]::before {
 	content: "monetization_on" !important;
 	font-size: 48px;
 }
+
 a[id="manageprice"]::before {
 	content: "store" !important;
 }
@@ -440,6 +446,7 @@ a[href*="#inventory"]::before {
 	content: "swap_horiz" !important;
 	font-size: 48px;
 }
+
 a[id="manageinventory"]::before {
 	content: "store" !important;
 }
@@ -447,6 +454,7 @@ a[id="manageinventory"]::before {
 a[id="addinventory"]::before {
 	content: "repeat_one" !important;
 }
+
 a[href*="#supplier"]::before {
 	content: "people_outline" !important;
 	font-size: 48px;
@@ -531,8 +539,61 @@ a[id="contact"]::before {
 	text-overflow: ellipsis;
 }
 
-.content-container{
+.content-container {
 	margin: 30px;
 }
 
+/* Auto complete styling - STARTS */
+.ui-autocomplete {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	float: left;
+	display: none;
+	min-width: 160px;
+	_width: 160px;
+	padding: 4px 0;
+	margin: 2px 0 0 0;
+	list-style: none;
+	background-color: #ffffff;
+	border-color: #ccc;
+	border-color: rgba(0, 0, 0, 0.2);
+	border-style: solid;
+	border-width: 1px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding;
+	background-clip: padding-box;
+	*border-right-width: 2px;
+	*border-bottom-width: 2px; 
+	. ui-menu-item { 
+		display : block;
+		padding: 3px 15px;
+		clear: both;
+		font-weight: normal;
+		line-height: 18px;
+		color: #555555;
+		white-space: nowrap; 
+		. ui-state-focus , .ui-state-active { 
+			color : #ffffff;
+			text-decoration: none;
+			background-color: #0088cc;
+			border-radius: 0px;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			background-image: none;
+		}
+	}
+}
+/* This will hide the bottom message*/
+.ui-helper-hidden-accessible {
+	display: none;
+}
 
+/* Auto complete styling - ENDS */

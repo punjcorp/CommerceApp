@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.lookup;
  * 
  */
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,8 @@ import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.services.SaleItemService;
+import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -45,14 +48,24 @@ import com.punj.app.ecommerce.utils.Pager;
 public class ItemLookupController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
+	private SaleItemService saleItemService;
 
 	/**
-	 * @param userService
-	 *            the userService to set
+	 * @param itemService
+	 *            the itemService to set
 	 */
 	@Autowired
 	public void setItemService(ItemService itemService) {
 		this.itemService = itemService;
+	}
+
+	/**
+	 * @param saleItemService
+	 *            the saleItemService to set
+	 */
+	@Autowired
+	public void setSaleItemService(SaleItemService saleItemService) {
+		this.saleItemService = saleItemService;
 	}
 
 	@GetMapping(ViewPathConstants.LOOKUP_ITEM_URL)
@@ -83,8 +96,8 @@ public class ItemLookupController {
 
 			this.setItemList(itemsList, items);
 			Pager tmpPager = itemList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(), ViewPathConstants.LOOKUP_ITEM_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.LOOKUP_ITEM_URL);
 			items.setPager(pager);
 
 		} catch (Exception e) {
@@ -125,8 +138,7 @@ public class ItemLookupController {
 
 	@PostMapping(value = ViewPathConstants.SKU_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public List<ItemBean> lookupSKU(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
-			Model model, HttpSession session) {
+	public List<ItemBean> lookupSKU(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
 		ItemBeanDTO items = new ItemBeanDTO();
 		if (bindingResult.hasErrors())
 			return items.getItems();
@@ -138,13 +150,29 @@ public class ItemLookupController {
 			ItemDTO itemList = itemService.searchSKUs(searchBean.getSearchText(), pager);
 			List<Item> itemsList = itemList.getItems();
 			this.setItemList(itemsList, items);
-
+			logger.info("The item list based on the keyword has been retrieved");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving skus for sku lookup screen", e);
 			return null;
 		}
 		return items.getItems();
 	}
-	
-	
+
+	@GetMapping(value = ViewPathConstants.SALEITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public SaleItem lookupSaleItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId) {
+		SaleItem saleItem=null;
+		try {
+
+			saleItem = saleItemService.getItem(itemId, locationId);
+
+			logger.info("the {} item details for sale item has been retrieved successfully", itemId);
+			
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving skus for sku lookup screen", e);
+			return null;
+		}
+		return saleItem;
+	}
+
 }

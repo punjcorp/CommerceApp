@@ -94,7 +94,7 @@ public class PriceServiceImpl implements PriceService {
 	public ItemPriceDTO searchItemPrice(BigInteger itemId, Integer locationId, String priceType, Integer page) {
 
 		int pageNo = page - 1;
-		
+
 		ItemPriceDTO itemPriceDTO = new ItemPriceDTO();
 		ItemPrice itemPrice = new ItemPrice();
 		if (itemId != null) {
@@ -102,17 +102,17 @@ public class PriceServiceImpl implements PriceService {
 			item.setItemId(itemId);
 			itemPrice.setItem(item);
 		}
-		if(locationId!=null && locationId==0)
-			locationId=null;
-		if(priceType!=null && priceType.equals(ServiceConstants.OPTION_ALL))
-			priceType=null;
+		if (locationId != null && locationId == 0)
+			locationId = null;
+		if (priceType != null && priceType.equals(ServiceConstants.OPTION_ALL))
+			priceType = null;
 		itemPrice.setLocationId(locationId);
 		itemPrice.setType(priceType);
 		Pageable pager = new PageRequest(pageNo, maxResultPerPage);
 
 		Page<ItemPrice> itemPricePages = this.itemPriceRepository.findAll(Example.of(itemPrice), pager);
 
-		Pager finalPager = new Pager((int)itemPricePages.getTotalElements(), maxResultPerPage, page, maxPageBtns, null);
+		Pager finalPager = new Pager((int) itemPricePages.getTotalElements(), maxResultPerPage, page, maxPageBtns, null);
 		itemPriceDTO.setItemPriceList(itemPricePages.getContent());
 		itemPriceDTO.setPager(finalPager);
 
@@ -185,6 +185,36 @@ public class PriceServiceImpl implements PriceService {
 		itemPriceHistory = this.itemPriceHistoryRepository.save(itemPriceHistory);
 		logger.info("The request {} item price has been archived", itemPriceHistory.getItemPriceHistoryId());
 		return itemPriceHistory;
+	}
+
+	@Override
+	public ItemPrice getCurrentItemPrice(BigInteger itemId, Integer locationId, LocalDateTime currentDate) {
+
+		List<ItemPrice> itemPrices=this.listItemPrices(itemId, locationId);
+		
+		ItemPrice itemPrice=null;
+		
+		//Fucking change this logic and get the right price
+		if(itemPrices!=null && !itemPrices.isEmpty()) {
+			itemPrice=itemPrices.get(0);
+		}
+		
+		logger.info("The current item price for the item has been retrieved");
+		return itemPrice;
+	}
+	
+	private List<ItemPrice> listItemPrices(BigInteger itemId, Integer locationId){
+		ItemPrice itemPriceCriteria = new ItemPrice();
+		Item item = new Item();
+		item.setItemId(itemId);
+		itemPriceCriteria.setItem(item);
+
+		itemPriceCriteria.setLocationId(locationId);
+
+		List<ItemPrice> itemPriceList = this.itemPriceRepository.findAll(Example.of(itemPriceCriteria));
+		logger.info("The price list for the provided item has been retrieved successfully");
+		
+		return itemPriceList;
 	}
 
 }

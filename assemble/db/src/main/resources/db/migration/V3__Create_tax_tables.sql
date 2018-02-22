@@ -50,11 +50,13 @@ DROP TABLE IF EXISTS `commercedb`.`tax_location` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`tax_location` (
   `tax_location_id` INT NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(1) NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `description` VARCHAR(200) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
-  PRIMARY KEY (`tax_location_id`))
+  PRIMARY KEY (`tax_location_id`),
+  UNIQUE INDEX `code_UNIQUE` (`code` ASC))
 ENGINE = InnoDB;
 
 
