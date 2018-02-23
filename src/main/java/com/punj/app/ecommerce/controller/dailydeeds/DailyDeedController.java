@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,12 +26,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
+import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.dtos.StoreOpenTransaction;
 
 /**
  * @author admin
@@ -42,6 +47,7 @@ public class DailyDeedController {
 	private static final Logger logger = LogManager.getLogger();
 	private CommonService commonService;
 	private MessageSource messageSource;
+	private DailyDeedService dailyDeedService;
 
 	/**
 	 * @param commonService
@@ -50,6 +56,15 @@ public class DailyDeedController {
 	@Autowired
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
+	}
+
+	/**
+	 * @param dailyDeedService
+	 *            the dailyDeedService to set
+	 */
+	@Autowired
+	public void setDailyDeedService(DailyDeedService dailyDeedService) {
+		this.dailyDeedService = dailyDeedService;
 	}
 
 	/**
@@ -66,6 +81,9 @@ public class DailyDeedController {
 		logger.info("The show store open screen method has been called");
 		try {
 			DailyDeedBean dailyDeedBean = new DailyDeedBean();
+			List<Tender> tenders = this.commonService.retrieveAllTenders();
+			List<TenderBean> tenderBeans =CommonMVCTransformer.tranformTenders(tenders);
+			dailyDeedBean.setTenders(tenderBeans);
 			this.updateBeans(dailyDeedBean, model);
 			logger.info("The Store open screen is ready for display");
 		} catch (Exception e) {
@@ -92,38 +110,51 @@ public class DailyDeedController {
 	public String processOpenStoreDetails(@ModelAttribute @Valid DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
 			Authentication authentication) {
 		logger.info("The show store open screen method has been called");
-		try {
+		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
-			logger.info("The Store open process was successfuland store has been opened now");
+			return ViewPathConstants.STORE_OPEN_PAGE;
+		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			if (userDetails != null) {
+				StoreOpenTransaction storeOpenDetails = DailyDeedTransformer.transformStoreOpenDetails(dailyDeedBean);
+				Boolean result = this.dailyDeedService.saveStoreOpenTxn(storeOpenDetails, userDetails.getUsername());
+				this.updateBeans(dailyDeedBean, model);
+				if (!result) {
+					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
+					logger.info("The Store open process was successfuland store has been opened now");
+					return ViewPathConstants.STORE_OPEN_PAGE;
+				}
+				logger.info("The Store open process failed due to some unknown issue");
+			}
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 			logger.error("There was some error while opening the store", e);
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
 
-		return ViewPathConstants.STORE_OPEN_PAGE;
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
 
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.ADD_DENOMINATION_PARAM })
-	public String addTenderDenomination(@ModelAttribute @Valid DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
+	public String addTenderDenomination(@ModelAttribute DailyDeedBean dailyDeedBean, Model model, Locale locale,
 			Authentication authentication, final HttpServletRequest req) {
 		logger.info("The add tender denomination has been called");
-		if (bindingResult.hasErrors()) {
-			this.updateBeans(dailyDeedBean, model);
-			return ViewPathConstants.STORE_OPEN_PAGE;
-		}
 		try {
-			final Integer tenderId = Integer.parseInt(req.getParameter(MVCConstants.TENDER_ID_PARAM));
+			final Integer tenderId = dailyDeedBean.getSelectedTenderId();
+			if (tenderId != null) {
+				List<TenderBean> tenders = dailyDeedBean.getTenders();
+				TenderBean tender = tenders.get(tenderId);
 
-			List<TenderBean> tenders = dailyDeedBean.getTenders();
-			TenderBean tender = tenders.get(tenderId);
-
-			List<DenominationBean> denominations = tender.getDenominations();
-			denominations.add(new DenominationBean());
-
+				List<DenominationBean> denominations = tender.getDenominations();
+				denominations.add(new DenominationBean());
+				logger.info("A new denomination record has been added to the daily deed bean successfully");
+			} else {
+				logger.info("Provide the tender Id to add new denomination!!");
+			}
 			this.updateBeans(dailyDeedBean, model);
-			logger.info("A new denomination record has been added to the daily deed bean successfully");
+
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 			logger.error("There was some error while adding a new denomination during store open process", e);
@@ -135,26 +166,25 @@ public class DailyDeedController {
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.REMOVE_DENOMINATION_PARAM })
-	public String removeTenderDenomination(@ModelAttribute @Valid DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale, final HttpServletRequest req) {
+	public String removeTenderDenomination(@ModelAttribute DailyDeedBean dailyDeedBean,Model model, Locale locale,
+			final HttpServletRequest req) {
 		logger.info("The remove tender denomination has been called");
-		if (bindingResult.hasErrors()) {
-			this.updateBeans(dailyDeedBean, model);
-			return ViewPathConstants.STORE_OPEN_PAGE;
-		}
 		try {
-			final Integer tenderId = Integer.parseInt(req.getParameter(MVCConstants.TENDER_ID_PARAM));
-			final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.ID_PARAM));
-			
-			List<TenderBean> tenders = dailyDeedBean.getTenders();
-			TenderBean tender = tenders.get(tenderId);
-			List<DenominationBean> denominations = tender.getDenominations();
-			denominations.remove(rowId.intValue());
-			
-			tender.setDenominations(denominations);
-			
-			
+			final Integer rowId = dailyDeedBean.getSelectedDenominationId();
+			final Integer tenderId = dailyDeedBean.getSelectedTenderId();
+			if (tenderId != null && rowId != null) {
+				List<TenderBean> tenders = dailyDeedBean.getTenders();
+				TenderBean tender = tenders.get(tenderId);
+				List<DenominationBean> denominations = tender.getDenominations();
+				denominations.remove(rowId.intValue());
+				tender.setDenominations(denominations);
+				logger.info("The selected denomination has been removed successfully");
+			} else {
+				logger.info("Provide the tender Id and denomination id to delete denomination!!");
+			}
+
 			this.updateBeans(dailyDeedBean, model);
-			logger.info("The selected denomination has been removed successfully");
+
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 			logger.error("There was some error while opening the store", e);

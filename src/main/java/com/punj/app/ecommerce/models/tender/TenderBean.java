@@ -4,10 +4,11 @@
 package com.punj.app.ecommerce.models.tender;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.punj.app.ecommerce.controller.common.MVCConstants;
+import javax.validation.Valid;
 
 /**
  * @author admin
@@ -17,11 +18,13 @@ public class TenderBean {
 
 	private Integer tenderId;
 	private String name;
-	private String tndrType = MVCConstants.TNDR_CASH;
+	private String tndrType;
 	private String description;
 	private Integer subTenderId;
 
-	private BigDecimal tenderAmount;
+	private BigDecimal calTAmount;
+	private BigInteger calMCount;
+	@Valid
 	private List<DenominationBean> denominations;
 
 	public TenderBean() {
@@ -105,18 +108,33 @@ public class TenderBean {
 	}
 
 	/**
-	 * @return the tenderAmount
+	 * @return the calTAmount
 	 */
-	public BigDecimal getTenderAmount() {
-		return tenderAmount;
+	public BigDecimal getCalTAmount() {
+		return calTAmount;
 	}
 
 	/**
-	 * @param tenderAmount
-	 *            the tenderAmount to set
+	 * @param calTAmount
+	 *            the calTAmount to set
 	 */
-	public void setTenderAmount(BigDecimal tenderAmount) {
-		this.tenderAmount = tenderAmount;
+	public void setCalTAmount(BigDecimal calTAmount) {
+		this.calTAmount = calTAmount;
+	}
+
+	/**
+	 * @return the calMCount
+	 */
+	public BigInteger getCalMCount() {
+		return calMCount;
+	}
+
+	/**
+	 * @param calMCount
+	 *            the calMCount to set
+	 */
+	public void setCalMCount(BigInteger calMCount) {
+		this.calMCount = calMCount;
 	}
 
 	/**

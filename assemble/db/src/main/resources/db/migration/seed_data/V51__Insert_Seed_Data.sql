@@ -22,6 +22,12 @@ INSERT INTO `commercedb`.`location` (`location_id`, `location_type`, `name`, `de
 commit;
 
 -- -----------------------------------------------------
+-- Seed data for tender_master table
+-- -----------------------------------------------------
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('CASH', 'CASH', 'This is the cash tender description', 'admin', now());
+commit;
+
+-- -----------------------------------------------------
 -- Seed data for tax tables
 -- -----------------------------------------------------
 

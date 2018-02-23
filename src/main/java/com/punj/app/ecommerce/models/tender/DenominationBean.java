@@ -4,6 +4,9 @@
 package com.punj.app.ecommerce.models.tender;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author admin
@@ -11,12 +14,13 @@ import java.math.BigDecimal;
  */
 public class DenominationBean {
 
+	@NotNull(message = "{commerce.error.select.empty}")
 	private BigDecimal denomination;
-	private Integer mediaCount;
+	@NotNull(message = "{commerce.error.count.min}")
+	private BigInteger mediaCount;
+	@NotNull(message = "{commerce.error.amount.empty}")
 	private BigDecimal amount;
 
-	
-	
 	/**
 	 * @return the denomination
 	 */
@@ -35,7 +39,7 @@ public class DenominationBean {
 	/**
 	 * @return the mediaCount
 	 */
-	public Integer getMediaCount() {
+	public BigInteger getMediaCount() {
 		return mediaCount;
 	}
 
@@ -43,7 +47,7 @@ public class DenominationBean {
 	 * @param mediaCount
 	 *            the mediaCount to set
 	 */
-	public void setMediaCount(Integer mediaCount) {
+	public void setMediaCount(BigInteger mediaCount) {
 		this.mediaCount = mediaCount;
 	}
 

@@ -13,7 +13,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.tender.TenderBean;
 
 /**
  * @author admin
@@ -25,6 +27,21 @@ public class CommonMVCTransformer {
 
 	private CommonMVCTransformer() {
 		throw new IllegalStateException("CommonBeanTransformer class");
+	}
+
+	public static List<TenderBean> tranformTenders(List<Tender> tenders) {
+		List<TenderBean> tenderBeans = new ArrayList<>(tenders.size());
+		TenderBean tenderBean;
+		for(Tender tender:tenders) {
+			tenderBean=new TenderBean();
+			tenderBean.setTenderId(tender.getTenderId());
+			tenderBean.setName(tender.getName());
+			tenderBean.setTndrType(tender.getType());
+			tenderBean.setDescription(tender.getDescription());
+			tenderBeans.add(tenderBean);
+		}
+		logger.info("The tenders has been transformed successfully");
+		return tenderBeans;
 	}
 
 	public static Map<BigInteger, Integer> transformSelectedIds(List<String> selectedIds) {
@@ -45,7 +62,7 @@ public class CommonMVCTransformer {
 		if (locationList != null && !locationList.isEmpty()) {
 			locations = new ArrayList<>(locationList.size());
 			for (Location location : locationList) {
-				locationBean = CommonMVCTransformer.transformLocationDomainPartially(location,partial);
+				locationBean = CommonMVCTransformer.transformLocationDomainPartially(location, partial);
 				locations.add(locationBean);
 			}
 		}

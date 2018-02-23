@@ -11,6 +11,8 @@
 <script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 <script src="../../static/js/fontawesome.5.0.6.all.js" th:src="@{/js/fontawesome.5.0.6.all.js}"></script>
 <link href="../../static/css/box_radio.css" th:href="@{/css/box_radio.css}" rel="stylesheet" />
+<script src="../../static/js/dailydeed.js" th:src="@{/js/dailydeed.js}"></script>
+
 </head>
 <body>
 	<div id="wrapper">
@@ -27,6 +29,7 @@
 				</div>
 				<div class="card-body">
 					<form id="openStoreForm" action="#" th:action="@{/open_store}" th:object="${dailyDeedBean}" method="post">
+						<small th:if="${#fields.hasErrors('locationId')}" th:errors="${dailyDeedBean.locationId}" class="text-danger align-top">Location Error </small>
 						<div class="box-radio-parent">
 							<th:block th:each="location,itrStat:${locations}">
 								<label> <input type="radio" name="locationRadio" id="locationRadio" th:field="*{locationId}" th:value="${location.locationId}"></input>
@@ -79,11 +82,17 @@
 								</div>
 							</div>
 						</div>
+						<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
 						<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
 							<div class="row">
 								<div class="col-2">
 									<div class="form-group">
-										<label><small><span th:text="#{commerce.screen.common.tender.type}">Tender Type</span></small></label>
+										<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].tenderId}"></input> 
+										<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input>
+										<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input>
+										
+										<label><small><span
+												th:text="#{commerce.screen.common.tender.type}">Tender Type</span></small></label>
 									</div>
 								</div>
 								<div class="col-4">
@@ -100,7 +109,7 @@
 										<div class="form-group">
 											<label for="type"><small><span th:text="#{commerce.screen.common.tender.denomination}">Tender Denominations</span></small></label>
 											<div class="input-group text-left">
-												<select th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
+												<select th:onChange="'changedDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
 													class="form-control input-sm">
 													<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.common.tender.denomination.select}">Select
 														Denomination</option>
@@ -119,7 +128,7 @@
 											<label th:for="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"><small><span
 													th:text="#{commerce.screen.common.tender.count}">Media Count</span></small></label>
 											<div class="input-group text-left">
-												<input type="text" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
+												<input th:onChange="'changedCount(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"  type="text" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
 													th:placeholder="#{commerce.screen.store.open.tender.count}" class="form-control input-sm" data-input="data-input"></input>
 											</div>
 											<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount')}"
@@ -132,7 +141,7 @@
 											<label th:for="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"><small><span
 													th:text="#{commerce.screen.common.amount}">Amount</span></small></label>
 											<div class="input-group text-left">
-												<input type="text" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
+												<input th:onChange="'changedAmount(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"  type="text" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
 													th:placeholder="#{commerce.screen.store.open.tender.amount}" class="form-control input-sm" data-input="data-input"></input>
 											</div>
 											<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount')}"
@@ -140,22 +149,47 @@
 												class="text-danger align-top">Amount Error </small>
 										</div>
 									</div>
-									<div class="col-3">
+									<div class="col">
 										<div class="form-group">
-											<button type="button" th:onclick="'actionDenomination(\'/open_store?addDenomination=&amp;tenderId='+${itrStat.index} +'\')'"
+											<label><span></span></label>
+											<div class="input-group text-left">
+											<button type="button" name="addDenomination"
+												th:onclick="'actionDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\',\'addDenomination\')'"
 												class="btn btn-secondary btn-sm">
-												<i class="fas fa-plus fa-4x"></i>
+												<i class="fas fa-plus fa-2x"></i>
 											</button>
-											<button type="button" th:if="${#lists.size(dailyDeedBean.tenders[__${itrStat.index}__].denominations)>1}"
-												th:onclick="'actionDenomination(\'/open_store?removeDenomination=&amp;tenderId='+${itrStat.index} +'&amp;id='+ ${itrDenomination.index} +'\')'"
+											<button type="button" name="removeDenomination" th:if="${#lists.size(dailyDeedBean.tenders[__${itrStat.index}__].denominations)>1}"
+												th:onclick="'actionDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\',\'removeDenomination\')'"
 												class="btn btn-secondary btn-sm">
-												<i class="fas fa-minus fa-4x"></i>
+												<i class="fas fa-minus fa-2x"></i>
 											</button>
+											</div>
 										</div>
 									</div>
 								</div>
 							</th:block>
+						<div class="row">
+							<div class="col-3">
+							</div>
+							<div class="col-3 text-right">
+								<h5><span th:text="#{commerce.screen.common.tender.count.total}"></span></h5>
+								<h5><span th:id="${itrStat.index+'lblMediaCount'}">0</span></h5>
+							</div>
+							<div class="col-3 text-right">
+								<h5><span th:text="#{commerce.screen.common.amount.total}"></span></h5>
+								<h5><span th:id="${itrStat.index+'lbltenderAmount'}">INR 0.00</span></h5>
+							</div>
+						</div>							
 						</th:block>
+						<div class="row">
+							<div class="col-12 text-right">
+								<div class="form-group">
+									<button type="button" name="openStore" th:onclick="'submitForm(\'openStore\')'" class="btn btn-primary btn-sm">
+										<i class="fas fa-long-arrow-alt-right fa-6x"></i>
+									</button>
+								</div>
+							</div>
+						</div>
 					</form>
 				</div>
 			</div>
@@ -163,23 +197,5 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
-	<script type="text/javascript" th:inline="javascript">
-		/*<![CDATA[*/
-
-		$(function() {
-
-		$('#businessDate').flatpickr({
-			dateFormat : 'd-M-y',
-		});});
-
-		function actionDenomination(action) {
-
-			$("#openStoreForm").attr("action", action);
-
-			$('#openStoreForm').submit();
-		}		
-		
-		/*]]>*/
-	</script>
 </body>
 </html>

@@ -76,6 +76,18 @@ ENGINE = InnoDB;
 
 CREATE INDEX `fk_sku_generator_style_generator1_idx` ON `commercedb`.`sku_generator` (`style_id` ASC);
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`seq_generator`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`seq_generator` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`seq_generator` (
+  `name` VARCHAR(100) NOT NULL,
+  `value` BIGINT NOT NULL,
+  PRIMARY KEY (`name`))
+ENGINE = InnoDB;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

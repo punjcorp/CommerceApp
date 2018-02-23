@@ -29,13 +29,13 @@ public class Transaction implements Serializable {
 	private String sessionId;
 
 	@Column(name = "total")
-	private BigDecimal totalAmt;
+	private BigDecimal totalAmt = new BigDecimal("0");
 	@Column(name = "tax_total")
-	private BigDecimal taxTotalAmt;
+	private BigDecimal taxTotalAmt = new BigDecimal("0");
 	@Column(name = "round_total")
-	private BigDecimal roundTotalAmt;
+	private BigDecimal roundTotalAmt = new BigDecimal("0");
 	@Column(name = "subtotal")
-	private BigDecimal subTotalAmt;
+	private BigDecimal subTotalAmt = new BigDecimal("0");
 
 	@Column(name = "cancel_reason_code")
 	private String cancelReason;
