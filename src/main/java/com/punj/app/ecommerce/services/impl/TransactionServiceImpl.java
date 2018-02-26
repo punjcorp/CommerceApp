@@ -44,7 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	@Override
-	public Transaction createTransactionInstance(TransactionIdDTO txnIdDTO, String username) {
+	public Transaction createTransactionInstance(TransactionIdDTO txnIdDTO, String username, String txnType) {
 		TransactionId txnId = new TransactionId();
 		txnId.setTransactionSeq(txnIdDTO.getTxnNo());
 		txnId.setLocationId(txnIdDTO.getLocationId());
@@ -58,13 +58,10 @@ public class TransactionServiceImpl implements TransactionService {
 		txnDetails.setCreatedBy(username);
 
 		txnDetails.setStatus(ServiceConstants.TXN_STATUS_STARTED);
-		txnDetails.setTxnType(ServiceConstants.TXN_OPEN_STORE);
+		txnDetails.setTxnType(txnType);
 
+		logger.info("The transaction {} instance has been created based on provided details",txnType);
+		
 		return txnDetails;
-	}
-
-	public Integer getNextTxnNo(Integer register, Integer locationId) {
-
-		return 0;
 	}
 }

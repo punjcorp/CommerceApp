@@ -1,25 +1,18 @@
-var totalAmountVal=0;
-var totalCountVal=0;
+var totalAmountVal = 0;
+var totalCountVal = 0;
 
-$(function() {
-
-	$('#businessDate').flatpickr({
-		dateFormat : 'd-M-y',
-	});
-});
-
-function actionDenomination(tenderId, denominationId, actionParam) {
+function actionDenomination(tenderId, denominationId, actionParam, formName) {
 
 	$("#selectedTenderId").val(tenderId);
 	$("#selectedDenominationId").val(denominationId);
-	submitForm(actionParam);
+	submitForm(formName, actionParam);
 }
 
-function submitForm(actionParam) {
+function submitForm(formName, actionParam) {
 	$('<input />').attr('type', 'hidden').attr('name', actionParam).appendTo(
-			'#openStoreForm');
+			'#' + formName);
 
-	$('#openStoreForm').submit();
+	$('#' + formName).submit();
 }
 
 function changedDenomination(tndrIndex, denomIndex) {
@@ -68,6 +61,10 @@ function changedAmount(tndrIndex, denomIndex) {
 			'#tenders' + tndrIndex + '\\.denominations' + denomIndex
 					+ '\\.amount').val();
 
+	amountVal = amountVal.toFixed(2);
+	$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.amount')
+			.val(amountVal);
+
 	if ((amountVal % denomVal) == 0) {
 		$(
 				'#tenders' + tndrIndex + '\\.denominations' + denomIndex
@@ -84,10 +81,9 @@ function changedAmount(tndrIndex, denomIndex) {
 
 }
 
-
 function updateTenderTotal(tndrIndex) {
-	totalAmountVal=0;
-	totalCountVal=0;
+	totalAmountVal = 0;
+	totalCountVal = 0;
 	$("[id^=tenders" + tndrIndex + "]").each(function() {
 		if (this.id.indexOf("mediaCount") >= 0) {
 			totalCountVal += +$(this).val();
@@ -98,5 +94,8 @@ function updateTenderTotal(tndrIndex) {
 	});
 
 	$('#' + tndrIndex + 'lblMediaCount').text(totalCountVal);
-	$('#' + tndrIndex + 'lbltenderAmount').text(totalAmountVal.toFixed(2));
+	$('#' + tndrIndex + 'lbltenderAmount').text("INR "+totalAmountVal.toFixed(2));
+	$('#tenders' + tndrIndex + '\\.calMCount').val(totalCountVal);
+	$('#tenders' + tndrIndex + '\\.calTAmount').val(totalAmountVal.toFixed(2));	
+	
 }

@@ -133,6 +133,7 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";
 	
 	public static final String OPEN_STORE_PARAM= "openStore";
+	public static final String OPEN_REGISTER_PARAM= "openRegister";
 	public static final String ADD_DENOMINATION_PARAM= "addDenomination";
 	public static final String REMOVE_DENOMINATION_PARAM= "removeDenomination";
 	

@@ -3,7 +3,7 @@
  */
 package com.punj.app.ecommerce.services;
 
-import com.punj.app.ecommerce.services.dtos.StoreOpenTransaction;
+import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
 
 /**
  * @author admin
@@ -11,6 +11,8 @@ import com.punj.app.ecommerce.services.dtos.StoreOpenTransaction;
  */
 public interface DailyDeedService {
 
-	public Boolean saveStoreOpenTxn(StoreOpenTransaction storeOpenDetails, String username);
+	public Boolean saveStoreOpenTxn(DailyOpenTransaction storeOpenDetails, String username);
+
+	public Boolean saveRegisterOpenTxn(DailyOpenTransaction storeOpenDetails, String username);
 
 }

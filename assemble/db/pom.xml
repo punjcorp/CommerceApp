@@ -32,7 +32,7 @@
 					<driver>com.mysql.jdbc.Driver</driver>
 					<url>jdbc:mysql://localhost:3306/commercedb?autoreconnect=true</url>
 					<user>root</user>
-					<password>root</password>
+					<password>G00gl3r$</password>
 					<schemas>
 						<schema>commercedb</schema>
 					</schemas>

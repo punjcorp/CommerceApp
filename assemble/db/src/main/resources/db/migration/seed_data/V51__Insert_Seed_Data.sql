@@ -28,6 +28,11 @@ INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `create
 commit;
 
 -- -----------------------------------------------------
+-- Seed data for register_master table
+-- -----------------------------------------------------
+INSERT INTO `commercedb`.`register_master` (`register`, `name`, `created_by`, `created_date`) VALUES ('1', '1', 'admin', now());
+commit;
+-- -----------------------------------------------------
 -- Seed data for tax tables
 -- -----------------------------------------------------
 

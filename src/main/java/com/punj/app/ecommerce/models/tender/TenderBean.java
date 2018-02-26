@@ -22,8 +22,8 @@ public class TenderBean {
 	private String description;
 	private Integer subTenderId;
 
-	private BigDecimal calTAmount;
-	private BigInteger calMCount;
+	private BigDecimal calTAmount=new BigDecimal("0.0");
+	private BigInteger calMCount=new BigInteger("0");
 	@Valid
 	private List<DenominationBean> denominations;
 

@@ -22,6 +22,7 @@ public class DailyDeedBean {
 
 	@NotNull(message = "{commerce.error.location.empty}")
 	private Integer locationId;
+	private String locationName;
 	@NotNull(message = "{commerce.error.date.empty}")
 	private LocalDateTime businessDate;
 	private Integer register;
@@ -158,6 +159,14 @@ public class DailyDeedBean {
 	 */
 	public void setSelectedDenominationId(Integer selectedDenominationId) {
 		this.selectedDenominationId = selectedDenominationId;
+	}
+
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
 	}
 
 }

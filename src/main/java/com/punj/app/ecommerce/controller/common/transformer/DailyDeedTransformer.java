@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
-import com.punj.app.ecommerce.services.dtos.StoreOpenTransaction;
+import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
 import com.punj.app.ecommerce.services.dtos.tender.DenominationDTO;
 import com.punj.app.ecommerce.services.dtos.tender.TenderDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
@@ -30,24 +30,26 @@ public class DailyDeedTransformer {
 		throw new IllegalStateException("DailyDeedTransformer class");
 	}
 
-	public static StoreOpenTransaction transformStoreOpenDetails(DailyDeedBean dailyDeedBean) {
-		StoreOpenTransaction storeOpenTxn = new StoreOpenTransaction();
+	public static DailyOpenTransaction transformOpenTxnDetails(DailyDeedBean dailyDeedBean) {
+		DailyOpenTransaction storeOpenTxn = new DailyOpenTransaction();
 
-		TransactionIdDTO transactionId = DailyDeedTransformer.transformTransactionDetails(dailyDeedBean.getBusinessDate(), dailyDeedBean.getLocationId());
+		TransactionIdDTO transactionId = DailyDeedTransformer.transformTransactionDetails(
+				dailyDeedBean.getBusinessDate(), dailyDeedBean.getLocationId(), dailyDeedBean.getRegister());
 		storeOpenTxn.setTransactionId(transactionId);
 
-		List<TenderDTO> tenders=DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders());
+		List<TenderDTO> tenders = DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders());
 		storeOpenTxn.setTenders(tenders);
 
 		logger.info("The selected ids and list index from management page has been seperated");
 		return storeOpenTxn;
 	}
 
-	public static TransactionIdDTO transformTransactionDetails(LocalDateTime businessDate, Integer locationId) {
+	public static TransactionIdDTO transformTransactionDetails(LocalDateTime businessDate, Integer locationId,
+			Integer register) {
 		TransactionIdDTO transactionId = new TransactionIdDTO();
 		transactionId.setBusinessDate(businessDate);
 		transactionId.setLocationId(locationId);
-
+		transactionId.setRegister(register);
 		return transactionId;
 	}
 
@@ -70,7 +72,8 @@ public class DailyDeedTransformer {
 		tender.setAmount(tenderBean.getCalTAmount());
 		tender.setMediaCount(tenderBean.getCalMCount());
 
-		List<DenominationDTO> denominations = DailyDeedTransformer.transformDenominationList(tenderBean.getDenominations());
+		List<DenominationDTO> denominations = DailyDeedTransformer
+				.transformDenominationList(tenderBean.getDenominations());
 		tender.setDenominations(denominations);
 
 		logger.info("The tender details has been transformed successfully");

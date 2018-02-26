@@ -12,9 +12,7 @@ USE `commercedb` ;
 -- -----------------------------------------------------
 -- View Creation `commercedb`.`v_location_tax`
 -- -----------------------------------------------------
-DROP VIEW `commercedb`.`v_location_tax`;
-
-CREATE VIEW `commercedb`.`v_location_tax`
+CREATE OR REPLACE VIEW `commercedb`.`v_location_tax`
 AS
 SELECT 
     tlm.location_id , tl.code `billing_location`, tg.tax_group_id, tg.name `tax_group_name`, tg.description `tax_group_desc`, tgr.seq_no `tax_group_rate_seq`, tgr.name `tax_group_rate_name`, tgr.description `tax_group_rate_desc`,

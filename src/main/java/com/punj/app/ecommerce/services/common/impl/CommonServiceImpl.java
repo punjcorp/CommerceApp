@@ -78,6 +78,8 @@ public class CommonServiceImpl implements CommonService {
 		BigInteger result;
 		IdGenerator idGen = this.idGenRepository.findOne(name);
 		if (idGen != null) {
+			idGen.setSeq(idGen.getSeq().add(BigInteger.ONE));
+			idGen=this.idGenRepository.save(idGen);
 			result = idGen.getSeq();
 			logger.info("The sequence {} retrieved for key {} successfully", result, name);
 		} else {

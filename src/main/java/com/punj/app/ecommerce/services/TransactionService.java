@@ -14,6 +14,6 @@ public interface TransactionService {
 
 	public Transaction saveTransaction(Transaction txnDetails);
 
-	public Transaction createTransactionInstance(TransactionIdDTO txnIdDTO, String username);
+	public Transaction createTransactionInstance(TransactionIdDTO txnIdDTO, String username, String txnType);
 
 }
