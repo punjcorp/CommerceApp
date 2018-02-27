@@ -24,24 +24,31 @@ commit;
 -- -----------------------------------------------------
 -- Seed data for tender_master table
 -- -----------------------------------------------------
+truncate `commercedb`.`tender_master`;
 INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('CASH', 'CASH', 'This is the cash tender description', 'admin', now());
 commit;
 
 -- -----------------------------------------------------
 -- Seed data for register_master table
 -- -----------------------------------------------------
+truncate `commercedb`.`register_master`;
 INSERT INTO `commercedb`.`register_master` (`register`, `name`, `created_by`, `created_date`) VALUES ('1', '1', 'admin', now());
+INSERT INTO `commercedb`.`register_master` (`register`, `name`, `created_by`, `created_date`) VALUES ('2', '2', 'admin', now());
 commit;
+
 -- -----------------------------------------------------
 -- Seed data for tax tables
 -- -----------------------------------------------------
-
 truncate `commercedb`.`tax_rate_rule`;
 truncate `commercedb`.`tax_bracket`;
 truncate `commercedb`.`tax_group_rule`;
 truncate `commercedb`.`tax_group`;
 truncate `commercedb`.`tax_location`;
 truncate `commercedb`.`tax_authority`;
+truncate `commercedb`.`tax_location_mapping`;
+
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 1);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 2);
 
 
 INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
@@ -103,30 +110,48 @@ INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `t
 INSERT INTO `commercedb`.`tax_bracket` (`seq_no`, `breakpoint`, `tax_amount`, `created_date`, `created_by`) VALUES ('1', '-1', '-1', now(), 'admin');
 
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '0', '0', now(), now(), '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '0', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('1', '1', '1', '0', '1', '0', now(), now(), '0', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '0', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '0', '0', now(), now(), '2.5', 'SGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '2.5', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('2', '1', '1', '0', '1', '0', now(), now(), '2.5', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('2', '1', '1', '1', '1', '1', now(), now(), '2.5', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '0', '0', now(), now(), '5', 'SGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '5', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('3', '1', '1', '0', '1', '0', now(), now(), '5', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('3', '1', '1', '1', '1', '1', now(), now(), '5', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '0', '0', now(), now(), '6', 'SGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '6', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('4', '1', '1', '0', '1', '0', now(), now(), '6', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('4', '1', '1', '1', '1', '1', now(), now(), '6', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '0', '0', now(), now(), '9', 'SGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '9', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('5', '1', '1', '0', '1', '0', now(), now(), '9', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('5', '1', '1', '1', '1', '1', now(), now(), '9', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '0', '0', now(), now(), '14', 'SGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '14', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('6', '1', '1', '0', '1', '0', now(), now(), '14', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('6', '1', '1', '1', '1', '1', now(), now(), '14', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '1', '0', '0', now(), now(), '0', 'IGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '1', '0', '0', now(), now(), '5', 'IGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '1', '0', '0', now(), now(), '10', 'IGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '1', '0', '0', now(), now(), '12', 'IGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '1', '0', '0', now(), now(), '18', 'IGST', 'A', 'admin', now());
-INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '1', '0', '0', now(), now(), '28', 'IGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('1', '2', '1', '0', '1', '0', now(), now(), '0', 'IGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('2', '2', '1', '0', '1', '0', now(), now(), '5', 'IGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('3', '2', '1', '0', '1', '0', now(), now(), '10', 'IGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('4', '2', '1', '0', '1', '0', now(), now(), '12', 'IGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('5', '2', '1', '0', '1', '0', now(), now(), '18', 'IGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+VALUES ('6', '2', '1', '0', '1', '0', now(), now(), '28', 'IGST', 'A', 'admin', now());
 commit;
 
 

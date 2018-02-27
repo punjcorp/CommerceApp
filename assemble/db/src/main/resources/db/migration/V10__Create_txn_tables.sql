@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_master` (
   `txn_no` INT(5) NOT NULL,
   `start_time` DATETIME NOT NULL,
   `end_time` DATETIME NULL,
-  `offline_flag` TINYINT NOT NULL DEFAULT 0,
+  `offline_flag` TINYINT NULL,
   `session_id` VARCHAR(45) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
@@ -45,10 +45,10 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_master` (
   `tax_total` DECIMAL(12,2) NOT NULL,
   `round_total` DECIMAL(12,2) NOT NULL,
   `subtotal` DECIMAL(12,2) NOT NULL,
-  `cancel_reason_code` VARCHAR(20) NOT NULL,
+  `cancel_reason_code` VARCHAR(20) NULL,
   `txn_type` VARCHAR(50) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
-  `post_void_flag` TINYINT NOT NULL DEFAULT 0,
+  `post_void_flag` TINYINT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
@@ -67,6 +67,7 @@ ENGINE = InnoDB;
 CREATE INDEX `fk_txn_master_location1_idx` ON `commercedb`.`txn_master` (`location_id` ASC);
 
 CREATE INDEX `fk_txn_master_register_master1_idx` ON `commercedb`.`txn_master` (`register` ASC);
+
 
 
 -- -----------------------------------------------------

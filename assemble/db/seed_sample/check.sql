@@ -1,14 +1,16 @@
 /*
--- Query: select * from `attribute_master`
+-- Query: select * from commercedb.item_price
 LIMIT 0, 1000
 
--- Date: 2017-12-14 18:38
+-- Date: 2018-02-26 22:33
 */
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (1,'L','S','Large Size','Size for an item',1);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (2,'M','S','Medium Size','Medium Size',2);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (3,'S','S','Small Size',NULL,3);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (4,'Red','C','Red Color','Red Color',1);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (5,'Green','C','Green',NULL,2);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (6,'4.5','D','Length',NULL,1);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (7,'6','D','Breadth',NULL,2);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (8,'8','D','Height',NULL,3);
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (1,10000050103,7997,'1','2018-02-24 16:25:00',NULL,45.00,'C','admin@gmail.com','2018-02-15 10:14:19','admin@gmail.com','2018-02-15 12:51:50');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (2,10000050102,7997,'1','2018-02-18 14:15:00',NULL,30.00,'A','admin@gmail.com','2018-02-15 10:15:50','admin@gmail.com','2018-02-15 12:55:04');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (3,10000050102,7997,'2','2018-02-19 17:20:00','2018-02-27 17:20:00',35.00,'A','admin@gmail.com','2018-02-15 10:16:25','admin@gmail.com','2018-02-15 22:16:05');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (4,10000050102,7997,'3','2018-02-19 00:00:00',NULL,20.00,'A','admin@gmail.com','2018-02-15 10:16:55','admin@gmail.com','2018-02-16 19:15:07');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (5,10000050102,7997,'1','2018-02-20 09:25:00',NULL,20.00,'C','admin@gmail.com','2018-02-16 18:55:26','admin@gmail.com','2018-02-17 10:36:41');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (6,1000007,7997,'1','2018-02-17 14:15:00',NULL,26.00,'A','admin@gmail.com','2018-02-16 19:11:05','admin@gmail.com','2018-02-16 19:13:35');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (7,1000007,7997,'1','2018-02-07 13:50:00',NULL,23.00,'C','admin@gmail.com','2018-02-17 10:33:26',NULL,NULL);
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (8,1000002,7997,'1','2018-02-23 12:00:00',NULL,23.00,'C','admin@gmail.com','2018-02-17 10:34:09',NULL,NULL);
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (9,1000007,7997,'1','2018-02-22 12:00:00',NULL,15.00,'C','admin@gmail.com','2018-02-17 10:35:02','admin@gmail.com','2018-02-17 10:37:21');
+INSERT INTO `commercedb`.`item_price` (`item_price_id`,`item_id`,`location_id`,`price_change_type`,`start_date`,`end_date`,`item_price`,`status`,`created_by`,`created_date`,`modified_by`,`modified_date`) VALUES (10,1000003,7997,'1','2018-02-23 13:50:00',NULL,10.00,'C','admin@gmail.com','2018-02-17 10:35:44','admin@gmail.com','2018-02-17 10:37:02');
