@@ -126,5 +126,12 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 
 		return result;
 	}
+	
+	
+	public void getLocationsWithStatus(){
+		
+	}
+	
+	
 
 }

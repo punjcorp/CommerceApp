@@ -34,7 +34,11 @@
 						Store for Daily Deeds</h3>
 				</div>
 				<div class="card-body">
-					<form id="openStoreForm" action="#" th:action="@{/open_store}"
+					<div th:if="${ success!=null}" th:text="${success}"
+						class="alert alert-success " role="alert"></div>
+					<div th:if="${ alert!=null}" th:text="${alert}"
+						class="alert alert-danger " role="alert"></div>
+					<form id="openStoreForm" action="#" th:action="@{/pos/open_store}"
 						th:object="${dailyDeedBean}" method="post">
 						<small th:if="${#fields.hasErrors('locationId')}"
 							th:errors="${dailyDeedBean.locationId}"
@@ -43,7 +47,8 @@
 							<th:block th:each="location,itrStat:${locations}">
 								<label> <input type="radio" name="locationRadio"
 									id="locationRadio" th:field="*{locationId}"
-									th:value="${location.locationId}"></input>
+									th:value="${location.locationId}"
+									th:disabled="${!location.eligibleForStoreOpen}"></input>
 									<div class="box">
 										<div class="row box-text">
 											<div class="col-3">
@@ -72,9 +77,28 @@
 														th:text="${location.state}"></span>,
 												</div>
 												<div>
-													<span th:text="${location.country}">-<span
+													<span th:text="${location.country}"></span>-<span
 														th:text="${location.pincode}"></span>.
-													</span>
+												</div>
+											</div>
+										</div>
+										<div class="row box-footer">
+											<div class="col">
+												<div th:if="${location.lastStatus}">
+													<small><span
+														th:text="#{commerce.screen.store.open.status.last}"></span></small>
+													: <span th:text="${location.lastStatus}"></span>
+
+												</div>
+												<div th:if="${location.lastBusinessDate}">
+													<small><span
+														th:text="#{commerce.screen.store.open.date.on}"></span></small> :
+													<span th:text="${location.lastBusinessDate}"></span>
+
+												</div>
+												<div th:if="${!location.eligibleForStoreOpen}">
+													<small><i><span
+															th:text="#{commerce.screen.store.open.not.allowed}"></span></i></small>
 												</div>
 											</div>
 										</div>
@@ -118,7 +142,8 @@
 													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input>
 												<input type="hidden"
 													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input>
-												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input>
+												<input type="hidden"
+													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input>
 												<label><span
 													th:text="#{commerce.screen.common.tender.type}">Tender
 														Type</span></label>
@@ -231,8 +256,10 @@
 											<span th:text="#{commerce.screen.common.tender.count.total}"></span>
 										</h5>
 										<h5>
-											<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input>
-											<span th:id="${itrStat.index+'lblMediaCount'}" th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
+											<input type="hidden"
+												th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input>
+											<span th:id="${itrStat.index+'lblMediaCount'}"
+												th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
 										</h5>
 									</div>
 									<div class="col-3 text-right">
@@ -240,8 +267,10 @@
 											<span th:text="#{commerce.screen.common.amount.total}"></span>
 										</h5>
 										<h5>
-											<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input>
-											<span th:id="${itrStat.index+'lbltenderAmount'}" th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR
+											<input type="hidden"
+												th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input>
+											<span th:id="${itrStat.index+'lbltenderAmount'}"
+												th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR
 												0.00</span>
 										</h5>
 									</div>
@@ -267,13 +296,13 @@
 	</div>
 	<!-- /#wrapper -->
 	<script>
-	$(function() {
-		$('#businessDate').flatpickr({
-			dateFormat : 'd-M-y',
+		$(function() {
+			$('#businessDate').flatpickr({
+				dateFormat : 'd-M-y',
+				minDate: "today"
+			});
 		});
-	});	
-	
 	</script>
-	
+
 </body>
 </html>

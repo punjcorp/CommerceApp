@@ -3,6 +3,8 @@
  */
 package com.punj.app.ecommerce.models.common;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -28,6 +30,11 @@ public class LocationBean {
 	private String telephone2;
 	private String manager;
 	private String email;
+
+	private LocalDateTime lastBusinessDate;
+	private LocalDateTime lastCreatedDate;
+	private String lastStatus;
+	private Boolean eligibleForStoreOpen=Boolean.TRUE;
 
 	/**
 	 * @return the locationId
@@ -239,4 +246,65 @@ public class LocationBean {
 		this.email = email;
 	}
 
+	/**
+	 * @return the lastBusinessDate
+	 */
+	public LocalDateTime getLastBusinessDate() {
+		return lastBusinessDate;
+	}
+
+	/**
+	 * @param lastBusinessDate
+	 *            the lastBusinessDate to set
+	 */
+	public void setLastBusinessDate(LocalDateTime lastBusinessDate) {
+		this.lastBusinessDate = lastBusinessDate;
+	}
+
+	/**
+	 * @return the lastStatus
+	 */
+	public String getLastStatus() {
+		return lastStatus;
+	}
+
+	/**
+	 * @param lastStatus
+	 *            the lastStatus to set
+	 */
+	public void setLastStatus(String lastStatus) {
+		this.lastStatus = lastStatus;
+	}
+
+	/**
+	 * @return the eligibleForStoreOpen
+	 */
+	public Boolean getEligibleForStoreOpen() {
+		return eligibleForStoreOpen;
+	}
+
+	/**
+	 * @param eligibleForStoreOpen
+	 *            the eligibleForStoreOpen to set
+	 */
+	public void setEligibleForStoreOpen(Boolean eligibleForStoreOpen) {
+		this.eligibleForStoreOpen = eligibleForStoreOpen;
+	}
+
+	/**
+	 * @return the lastCreatedDate
+	 */
+	public LocalDateTime getLastCreatedDate() {
+		return lastCreatedDate;
+	}
+
+	/**
+	 * @param lastCreatedDate the lastCreatedDate to set
+	 */
+	public void setLastCreatedDate(LocalDateTime lastCreatedDate) {
+		this.lastCreatedDate = lastCreatedDate;
+	}
+
+	
+	
 }

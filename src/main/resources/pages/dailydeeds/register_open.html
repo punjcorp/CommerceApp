@@ -34,7 +34,11 @@
 						Register Details for Daily Deeds</h3>
 				</div>
 				<div class="card-body">
-					<form id="openRegisterForm" action="#" th:action="@{/open_register}"
+						<div th:if="${ success!=null}" th:text="${success}"
+							class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}"
+							class="alert alert-danger " role="alert"></div>				
+					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}"
 						th:object="${dailyDeedBean}" method="post">
 						<div class="row">
 							<div class="col-6">

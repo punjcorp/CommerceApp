@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 
 /**
  * @author admin
@@ -69,6 +73,43 @@ public class CommonMVCTransformer {
 		logger.info("All the locations from list has been transformed into location bean list");
 		return locations;
 	}
+	
+	public static List<LocationBean> transformLocationDTO(LocationDTO locationDTO) {
+		LocationBean locationBean = null;
+		List<LocationBean> locations = null;
+		Transaction txnDetails;
+		
+		Map<Integer,Transaction> lastTxnStatusTxns= locationDTO.getLastTxnStatus();
+		
+		List<Location> locationList=locationDTO.getLocations(); 
+		if (locationList != null && !locationList.isEmpty()) {
+			locations = new ArrayList<>(locationList.size());
+			for (Location location : locationList) {
+				locationBean = CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
+				txnDetails=lastTxnStatusTxns.get(locationBean.getLocationId());
+				locationBean= CommonMVCTransformer.updateLocationTxnStatus(locationBean, txnDetails);
+				locations.add(locationBean);
+			}
+		}
+		logger.info("All the locations from list has been transformed into location bean list");
+		return locations;
+	}	
+	
+	public static LocationBean updateLocationTxnStatus(LocationBean locationBean,Transaction txnDetails){
+		if(txnDetails!=null){
+			String txnType=txnDetails.getTxnType();
+			locationBean.setLastBusinessDate(txnDetails.getTransactionId().getBusinessDate());
+			locationBean.setLastCreatedDate(txnDetails.getStartTime());
+			locationBean.setLastStatus(txnType);
+			if(txnDetails.getTxnType().equals(ServiceConstants.TXN_OPEN_STORE)){
+				locationBean.setEligibleForStoreOpen(Boolean.FALSE);
+			}else{
+				locationBean.setEligibleForStoreOpen(Boolean.TRUE);
+			}
+		}
+		return locationBean;
+	}
+	
 
 	public static LocationBean transformLocationDomainPartially(Location location, Boolean partial) {
 		LocationBean locationBean = new LocationBean();

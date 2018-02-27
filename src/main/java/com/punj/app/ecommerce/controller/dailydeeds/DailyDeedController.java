@@ -30,7 +30,6 @@ import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
-import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
@@ -38,6 +37,7 @@ import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
 
 /**
@@ -101,8 +101,9 @@ public class DailyDeedController {
 	}
 
 	private void updateBeans(DailyDeedBean dailyDeedBean, Model model) {
-		List<Location> locationList = this.commonService.retrieveAllLocations();
-		List<LocationBean> locations = CommonMVCTransformer.transformLocationList(locationList, MVCConstants.LOC_FULL);
+		
+		LocationDTO locationDTO= this.commonService.retrieveLocationWithDailyStatus();
+		List<LocationBean> locations = CommonMVCTransformer.transformLocationDTO(locationDTO);
 
 		Integer locationId = dailyDeedBean.getLocationId();
 		if (locationId != null) {
@@ -159,6 +160,7 @@ public class DailyDeedController {
 			model.addAttribute(MVCConstants.ALERT,
 					this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 			logger.error("There was some error while opening the store", e);
+			this.updateBeans(dailyDeedBean, model);
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
 
@@ -188,6 +190,7 @@ public class DailyDeedController {
 			model.addAttribute(MVCConstants.ALERT,
 					this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 			logger.error("There was some error while adding a new denomination during store open process", e);
+			this.updateBeans(dailyDeedBean, model);
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
 
@@ -219,6 +222,7 @@ public class DailyDeedController {
 			model.addAttribute(MVCConstants.ALERT,
 					this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 			logger.error("There was some error while opening the store", e);
+			this.updateBeans(dailyDeedBean, model);
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
 
@@ -233,9 +237,6 @@ public class DailyDeedController {
 		try {
 			if (dailyDeedBean != null && dailyDeedBean.getLocationId() != null
 					&& dailyDeedBean.getBusinessDate() != null) {
-				List<Tender> tenders = this.commonService.retrieveAllTenders();
-				List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
-				dailyDeedBean.setTenders(tenderBeans);
 				this.updateBeans(dailyDeedBean, model);
 				logger.info("The Register open screen is ready for display");
 			} else {

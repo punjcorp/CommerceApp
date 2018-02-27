@@ -4,7 +4,11 @@
 package com.punj.app.ecommerce.services.common.impl;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,10 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
+import com.punj.app.ecommerce.repositories.tax.LocationTaxRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
+import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 
 /**
  * @author admin
@@ -31,7 +40,19 @@ public class CommonServiceImpl implements CommonService {
 	private LocationRepository locationRepository;
 	private IdGeneratorRepository idGenRepository;
 	private TenderRepository tenderRepository;
+	private TransactionService txnService;
 
+	
+	/**
+	 * @param txnService
+	 *            the txnService to set
+	 */
+	@Autowired
+	public void setTransactionService(TransactionService txnService) {
+		this.txnService = txnService;
+	}	
+	
+	
 	/**
 	 * @return the locationRepository
 	 */
@@ -71,6 +92,34 @@ public class CommonServiceImpl implements CommonService {
 		logger.info("The method to retrieve all the locations has been called");
 		return this.locationRepository.findAll();
 	}
+	
+	@Override
+	public LocationDTO retrieveLocationWithDailyStatus() {
+		LocationDTO locationDTO=new LocationDTO();
+		logger.info("The method to retrieve all the locations with last txn Status has been called");
+		List<Location> locations=this.retrieveAllLocations();
+		locationDTO.setLocations(locations);
+		locationDTO.setLastTxnStatus(this.retrieveLocationsStoreTxnStatus(locations));
+		logger.info("All the location details with daily status has been retrieved successfully");
+		return locationDTO;
+	}	
+	
+	
+	private Map<Integer, Transaction> retrieveLocationsStoreTxnStatus(List<Location> locations) {
+		Map<Integer, Transaction> locationLastTxnMap=new HashMap<>();
+		Set<String> txnTypes=new HashSet<>();
+		txnTypes.add(ServiceConstants.TXN_CLOSE_STORE);
+		txnTypes.add(ServiceConstants.TXN_OPEN_STORE);
+		Transaction txnDetails;
+		Integer locationId;
+		for(Location location:locations){
+			locationId=location.getLocationId();
+			txnDetails=this.txnService.searchTxnByCriteria(locationId, txnTypes);
+			locationLastTxnMap.put(locationId, txnDetails);
+		}
+		logger.info("The last daily deed txn status for all location has been retrieved successfully");
+		return locationLastTxnMap;
+	}	
 
 	@Override
 	@Transactional

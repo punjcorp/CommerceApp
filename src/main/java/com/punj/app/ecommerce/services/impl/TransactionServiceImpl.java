@@ -4,10 +4,14 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.transaction.Transaction;
@@ -60,8 +64,37 @@ public class TransactionServiceImpl implements TransactionService {
 		txnDetails.setStatus(ServiceConstants.TXN_STATUS_STARTED);
 		txnDetails.setTxnType(txnType);
 
-		logger.info("The transaction {} instance has been created based on provided details",txnType);
-		
+		logger.info("The transaction {} instance has been created based on provided details", txnType);
+
 		return txnDetails;
 	}
+
+	@Override
+	public Transaction searchTxnByCriteria(Integer locationId, Set<String> txnTypes) {
+
+		/*
+		 * Sort sort =new Sort(Sort.Direction.ASC,"transactionId.locationId");
+		 * sort.and(new Sort(Sort.Direction.DESC,"transactionId.businessDate"));
+		 * sort.and(new Sort(Sort.Direction.DESC,"startTime"));
+		 */
+		Transaction txnDetails = this.transactionRepository.getTop1ByCriteriaAndSort(locationId, txnTypes);
+		if (txnDetails != null)
+			logger.info("The last transaction {} details retrieved successfully", txnDetails.getTransactionId());
+		return txnDetails;
+	}
+
+	private Map<Integer, Transaction> searchTxnByCriteria(List<Integer> locationIds, Set<String> txnTypes) {
+		Sort sort = new Sort(Sort.Direction.ASC, "transactionId.locationId");
+		sort.and(new Sort(Sort.Direction.DESC, "transactionId.businessDate"));
+		sort.and(new Sort(Sort.Direction.DESC, "startTime"));
+		List<Transaction> txnDetails = null;
+		/*
+		 * =this.transactionRepository.getTop1ByCriteriaAndSort(ListlocationIds,
+		 * txnTypes, sort); if(txnDetails!=null)
+		 * logger.info("The last transaction {} details retrieved successfully",
+		 * txnDetails.getTransactionId());
+		 */
+		return null;
+	}
+
 }
