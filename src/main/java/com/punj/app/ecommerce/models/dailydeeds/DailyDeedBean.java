@@ -33,6 +33,8 @@ public class DailyDeedBean {
 	@Valid
 	private List<TenderBean> tenders;
 
+	private List<TenderBean> availableTenders;
+
 	private List<MonetaryAmount> denominationList;
 
 	public DailyDeedBean() {
@@ -161,12 +163,35 @@ public class DailyDeedBean {
 		this.selectedDenominationId = selectedDenominationId;
 	}
 
+	/**
+	 * @return the locationName
+	 */
 	public String getLocationName() {
 		return locationName;
 	}
 
+	/**
+	 * @param locationName
+	 *            the locationName to set
+	 */
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
+
+	/**
+	 * @return the availableTenders
+	 */
+	public List<TenderBean> getAvailableTenders() {
+		return availableTenders;
+	}
+
+	/**
+	 * @param availableTenders the availableTenders to set
+	 */
+	public void setAvailableTenders(List<TenderBean> availableTenders) {
+		this.availableTenders = availableTenders;
+	}
+
+
 
 }

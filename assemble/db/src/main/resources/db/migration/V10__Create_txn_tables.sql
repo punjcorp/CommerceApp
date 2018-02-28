@@ -15,14 +15,22 @@ USE `commercedb` ;
 DROP TABLE IF EXISTS `commercedb`.`register_master` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`register_master` (
-  `register` INT(3) NOT NULL AUTO_INCREMENT,
+  `location_id` INT(4) NOT NULL,
+  `register_id` INT(3) NOT NULL,
   `name` VARCHAR(100) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`register`))
+  PRIMARY KEY (`location_id`, `register_id`),
+  CONSTRAINT `fk_register_master_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_register_master_location1_idx` ON `commercedb`.`register_master` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -52,21 +60,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_master` (
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
-  CONSTRAINT `fk_txn_master_location1`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_txn_master_register_master1` (`location_id` ASC, `register` ASC),
   CONSTRAINT `fk_txn_master_register_master1`
-    FOREIGN KEY (`register`)
-    REFERENCES `commercedb`.`register_master` (`register`)
+    FOREIGN KEY (`location_id`, `register`)
+    REFERENCES `commercedb`.`register_master` (`location_id`, `register_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_txn_master_location1_idx` ON `commercedb`.`txn_master` (`location_id` ASC);
+CREATE INDEX `fk_txn_master_register_master1_idx` ON `commercedb`.`txn_master` (`register` ASC, `location_id` ASC);
 
-CREATE INDEX `fk_txn_master_register_master1_idx` ON `commercedb`.`txn_master` (`register` ASC);
+
 
 
 

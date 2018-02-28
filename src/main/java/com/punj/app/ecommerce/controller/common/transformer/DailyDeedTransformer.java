@@ -53,6 +53,7 @@ public class DailyDeedTransformer {
 		return transactionId;
 	}
 
+	
 	public static List<TenderDTO> transformTenderList(List<TenderBean> tenderBeans) {
 		List<TenderDTO> tenders = new ArrayList<>(tenderBeans.size());
 		TenderDTO tender;
@@ -103,4 +104,55 @@ public class DailyDeedTransformer {
 		return denomination;
 	}
 
+	public static List<TenderBean> cloneTenderList(List<TenderBean> orgTenderBeans) {
+		List<TenderBean> tenders = new ArrayList<>(orgTenderBeans.size());
+		TenderBean tender;
+		for (TenderBean orgTenderBean : orgTenderBeans) {
+			tender = DailyDeedTransformer.cloneTenderBean(orgTenderBean);
+			tenders.add(tender);
+		}
+		logger.info("The tender detail list has been cloned successfully");
+		return tenders;
+	}	
+	
+	private static TenderBean cloneTenderBean(TenderBean orgTenderBean) {
+		TenderBean tender = new TenderBean();
+		tender.setTenderId(orgTenderBean.getTenderId());
+		tender.setName(orgTenderBean.getName());
+		tender.setTndrType(orgTenderBean.getTndrType());
+		tender.setCalTAmount(orgTenderBean.getCalTAmount());
+		tender.setCalMCount(orgTenderBean.getCalMCount());
+
+		List<DenominationBean> denominations = DailyDeedTransformer
+				.cloneDenominationList(orgTenderBean.getDenominations());
+		tender.setDenominations(denominations);
+
+		logger.info("The tender details has been cloned successfully");
+
+		return tender;
+	}	
+	
+	public static List<DenominationBean> cloneDenominationList(List<DenominationBean> orgDenominationBeans) {
+		List<DenominationBean> denominations = new ArrayList<>(orgDenominationBeans.size());
+		DenominationBean denomination;
+		for (DenominationBean orgDenominationBean : orgDenominationBeans) {
+			denomination = DailyDeedTransformer.cloneDenomination(orgDenominationBean);
+			denominations.add(denomination);
+		}
+		logger.info("The denomination details list has been cloned successfully");
+		return denominations;
+	}
+
+	public static DenominationBean cloneDenomination(DenominationBean orgDenominationBean) {
+		DenominationBean denomination = new DenominationBean();
+
+		denomination.setDenomination(orgDenominationBean.getDenomination());
+		denomination.setAmount(orgDenominationBean.getAmount());
+		denomination.setMediaCount(orgDenominationBean.getMediaCount());
+
+		logger.info("The denomination details has been cloned successfully");
+		return denomination;
+	}
+	
+	
 }

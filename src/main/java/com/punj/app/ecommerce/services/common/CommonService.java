@@ -23,6 +23,8 @@ public interface CommonService {
 	public List<Tender> retrieveAllTenders();
 
 	public BigInteger getId(String name);
+	
+	public BigInteger getNewTxn(Integer locationId, Integer register);
 
 	public BigInteger resetId(String name);
 

@@ -68,7 +68,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		Boolean result = Boolean.FALSE;
 		TransactionIdDTO txnIdDTO = new TransactionIdDTO();
 
-		BigInteger txnNo = this.commonService.resetId(ServiceConstants.REGISTER_ONE + "_" + ServiceConstants.TXN_SEQ);
+		BigInteger txnNo = this.commonService.getNewTxn(storeOpenDetails.getTransactionId().getLocationId(),ServiceConstants.REGISTER_ONE);
 		logger.info("The txn sequence {} for register {} has been generated for store open txn", txnNo,
 				ServiceConstants.REGISTER_ONE);
 
@@ -102,7 +102,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		Boolean result = Boolean.FALSE;
 		TransactionIdDTO txnIdDTO = registerOpenDetails.getTransactionId();
 		
-		BigInteger txnNo = this.commonService.getId(txnIdDTO.getRegister() + "_" + ServiceConstants.TXN_SEQ);
+		BigInteger txnNo = this.commonService.getNewTxn(txnIdDTO.getLocationId(),txnIdDTO.getRegister());
 		logger.info("The txn sequence {} for register {} has been generated for store open txn", txnNo,
 				txnIdDTO.getRegister());
 

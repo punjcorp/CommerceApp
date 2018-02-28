@@ -237,6 +237,11 @@ public class DailyDeedController {
 		try {
 			if (dailyDeedBean != null && dailyDeedBean.getLocationId() != null
 					&& dailyDeedBean.getBusinessDate() != null) {
+				// This will go as the extra amount will get added to repository during register open
+				// if we want we will notify user that you have added more than store open amounts 
+				List<TenderBean> tenders=DailyDeedTransformer.cloneTenderList(dailyDeedBean.getTenders());
+				dailyDeedBean.setAvailableTenders(tenders);
+				
 				this.updateBeans(dailyDeedBean, model);
 				logger.info("The Register open screen is ready for display");
 			} else {

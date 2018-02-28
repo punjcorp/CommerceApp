@@ -614,6 +614,7 @@ a[id="contact"]::before {
 	background-color: #05386B;
 	text-align: left;
 	padding: 5px;
+	margin: 5px;
 	font-size: 14px;
 	vertical-align: center;
 }
@@ -633,3 +634,12 @@ a[id="contact"]::before {
 }
 
 /* Auto complete styling - ENDS */
+
+.container-table {
+    height: 100%;
+    display: table;
+}
+.vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+}

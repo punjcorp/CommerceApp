@@ -7,11 +7,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.punj.app.ecommerce.domains.common.ids.RegisterId;
 
 /**
  * @author admin
@@ -21,12 +21,10 @@ import javax.persistence.Table;
 @Table(name = "register_master")
 public class Register implements Serializable {
 
-	private static final long serialVersionUID = -2377763942263038392L;
+	private static final long serialVersionUID = 3236438528527715985L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "register", updatable = false, nullable = false)
-	private Integer registerId;
+	@EmbeddedId
+	private RegisterId registerId;
 
 	private String name;
 
@@ -38,21 +36,6 @@ public class Register implements Serializable {
 	private String modifiedBy;
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
-
-	/**
-	 * @return the register
-	 */
-	public Integer getRegister() {
-		return registerId;
-	}
-
-	/**
-	 * @param register
-	 *            the register to set
-	 */
-	public void setRegister(Integer registerId) {
-		this.registerId = registerId;
-	}
 
 	/**
 	 * @return the name
@@ -129,60 +112,19 @@ public class Register implements Serializable {
 		this.modifiedDate = modifiedDate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * @return the registerId
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((registerId == null) ? 0 : registerId.hashCode());
-		return result;
+	public RegisterId getRegisterId() {
+		return registerId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @param registerId
+	 *            the registerId to set
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Register other = (Register) obj;
-		if (createdDate == null) {
-			if (other.createdDate != null) {
-				return false;
-			}
-		} else if (!createdDate.equals(other.createdDate)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (registerId == null) {
-			if (other.registerId != null) {
-				return false;
-			}
-		} else if (!registerId.equals(other.registerId)) {
-			return false;
-		}
-		return true;
+	public void setRegisterId(RegisterId registerId) {
+		this.registerId = registerId;
 	}
 
 }

@@ -132,11 +132,7 @@ public class CommonServiceImpl implements CommonService {
 			result = idGen.getSeq();
 			logger.info("The sequence {} retrieved for key {} successfully", result, name);
 		} else {
-			idGen = new IdGenerator();
-			idGen.setName(name);
-			idGen.setSeq(new BigInteger("1"));
-			idGen = this.idGenRepository.save(idGen);
-			result = idGen.getSeq();
+			result = this.resetId(name);
 			logger.info("The new sequence has been generated now for the key {}.", name);
 		}
 		return result;
@@ -144,16 +140,9 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public BigInteger resetId(String name) {
-
-		IdGenerator idGen = this.idGenRepository.findOne(name);
-
-		if (idGen != null) {
-			this.idGenRepository.delete(name);
-			logger.info("The old sequence has been deleted now");
-		}
-		idGen = new IdGenerator();
+		IdGenerator idGen = new IdGenerator();
 		idGen.setName(name);
-		idGen.setSeq(new BigInteger("1"));
+		idGen.setSeq(BigInteger.ONE);
 		idGen = this.idGenRepository.save(idGen);
 		BigInteger result = idGen.getSeq();
 		logger.info("The new sequence for key {} has been generated with reset count", name);
@@ -166,6 +155,19 @@ public class CommonServiceImpl implements CommonService {
 		List<Tender> tenders = this.tenderRepository.findAll();
 		logger.info("The {} tenders has been retrieved successfully ", tenders.size());
 		return tenders;
+	}
+
+
+	@Override
+	public BigInteger getNewTxn(Integer locationId, Integer register) {
+		BigInteger txnNo = this.getId(locationId+"_"+register + "_" + ServiceConstants.TXN_SEQ);
+		logger.info("The {} txn number has been generated for {} location and {} register ", txnNo, locationId, register);
+		return txnNo;
+	}
+	
+	public void resetAllRegisterTxnSeq(Integer locationId) {
+		
+		logger.info("All the transaction sequences has been reset for the store now");
 	}
 
 }
