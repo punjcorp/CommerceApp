@@ -32,6 +32,58 @@
 					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}" th:object="${dailyDeedBean}" method="post">
 						<div class="row">
 							<div class="col-6">
+							
+						<div class="box-radio-parent">
+							<th:block th:each="register,itrStat:${registers}">
+								<label> <input type="radio" name="registerRadio"
+									id="registerRadio" th:field="*{registerId}"
+									th:value="${register.registerId}"
+									th:disabled="${!register.eligibleForRegisterOpen}"></input>
+									<div class="sm-box">
+										<div class="row box-text">
+											<div class="col-4">
+												<span> <i
+													class="fas fa-desktop fa-2x"></i>
+													</span>
+											</div>
+											<div class="col">
+												<div class="display-4">
+													<span th:text="${register.registerId}"></span>
+												</div>
+												<div>
+													<h5>
+														<span th:text="${register.name}"></span>
+													</h5>
+												</div>
+											</div>
+										</div>
+										<div class="row box-footer">
+											<div class="col">
+												<div th:if="${register.lastStatus}">
+													<small><span
+														th:text="#{commerce.screen.store.open.status.last}"></span></small>
+													: <span th:text="${register.lastStatus}"></span>
+
+												</div>
+												<div th:if="${register.lastBusinessDate}">
+													<small><span
+														th:text="#{commerce.screen.store.open.date.on}"></span></small> :
+													<span th:text="${register.lastBusinessDate}"></span>
+
+												</div>
+												<div th:if="${!register.eligibleForRegisterOpen}">
+													<small><i><span
+															th:text="#{commerce.screen.register.open.not.allowed}"></span></i></small>
+												</div>
+											</div>
+										</div>
+									</div>
+								</label>
+							</th:block>
+						</div>							
+							
+							
+							
 								<div class="form-group">
 									<label for="register"><small><span th:text="#{commerce.screen.common.register}">Register</span></small></label>
 									<div class="input-group text-left">

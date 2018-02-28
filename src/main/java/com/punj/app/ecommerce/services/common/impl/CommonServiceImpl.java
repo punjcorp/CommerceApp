@@ -13,21 +13,25 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.Register;
+import com.punj.app.ecommerce.domains.common.ids.RegisterId;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
-import com.punj.app.ecommerce.repositories.tax.LocationTaxRepository;
+import com.punj.app.ecommerce.repositories.common.RegisterRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
+import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
 
 /**
  * @author admin
@@ -38,11 +42,20 @@ public class CommonServiceImpl implements CommonService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private LocationRepository locationRepository;
+	private RegisterRepository registerRepository;
 	private IdGeneratorRepository idGenRepository;
 	private TenderRepository tenderRepository;
 	private TransactionService txnService;
 
-	
+	/**
+	 * @param txnService
+	 *            the txnService to set
+	 */
+	@Autowired
+	public void setRegisterRepository(RegisterRepository registerRepository) {
+		this.registerRepository = registerRepository;
+	}
+
 	/**
 	 * @param txnService
 	 *            the txnService to set
@@ -50,9 +63,8 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	public void setTransactionService(TransactionService txnService) {
 		this.txnService = txnService;
-	}	
-	
-	
+	}
+
 	/**
 	 * @return the locationRepository
 	 */
@@ -92,34 +104,33 @@ public class CommonServiceImpl implements CommonService {
 		logger.info("The method to retrieve all the locations has been called");
 		return this.locationRepository.findAll();
 	}
-	
+
 	@Override
 	public LocationDTO retrieveLocationWithDailyStatus() {
-		LocationDTO locationDTO=new LocationDTO();
+		LocationDTO locationDTO = new LocationDTO();
 		logger.info("The method to retrieve all the locations with last txn Status has been called");
-		List<Location> locations=this.retrieveAllLocations();
+		List<Location> locations = this.retrieveAllLocations();
 		locationDTO.setLocations(locations);
 		locationDTO.setLastTxnStatus(this.retrieveLocationsStoreTxnStatus(locations));
 		logger.info("All the location details with daily status has been retrieved successfully");
 		return locationDTO;
-	}	
-	
-	
+	}
+
 	private Map<Integer, Transaction> retrieveLocationsStoreTxnStatus(List<Location> locations) {
-		Map<Integer, Transaction> locationLastTxnMap=new HashMap<>();
-		Set<String> txnTypes=new HashSet<>();
+		Map<Integer, Transaction> locationLastTxnMap = new HashMap<>();
+		Set<String> txnTypes = new HashSet<>();
 		txnTypes.add(ServiceConstants.TXN_CLOSE_STORE);
 		txnTypes.add(ServiceConstants.TXN_OPEN_STORE);
 		Transaction txnDetails;
 		Integer locationId;
-		for(Location location:locations){
-			locationId=location.getLocationId();
-			txnDetails=this.txnService.searchTxnByCriteria(locationId, txnTypes);
+		for (Location location : locations) {
+			locationId = location.getLocationId();
+			txnDetails = this.txnService.searchTxnByCriteria(locationId, txnTypes);
 			locationLastTxnMap.put(locationId, txnDetails);
 		}
 		logger.info("The last daily deed txn status for all location has been retrieved successfully");
 		return locationLastTxnMap;
-	}	
+	}
 
 	@Override
 	@Transactional
@@ -128,7 +139,7 @@ public class CommonServiceImpl implements CommonService {
 		IdGenerator idGen = this.idGenRepository.findOne(name);
 		if (idGen != null) {
 			idGen.setSeq(idGen.getSeq().add(BigInteger.ONE));
-			idGen=this.idGenRepository.save(idGen);
+			idGen = this.idGenRepository.save(idGen);
 			result = idGen.getSeq();
 			logger.info("The sequence {} retrieved for key {} successfully", result, name);
 		} else {
@@ -157,17 +168,41 @@ public class CommonServiceImpl implements CommonService {
 		return tenders;
 	}
 
-
 	@Override
 	public BigInteger getNewTxn(Integer locationId, Integer register) {
-		BigInteger txnNo = this.getId(locationId+"_"+register + "_" + ServiceConstants.TXN_SEQ);
+		BigInteger txnNo = this.getId(locationId + "_" + register + "_" + ServiceConstants.TXN_SEQ);
 		logger.info("The {} txn number has been generated for {} location and {} register ", txnNo, locationId, register);
 		return txnNo;
 	}
-	
+
 	public void resetAllRegisterTxnSeq(Integer locationId) {
-		
+
 		logger.info("All the transaction sequences has been reset for the store now");
 	}
 
+	@Override
+	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId) {
+		logger.info("The method to retrieve all the locations with last txn Status has been called");
+		RegisterDTO registerDTO = new RegisterDTO();
+		Register register=new Register();
+		RegisterId registerId=new RegisterId();
+		registerId.setLocationId(locationId);
+		register.setRegisterId(registerId);
+		
+		List<Register> registers = this.registerRepository.findAll(Example.of(register));
+		registerDTO.setRegisters(registers);
+		registerDTO.setLastTxnStatus(this.retrieveRegisterTxnStatus(locationId,registers));
+		logger.info("All the register details with daily status has been retrieved successfully");
+		return registerDTO;
+	}
+
+	private Map<Integer, Transaction> retrieveRegisterTxnStatus(Integer locationId, List<Register> registers) {
+		Set<String> txnTypes = new HashSet<>();
+		txnTypes.add(ServiceConstants.TXN_CLOSE_REGISTER);
+		txnTypes.add(ServiceConstants.TXN_OPEN_REGISTER);
+		Map<Integer, Transaction> registerLastTxnMap = this.txnService.searchRegisterTxnByCriteria(locationId, txnTypes);
+		logger.info("The last daily deed txn status for all registers has been retrieved successfully");
+		return registerLastTxnMap;
+	}	
+	
 }

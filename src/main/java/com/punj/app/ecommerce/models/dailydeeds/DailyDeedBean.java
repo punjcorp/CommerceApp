@@ -30,6 +30,9 @@ public class DailyDeedBean {
 	private Integer selectedTenderId;
 	private Integer selectedDenominationId;
 
+	private Integer registerId;
+	private String registerName;
+
 	@Valid
 	private List<TenderBean> tenders;
 
@@ -186,12 +189,41 @@ public class DailyDeedBean {
 	}
 
 	/**
-	 * @param availableTenders the availableTenders to set
+	 * @param availableTenders
+	 *            the availableTenders to set
 	 */
 	public void setAvailableTenders(List<TenderBean> availableTenders) {
 		this.availableTenders = availableTenders;
 	}
 
+	/**
+	 * @return the registerId
+	 */
+	public Integer getRegisterId() {
+		return registerId;
+	}
 
+	/**
+	 * @param registerId
+	 *            the registerId to set
+	 */
+	public void setRegisterId(Integer registerId) {
+		this.registerId = registerId;
+	}
+
+	/**
+	 * @return the registerName
+	 */
+	public String getRegisterName() {
+		return registerName;
+	}
+
+	/**
+	 * @param registerName
+	 *            the registerName to set
+	 */
+	public void setRegisterName(String registerName) {
+		this.registerName = registerName;
+	}
 
 }

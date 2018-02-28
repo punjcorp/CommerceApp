@@ -31,10 +31,10 @@
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<url>jdbc:mysql://localhost:3306/commercedb?autoreconnect=true</url>
-					<user>admin</user>
-					<password>admin</password>
-<!-- 					<user>root</user>
-					<password>G00gl3r$</password> -->
+<!-- 					<user>admin</user>
+					<password>admin</password> -->
+ 					<user>root</user>
+					<password>G00gl3r$</password> 
 					<schemas>
 						<schema>commercedb</schema>
 					</schemas>

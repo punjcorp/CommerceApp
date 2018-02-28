@@ -24,6 +24,7 @@ public final class ServiceConstants {
 	public static final String TXN_OPEN_STORE = "OPEN_STORE";
 	public static final String TXN_CLOSE_STORE = "CLOSE_STORE";
 	public static final String TXN_OPEN_REGISTER = "OPEN_REGISTER";
+	public static final String TXN_CLOSE_REGISTER = "CLOSE_REGISTER";
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";

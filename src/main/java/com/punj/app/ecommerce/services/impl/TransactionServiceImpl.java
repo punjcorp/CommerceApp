@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,16 +72,21 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	public Transaction searchTxnByCriteria(Integer locationId, Set<String> txnTypes) {
-
-		/*
-		 * Sort sort =new Sort(Sort.Direction.ASC,"transactionId.locationId");
-		 * sort.and(new Sort(Sort.Direction.DESC,"transactionId.businessDate"));
-		 * sort.and(new Sort(Sort.Direction.DESC,"startTime"));
-		 */
 		Transaction txnDetails = this.transactionRepository.getTop1ByCriteriaAndSort(locationId, txnTypes);
 		if (txnDetails != null)
 			logger.info("The last transaction {} details retrieved successfully", txnDetails.getTransactionId());
 		return txnDetails;
+	}
+
+	@Override
+	public Map<Integer, Transaction> searchRegisterTxnByCriteria(Integer locationId, Set<String> txnTypes) {
+		Map<Integer, Transaction> txnMap = new HashMap<>();
+		List<Transaction> txnDetails = this.transactionRepository.getLastDailyRegisterTxns(locationId, txnTypes);
+		for(Transaction txnDtl:txnDetails) {
+			txnMap.put(txnDtl.getTransactionId().getRegister(), txnDtl);
+		}
+		logger.info("The last transaction details for location {} regitsters has been etrieved successfully",locationId);
+		return txnMap;
 	}
 
 	private Map<Integer, Transaction> searchTxnByCriteria(List<Integer> locationIds, Set<String> txnTypes) {
@@ -89,10 +95,8 @@ public class TransactionServiceImpl implements TransactionService {
 		sort.and(new Sort(Sort.Direction.DESC, "startTime"));
 		List<Transaction> txnDetails = null;
 		/*
-		 * =this.transactionRepository.getTop1ByCriteriaAndSort(ListlocationIds,
-		 * txnTypes, sort); if(txnDetails!=null)
-		 * logger.info("The last transaction {} details retrieved successfully",
-		 * txnDetails.getTransactionId());
+		 * =this.transactionRepository.getTop1ByCriteriaAndSort(ListlocationIds, txnTypes, sort); if(txnDetails!=null)
+		 * logger.info("The last transaction {} details retrieved successfully", txnDetails.getTransactionId());
 		 */
 		return null;
 	}
