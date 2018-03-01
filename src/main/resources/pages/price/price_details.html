@@ -10,8 +10,9 @@
 <th:block th:replace="common/header:: header"></th:block>
 <!-- This thymeleaf fragment include the item lookup code-->
 <th:block th:include="lookup/item_lookup :: itemlookup-scripts"></th:block>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"></link>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link href="../../static/css/flatpickr.min.css"
+	th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
+<script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 </head>
 <body>
 	<div id="wrapper">

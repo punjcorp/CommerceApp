@@ -31,66 +31,69 @@
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}" th:object="${dailyDeedBean}" method="post">
 						<div class="row">
-							<div class="col-6">
-							
-						<div class="box-radio-parent">
-							<th:block th:each="register,itrStat:${registers}">
-								<label> <input type="radio" name="registerRadio"
-									id="registerRadio" th:field="*{registerId}"
-									th:value="${register.registerId}"
-									th:disabled="${!register.eligibleForRegisterOpen}"></input>
-									<div class="sm-box">
-										<div class="row box-text">
-											<div class="col-4">
-												<span> <i
-													class="fas fa-desktop fa-2x"></i>
-													</span>
-											</div>
-											<div class="col">
-												<div class="display-4">
-													<span th:text="${register.registerId}"></span>
+							<div class="col-4">
+								<label for="registerId"><small><span th:text="#{commerce.screen.register.open.select}">Select Register to open</span></small></label>
+								<div class="box-radio-parent">
+									<th:block th:each="register,itrStat:${registers}">
+										<label> <input type="radio" name="registerRadio" id="registerRadio" th:field="*{registerId}" th:value="${register.registerId}"
+											th:disabled="${!register.eligibleForRegisterOpen}"></input>
+											<div class="sm-box">
+												<div class="row box-text">
+													<div class="col-4">
+														<span> <i class="fas fa-desktop fa-2x"></i>
+														</span>
+													</div>
+													<div class="col">
+														<div class="display-4">
+															<span th:text="${register.registerId}"></span>
+														</div>
+														<div>
+															<h5>
+																<span th:text="${register.name}"></span>
+															</h5>
+														</div>
+													</div>
 												</div>
-												<div>
-													<h5>
-														<span th:text="${register.name}"></span>
-													</h5>
+												<div class="row box-footer">
+													<div class="col">
+														<div th:if="${register.lastStatus}">
+															<small><span th:text="#{commerce.screen.store.open.status.last}"></span></small> : <span th:text="${register.lastStatus}"></span>
+														</div>
+														<div th:if="${register.lastBusinessDate}">
+															<small><span th:text="#{commerce.screen.store.open.date.on}"></span></small> : <span th:text="${register.lastBusinessDate}"></span>
+														</div>
+														<div th:if="${!register.eligibleForRegisterOpen}">
+															<small><i><span th:text="#{commerce.screen.register.open.not.allowed}"></span></i></small>
+														</div>
+													</div>
 												</div>
 											</div>
+										</label>
+									</th:block>
+								</div>
+							</div>
+							<div class="col">
+								<a href="#" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> <span th:text="#{commerce.screen.register.open.add.register}"> New Register</span></a>
+								<div id="createRegister">
+									<div class="form-group">
+										<label for="register"><small><span th:text="#{commerce.screen.register.open.no}">Register#</span></small></label>
+										<div class="input-group text-left">
+											<input type="text" th:field="*{register}" class="form-control input-sm" data-input="data-input"
+												th:placeholder="#{commerce.screen.register.open.no.placeholder}"></input>
 										</div>
-										<div class="row box-footer">
-											<div class="col">
-												<div th:if="${register.lastStatus}">
-													<small><span
-														th:text="#{commerce.screen.store.open.status.last}"></span></small>
-													: <span th:text="${register.lastStatus}"></span>
-
-												</div>
-												<div th:if="${register.lastBusinessDate}">
-													<small><span
-														th:text="#{commerce.screen.store.open.date.on}"></span></small> :
-													<span th:text="${register.lastBusinessDate}"></span>
-
-												</div>
-												<div th:if="${!register.eligibleForRegisterOpen}">
-													<small><i><span
-															th:text="#{commerce.screen.register.open.not.allowed}"></span></i></small>
-												</div>
-											</div>
+										<small th:if="${#fields.hasErrors('register')}" th:errors="*{register}" class="text-danger align-top">Register Error </small>
+									</div>
+									<div class="form-group">
+										<label for="registerName"><small><span th:text="#{commerce.screen.register.open.name}">Register Name</span></small></label>
+										<div class="input-group text-left">
+											<input type="text" th:field="*{registerName}" class="form-control input-sm" data-input="data-input"
+												th:placeholder="#{commerce.screen.register.open.name.placeholder}"></input>
 										</div>
+										<small th:if="${#fields.hasErrors('registerName')}" th:errors="*{registerName}" class="text-danger align-top">Register Name Error </small>
 									</div>
-								</label>
-							</th:block>
-						</div>							
-							
-							
-							
-								<div class="form-group">
-									<label for="register"><small><span th:text="#{commerce.screen.common.register}">Register</span></small></label>
-									<div class="input-group text-left">
-										<input type="text" th:field="*{register}" class="form-control input-sm" data-input="data-input"
-											th:placeholder="#{commerce.screen.register.open.screen}"></input>
-									</div>
-									<small th:if="${#fields.hasErrors('register')}" th:errors="*{register}" class="text-danger align-top">Register Error </small>
+									<div class="form-group">
+								<a href="#" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> <span th:text="#{commerce.screen.btn.submit.add}"> Add</span></a>
+								</div>									
 								</div>
 							</div>
 							<div class="col-6">

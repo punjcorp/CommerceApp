@@ -223,7 +223,6 @@ public class DailyDeedController {
 		return ViewPathConstants.STORE_OPEN_PAGE;
 
 	}
-
 	private void updateBeansForRegisterOpen(DailyDeedBean dailyDeedBean, Model model) {
 
 		RegisterDTO registerDTO = this.commonService.retrieveRegisterWithDailyStatus(dailyDeedBean.getLocationId());

@@ -50,8 +50,8 @@ public class ItemSearchRepository {
 		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
 
 		// create the query using Hibernate Search query DSL
-		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Item.class)
-				.overridesForField("name", "edgeNGram_query").get();
+		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
+//				.overridesForField("name", "edgeNGram_query").get();
 
 		// a very basic query by keywords
 		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("itemId", "name", "description").matching(text).createQuery();

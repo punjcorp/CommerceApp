@@ -3,52 +3,51 @@
 	<head>
 		<meta charset="utf-8" />
 		<title th:text="#{commerce.screen.login.title}">User Login</title>
-		<meta name="viewport"
-		content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
-		<link rel="stylesheet"
-		href="../../static/tmp/v4/css/bootstrap.min.css"></link>
-		<link rel="stylesheet" href="../../static/css/custom.css"></link>
-		<script src="../../static/tmp/v4/js/jquery.min.js"></script>
-		<script src="../../static/js/fontawesome.5.0.6.all.js"></script>
-		<script
-		src="../../static/tmp/v4/js/bootstrap.bundle.min.js"></script>
-		<script src="../../static/js/custom.js"></script>
+
+		<!-- This is to include all the needed css and javascripts -->
+		<div th:replace="common/header:: header"></div>
 		<style>
-		body {
-		padding-bottom: 40px;
-		overflow-x: hidden;
-		background-color: #fff;
-		position: relative;
-		}
+			body,html{
+				height:100%;
+				background-color: #EDF5E1;
+			}
 		</style>
 	</head>
 	<body>
-		<div class="d-flex justify-content-center align-items-center" style="height:100%">
-			<div class="border-box-filled">
-				<div class="border-box-title">
-					<h3><span>Login For Commerce App</span></h3>
-				</div>
-				<div class="border-box-body">
-					<form action="#">
-						<div class="input-group form-group">
-							<input type="text" class="form-control" id="username" placeholder="Enter username"></input>
-						</div>
-						<div class="input-group form-group">
-							<input type="password" class="form-control" id="password" placeholder="Enter password"></input>
-						</div>
-						<div class="row">
-							<div class="col-2"></div>
-							<div class="col-3">
-								<button type="button" class="btn btn-info"><i class="fas fa-sign-in-alt"></i><span>  Login</span></button>
+		<div class="container h-100">
+			<div class="row h-100 justify-content-center align-items-center">
+				<div class="border-box-filled">
+					<div class="border-box-title">
+						<h3><span th:text="#{commerce.screen.login.header}"></span></h3>
+					</div>
+					<div class="border-box-body">
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger" role="alert"></div>
+						<div th:if="${param.error}" th:text="#{commerce.screen.login.invalid.password}" class="alert alert-danger" role="alert"></div>
+						<div th:if="${param.logout}" th:text="#{commerce.screen.logout.success}" class="alert alert-success" role="alert"></div>
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success" role="alert"></div>
+						<form action="#" th:action="@{/login}" th:object="${loginBean}" method="post">
+							<div class="input-group form-group">
+								<input type="email" class="form-control" th:field="*{username}" placeholder="Email Address" th:placeholder="#{commerce.screen.login.username}"
+								required="required" autofocus=""></input>
 							</div>
-							<div class="col-5">
-								<button type="button" class="btn btn-info"><i class="fas fa-user-plus"></i><span>  Register</span></button>
+							<div class="input-group form-group">
+								<input type="password" class="form-control" th:field="*{password}" placeholder="Password"
+								th:placeholder="#{commerce.screen.login.password}" required="required"></input>
 							</div>
-						</div>
-					</form>
+							<div class="row">
+								<div class="col-6">
+									<button type="submit" class="btn btn-info"><i class="fas fa-sign-in-alt"></i><span th:value="#{commerce.btn.login}">  Login</span></button>
+								</div>
+								<div class="col-6">
+									<a th:href="@{/register}" class="btn btn-info"><i class="fas fa-user-plus"></i><span
+									th:text="#{commerce.link.signup}"> Signup now!</span></a>
+								</div>
+							</div>
+						</form>
+					</div>
 				</div>
+				
 			</div>
-			
 		</div>
 		
 		
