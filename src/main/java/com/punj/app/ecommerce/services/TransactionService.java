@@ -3,7 +3,7 @@
  */
 package com.punj.app.ecommerce.services;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,5 +23,7 @@ public interface TransactionService {
 	public Transaction searchTxnByCriteria(Integer locationId, Set<String> txnTypes);
 	
 	public Map<Integer,Transaction> searchRegisterTxnByCriteria(Integer locationId, Set<String> txnTypes);
+
+	public Transaction searchLocationOpenTxn(Integer locationId, LocalDateTime businessDate);
 	
 }

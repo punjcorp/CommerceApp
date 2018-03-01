@@ -10,6 +10,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
@@ -17,6 +21,7 @@ import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
 import com.punj.app.ecommerce.services.dtos.tender.DenominationDTO;
 import com.punj.app.ecommerce.services.dtos.tender.TenderDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -33,8 +38,8 @@ public class DailyDeedTransformer {
 	public static DailyOpenTransaction transformOpenTxnDetails(DailyDeedBean dailyDeedBean) {
 		DailyOpenTransaction storeOpenTxn = new DailyOpenTransaction();
 
-		TransactionIdDTO transactionId = DailyDeedTransformer.transformTransactionDetails(
-				dailyDeedBean.getBusinessDate(), dailyDeedBean.getLocationId(), dailyDeedBean.getRegister());
+		TransactionIdDTO transactionId = DailyDeedTransformer.transformTransactionDetails(dailyDeedBean.getBusinessDate(), dailyDeedBean.getLocationId(),
+				dailyDeedBean.getRegister());
 		storeOpenTxn.setTransactionId(transactionId);
 
 		List<TenderDTO> tenders = DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders());
@@ -44,8 +49,7 @@ public class DailyDeedTransformer {
 		return storeOpenTxn;
 	}
 
-	public static TransactionIdDTO transformTransactionDetails(LocalDateTime businessDate, Integer locationId,
-			Integer register) {
+	public static TransactionIdDTO transformTransactionDetails(LocalDateTime businessDate, Integer locationId, Integer register) {
 		TransactionIdDTO transactionId = new TransactionIdDTO();
 		transactionId.setBusinessDate(businessDate);
 		transactionId.setLocationId(locationId);
@@ -53,7 +57,6 @@ public class DailyDeedTransformer {
 		return transactionId;
 	}
 
-	
 	public static List<TenderDTO> transformTenderList(List<TenderBean> tenderBeans) {
 		List<TenderDTO> tenders = new ArrayList<>(tenderBeans.size());
 		TenderDTO tender;
@@ -73,8 +76,7 @@ public class DailyDeedTransformer {
 		tender.setAmount(tenderBean.getCalTAmount());
 		tender.setMediaCount(tenderBean.getCalMCount());
 
-		List<DenominationDTO> denominations = DailyDeedTransformer
-				.transformDenominationList(tenderBean.getDenominations());
+		List<DenominationDTO> denominations = DailyDeedTransformer.transformDenominationList(tenderBean.getDenominations());
 		tender.setDenominations(denominations);
 
 		logger.info("The tender details has been transformed successfully");
@@ -113,8 +115,8 @@ public class DailyDeedTransformer {
 		}
 		logger.info("The tender detail list has been cloned successfully");
 		return tenders;
-	}	
-	
+	}
+
 	private static TenderBean cloneTenderBean(TenderBean orgTenderBean) {
 		TenderBean tender = new TenderBean();
 		tender.setTenderId(orgTenderBean.getTenderId());
@@ -123,15 +125,14 @@ public class DailyDeedTransformer {
 		tender.setCalTAmount(orgTenderBean.getCalTAmount());
 		tender.setCalMCount(orgTenderBean.getCalMCount());
 
-		List<DenominationBean> denominations = DailyDeedTransformer
-				.cloneDenominationList(orgTenderBean.getDenominations());
+		List<DenominationBean> denominations = DailyDeedTransformer.cloneDenominationList(orgTenderBean.getDenominations());
 		tender.setDenominations(denominations);
 
 		logger.info("The tender details has been cloned successfully");
 
 		return tender;
-	}	
-	
+	}
+
 	public static List<DenominationBean> cloneDenominationList(List<DenominationBean> orgDenominationBeans) {
 		List<DenominationBean> denominations = new ArrayList<>(orgDenominationBeans.size());
 		DenominationBean denomination;
@@ -153,6 +154,55 @@ public class DailyDeedTransformer {
 		logger.info("The denomination details has been cloned successfully");
 		return denomination;
 	}
-	
-	
+
+	public static DailyDeedBean transformDailyTxn(Transaction txnDetails, TenderCount tenderCountDetails) {
+
+		DailyDeedBean dailyDeedBean = new DailyDeedBean();
+		dailyDeedBean.setDenominationList(Utils.getDenominations());
+
+		TransactionId txnId = txnDetails.getTransactionId();
+		dailyDeedBean.setLocationId(txnId.getLocationId());
+		dailyDeedBean.setBusinessDate(txnId.getBusinessDate());
+		dailyDeedBean.setRegister(txnId.getRegister());
+
+		if(tenderCountDetails!=null) {
+			List<TenderBean> tenders = DailyDeedTransformer.transformTenderCounts(tenderCountDetails);
+			dailyDeedBean.setTenders(tenders);
+		}
+
+		logger.info("The daily transaction has been transformed to daily deed bean successfully");
+		return dailyDeedBean;
+	}
+
+	public static List<TenderBean> transformTenderCounts(TenderCount tenderCountDetails) {
+		List<TenderBean> tenders = new ArrayList<>(1);
+
+		TenderBean tenderBean = new TenderBean();
+		tenderBean.setTenderId(tenderCountDetails.getTenderCountId().getTenderId());
+		tenderBean.setCalTAmount(tenderCountDetails.getAmount());
+		tenderBean.setCalMCount(tenderCountDetails.getMediaCount());
+
+		List<DenominationBean> denominations = DailyDeedTransformer.transformTenderDenominations(tenderCountDetails.getDenominations());
+		tenderBean.setDenominations(denominations);
+
+		tenders.add(tenderBean);
+		
+		logger.info("The txn tender Count has been transformed to tender bean successfully");
+		return tenders;
+	}
+
+	public static List<DenominationBean> transformTenderDenominations(List<TenderDenomination> tenderDenomDetails) {
+		List<DenominationBean> denominations = new ArrayList<>(tenderDenomDetails.size());
+		DenominationBean denomination = null;
+		for (TenderDenomination tenderDenomination : tenderDenomDetails) {
+			denomination = new DenominationBean();
+			denomination.setAmount(tenderDenomination.getAmount());
+			denomination.setMediaCount(tenderDenomination.getMediaCount());
+			denomination.setDenomination(tenderDenomination.getTenderDenominationId().getDenomination());
+			denominations.add(denomination);
+		}
+		logger.info("The txn tender denominations has been transformed to denominations  bean successfully");
+		
+		return denominations;
+	}
 }

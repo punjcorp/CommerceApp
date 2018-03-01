@@ -21,7 +21,7 @@
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<div class="row m-3">
-				<div class="col-9">
+				<div class="col">
 					<div class="card">
 						<div class="card-body">
 							<div class="card-text">
@@ -61,12 +61,33 @@
 						</div>
 					</div>
 				</div>
-				<div class="col">
-					<div class="card">
-						<div class="card-header">
-							<h3>The right section</h3>
-						</div>
-					</div>
+				<div class="col-3">
+				
+								<div class="row border-box-filled">
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.common.date.business}">Business Date</span></small></label> <input type="hidden"
+												th:field="${saleHeaderBean.businessDate}"></input>
+											<div class="input-group text-left">
+												<label><h5>
+														<span th:text="${{saleHeaderBean.businessDate}}">Business Date</span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.common.location}">Location</span></small></label>
+											<div class="input-group text-left">
+												<label><h5>
+														<input type="hidden" th:field="${saleHeaderBean.locationId}"></input> <input type="hidden" th:field="${saleHeaderBean.locationName}"></input> <span
+															th:text="${saleHeaderBean.locationId}">Location Id</span> - <span th:text="${saleHeaderBean.locationName}"></span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+								</div>				
+
 				</div>
 			</div>
 		</div>

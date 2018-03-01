@@ -31,11 +31,11 @@
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}" th:object="${dailyDeedBean}" method="post">
 						<div class="row">
-							<div class="col-4">
+							<div class="col-6">
 								<label for="registerId"><small><span th:text="#{commerce.screen.register.open.select}">Select Register to open</span></small></label>
 								<div class="box-radio-parent">
 									<th:block th:each="register,itrStat:${registers}">
-										<label> <input type="radio" name="registerRadio" id="registerRadio" th:field="*{registerId}" th:value="${register.registerId}"
+										<label> <input type="radio" name="registerRadio" id="registerRadio" th:field="*{register}" th:value="${register.registerId}"
 											th:disabled="${!register.eligibleForRegisterOpen}"></input>
 											<div class="sm-box">
 												<div class="row box-text">
@@ -72,30 +72,7 @@
 									</th:block>
 								</div>
 							</div>
-							<div class="col">
-								<a href="#" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> <span th:text="#{commerce.screen.register.open.add.register}"> New Register</span></a>
-								<div id="createRegister">
-									<div class="form-group">
-										<label for="register"><small><span th:text="#{commerce.screen.register.open.no}">Register#</span></small></label>
-										<div class="input-group text-left">
-											<input type="text" th:field="*{register}" class="form-control input-sm" data-input="data-input"
-												th:placeholder="#{commerce.screen.register.open.no.placeholder}"></input>
-										</div>
-										<small th:if="${#fields.hasErrors('register')}" th:errors="*{register}" class="text-danger align-top">Register Error </small>
-									</div>
-									<div class="form-group">
-										<label for="registerName"><small><span th:text="#{commerce.screen.register.open.name}">Register Name</span></small></label>
-										<div class="input-group text-left">
-											<input type="text" th:field="*{registerName}" class="form-control input-sm" data-input="data-input"
-												th:placeholder="#{commerce.screen.register.open.name.placeholder}"></input>
-										</div>
-										<small th:if="${#fields.hasErrors('registerName')}" th:errors="*{registerName}" class="text-danger align-top">Register Name Error </small>
-									</div>
-									<div class="form-group">
-								<a href="#" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> <span th:text="#{commerce.screen.btn.submit.add}"> Add</span></a>
-								</div>									
-								</div>
-							</div>
+
 							<div class="col-6">
 								<div class="row border-box-filled">
 									<div class="col-6">
@@ -135,8 +112,8 @@
 													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <input type="hidden"
 													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input> <input type="hidden" id="storeOpenTAmount"
 													th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <input type="hidden" id="storeOpenMCount"
-													th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <label><span
-													th:text="#{commerce.screen.common.tender.type}">Tender Type</span></label>
+													th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <label><span th:text="#{commerce.screen.common.tender.type}">Tender
+														Type</span></label>
 											</div>
 										</div>
 										<div class="col-4">
@@ -156,18 +133,17 @@
 													<label for="type"><small><span th:text="#{commerce.screen.common.tender.denomination}">Tender Denominations</span></small></label>
 													<div class="input-group text-left">
 														<select th:onChange="'changedDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"
-															th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
-															class="form-control input-sm">
-															<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.common.tender.denomination.select}">Select
-																Denomination</option>
+															th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="form-control input-sm">
+															<option class="form-text text-muted" value="" th:text="#{commerce.screen.common.tender.denomination.select}">Select Denomination</option>
 															<th:block th:each="dnmnAmt,itrDnmnAmt:${dailyDeedBean.denominationList}">
-																<option th:value="${dnmnAmt.number}" th:text="${dnmnAmt}"></option>
+																<option th:value="${dnmnAmt.number}" th:text="${dnmnAmt}"
+																	th:selected="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination == dnmnAmt.number}"></option>
 															</th:block>
 														</select>
 													</div>
 													<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination')}"
-														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
-														class="text-danger align-top">Denomination Error </small>
+														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="text-danger align-top">Denomination
+														Error </small>
 												</div>
 											</div>
 											<div class="col-3">
@@ -180,8 +156,8 @@
 															th:placeholder="#{commerce.screen.store.open.tender.count}" class="form-control input-sm" data-input="data-input"></input>
 													</div>
 													<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount')}"
-														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
-														class="text-danger align-top">Media Count Error </small>
+														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}" class="text-danger align-top">Media
+														Count Error </small>
 												</div>
 											</div>
 											<div class="col-3">
@@ -194,8 +170,8 @@
 															th:placeholder="#{commerce.screen.store.open.tender.amount}" class="form-control input-sm" data-input="data-input"></input>
 													</div>
 													<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount')}"
-														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
-														class="text-danger align-top">Amount Error </small>
+														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}" class="text-danger align-top">Amount
+														Error </small>
 												</div>
 											</div>
 											<div class="col">
@@ -225,7 +201,8 @@
 											<span th:text="#{commerce.screen.common.tender.count.total}"></span>
 										</h5>
 										<h5>
-											<span th:id="${itrStat.index+'lblMediaCount'}">0</span>
+											<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <span th:id="${itrStat.index+'lblMediaCount'}"
+												th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
 										</h5>
 									</div>
 									<div class="col-3 text-right">
@@ -233,7 +210,8 @@
 											<span th:text="#{commerce.screen.common.amount.total}"></span>
 										</h5>
 										<h5>
-											<span th:id="${itrStat.index+'lbltenderAmount'}">INR 0.00</span>
+											<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <span th:id="${itrStat.index+'lbltenderAmount'}"
+												th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR 0.00</span>
 										</h5>
 									</div>
 								</div>

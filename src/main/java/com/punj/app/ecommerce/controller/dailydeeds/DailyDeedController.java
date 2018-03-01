@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.dailydeeds;
  * 
  */
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,21 +27,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.punj.app.ecommerce.common.web.CommerceConstants;
+import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.DailyDeedService;
+import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
 import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -53,6 +60,26 @@ public class DailyDeedController {
 	private CommonService commonService;
 	private MessageSource messageSource;
 	private DailyDeedService dailyDeedService;
+	private CommerceContext commerceContext;
+	private TransactionService txnService;
+
+	/**
+	 * @param commerceContext
+	 *            the commerceContext to set
+	 */
+	@Autowired
+	public void setCommerceContext(CommerceContext commerceContext) {
+		this.commerceContext = commerceContext;
+	}
+
+	/**
+	 * @param txnService
+	 *            the txnService to set
+	 */
+	@Autowired
+	public void setTransactionService(TransactionService txnService) {
+		this.txnService = txnService;
+	}
 
 	/**
 	 * @param commonService
@@ -127,6 +154,10 @@ public class DailyDeedController {
 
 		redirectAttrs.addFlashAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+
+		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, dailyDeedBean.getLocationId());
+		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
+		commerceContext.setStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
 
 		logger.info("All the beans needs for open store screen has been updated in model");
 
@@ -223,6 +254,7 @@ public class DailyDeedController {
 		return ViewPathConstants.STORE_OPEN_PAGE;
 
 	}
+
 	private void updateBeansForRegisterOpen(DailyDeedBean dailyDeedBean, Model model) {
 
 		RegisterDTO registerDTO = this.commonService.retrieveRegisterWithDailyStatus(dailyDeedBean.getLocationId());
@@ -231,6 +263,41 @@ public class DailyDeedController {
 		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
 		logger.info("All the beans needs for open store screen has been updated in model");
+
+	}
+
+	@GetMapping(value = ViewPathConstants.REGISTER_OPEN_URL)
+	public String showOpenRegisterScreen(final HttpServletRequest req, Model model, Locale locale) {
+		logger.info("The show store open screen method has been called when store is already open");
+		try {
+			Integer locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
+			LocalDateTime businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
+			if (locationId != null && businessDate != null) {
+
+				Transaction txnDetails = this.txnService.searchLocationOpenTxn(locationId, businessDate);
+				TenderCount tenderCount = this.dailyDeedService.searchTxnTenderCount(txnDetails.getTransactionId());
+
+				DailyDeedBean dailyDeedBean = DailyDeedTransformer.transformDailyTxn(txnDetails, tenderCount);
+				if (dailyDeedBean != null) {
+					logger.info("The Store open transaction data has been retrieved successfully");
+					this.updateBeansForRegisterOpen(dailyDeedBean, model);
+					logger.info("The Register open screen is ready for display");
+				} else {
+					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
+					logger.error("There was some error retrieving store open details for register open");
+				}
+
+			} else {
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
+				logger.error("There was some error retrieving store open details for register open");
+			}
+		} catch (Exception e) {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
+			logger.error("There was some error retrieving store open details for register open", e);
+			return ViewPathConstants.REGISTER_OPEN_PAGE;
+		}
+
+		return ViewPathConstants.REGISTER_OPEN_PAGE;
 
 	}
 

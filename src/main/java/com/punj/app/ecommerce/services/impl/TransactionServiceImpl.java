@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,23 @@ public class TransactionServiceImpl implements TransactionService {
 		 * logger.info("The last transaction {} details retrieved successfully", txnDetails.getTransactionId());
 		 */
 		return null;
+	}
+
+	@Override
+	public Transaction searchLocationOpenTxn(Integer locationId, LocalDateTime businessDate) {
+		Transaction txnCriteria=new Transaction();
+		TransactionId txnId=new TransactionId();
+		txnId.setLocationId(locationId);
+		txnId.setBusinessDate(businessDate);
+		txnCriteria.setTransactionId(txnId);
+		txnCriteria.setTxnType(ServiceConstants.TXN_OPEN_STORE);
+		Transaction txnDetails=this.transactionRepository.findOne(Example.of(txnCriteria));
+		if(txnDetails!=null)
+			logger.info("The last location open txn for location {} and business date {} has been retrieved succefully",locationId, businessDate);
+		else
+			logger.info("The last location open txn retrieval for location {} and business date {} has failed",locationId, businessDate);
+		
+		return txnDetails;
 	}
 
 }

@@ -26,6 +26,7 @@ public final class MVCConstants {
 	public static final String PAGE_PARAM="page";
 	public static final String ITEM_ID_PARAM="itemId";
 	public static final String LOCATION_ID_PARAM="locationId";
+	public static final String B_DATE_PARAM="businessDate";
 	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
 
 	public static final String STATUS_RECEIVED="R";
@@ -81,6 +82,7 @@ public final class MVCConstants {
 	public static final String ADDRESS_REPORT="/reports/address/address.jrxml";
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
+	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
@@ -134,6 +136,7 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";
 	
 	public static final String OPEN_STORE_PARAM= "openStore";
+	public static final String SHOW_OPEN_REGISTER_PARAM= "showOpenRegister";
 	public static final String OPEN_REGISTER_PARAM= "openRegister";
 	public static final String ADD_DENOMINATION_PARAM= "addDenomination";
 	public static final String REMOVE_DENOMINATION_PARAM= "removeDenomination";

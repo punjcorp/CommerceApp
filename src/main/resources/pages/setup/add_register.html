@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:if="${ action!=null and action=='EDIT'}" th:text="#{commerce.screen.price.edit.title}"></title>
+<title th:if="${ action!=null and action=='NEW'}" th:text="#{commerce.screen.price.add.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<th:block th:replace="common/header:: header"></th:block>
+<!-- This thymeleaf fragment include the item lookup code-->
+<th:block th:include="lookup/item_lookup :: itemlookup-scripts"></th:block>
+<link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
+<script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card content-container">
+				<div class="card-header">
+					<h3 th:if="${ action!=null and action=='NEW'}" th:text="#{commerce.screen.price.add.header}">Create New Price for Style/Item</h3>
+					<h3 th:if="${ action!=null and action=='EDIT'}" th:text="#{commerce.screen.price.edit.header}">Modify Price for Style/Item</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form id="addForm" action="#" th:action="${ action!=null and action=='NEW'}? @{/add_price}:@{/edit_price}" th:object="${priceBean}" method="post">
+							<div class="col">
+								<a href="#" id="btnNewRegister" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> <span
+									th:text="#{commerce.screen.register.open.add.register}"> New Register</span></a>
+								<div id="createRegister" class="d-none">
+									<div class="form-group">
+										<label for="register"><small><span th:text="#{commerce.screen.register.open.no}">Register#</span></small></label>
+										<div class="input-group text-left">
+											<input type="text" th:field="*{register}" class="form-control input-sm" data-input="data-input"
+												th:placeholder="#{commerce.screen.register.open.no.placeholder}"></input>
+										</div>
+										<small th:if="${#fields.hasErrors('register')}" th:errors="*{register}" class="text-danger align-top">Register Error </small>
+									</div>
+									<div class="form-group">
+										<label for="registerName"><small><span th:text="#{commerce.screen.register.open.name}">Register Name</span></small></label>
+										<div class="input-group text-left">
+											<input type="text" th:field="*{registerName}" class="form-control input-sm" data-input="data-input"
+												th:placeholder="#{commerce.screen.register.open.name.placeholder}"></input>
+										</div>
+										<small th:if="${#fields.hasErrors('registerName')}" th:errors="*{registerName}" class="text-danger align-top">Register Name Error </small>
+									</div>
+									<div class="form-group">
+										<a href="#" id="btnSaveRegister" class="btn btn-info btn-sm"><i class="fas fa-check"></i> <span th:text="#{commerce.screen.btn.submit.add}">
+												Add</span></a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<!-- Item Lookup Modal -->
+	<div class="modal fade " id="itemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.lookup.item}"> Item Look up</span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- This thymeleaf fragment include the item lookup code-->
+					<div th:include="lookup/item_lookup :: itemlookup-screen"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" value="Close" th:value="#{commerce.btn.close}">Close</button>
+					<button type="button" id="itemChooseBtn" class="btn btn-primary" value="Choose This Supplier" th:value="#{commerce.btn.choose.item}">Choose This
+						Item</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

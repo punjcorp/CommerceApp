@@ -3,6 +3,8 @@
  */
 package com.punj.app.ecommerce.services;
 
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
 
 /**
@@ -14,5 +16,7 @@ public interface DailyDeedService {
 	public Boolean saveStoreOpenTxn(DailyOpenTransaction storeOpenDetails, String username);
 
 	public Boolean saveRegisterOpenTxn(DailyOpenTransaction storeOpenDetails, String username);
+
+	public TenderCount searchTxnTenderCount(TransactionId txnId);
 
 }

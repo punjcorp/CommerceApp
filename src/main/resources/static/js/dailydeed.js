@@ -89,3 +89,22 @@ function checkTotalAgainstStoreOpenAmts(tndrIndex, fieldName){
 	$('#tenders' + tndrIndex + '\\.storeOpenMCount').val();
 	$('#tenders' + tndrIndex + '\\.storeOpenTAmount').val();	
 }
+
+function processLocationRequest(locValue, url){
+	var cntl_check=$('#'+locValue+'_loc_status');
+	if(cntl_check){
+		var locBusinessDate=$('#'+locValue+'_loc_bdate').val();
+		var locStatus=cntl_check.val();
+		if(locStatus=='OPEN_STORE'){
+			url+="="+locValue+"&businessDate="+locBusinessDate;
+			window.location.href=url;
+		}else{
+			$('#businessDateContainer').toggleClass("d-none");
+			$('#tenderListContainer').toggleClass("d-none");						
+		}
+	}else{
+		$('#businessDateContainer').toggleClass("d-none");
+		$('#tenderListContainer').toggleClass("d-none");
+	}
+	
+}

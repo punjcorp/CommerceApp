@@ -9,11 +9,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
+import com.punj.app.ecommerce.domains.transaction.tender.ids.TenderCountId;
 import com.punj.app.ecommerce.repositories.transaction.tender.TenderCountRepository;
 import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.TransactionService;
@@ -68,20 +71,18 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		Boolean result = Boolean.FALSE;
 		TransactionIdDTO txnIdDTO = new TransactionIdDTO();
 
-		BigInteger txnNo = this.commonService.getNewTxn(storeOpenDetails.getTransactionId().getLocationId(),ServiceConstants.REGISTER_ONE);
-		logger.info("The txn sequence {} for register {} has been generated for store open txn", txnNo,
-				ServiceConstants.REGISTER_ONE);
+		BigInteger txnNo = this.commonService.getNewTxn(storeOpenDetails.getTransactionId().getLocationId(), ServiceConstants.REGISTER_ONE);
+		logger.info("The txn sequence {} for register {} has been generated for store open txn", txnNo, ServiceConstants.REGISTER_ONE);
 
 		txnIdDTO.setBusinessDate(storeOpenDetails.getTransactionId().getBusinessDate());
 		txnIdDTO.setLocationId(storeOpenDetails.getTransactionId().getLocationId());
 		txnIdDTO.setRegister(ServiceConstants.REGISTER_ONE);
 		txnIdDTO.setTxnNo(txnNo.intValue());
 
-		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username,ServiceConstants.TXN_OPEN_STORE);
+		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_STORE);
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter
-					.transformTenderList(storeOpenDetails.getTenders(), txnIdDTO, username);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(storeOpenDetails.getTenders(), txnIdDTO, username);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 				result = Boolean.TRUE;
@@ -101,18 +102,16 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	public Boolean saveRegisterOpenTxn(DailyOpenTransaction registerOpenDetails, String username) {
 		Boolean result = Boolean.FALSE;
 		TransactionIdDTO txnIdDTO = registerOpenDetails.getTransactionId();
-		
-		BigInteger txnNo = this.commonService.getNewTxn(txnIdDTO.getLocationId(),txnIdDTO.getRegister());
-		logger.info("The txn sequence {} for register {} has been generated for store open txn", txnNo,
-				txnIdDTO.getRegister());
+
+		BigInteger txnNo = this.commonService.getNewTxn(txnIdDTO.getLocationId(), txnIdDTO.getRegister());
+		logger.info("The txn sequence {} for register {} has been generated for store open txn", txnNo, txnIdDTO.getRegister());
 
 		txnIdDTO.setTxnNo(txnNo.intValue());
 
-		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username,ServiceConstants.TXN_OPEN_REGISTER);
+		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_REGISTER);
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter
-					.transformTenderList(registerOpenDetails.getTenders(), txnIdDTO, username);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(registerOpenDetails.getTenders(), txnIdDTO, username);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 				result = Boolean.TRUE;
@@ -126,12 +125,29 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 
 		return result;
 	}
-	
-	
-	public void getLocationsWithStatus(){
-		
+
+	public void getLocationsWithStatus() {
+
 	}
-	
-	
+
+	@Override
+	public TenderCount searchTxnTenderCount(TransactionId txnId) {
+		TenderCount tenderCountCriteria= new TenderCount();
+		TenderCountId tenderCountId = new TenderCountId();
+		tenderCountId.setBusinessDate(txnId.getBusinessDate());
+		tenderCountId.setRegister(txnId.getRegister());
+		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
+		tenderCountId.setLocationId(txnId.getLocationId());
+		
+		tenderCountCriteria.setTenderCountId(tenderCountId);
+		TenderCount txnCountDetails = this.tenderCountRepository.findOne(Example.of(tenderCountCriteria));
+
+		if (txnCountDetails != null)
+			logger.info("The tender count details has been retrieved successfully");
+		else
+			logger.info("The tender count details retrieval has failed");
+
+		return txnCountDetails;
+	}
 
 }
