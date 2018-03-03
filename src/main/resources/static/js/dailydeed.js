@@ -99,12 +99,30 @@ function processLocationRequest(locValue, url){
 			url+="="+locValue+"&businessDate="+locBusinessDate;
 			window.location.href=url;
 		}else{
-			$('#businessDateContainer').toggleClass("d-none");
-			$('#tenderListContainer').toggleClass("d-none");						
+			$('#businessDateContainer').removeClass("d-none");
+			$('#tenderListContainer').removeClass("d-none");						
 		}
 	}else{
-		$('#businessDateContainer').toggleClass("d-none");
-		$('#tenderListContainer').toggleClass("d-none");
+		$('#businessDateContainer').removeClass("d-none");
+		$('#tenderListContainer').removeClass("d-none");
 	}
 	
 }
+
+
+function processRegisterRequest(regValue, url){
+	var cntl_check=$('#'+regValue+'_reg_status');
+	if(cntl_check){
+		var locStatus=cntl_check.val();
+		if(locStatus=='OPEN_REGISTER'){
+			url+="="+regValue;
+			window.location.href=url;
+		}else{
+			$('#tenderListContainer').removeClass("d-none");						
+		}
+	}else{
+		$('#tenderListContainer').removeClass("d-none");
+	}
+	
+}
+

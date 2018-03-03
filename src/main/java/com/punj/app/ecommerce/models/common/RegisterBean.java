@@ -22,6 +22,7 @@ public class RegisterBean {
 	private LocalDateTime lastCreatedDate;
 	private String lastStatus;
 	private Boolean eligibleForRegisterOpen = Boolean.TRUE;
+	private String lastOpenedBy;
 
 	/**
 	 * @return the locationId
@@ -158,4 +159,21 @@ public class RegisterBean {
 		this.eligibleForRegisterOpen = eligibleForRegisterOpen;
 	}
 
+	/**
+	 * @return the lastOpenedBy
+	 */
+	public String getLastOpenedBy() {
+		return lastOpenedBy;
+	}
+
+	/**
+	 * @param lastOpenedBy the lastOpenedBy to set
+	 */
+	public void setLastOpenedBy(String lastOpenedBy) {
+		this.lastOpenedBy = lastOpenedBy;
+	}
+
+	
+	
+	
 }

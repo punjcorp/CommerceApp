@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -260,6 +261,19 @@ public class DailyDeedController {
 		RegisterDTO registerDTO = this.commonService.retrieveRegisterWithDailyStatus(dailyDeedBean.getLocationId());
 		List<RegisterBean> registers = CommonMVCTransformer.transformRegisterDTO(registerDTO);
 
+		Integer registerId = dailyDeedBean.getRegister();
+		if (registerId != null) {
+			for (RegisterBean register : registers) {
+				if (register.getRegisterId().equals(registerId)) {
+					dailyDeedBean.setRegisterId(register.getRegisterId());
+					dailyDeedBean.setRegisterName(register.getName());
+					break;
+				}
+			}
+			logger.info("The location name has been setup correctly");
+		}
+		
+		
 		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
 		logger.info("All the beans needs for open store screen has been updated in model");
@@ -272,7 +286,7 @@ public class DailyDeedController {
 		try {
 			Integer locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
 			LocalDateTime businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
-			if (locationId != null && businessDate != null) {
+			if (businessDate != null) {
 
 				Transaction txnDetails = this.txnService.searchLocationOpenTxn(locationId, businessDate);
 				TenderCount tenderCount = this.dailyDeedService.searchTxnTenderCount(txnDetails.getTransactionId());
@@ -393,7 +407,7 @@ public class DailyDeedController {
 
 	@PostMapping(value = ViewPathConstants.REGISTER_OPEN_URL, params = { MVCConstants.OPEN_REGISTER_PARAM })
 	public String processOpenRegisterDetails(@ModelAttribute @Valid DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication, HttpServletRequest session) {
+			Authentication authentication, HttpSession session) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
@@ -402,14 +416,15 @@ public class DailyDeedController {
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
-				DailyOpenTransaction storeOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
-				Boolean result = this.dailyDeedService.saveRegisterOpenTxn(storeOpenDetails, userDetails.getUsername());
+				DailyOpenTransaction registerOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
+				Boolean result = this.dailyDeedService.saveRegisterOpenTxn(registerOpenDetails, userDetails.getUsername());
 				this.updateBeans(dailyDeedBean, model);
 				if (!result) {
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.failure", null, locale));
 					logger.info("The Register open process failed due to some unknown issue");
 					return ViewPathConstants.REGISTER_OPEN_PAGE;
 				}
+				this.updateBeansForRegisterOpen(dailyDeedBean, model);
 				session.setAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 				logger.info("The Register open process was successful and register is ready for sale now");
 			}

@@ -5,6 +5,8 @@ package com.punj.app.ecommerce.controller.sale;
 
 import java.time.LocalDateTime;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.models.common.SearchBean;
+import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
 import com.punj.app.ecommerce.services.ItemService;
 
@@ -51,9 +54,9 @@ public class SaleItemSearchController {
 	}
 
 	@GetMapping(ViewPathConstants.POS_URL)
-	public String showSaleScreen(Model model) {
+	public String showSaleScreen(Model model, HttpSession session) {
 		try {
-			this.updateBeans(model);
+			this.updateBeans(model,session);
 			logger.info("The sale screen is ready for display now");
 		} catch (Exception e) {
 			logger.error("There is an error while showing the new sale screen", e);
@@ -66,21 +69,24 @@ public class SaleItemSearchController {
 	 * This method is to set all the bean objects in model needed for the sale screen functionalities
 	 * 
 	 */
-	private void updateBeans(Model model) {
+	private void updateBeans(Model model, HttpSession session) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
-
+		DailyDeedBean dailyDeedBean=(DailyDeedBean)session.getAttribute(MVCConstants.DAILY_DEED_BEAN);
+		
 		SaleHeaderBean saleHeaderBean = new SaleHeaderBean();
-		Object openLocationId=commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-		Object openLocationName=commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_NAME);
-		Object openBusinessDate=commerceContext.getStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE);
-		if(openLocationId!=null)
-			saleHeaderBean.setLocationId((Integer)openLocationId);
-		if(openLocationName!=null)
-		saleHeaderBean.setLocationName((String)openLocationName);
-		if(openBusinessDate!=null)
-		saleHeaderBean.setBusinessDate((LocalDateTime)openBusinessDate);
+		Object openLocationId = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+		Object openLocationName = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_NAME);
+		Object openBusinessDate = commerceContext.getStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE);
+		if (openLocationId != null)
+			saleHeaderBean.setLocationId((Integer) openLocationId);
+		if (openLocationName != null)
+			saleHeaderBean.setLocationName((String) openLocationName);
+		if (openBusinessDate != null)
+			saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
 
+		saleHeaderBean.setRegisterId(dailyDeedBean.getRegisterId());
+		saleHeaderBean.setRegisterName(dailyDeedBean.getRegisterName());
 		model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
 		logger.info("All the needed beans for sales screen has been set in the model");
 	}

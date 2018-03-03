@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.common.web.CommerceConstants;
+import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
@@ -165,7 +167,7 @@ public class DailyDeedTransformer {
 		dailyDeedBean.setBusinessDate(txnId.getBusinessDate());
 		dailyDeedBean.setRegister(txnId.getRegister());
 
-		if(tenderCountDetails!=null) {
+		if (tenderCountDetails != null) {
 			List<TenderBean> tenders = DailyDeedTransformer.transformTenderCounts(tenderCountDetails);
 			dailyDeedBean.setTenders(tenders);
 		}
@@ -186,7 +188,7 @@ public class DailyDeedTransformer {
 		tenderBean.setDenominations(denominations);
 
 		tenders.add(tenderBean);
-		
+
 		logger.info("The txn tender Count has been transformed to tender bean successfully");
 		return tenders;
 	}
@@ -202,7 +204,7 @@ public class DailyDeedTransformer {
 			denominations.add(denomination);
 		}
 		logger.info("The txn tender denominations has been transformed to denominations  bean successfully");
-		
+
 		return denominations;
 	}
 }

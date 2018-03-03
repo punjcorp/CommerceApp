@@ -18,4 +18,8 @@ public final class CommerceConstants {
 	public static final String OPEN_LOC_NAME="OPEN_LOC_NAME";
 	public static final String OPEN_BUSINESS_DATE="OPEN_BUSINESS_DATE";
 	
+	public static final String OPEN_REG_ID="OPEN_REG_ID";
+	public static final String OPEN_REG_NAME="OPEN_REG_NAME";
+	
+	
 }

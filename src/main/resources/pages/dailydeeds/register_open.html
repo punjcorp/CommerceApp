@@ -100,6 +100,7 @@
 								</div>
 							</div>
 						</div>
+						<div id="tenderListContainer" th:class="${#lists.size(registers)>1}?'d-none':''">
 						<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
 						<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
 							<div class="border-box">
@@ -129,22 +130,22 @@
 									<th:block th:each="dnmn,itrDenomination:${dailyDeedBean.tenders[__${itrStat.index}__].denominations}">
 										<div class="row">
 											<div class="col-3">
-												<div class="form-group">
-													<label for="type"><small><span th:text="#{commerce.screen.common.tender.denomination}">Tender Denominations</span></small></label>
-													<div class="input-group text-left">
-														<select th:onChange="'changedDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"
-															th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="form-control input-sm">
-															<option class="form-text text-muted" value="" th:text="#{commerce.screen.common.tender.denomination.select}">Select Denomination</option>
-															<th:block th:each="dnmnAmt,itrDnmnAmt:${dailyDeedBean.denominationList}">
-																<option th:value="${dnmnAmt.number}" th:text="${dnmnAmt}"
-																	th:selected="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination == dnmnAmt.number}"></option>
-															</th:block>
-														</select>
+													<div class="form-group">
+														<label for="type"><small><span th:text="#{commerce.screen.common.tender.denomination}">Tender Denominations</span></small></label>
+														<div class="input-group text-left">
+															<select th:onChange="'changedDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"
+																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="form-control input-sm">
+																<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.common.tender.denomination.select}">Select
+																	Denomination</option>
+																<th:block th:each="dnmnAmt,itrDnmnAmt:${dailyDeedBean.denominationList}">
+																	<option th:value="${dnmnAmt.number}" th:text="${dnmnAmt}"></option>
+																</th:block>
+															</select>
+														</div>
+														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination')}"
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="text-danger align-top">Denomination
+															Error </small>
 													</div>
-													<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination')}"
-														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="text-danger align-top">Denomination
-														Error </small>
-												</div>
 											</div>
 											<div class="col-3">
 												<div class="form-group">
@@ -217,6 +218,7 @@
 								</div>
 							</div>
 						</th:block>
+						</div>
 						<div class="row">
 							<div class="col-12 text-right">
 								<div class="form-group">
@@ -233,5 +235,17 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
+	<script th:inline="javascript">
+		$(function() {
+			var url= /*[[@{/pos(registerId)}]]*/;
+			
+			$('input:radio[name=registerRadio]').change(function(){
+				var regValue=$(this).val();
+				processRegisterRequest(regValue, url);
+			   });
+			
+		});
+	</script>	
+	
 </body>
 </html>

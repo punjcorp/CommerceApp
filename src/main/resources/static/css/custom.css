@@ -643,3 +643,13 @@ a[id="contact"]::before {
     display: table-cell;
     vertical-align: middle;
 }
+
+.padding-sm{
+	padding-right: 2px;
+	padding-left: 2px;
+}
+
+.padding-md{
+	padding-right: 10px;
+	padding-left: 10px;
+}

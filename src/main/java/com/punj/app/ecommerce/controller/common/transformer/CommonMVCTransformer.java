@@ -174,6 +174,7 @@ public class CommonMVCTransformer {
 			registerBean.setLastStatus(txnType);
 			if (txnDetails.getTxnType().equals(ServiceConstants.TXN_OPEN_REGISTER)) {
 				registerBean.setEligibleForRegisterOpen(Boolean.FALSE);
+				registerBean.setLastOpenedBy(txnDetails.getCreatedBy());
 			} else {
 				registerBean.setEligibleForRegisterOpen(Boolean.TRUE);
 			}
