@@ -9,6 +9,7 @@
  */
 
 var scannedItems = [];
+var cashTenderLineItem = new TenderLineItem();
 
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
@@ -51,6 +52,11 @@ $(function() {
 			}
 		}
 	});
+
+	$('#btnTenderOK').click(function() {
+		processTender();
+	});
+
 });
 
 /* This section will allow the item listing to be in a specific format */
@@ -105,19 +111,20 @@ function createSaleItemLine(data) {
 	output += '<br>' + data.longDesc;
 	output += '</span></div>';
 
-	var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty' + data.itemId + '" type="text" value="';
+	var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
+	qty += data.itemId + '" type="number" min="0" step="0.01" value="';
 	qty += data.qty;
 	qty += '"></input></div>';
 
-	var priceAmt = '<div class="col padding-sm"><input class="form-control" id="li_priceAmt' + data.itemId + '" type="text" value="';
+	var priceAmt = '<div class="col padding-sm"><input class="form-control" id="li_priceAmt' + data.itemId + '" type="number" min="0" step="0.01" value="';
 	priceAmt += data.priceAmt.toFixed(2);
 	priceAmt += '" disabled></input></div>';
 	priceAmt += '<input id="li_uh_priceAmt' + data.itemId + '" type="hidden" value="';
 	priceAmt += data.priceAmt.toFixed(2);
 	priceAmt += '"></input>';
 
-	var discountAmt = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_discountAmt' + data.itemId
-			+ '" type="text" value="';
+	var discountAmt = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_discountAmt';
+	discountAmt += data.itemId + '" type="number" min="0" step="0.01" value="';
 	discountAmt += data.discountAmt.toFixed(2);
 	discountAmt += '"></input></div>';
 	discountAmt += '<input id="li_uh_discountAmt' + data.itemId + '" type="hidden" value="';
@@ -125,7 +132,7 @@ function createSaleItemLine(data) {
 	discountAmt += '"></input>';
 
 	var sgstTaxAmt = '<div class="col-1 padding-sm">';
-	sgstTaxAmt += '<input class="form-control" id="li_sgstAmt' + data.itemId + '" type="text" value="';
+	sgstTaxAmt += '<input class="form-control" id="li_sgstAmt' + data.itemId + '" type="number" min="0" step="0.01" value="';
 	sgstTaxAmt += data.sgstTax.amount.toFixed(2);
 	sgstTaxAmt += '" disabled></input>';
 	sgstTaxAmt += '<label><small><span>(' + data.sgstTax.percentage.toFixed(2) + '%)</span></small></label></div>';
@@ -134,7 +141,7 @@ function createSaleItemLine(data) {
 	sgstTaxAmt += '"></input>';
 
 	var cgstTaxAmt = '<div class="col-1 padding-sm">';
-	cgstTaxAmt += '<input class="form-control" id="li_cgstAmt' + data.itemId + '" type="text" value="';
+	cgstTaxAmt += '<input class="form-control" id="li_cgstAmt' + data.itemId + '" type="number" min="0" step="0.01" value="';
 	cgstTaxAmt += data.cgstTax.amount.toFixed(2);
 	cgstTaxAmt += '" disabled></input>';
 	cgstTaxAmt += '<label><small><span>(' + data.cgstTax.percentage.toFixed(2) + '%)</span></small></label></div>';
@@ -169,12 +176,12 @@ function calculateItemPrice(liIndex) {
 
 function calculateDiscount(liIndex) {
 	var discountAmt = +$('#li_discountAmt' + liIndex).val();
-	var itemPrice=+$('#li_priceAmt' + liIndex).val();
-	if(discountAmt>itemPrice){
+	var itemPrice = +$('#li_priceAmt' + liIndex).val();
+	if (discountAmt > itemPrice) {
 		$('#li_discountAmt' + liIndex).val(0.00);
 		alert('The discount amount cannot be more than item price');
-	}else{
-		$('#li_discountAmt' + liIndex).val(discountAmt.toFixed(2));		
+	} else {
+		$('#li_discountAmt' + liIndex).val(discountAmt.toFixed(2));
 	}
 	// This will be applicable when we will have automatic discounts
 }
@@ -248,5 +255,28 @@ function calculateHeaderTotals() {
 	$('#salesHeaderDiscountAmt').text('INR  ' + totalDiscount.toFixed(2));
 	$('#salesHeaderTaxAmt').text('INR  ' + totalTax.toFixed(2));
 	$('#salesHeaderTotalAmt').text('INR  ' + totalAmt.toFixed(2));
+
+	$('#hc_totalSubAmt').val(totalPrice.toFixed(2));
+	$('#hc_totalDiscountAmt').val(totalDiscount.toFixed(2));
+	$('#hc_totalTaxAmt').val(totalTax.toFixed(2));
+	$('#hc_totalDueAmt').val(totalAmt.toFixed(2));
+
+	$('#dueAmt').val(totalAmt.toFixed(2));
+
+}
+
+function processTender() {
+	
+	var tenderRadio = $('input[name="tenderRadio"]');
+	var tenderType = tenderRadio.filter(':checked').val();
+	
+	if(tenderType){
+		var tenderEnteredAmt = +$('#dueAmt').val();
+		var totalDueAmt = +$('#hc_totalDueAmt').val();
+
+		cashTenderLineItem.calculateDue(tenderEnteredAmt, totalDueAmt,tenderType);
+	}else{
+		alert('Please select tender for the payment');
+	}
 
 }

@@ -619,6 +619,18 @@ a[id="contact"]::before {
 	vertical-align: center;
 }
 
+.border-box-filled-light {
+	border-radius: 10px;
+	color: #05386B;
+	background-color: #8ee4af;
+	text-align: left;
+	padding: 5px;
+	margin: 5px;
+	font-size: 14px;
+	vertical-align: center;
+}
+
+
 .border-box-title {
 	margin: 5px;
 	padding: 5px;
