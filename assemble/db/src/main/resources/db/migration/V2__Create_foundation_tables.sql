@@ -87,6 +87,32 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`seq_generator` (
   PRIMARY KEY (`name`))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`tender_master`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`tender_master` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`tender_master` (
+  `tender_id` INT(3) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(80) NOT NULL,
+  `type` VARCHAR(30) NOT NULL,
+  `description` VARCHAR(150) NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  `sub_tender_id` INT(3) NULL,
+  PRIMARY KEY (`tender_id`),
+  CONSTRAINT `fk_tender_master_tender_master1`
+    FOREIGN KEY (`sub_tender_id`)
+    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_tender_master_tender_master1_idx` ON `commercedb`.`tender_master` (`sub_tender_id` ASC);
+
+
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

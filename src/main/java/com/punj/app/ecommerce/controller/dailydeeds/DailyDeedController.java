@@ -114,7 +114,8 @@ public class DailyDeedController {
 		logger.info("The show store open screen method has been called");
 		try {
 			DailyDeedBean dailyDeedBean = new DailyDeedBean();
-			List<Tender> tenders = this.commonService.retrieveAllTenders();
+			// Change this later on and make it an ajax call based on store selected from store open screen
+			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(7997);
 			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
 			dailyDeedBean.setTenders(tenderBeans);
 			this.updateBeans(dailyDeedBean, model);

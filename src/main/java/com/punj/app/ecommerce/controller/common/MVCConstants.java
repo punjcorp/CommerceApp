@@ -84,6 +84,7 @@ public final class MVCConstants {
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
+	public static final String TENDER_BEANS= "tenders";
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";

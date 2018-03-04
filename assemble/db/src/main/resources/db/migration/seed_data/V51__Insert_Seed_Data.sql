@@ -25,8 +25,29 @@ commit;
 -- Seed data for tender_master table
 -- -----------------------------------------------------
 truncate `commercedb`.`tender_master`;
-INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('CASH', 'CASH', 'This is the cash tender description', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cash', 'CASH', 'This is the cash tender description', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit Card', 'CC', 'This is credit card tender', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paypal', 'Paypal', 'This is paypal online payment', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paytm', 'Paytm', 'This is PAYTM online payment', 'admin', now());
+
 commit;
+
+-- -----------------------------------------------------
+-- Seed data for repository and tenders
+-- -----------------------------------------------------
+truncate `commercedb`.`location_repository`;
+truncate `commercedb`.`repository_master`;
+INSERT INTO `commercedb`.`repository_master` (`name`, `description`, `begin_date_time`, `status`, `created_by`, `created_date`) VALUES ('Main Safe', 'This is main safe in the store', now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
+
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
+commit;
+
 
 -- -----------------------------------------------------
 -- Seed data for register_master table
@@ -257,6 +278,7 @@ values('admin@gmail.com', '1');
 
 insert into commercedb.user_address ( username, address_id)
 values('cashier@gmail.com', '2');
+
 
 
 SET FOREIGN_KEY_CHECKS = 1;

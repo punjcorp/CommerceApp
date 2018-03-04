@@ -30,32 +30,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`tender_master`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`tender_master` ;
-
-CREATE TABLE IF NOT EXISTS `commercedb`.`tender_master` (
-  `tender_id` INT(3) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(80) NOT NULL,
-  `type` VARCHAR(30) NOT NULL,
-  `description` VARCHAR(150) NULL,
-  `created_by` VARCHAR(50) NOT NULL,
-  `created_date` DATETIME NOT NULL,
-  `modified_by` VARCHAR(50) NULL,
-  `modified_date` DATETIME NULL,
-  `sub_tender_id` INT(3) NULL,
-  PRIMARY KEY (`tender_id`),
-  CONSTRAINT `fk_tender_master_tender_master1`
-    FOREIGN KEY (`sub_tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_tender_master_tender_master1_idx` ON `commercedb`.`tender_master` (`sub_tender_id` ASC);
-
-
--- -----------------------------------------------------
 -- Table `commercedb`.`location_repository`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`location_repository` ;
@@ -64,11 +38,14 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`location_repository` (
   `repository_id` INT NOT NULL,
   `location_id` INT(4) NOT NULL,
   `tender_id` INT(3) NOT NULL,
+  `reconcilation_flag` TINYINT NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   PRIMARY KEY (`repository_id`, `location_id`, `tender_id`),
+  INDEX `fk_location_repository_location1_idx` (`location_id` ASC),
+  INDEX `fk_location_repository_tender_master1_idx` (`tender_id` ASC),
   CONSTRAINT `fk_location_repository_repository_master1`
     FOREIGN KEY (`repository_id`)
     REFERENCES `commercedb`.`repository_master` (`repository_id`)

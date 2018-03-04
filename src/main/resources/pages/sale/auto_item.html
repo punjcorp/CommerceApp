@@ -110,8 +110,7 @@
 								<div class="form-group">
 									<label><small><span th:text="#{commerce.screen.sale.amount.subtotal}">Subtotal</span></small></label>
 									<div class="input-group text-left">
-										<input type="hidden" id="hc_totalSubAmt"></input>
-										<label><h5>
+										<input type="hidden" id="hc_totalSubAmt"></input> <label><h5>
 												<span id="salesHeaderSubTotalAmt">INR 0.00</span>
 											</h5></label>
 									</div>
@@ -121,8 +120,7 @@
 								<div class="form-group">
 									<label><small><span th:text="#{commerce.screen.sale.amount.discount}">Total Discount</span></small></label>
 									<div class="input-group text-left">
-										<input type="hidden" id="hc_totalDiscountAmt"></input>
-										<label><h5>
+										<input type="hidden" id="hc_totalDiscountAmt"></input> <label><h5>
 												<span id="salesHeaderDiscountAmt">INR 0.00</span>
 											</h5></label>
 									</div>
@@ -134,8 +132,7 @@
 								<div class="form-group">
 									<label><small><span th:text="#{commerce.screen.sale.amount.tax}">Total Tax</span></small></label>
 									<div class="input-group text-left">
-										<input type="hidden" id="hc_totalTaxAmt"></input>
-										<label><h5>
+										<input type="hidden" id="hc_totalTaxAmt"></input> <label><h5>
 												<span id="salesHeaderTaxAmt">INR 0.00</span>
 											</h5></label>
 									</div>
@@ -145,8 +142,7 @@
 								<div class="form-group">
 									<label><small><span th:text="#{commerce.screen.sale.amount.total}">Total Amount</span></small></label>
 									<div class="input-group text-left">
-										<input type="hidden" id="hc_totalDueAmt"></input>
-										<label><h5>
+										<input type="hidden" id="hc_totalDueAmt"></input> <label><h5>
 												<span id="salesHeaderTotalAmt">INR 0.00</span>
 											</h5></label>
 									</div>
@@ -154,13 +150,8 @@
 							</div>
 						</div>
 					</div>
-					
-					
 					<!-- This section is for the tender line items based on selected tenders-->
-					<div class="border-box-filled-light d-none" id="tenderLineItemContainer">
-				
-					</div>
-										
+					<div class="border-box-filled-light d-none" id="tenderLineItemContainer"></div>
 					<!-- This section is for the due amount and payment methods -->
 					<div class="border-box-filled">
 						<div class="row ">
@@ -169,15 +160,15 @@
 									<label><small><span th:text="#{commerce.screen.sale.amount.due}" id="lbl_tenderDue">Total Due</span></small></label>
 									<div class="input-group text-left">
 										<div class="input-group-prepend">
-										    <span class="input-group-text">INR</span>
-										  </div>									
-										<input type="number" min="0" step="0.01" class="form-control form-control-sm text-right" id="dueAmt" th:placeholder="#{commerce.screen.sale.amount.due.placeholder}"></input>
+											<span class="input-group-text">INR</span>
+										</div>
+										<input type="number" min="0" step="0.01" class="form-control form-control-sm text-right" id="dueAmt"
+											th:placeholder="#{commerce.screen.sale.amount.due.placeholder}"></input>
 										<div class="input-group-append">
 											<button class="btn btn-success" id="btnTenderOK" type="button">
 												<i class="fas fa-check"></i>
 											</button>
-											<button class="btn btn-success d-none" id="btnCompleteTxn" type="button" th:text="#{commerce.screen.sale.complete}">
-											</button>											
+											<button class="btn btn-success d-none" id="btnCompleteTxn" type="button" th:text="#{commerce.screen.sale.complete}"></button>
 										</div>
 									</div>
 								</div>
@@ -186,25 +177,17 @@
 						<div class="row">
 							<div class="col">
 								<div class="box-radio-parent">
-									<label> <input type="radio" name="tenderRadio" id="tenderRadio" value="Cash" selected="selected"></input>
-										<div class="sm-btn">
-											<div class="box-text">
-												<span><i class="fas fa-money-bill-alt fa-4x"></i> </span>
+									<th:block th:each="tenderBean,itrStat:${tenders}">
+										<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.name}"></input>
+											<div class="sm-btn">
+												<div class="box-text">
+													<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span th:if="${tenderBean.name=='Credit Card'}"><i
+														class="fas fa-credit-card fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paypal'}"><i class="fab fa-paypal fa-4x"></i> </span> <span
+														th:if="${tenderBean.name=='Paytm'}"><img th:src="@{/images/paytm_sm.png}"></img> </span>
+												</div>
 											</div>
-										</div>
-									</label> <label> <input type="radio" name="tenderRadio" id="tenderRadio" value="Credit Card"></input>
-										<div class="sm-btn">
-											<div class="box-text">
-												<span><i class="fas fa-credit-card fa-4x"></i> </span>
-											</div>
-										</div>
-									</label> <label> <input type="radio" name="tenderRadio" id="tenderRadio" value="Paypal"></input>
-										<div class="sm-btn">
-											<div class="box-text">
-												<span><i class="fab fa-paypal fa-4x"></i> </span>
-											</div>
-										</div>
-									</label>
+										</label>
+									</th:block>
 								</div>
 							</div>
 						</div>

@@ -4,6 +4,7 @@ package com.punj.app.ecommerce.controller.sale;
  */
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,10 +20,14 @@ import com.punj.app.ecommerce.common.web.CommerceConstants;
 import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
+import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.services.common.CommonService;
 
 /**
  * @author admin
@@ -33,7 +38,17 @@ import com.punj.app.ecommerce.services.ItemService;
 public class SaleItemSearchController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
+	private CommonService commonService;
 	private CommerceContext commerceContext;
+
+	/**
+	 * @param commonService
+	 *            the commonService to set
+	 */
+	@Autowired
+	public void setCommonService(CommonService commonService) {
+		this.commonService = commonService;
+	}
 
 	/**
 	 * @param userService
@@ -56,7 +71,7 @@ public class SaleItemSearchController {
 	@GetMapping(ViewPathConstants.POS_URL)
 	public String showSaleScreen(Model model, HttpSession session) {
 		try {
-			this.updateBeans(model,session);
+			this.updateBeans(model, session);
 			logger.info("The sale screen is ready for display now");
 		} catch (Exception e) {
 			logger.error("There is an error while showing the new sale screen", e);
@@ -72,8 +87,8 @@ public class SaleItemSearchController {
 	private void updateBeans(Model model, HttpSession session) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
-		DailyDeedBean dailyDeedBean=(DailyDeedBean)session.getAttribute(MVCConstants.DAILY_DEED_BEAN);
-		
+		DailyDeedBean dailyDeedBean = (DailyDeedBean) session.getAttribute(MVCConstants.DAILY_DEED_BEAN);
+
 		SaleHeaderBean saleHeaderBean = new SaleHeaderBean();
 		Object openLocationId = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 		Object openLocationName = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_NAME);
@@ -85,10 +100,19 @@ public class SaleItemSearchController {
 		if (openBusinessDate != null)
 			saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
 
+		List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer)openLocationId);
+		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+		
 		saleHeaderBean.setRegisterId(dailyDeedBean.getRegisterId());
 		saleHeaderBean.setRegisterName(dailyDeedBean.getRegisterName());
 		model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
 		logger.info("All the needed beans for sales screen has been set in the model");
+	}
+
+	private List<TenderBean> retrieveValidTenders(Integer locationId) {
+		List<Tender> tenders = this.commonService.retrieveAllTenders(locationId);
+		List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
+		return tenderBeans;
 	}
 
 }

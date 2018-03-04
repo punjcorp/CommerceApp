@@ -212,6 +212,7 @@
 	position: relative;
 	border-radius: 5px;
 	color: white;
+	margin-left:15px;
 }
 
 .box-radio-parent .sm-btn:active {

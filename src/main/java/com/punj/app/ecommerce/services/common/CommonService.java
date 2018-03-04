@@ -23,7 +23,9 @@ public interface CommonService {
 
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId);
 
-	public List<Tender> retrieveAllTenders();
+	public List<Tender> retrieveAllTenders(Integer locationId);
+	
+	public List<Tender> retrieveTendersForReconcilation(Integer locationId);
 
 	public BigInteger getId(String name);
 

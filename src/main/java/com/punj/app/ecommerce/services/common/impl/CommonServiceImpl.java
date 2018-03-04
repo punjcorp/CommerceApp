@@ -162,9 +162,9 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public List<Tender> retrieveAllTenders() {
-		List<Tender> tenders = this.tenderRepository.findAll();
-		logger.info("The {} tenders has been retrieved successfully ", tenders.size());
+	public List<Tender> retrieveAllTenders(Integer locationId) {
+		List<Tender> tenders = this.tenderRepository.getTendersByLocation(locationId);
+		logger.info("The valid {} tenders for location {} has been retrieved successfully ", tenders.size(), locationId);
 		return tenders;
 	}
 
@@ -203,6 +203,13 @@ public class CommonServiceImpl implements CommonService {
 		Map<Integer, Transaction> registerLastTxnMap = this.txnService.searchRegisterTxnByCriteria(locationId, txnTypes);
 		logger.info("The last daily deed txn status for all registers has been retrieved successfully");
 		return registerLastTxnMap;
+	}
+
+	@Override
+	public List<Tender> retrieveTendersForReconcilation(Integer locationId) {
+		List<Tender> tenders = this.tenderRepository.getTendersForReconcilation(locationId);
+		logger.info("The valid {} tenders for reconcilation has been retrieved successfully ", tenders.size(),locationId);
+		return tenders;
 	}	
 	
 }
