@@ -1,16 +1,21 @@
 /**
- * 
+ * The global variables are defined in this section 
  */
 
 var tli_index = 0;
+var tenderLineItems = new Array();
 
 var TenderLineItem = function() {
 	this.tenderId;
+	this.index;
 	this.name = '';
 	this.amount = 0.00;
 }
 
 $.extend(TenderLineItem.prototype, {
+	addTenderLineItem: function(){
+		tenderLineItems.push(this);
+	},
 	renderTenderLineItem : function() {
 		tli_index += 1;
 

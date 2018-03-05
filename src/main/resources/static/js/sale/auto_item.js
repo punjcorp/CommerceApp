@@ -9,7 +9,7 @@
  */
 
 var scannedItems = [];
-var cashTenderLineItem = new TenderLineItem();
+var txnAction = new TxnAction();
 
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
@@ -266,17 +266,27 @@ function calculateHeaderTotals() {
 }
 
 function processTender() {
-	
 	var tenderRadio = $('input[name="tenderRadio"]');
-	var tenderType = tenderRadio.filter(':checked').val();
-	
-	if(tenderType){
-		var tenderEnteredAmt = +$('#dueAmt').val();
-		var totalDueAmt = +$('#hc_totalDueAmt').val();
+	var tenderName = tenderRadio.filter(':checked').val();
 
-		cashTenderLineItem.calculateDue(tenderEnteredAmt, totalDueAmt,tenderType);
-	}else{
+	if (tenderName) {
+		var tenderEnteredAmt = +$('#dueAmt').val();
+		if(!tenderEnteredAmt){
+			tenderEnteredAmt=0.00;
+		}
+		if (tenderEnteredAmt.toFixed(2) != 0.00) {
+			var totalDueAmt = +$('#hc_totalDueAmt').val();
+			txnAction.calculateDue(tenderEnteredAmt, totalDueAmt, tenderName);
+		} else {
+			$('#dueAmt').attr('title', 'The amount should be greater than INR 0.00');
+			('[data-toggle="tooltip"]').tooltip();
+		}
+	} else {
 		alert('Please select tender for the payment');
 	}
+}
 
+function deleteTender(deleteIndex) {
+	var totalDueAmt = +$('#hc_totalDueAmt').val();
+	txnAction.removeTenderItem(deleteIndex, totalDueAmt);
 }
