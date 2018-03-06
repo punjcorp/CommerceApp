@@ -157,11 +157,18 @@ public class DailyDeedController {
 		redirectAttrs.addFlashAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
+		this.updateCommerceContext(dailyDeedBean);
+
+		logger.info("All the beans needs for open store screen has been updated in model");
+
+	}
+
+	private void updateCommerceContext(DailyDeedBean dailyDeedBean) {
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, dailyDeedBean.getLocationId());
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
 
-		logger.info("All the beans needs for open store screen has been updated in model");
+		logger.info("All the store open details has been updated in commerce app context now");
 
 	}
 
@@ -273,8 +280,7 @@ public class DailyDeedController {
 			}
 			logger.info("The location name has been setup correctly");
 		}
-		
-		
+
 		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
 		logger.info("All the beans needs for open store screen has been updated in model");
@@ -286,6 +292,7 @@ public class DailyDeedController {
 		logger.info("The show store open screen method has been called when store is already open");
 		try {
 			Integer locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
+			String locationName = (String) req.getParameter(MVCConstants.LOC_NAME_PARAM);
 			LocalDateTime businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
 			if (businessDate != null) {
 
@@ -296,6 +303,9 @@ public class DailyDeedController {
 				if (dailyDeedBean != null) {
 					logger.info("The Store open transaction data has been retrieved successfully");
 					this.updateBeansForRegisterOpen(dailyDeedBean, model);
+					dailyDeedBean.setLocationName(locationName);
+					
+					this.updateCommerceContext(dailyDeedBean);
 					logger.info("The Register open screen is ready for display");
 				} else {
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));

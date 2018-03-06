@@ -230,9 +230,12 @@ function validateQtyAndDiscountAmt(cntl, liIndex) {
 		var qtyValue = +$('#li_qty' + liIndex).val();
 		if ((!qtyValue) || (qtyValue.toFixed(2) <= 0.00)) {
 			alert('The quantity should be a positive value always.Please correct the quantity.');
+			$('#li_qty' + liIndex).addClass("is-invalid");
 			$('#li_qty' + liIndex).val(1);
 			$('#li_qty' + liIndex).focus();
 			return false;
+		}else{
+			$('#li_qty' + liIndex).removeClass("is-invalid");
 		}
 	}
 	if (cntl.id.indexOf('li_discountAmt') == 0) {
@@ -240,9 +243,13 @@ function validateQtyAndDiscountAmt(cntl, liIndex) {
 		var priceValue = +$('#li_priceAmt' + liIndex).val();
 		if ( (!discountValue) || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
 			alert('The discount amount should be between INR 0.00 and item price amount.Please correct the amount.');
+			
+			$('#li_discountAmt' + liIndex).addClass("is-invalid");
 			$('#li_discountAmt' + liIndex).focus();
 			$('#li_discountAmt' + liIndex).val(0.00);
 			return false;
+		}else{
+			$('#li_discountAmt' + liIndex).removeClass("is-invalid");
 		}
 	}
 
@@ -299,8 +306,12 @@ function validateTender(){
 	var tenderEnteredAmt = +$('#dueAmt').val();
 	if((!tenderEnteredAmt) || (tenderEnteredAmt=='') || (tenderEnteredAmt<=0.00)){
 		alert('The tendered amount should be more than 0.00');
+		$('#dueAmt').addClass("is-invalid");
 		$('#dueAmt').focus();
 		return false;
+	}else{
+		
+		$('#dueAmt').removeClass("is-invalid");
 	}
 	return true;
 }

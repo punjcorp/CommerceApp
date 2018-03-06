@@ -94,9 +94,10 @@ function processLocationRequest(locValue, url){
 	var cntl_check=$('#'+locValue+'_loc_status');
 	if(cntl_check){
 		var locBusinessDate=$('#'+locValue+'_loc_bdate').val();
+		var locName=$('#'+locValue+'_loc_name').val();
 		var locStatus=cntl_check.val();
 		if(locStatus=='OPEN_STORE'){
-			url+="="+locValue+"&businessDate="+locBusinessDate;
+			url+="="+locValue+"&businessDate="+locBusinessDate+"&locName="+locName;
 			window.location.href=url;
 		}else{
 			$('#businessDateContainer').removeClass("d-none");

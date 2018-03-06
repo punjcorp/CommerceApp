@@ -239,7 +239,7 @@
 		$(function() {
 			var url= /*[[@{/pos(registerId)}]]*/;
 			
-			$('input:radio[name=registerRadio]').change(function(){
+			$('input:radio[name=register]').change(function(){
 				var regValue=$(this).val();
 				processRegisterRequest(regValue, url);
 			   });
