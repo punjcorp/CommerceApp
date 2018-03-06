@@ -54,7 +54,9 @@ $(function() {
 	});
 
 	$('#btnTenderOK').click(function() {
-		processTender();
+		if(validateTender()){
+			processTender();
+		}
 	});
 
 });
@@ -215,8 +217,36 @@ function calculateItemTotal(liIndex) {
 
 function saleItemChanged(cntl) {
 	var liIndex = cntl.id.replace(/[^0-9]/gi, '');
-	reCalculateSaleItemFields(liIndex);
-	calculateHeaderTotals();
+	if (validateQtyAndDiscountAmt(cntl, liIndex)) {
+		reCalculateSaleItemFields(liIndex);
+		calculateHeaderTotals();
+		this.reCalculateTenders();
+	}
+
+}
+
+function validateQtyAndDiscountAmt(cntl, liIndex) {
+	if (cntl.id.indexOf('li_qty') == 0) {
+		var qtyValue = +$('#li_qty' + liIndex).val();
+		if ((!qtyValue) || (qtyValue.toFixed(2) <= 0.00)) {
+			alert('The quantity should be a positive value always.Please correct the quantity.');
+			$('#li_qty' + liIndex).val(1);
+			$('#li_qty' + liIndex).focus();
+			return false;
+		}
+	}
+	if (cntl.id.indexOf('li_discountAmt') == 0) {
+		var discountValue = +$('#li_discountAmt' + liIndex).val();
+		var priceValue = +$('#li_priceAmt' + liIndex).val();
+		if ( (!discountValue) || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
+			alert('The discount amount should be between INR 0.00 and item price amount.Please correct the amount.');
+			$('#li_discountAmt' + liIndex).focus();
+			$('#li_discountAmt' + liIndex).val(0.00);
+			return false;
+		}
+	}
+
+	return true;
 }
 
 function calculateHeaderTotals() {
@@ -265,14 +295,25 @@ function calculateHeaderTotals() {
 
 }
 
+function validateTender(){
+	var tenderEnteredAmt = +$('#dueAmt').val();
+	if((!tenderEnteredAmt) || (tenderEnteredAmt=='') || (tenderEnteredAmt<=0.00)){
+		alert('The tendered amount should be more than 0.00');
+		$('#dueAmt').focus();
+		return false;
+	}
+	return true;
+}
+
+
 function processTender() {
 	var tenderRadio = $('input[name="tenderRadio"]');
 	var tenderName = tenderRadio.filter(':checked').val();
 
 	if (tenderName) {
 		var tenderEnteredAmt = +$('#dueAmt').val();
-		if(!tenderEnteredAmt){
-			tenderEnteredAmt=0.00;
+		if (!tenderEnteredAmt) {
+			tenderEnteredAmt = 0.00;
 		}
 		if (tenderEnteredAmt.toFixed(2) != 0.00) {
 			var totalDueAmt = +$('#hc_totalDueAmt').val();
@@ -289,4 +330,9 @@ function processTender() {
 function deleteTender(deleteIndex) {
 	var totalDueAmt = +$('#hc_totalDueAmt').val();
 	txnAction.removeTenderItem(deleteIndex, totalDueAmt);
+}
+
+function reCalculateTenders() {
+	var totalDueAmt = +$('#hc_totalDueAmt').val();
+	txnAction.calculateDue(0.00, totalDueAmt, 'Cash');
 }
