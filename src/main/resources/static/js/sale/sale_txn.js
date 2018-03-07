@@ -184,3 +184,82 @@ $.extend(TxnAction.prototype, {
 /**
  * Class definition for Tender Line Item Ends
  */
+
+/**
+ * Class definition for Tender Line Item Starts
+ */
+var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal) {
+	this.itemId = itemId;
+	this.itemName = itemName;
+	this.itemDesc = itemDesc;
+	this.qty = qty;
+	this.price = price;
+	this.discount = discount;
+	this.cgstTax = cgstTax;
+	this.sgstTax = sgstTax;
+	this.igstTax = igstTax;
+	this.cgstTaxRate = cgstTaxRate;
+	this.sgstTaxRate = sgstTaxRate;
+	this.igstTaxRate = igstTaxRate;
+	this.itemTotal = itemTotal;
+}
+
+$.extend(TxnAction.prototype, {
+	renderSaleLineItem : function(saleLineItem) {
+
+		var saleLineItemHtml = '<div class="row"> <div class="col-3"><span>';
+		saleLineItemHtml += '<b>' + saleLineItem.itemId + '-' + saleLineItem.itemName + '</b>';
+		saleLineItemHtml += '<br>' + saleLineItem.itemDesc;
+		saleLineItemHtml += '</span></div>';
+
+		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
+		qty += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		qty += saleLineItem.qty;
+		qty += '"></input></div>';
+
+		var priceAmt = '<div class="col padding-sm"><input class="form-control" id="li_priceAmt' + saleLineItem.itemId
+				+ '" type="number" min="0" step="0.01" value="';
+		priceAmt += saleLineItem.price.toFixed(2);
+		priceAmt += '" disabled></input></div>';
+		priceAmt += '<input id="li_uh_priceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		priceAmt += saleLineItem.price.toFixed(2);
+		priceAmt += '"></input>';
+
+		var discountAmt = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_discountAmt';
+		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		discountAmt += saleLineItem.discount.toFixed(2);
+		discountAmt += '"></input></div>';
+		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		discountAmt += saleLineItem.discount.toFixed(2);
+		discountAmt += '"></input>';
+
+		var sgstTaxAmt = '<div class="col-1 padding-sm">';
+		sgstTaxAmt += '<input class="form-control" id="li_sgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		sgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+		sgstTaxAmt += '" disabled></input>';
+		sgstTaxAmt += '<label><small><span>(' + saleLineItem.sgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
+		sgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+		sgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+		sgstTaxAmt += '"></input>';
+
+		var cgstTaxAmt = '<div class="col-1 padding-sm">';
+		cgstTaxAmt += '<input class="form-control" id="li_cgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
+		cgstTaxAmt += '" disabled></input>';
+		cgstTaxAmt += '<label><small><span>(' + saleLineItem.cgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
+		cgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+		cgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+		cgstTaxAmt += '"></input>';
+
+		var total = '<div class="col-2 padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
+		total += 'INR ' + saleLineItem.itemTotal.toFixed(2);
+		total += '</span></h5></div></div>';
+
+		var finalSaleItemHtml = saleLineItemHtml + qty + priceAmt + discountAmt + sgstTaxAmt + cgstTaxAmt + total;
+
+		$('#result').append(finalSaleItemHtml);
+	},
+	parseSaleLineItem : function(data) {
+
+	}
+});
