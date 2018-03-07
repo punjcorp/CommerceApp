@@ -145,7 +145,7 @@ public class CommonMVCTransformer {
 			registers = new ArrayList<>(registerList.size());
 			for (Register register : registerList) {
 				registerBean = CommonMVCTransformer.transformRegisterDomain(register);
-				txnDetails = lastTxnStatusTxns.get(registerBean.getLocationId());
+				txnDetails = lastTxnStatusTxns.get(registerBean.getRegisterId());
 				registerBean = CommonMVCTransformer.updateRegisterTxnStatus(registerBean, txnDetails);
 				registers.add(registerBean);
 			}

@@ -115,8 +115,9 @@ function processRegisterRequest(regValue, url){
 	var cntl_check=$('#'+regValue+'_reg_status');
 	if(cntl_check){
 		var locStatus=cntl_check.val();
+		var regName=$('#'+regValue+'_reg_name').val();
 		if(locStatus=='OPEN_REGISTER'){
-			url+="="+regValue;
+			url+="="+regValue+"&regName="+regName;
 			window.location.href=url;
 		}else{
 			$('#tenderListContainer').removeClass("d-none");						

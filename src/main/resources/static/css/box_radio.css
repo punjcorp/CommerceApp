@@ -112,6 +112,10 @@
 	transform: translateY(10px);
 }
 
+.box-radio-parent input[type="radio"]:checked+.sm-box .box-footer {
+	color: #05386B;
+}
+
 .box-radio-parent input[type="radio"]:disabled+.sm-box .box-text {
 
 }
@@ -156,13 +160,14 @@
 
 .box-radio-parent .sm-box .box-footer {
 	color: white;
-	font-size: 1em;
+	font-size: 0.75em;
 	position: absolute; 
 	bottom: 0; 
 	right: 0; 
 	width: 150px; 
 	text-align:right;
-	margin: 10px;	
+	margin-bottom: 5px;	
+	margin-right: 2px;
 }
 
 

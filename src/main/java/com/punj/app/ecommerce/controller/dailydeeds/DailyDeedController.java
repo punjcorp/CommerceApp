@@ -281,6 +281,8 @@ public class DailyDeedController {
 			logger.info("The location name has been setup correctly");
 		}
 
+		dailyDeedBean.setRegister(null);
+		
 		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
 		logger.info("All the beans needs for open store screen has been updated in model");
@@ -304,7 +306,7 @@ public class DailyDeedController {
 					logger.info("The Store open transaction data has been retrieved successfully");
 					this.updateBeansForRegisterOpen(dailyDeedBean, model);
 					dailyDeedBean.setLocationName(locationName);
-					
+
 					this.updateCommerceContext(dailyDeedBean);
 					logger.info("The Register open screen is ready for display");
 				} else {

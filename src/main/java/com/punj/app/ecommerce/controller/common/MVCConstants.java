@@ -27,6 +27,8 @@ public final class MVCConstants {
 	public static final String ITEM_ID_PARAM="itemId";
 	public static final String LOCATION_ID_PARAM="locationId";
 	public static final String LOC_NAME_PARAM="locName";
+	public static final String REGISTER_ID_PARAM="registerId";
+	public static final String REG_NAME_PARAM="regName";	
 	public static final String B_DATE_PARAM="businessDate";
 	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
 
