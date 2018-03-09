@@ -1,100 +1,162 @@
 /**
- * This file contains all the details about Tender Line Item
- * 
+ * The global variable needed for transaction operations
  */
 var g_nbr_zero = 0.00;
-var g_tenderIndex = 0;
-
-/**
- * Class definition for Tender Line Item Starts
- */
-var TenderLineItem = function(tenderId, tenderIndex, name, amount) {
-	this.tenderId = tenderId;
-	this.tenderIndex = tenderIndex;
-	this.name = name;
-	this.amount = amount;
-}
-
-$.extend(TenderLineItem.prototype, {
-	removeTenderItem : function(removeLineItem) {
-		tenderLineItems = $.grep(tenderLineItems, function(tenderLineItem) {
-			return tenderLineItem.tenderIndex != removeLineItem.tenderIndex;
-		});
-	},
-
-	addTenderItem : function(newLineItem) {
-		tenderLineItems.push(newLineItem);
-	},
-
-	render : function() {
-		if (g_tenderIndex > 0) {
-			$('#tenderLineItemContainer').removeClass('d-none');
-		}
-		var htmlContent = '<div class="row" id="' + g_tenderIndex + 'tenderLineItem">';
-		htmlContent += '<div class="col-6">';
-
-		var iconImg = '';
-		if (this.name == 'Cash') {
-			iconImg += '<i class="far fa-money-bill-alt fa-2x"></i>';
-		} else if (this.name == 'Credit Card') {
-			iconImg += '<i class="fas fa-credit-card fa-2x"></i>';
-		} else if (this.name == 'Paypal') {
-			iconImg += '<i class="fab fa-paypal fa-2x"></i>';
-		}
-		htmlContent += '<h5><span>' + iconImg + '  ' + this.name + '</span></h5>';
-
-		htmlContent += '</div><div class="col-4">';
-		htmlContent += '<input id="tli_amt_' + g_tenderIndex + '" type="hidden" value="' + this.amount.toFixed(2) + '"></input>';
-		htmlContent += '<h5><span>INR ' + this.amount.toFixed(2) + '</span></h5>';
-		htmlContent += '</div><div class="col-2">';
-		htmlContent += '<button type="button" id="btnDeleteTLI"';
-		htmlContent += 'onClick="deleteTender(' + g_tenderIndex;
-		htmlContent += ')" class="btn btn-danger btn-sm"><i class="far fa-trash-alt fa-2x"></i></button>';
-		htmlContent += '</div></div>';
-
-		$('#tenderLineItemContainer').append(htmlContent);
-
-	},
-
-	initialize : function(tenderEnteredAmt, tenderName) {
-		this.tenderIndex = g_tenderIndex;
-		g_tenderIndex++;
-		this.name = tenderName;
-		this.amount = tenderEnteredAmt;
-	},
-
-	obscureTenderLineItem : function(deleteIndex) {
-		$('#' + deleteIndex + 'tenderLineItem').remove();
-	},
-});
-/**
- * Class definition for Tender Line Item Ends
- */
-
-var tenderLineItems = [];
-var remainingAmount = 0.00;
-var totalPaidAmount = 0.00;
-var changeDueAmount = 0.00;
-var amountAfterPayment = 0.00;
 
 /**
  * Class definition for TxnAction Starts
  */
 var TxnAction = function() {
+	this.saleTxn = new SaleTransaction();
+	this.txnHeader = new TransactionHeader();
+	this.saleLineItem = new SaleLineItem();
+	this.tenderLineItem = new TenderLineItem();
+	this.saleItemList = new Array();
+	this.tenderLineItems = new Array();
+	this.remainingAmount = 0.00;
 };
 
 $.extend(TxnAction.prototype, {
-	removeTenderItem : function(removeIndex, totalDueAmt) {
-		var removeLineItem = tenderLineItems[removeIndex - 1];
-		removeLineItem.obscureTenderLineItem(removeIndex);
-		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
+	isDuplicateSaleLineItem : function(itemId) {
+		if ((this.saleItemList) && (this.saleItemList.length > 0)) {
+			var alreadyExistingItem = $.grep(this.saleItemList, function(item) {
+				return item.itemId == itemId;
+			})
+			if (alreadyExistingItem && alreadyExistingItem.length > 0) {
+				return true;
+			}
+		}
+		return false;
+	},
+	showSaleLineItem : function(data) {
+		var actualSaleItem = this.saleLineItem.parseSaleLineItem(data);
+		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
+			alert("The selected item already exists in the transaction, please increase the quantity if needed");
+		} else {
+			this.saleLineItem.renderSaleLineItem(actualSaleItem);
+			this.saleItemList.push(actualSaleItem);
+			this.renderHeaderTotals();
+		}
+	},
+	deleteSaleItemInList : function(removeItemId) {
+		// Remove the Sale Line Item
+		this.saleItemList = $.grep(this.saleItemList, function(saleLineItem) {
+			return saleLineItem.itemId != removeItemId;
+		});
+		this.saleLineItem.obscureSaleLineItem(removeItemId);
+		this.calculateHeaderTotals();
+	},
+	renderHeaderTotals : function() {
+		var totalAmt = 0.00;
+		var totalDiscount = 0.00;
+		var totalTax = 0.00;
+		var totalSGSTTax = 0.00;
+		var totalCGSTTax = 0.00;
+		var totalIGSTTax = 0.00;
+		var totalPrice = 0.00;
+
+		var totalAmtText;
+		$("[id^=li_").each(function() {
+			if (this.id.indexOf("li_itemTotal") >= 0) {
+				totalAmtText = $(this).text();
+				totalAmtText = +totalAmtText.replace('INR ', '');
+				totalAmt += totalAmtText;
+			}
+			if (this.id.indexOf("li_discountAmt") >= 0) {
+				totalDiscount += +$(this).val();
+			}
+			if (this.id.indexOf("li_priceAmt") >= 0) {
+				totalPrice += +$(this).val();
+			}
+			if (this.id.indexOf("li_sgstAmt") >= 0) {
+				totalSGSTTax += +$(this).val();
+			}
+			if (this.id.indexOf("li_cgstAmt") >= 0) {
+				totalCGSTTax += +$(this).val();
+			}
+			if (this.id.indexOf("li_igstAmt") >= 0) {
+				totalIGSTTax += +$(this).val();
+			}
+		});
+
+		totalTax = totalSGSTTax + totalCGSTTax;
+
+		$('#salesHeaderSubTotalAmt').text('INR  ' + totalPrice.toFixed(2));
+		$('#salesHeaderDiscountAmt').text('INR  ' + totalDiscount.toFixed(2));
+		$('#salesHeaderTaxAmt').text('INR  ' + totalTax.toFixed(2));
+		$('#salesHeaderTotalAmt').text('INR  ' + totalAmt.toFixed(2));
+
+		$('#hc_totalSubAmt').val(totalPrice.toFixed(2));
+		$('#hc_totalDiscountAmt').val(totalDiscount.toFixed(2));
+		$('#hc_totalTaxAmt').val(totalTax.toFixed(2));
+		$('#hc_totalDueAmt').val(totalAmt.toFixed(2));
+
+		$('#dueAmt').val(totalAmt.toFixed(2));
+
+		// Setting the sales header object
+		this.txnHeader.locationId = txn_locationId;
+		this.txnHeader.registerId = txn_registerId;
+		this.txnHeader.businessDate = txn_businessDate;
+		this.txnHeader.username = txn_user;
+
+		this.txnHeader.netTotalAmt = totalPrice;
+		this.txnHeader.totalDiscountAmt = totalDiscount;
+		this.txnHeader.totalSGSTTaxAmt = totalSGSTTax;
+		this.txnHeader.totalCGSTTaxAmt = totalCGSTTax;
+		this.txnHeader.totalIGSTTaxAmt = totalIGSTTax;
+		this.txnHeader.totalTaxAmt = totalTax;
+		this.txnHeader.totalDueAmt = totalAmt;
+
+	},
+	showTender : function(amount, tenderName) {
+		var tenderLineItem = this.addTenderItem(amount, tenderName);
+		tenderLineItem.render();
 	},
 	addTenderItem : function(tenderEnteredAmt, tenderName) {
 		var tenderLineItem = new TenderLineItem();
 		tenderLineItem.initialize(tenderEnteredAmt, tenderName);
-		tenderLineItems.push(tenderLineItem);
+		this.tenderLineItems.push(tenderLineItem);
 		return tenderLineItem;
 	},
+	removeTenderItem : function(removeIndex, totalDueAmt) {
+		var removeLineItem = this.tenderLineItems[removeIndex - 1];
+		removeLineItem.obscureTenderLineItem(removeIndex);
+		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
+	},
+	processTender : function() {
+		var tenderRadio = $('input[name="tenderRadio"]');
+		var tenderName = tenderRadio.filter(':checked').val();
+		if (tenderName) {
+			var tenderEnteredAmt = +$('#dueAmt').val();
+			var totalDueAmt = +$('#hc_totalDueAmt').val();
+			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderName);
+		} else {
+			alert('Please select tender for the payment');
+		}
+
+	},
+	calculateDue : function(tenderEnteredAmt, totalDueAmt, tenderName) {
+		var tliPaidAmt;
+		var totalPaidAmount = g_nbr_zero;
+		$("[id^=tli_amt_").each(function() {
+			tliPaidAmt = +$(this).val();
+			totalPaidAmount += tliPaidAmt;
+		});
+		this.remainingAmount = totalDueAmt.toFixed(2) - (totalPaidAmount.toFixed(2));
+		if ((this.remainingAmount.toFixed(2) == totalDueAmt.toFixed(2)) && (tenderEnteredAmt.toFixed(2) == g_nbr_zero.toFixed(2))) {
+			$('#tenderLineItemContainer').addClass("d-none");
+		}
+		if (parseFloat(tenderEnteredAmt.toFixed(2)) > parseFloat(this.remainingAmount.toFixed(2))) {
+			var changeDueAmount = this.remainingAmount - tenderEnteredAmt;
+			this.calculateChangeDueAmount(changeDueAmount);
+			this.calculateBiggerAmt(tenderEnteredAmt, totalDueAmt, tenderName);
+		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) < parseFloat(this.remainingAmount.toFixed(2))) {
+			this.calculateLessAmt(tenderEnteredAmt, totalDueAmt, tenderName);
+		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) == parseFloat(this.remainingAmount.toFixed(2))) {
+			this.calculateEqualAmt(tenderEnteredAmt, tenderName);
+		}
+	},
+
 	calculateBiggerAmt : function(tenderEnteredAmt, totalDueAmt, tenderName) {
 		$('#btnTenderOK').addClass('d-none');
 		$('#btnCompleteTxn').removeClass('d-none');
@@ -115,7 +177,7 @@ $.extend(TxnAction.prototype, {
 
 	},
 	calculateLessAmt : function(tenderEnteredAmt, totalDueAmt, tenderName) {
-		var amountAfterPayment = remainingAmount.toFixed(2) - tenderEnteredAmt.toFixed(2);
+		var amountAfterPayment = this.remainingAmount.toFixed(2) - tenderEnteredAmt.toFixed(2);
 
 		$('#dueAmt').val(amountAfterPayment.toFixed(2));
 
@@ -127,139 +189,31 @@ $.extend(TxnAction.prototype, {
 		$('#btnTenderOK').removeClass('d-none');
 		$('#btnCompleteTxn').addClass('d-none');
 	},
-	showTender : function(amount, tenderName) {
 
-		var tenderLineItem = this.addTenderItem(amount, tenderName);
-		tenderLineItem.render();
-
-	},
 	calculateChangeDueAmount : function(changeDueAmount) {
-
 		if ((!changeDueAmount) || (changeDueAmount < 0)) {
 			$('#dueAmt').val(g_nbr_zero.toFixed(2));
-
 			$('#tenderChangeDueCol').removeClass('d-none');
 			$('#hc_changeDueAmt').val(changeDueAmount.toFixed(2));
 			$('#tenderChangeDueAmt').text("INR " + changeDueAmount.toFixed(2));
-
 		}
-
 	},
+
 	resetChangeDueAmount : function() {
 		$('#tenderChangeDueCol').addClass('d-none');
 		$('#hc_changeDueAmt').val(g_nbr_zero.toFixed(2));
 		$('#tenderChangeDueAmt').text("INR " + g_nbr_zero.toFixed(2));
-
 	},
-	calculateDue : function(tenderEnteredAmt, totalDueAmt, tenderName) {
 
-		var tliPaidAmt;
-		totalPaidAmount = g_nbr_zero;
-		$("[id^=tli_amt_").each(function() {
-			tliPaidAmt = +$(this).val();
-			totalPaidAmount += tliPaidAmt;
-		});
-
-		remainingAmount = totalDueAmt.toFixed(2) - (totalPaidAmount.toFixed(2));
-
-		if ((remainingAmount.toFixed(2) == totalDueAmt.toFixed(2)) && (tenderEnteredAmt.toFixed(2) == g_nbr_zero.toFixed(2))) {
-			$('#tenderLineItemContainer').addClass("d-none");
-		}
-
-		if (parseFloat(tenderEnteredAmt.toFixed(2)) > parseFloat(remainingAmount.toFixed(2))) {
-			var changeDueAmount = remainingAmount - tenderEnteredAmt;
-			this.calculateChangeDueAmount(changeDueAmount);
-			this.calculateBiggerAmt(tenderEnteredAmt, totalDueAmt, tenderName);
-		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) < parseFloat(remainingAmount.toFixed(2))) {
-
-			this.calculateLessAmt(tenderEnteredAmt, totalDueAmt, tenderName);
-
-		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) == parseFloat(remainingAmount.toFixed(2))) {
-
-			this.calculateEqualAmt(tenderEnteredAmt, tenderName);
-
-		}
+	processCompletedTxn : function() {
+		this.saleTxn.transactionHeader=this.txnHeader;
+		this.saleTxn.txnSaleLineItems=this.saleItemList;
+		this.saleTxn.txnTenderLineItems=this.tenderLineItems;
+		
+		this.saleTxn.saveTxnDetails();
 	}
+
 });
 /**
  * Class definition for Tender Line Item Ends
  */
-
-/**
- * Class definition for Tender Line Item Starts
- */
-var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal) {
-	this.itemId = itemId;
-	this.itemName = itemName;
-	this.itemDesc = itemDesc;
-	this.qty = qty;
-	this.price = price;
-	this.discount = discount;
-	this.cgstTax = cgstTax;
-	this.sgstTax = sgstTax;
-	this.igstTax = igstTax;
-	this.cgstTaxRate = cgstTaxRate;
-	this.sgstTaxRate = sgstTaxRate;
-	this.igstTaxRate = igstTaxRate;
-	this.itemTotal = itemTotal;
-}
-
-$.extend(TxnAction.prototype, {
-	renderSaleLineItem : function(saleLineItem) {
-
-		var saleLineItemHtml = '<div class="row"> <div class="col-3"><span>';
-		saleLineItemHtml += '<b>' + saleLineItem.itemId + '-' + saleLineItem.itemName + '</b>';
-		saleLineItemHtml += '<br>' + saleLineItem.itemDesc;
-		saleLineItemHtml += '</span></div>';
-
-		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
-		qty += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
-		qty += saleLineItem.qty;
-		qty += '"></input></div>';
-
-		var priceAmt = '<div class="col padding-sm"><input class="form-control" id="li_priceAmt' + saleLineItem.itemId
-				+ '" type="number" min="0" step="0.01" value="';
-		priceAmt += saleLineItem.price.toFixed(2);
-		priceAmt += '" disabled></input></div>';
-		priceAmt += '<input id="li_uh_priceAmt' + saleLineItem.itemId + '" type="hidden" value="';
-		priceAmt += saleLineItem.price.toFixed(2);
-		priceAmt += '"></input>';
-
-		var discountAmt = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_discountAmt';
-		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
-		discountAmt += saleLineItem.discount.toFixed(2);
-		discountAmt += '"></input></div>';
-		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
-		discountAmt += saleLineItem.discount.toFixed(2);
-		discountAmt += '"></input>';
-
-		var sgstTaxAmt = '<div class="col-1 padding-sm">';
-		sgstTaxAmt += '<input class="form-control" id="li_sgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
-		sgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
-		sgstTaxAmt += '" disabled></input>';
-		sgstTaxAmt += '<label><small><span>(' + saleLineItem.sgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
-		sgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
-		sgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
-		sgstTaxAmt += '"></input>';
-
-		var cgstTaxAmt = '<div class="col-1 padding-sm">';
-		cgstTaxAmt += '<input class="form-control" id="li_cgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
-		cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
-		cgstTaxAmt += '" disabled></input>';
-		cgstTaxAmt += '<label><small><span>(' + saleLineItem.cgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
-		cgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
-		cgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
-		cgstTaxAmt += '"></input>';
-
-		var total = '<div class="col-2 padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
-		total += 'INR ' + saleLineItem.itemTotal.toFixed(2);
-		total += '</span></h5></div></div>';
-
-		var finalSaleItemHtml = saleLineItemHtml + qty + priceAmt + discountAmt + sgstTaxAmt + cgstTaxAmt + total;
-
-		$('#result').append(finalSaleItemHtml);
-	},
-	parseSaleLineItem : function(data) {
-
-	}
-});

@@ -193,7 +193,6 @@ public final class ViewPathConstants {
 	/**
 	 * The daily deed section starts
 	 */
-	
 	public static final String STORE_OPEN_URL="/pos/open_store";
 	public static final String STORE_OPEN_PAGE="dailydeeds/store_open";
 	
@@ -204,6 +203,18 @@ public final class ViewPathConstants {
 	 * The daily deed section ends
 	 */
 	
+
+	/**
+	 * The Transction section starts
+	 */
+	public static final String TXN_SAVE_URL="/pos/save_txn";
+
+	public static final String TXN_POST_VOID_URL="/pos/post_void_txn";
+
+	
+	/**
+	 * The Transaction section ends
+	 */	
 	
 	
 }
