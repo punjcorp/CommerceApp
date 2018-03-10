@@ -21,6 +21,9 @@ public final class MVCConstants {
 	public static final String PAGER= "pager";
 	public static final String YES="Y";
 	
+	public static final String TXN_SALE_PARAM="SALE";
+	
+	
 	public static final String ID_PARAM="id";
 	public static final String TENDER_ID_PARAM="tenderId";
 	public static final String PAGE_PARAM="page";
@@ -74,6 +77,15 @@ public final class MVCConstants {
 	public static final String SUPPLIER_DATA_PARAM="SUPPLIER_DATA";
 	public static final String SUPPLIER_ADDRESS_DATA_PARAM="SUPPLIER_ADDRESS_DATA";
 	public static final String DELIVERY_ADDRESS_DATA_PARAM="DELIVERY_ADDRESS_DATA";
+	
+	
+	
+	public static final String SALE_ITEM_PARAM="SALE_ITEM";
+	public static final String TAX_ITEM_PARAM="TAX_ITEM";
+	public static final String TENDER_ITEM_PARAM="TENDER_ITEM";
+	public static final String COMPLETED="COMPLETED";
+	public static final String MANUAL="MANUAL";
+	public static final String ADD="ADD";
 	
 	
 	

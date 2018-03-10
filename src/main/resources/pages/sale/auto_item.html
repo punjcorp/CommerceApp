@@ -9,6 +9,7 @@
 <th:block th:replace="common/header:: header"></th:block>
 <!-- Enable the auto complete item lookup-->
 <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../js/moment.js" th:src="@{/js/moment.js}"></script>
 <script src="../../js/transaction/txn_classes.js" th:src="@{/js/transaction/txn_classes.js}"></script>
 <script src="../../js/sale/sale_txn.js" th:src="@{/js/sale/sale_txn.js}"></script>
 <script src="../../js/sale/auto_item.js" th:src="@{/js/sale/auto_item.js}"></script>
@@ -198,7 +199,13 @@
 							<div class="col">
 								<div class="box-radio-parent">
 									<th:block th:each="tenderBean,itrStat:${tenders}">
-										<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.name}"></input>
+										<input type="hidden" th:id="${tenderBean.tenderId+'tenderName'}" th:value="${tenderBean.name}"></input>
+										<input type="hidden" th:id="${tenderBean.tenderId+'tenderType'}" th:value="${tenderBean.tndrType}"></input>
+										<th:block th:if="${tenderBean.name =='Change'}"> 
+											<input type="hidden" id="hc_changeTenderId" th:value="${tenderBean.tenderId}"></input>
+										</th:block>
+										<th:block th:unless="${tenderBean.name =='Change'}">
+												<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.tenderId}"></input>
 											<div class="sm-btn">
 												<div class="box-text">
 													<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
@@ -207,6 +214,7 @@
 												</div>
 											</div>
 										</label>
+										</th:block>
 									</th:block>
 								</div>
 							</div>
@@ -225,7 +233,8 @@
 		var txn_registerId = /*[[${saleHeaderBean.registerId}]]*/;
 		var txn_user = /*[[${#authentication.getPrincipal().getUsername()}]]*/;
 		var txn_businessDate = /*[[${{saleHeaderBean.businessDate}}]]*/;
-
+		var tndr_change_id=$('#hc_changeTenderId').val();
+		
 		/*]]>*/
 	</script>
 </body>

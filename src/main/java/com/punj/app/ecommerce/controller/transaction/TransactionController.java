@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
+import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 
 /**
  * @author admin
@@ -31,6 +35,7 @@ public class TransactionController {
 
 	private static final Logger logger = LogManager.getLogger();
 	private CommonService commonService;
+	private TransactionService transactionService;
 	private CommerceContext commerceContext;
 
 	/**
@@ -51,12 +56,22 @@ public class TransactionController {
 		this.commerceContext = commerceContext;
 	}
 
+	/**
+	 * @param transactionService
+	 *            the transactionService to set
+	 */
+	@Autowired
+	public void setTransactionService(TransactionService transactionService) {
+		this.transactionService = transactionService;
+	}
+
 	@PostMapping(value = ViewPathConstants.TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public String saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session) {
-		String result = "/sales/auto_item";
-
-		return result;
+	public TransactionId saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session) {
+		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn);
+		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
+		logger.info("The txn details has been saved successfully");
+		return txnId;
 	}
 
 }

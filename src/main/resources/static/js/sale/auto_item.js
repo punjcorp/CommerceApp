@@ -10,6 +10,8 @@
 
 var scannedItems = [];
 var txnAction = new TxnAction();
+var txnStartTime;
+var txnEndTime;
 
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
@@ -17,6 +19,8 @@ var txnAction = new TxnAction();
  * @returns
  */
 $(function() {
+	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
+
 	$("#searchText").autocomplete({
 		minLength : 3,
 		source : function(request, response) {
@@ -54,6 +58,7 @@ $(function() {
 	});
 
 	$('#btnCompleteTxn').click(function() {
+		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		txnAction.processCompletedTxn();
 	});
 

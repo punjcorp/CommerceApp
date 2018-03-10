@@ -2,6 +2,25 @@
  * This file contains all the classes needed for a
  * simple Sales transaction
  */
+
+/**
+ * Class definition for Transaction Id Starts
+ */
+var TransactionId = function() {
+	this.txnNo;
+	this.locationId;
+	this.registerId;
+	this.businessDate;
+	this.username;
+}
+
+$.extend(TransactionId.prototype, {
+
+});
+/**
+ * Class definition for Transaction Id Ends
+ */
+
 /**
  * Class definition for Transaction Header Details Starts
  */
@@ -11,8 +30,12 @@ var TransactionHeader = function() {
 	this.registerId;
 	this.businessDate;
 	this.username;
+	this.createdBy;
 
-	this.netTotalAmt = 0.00;
+	this.startTime;
+	this.endTime;
+	
+	this.subTotalAmt = 0.00;
 	this.totalDiscountAmt = 0.00;
 	this.totalSGSTTaxAmt = 0.00;
 	this.totalCGSTTaxAmt = 0.00;
@@ -62,6 +85,8 @@ var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cg
 		this.igstTaxRate;
 		this.itemTotal;
 	}
+	this.seqNo;
+	this.taxLineItems = new Array();
 }
 
 $.extend(SaleLineItem.prototype, {
@@ -210,28 +235,76 @@ $.extend(SaleLineItem.prototype, {
 		var qty = data.qty;
 		var price = data.priceAmt;
 		var discount = data.discountAmt;
-		var cgstTax = data.cgstTax.amount;
-		var sgstTax = data.sgstTax.amount;
+
+		var cgstTax;
+		var sgstTax;
+		var cgstTaxRate;
+		var sgstTaxRate;
 		var igstTax;
 		var igstTaxRate;
+
 		if (data.igstTax) {
 			igstTax = data.igstTax.amount;
 			igstTaxRate = data.igstTax.percentage;
+
+			var igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate);
+			this.taxLineItems.push(igstTaxLineItem);
+		} else {
+			cgstTax = data.cgstTax.amount;
+			cgstTaxRate = data.cgstTax.percentage;
+			sgstTax = data.sgstTax.amount;
+			sgstTaxRate = data.sgstTax.percentage;
+
+			var cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate);
+			var sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate);
+			this.taxLineItems.push(sgstTaxLineItem);
+			this.taxLineItems.push(cgstTaxLineItem);
 		}
 
-		var cgstTaxRate = data.cgstTax.percentage;
-		var sgstTaxRate = data.sgstTax.percentage;
-
 		var itemTotal = data.totalAmt;
-
 		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate,
 				itemTotal);
+
+		saleLineItem.taxLineItems = this.taxLineItems;
 
 		return saleLineItem;
 	}
 });
 /**
  * Class definition for Sale Line Item Ends
+ */
+
+/**
+ * Class definition for Tax Line Item Starts
+ */
+var TaxLineItem = function(itemId, taxGroupId, taxRuleRateId, totalTaxAmt, taxRuleRate) {
+	this.txnId = new TransactionId();
+
+	this.seqNo;
+	this.itemId = itemId;
+	this.taxGroupId = taxGroupId;
+	this.taxRuleRateId = taxRuleRateId;
+	this.totalTaxAmt = totalTaxAmt;
+	this.totalTaxableAmt = 0.00;
+	this.totalTaxExemptAmt = 0.00;
+	this.taxOverrideAmt = 0.00;
+	this.taxOverrideRate = 0.00;
+	this.taxOverrideFlag = false;
+	this.taxOverrideReason;
+	this.voidFlag;
+	this.taxRuleRate = taxRuleRate;
+	this.taxRuleAmt = totalTaxAmt;
+	this.orgTaxableAmt = 0.00;
+	this.orgTaxGroupId;
+	this.createdDate;
+
+}
+
+$.extend(TaxLineItem.prototype, {
+
+});
+/**
+ * Class definition for Tax Line Item Ends
  */
 
 /**
@@ -243,11 +316,16 @@ var g_tenderIndex = 0;
 /**
  * Class definition for Tender Line Item Starts
  */
-var TenderLineItem = function(tenderId, tenderIndex, name, amount) {
+var TenderLineItem = function(tenderId, tenderIndex, code, name, amount) {
+
 	this.tenderId = tenderId;
 	this.tenderIndex = tenderIndex;
+	this.typeCode = code;
 	this.name = name;
 	this.amount = amount;
+	this.seqNo;
+	this.changeFlag = false;
+
 }
 
 $.extend(TenderLineItem.prototype, {
@@ -281,10 +359,14 @@ $.extend(TenderLineItem.prototype, {
 
 	},
 
-	initialize : function(tenderEnteredAmt, tenderName) {
+	initialize : function(tenderEnteredAmt, tenderId) {
 		this.tenderIndex = g_tenderIndex;
 		g_tenderIndex++;
+		var tenderName = $('#' + tenderId + 'tenderName').val();
+		var tenderType = $('#' + tenderId + 'tenderType').val();
+		this.tenderId = tenderId;
 		this.name = tenderName;
+		this.typeCode = tenderType;
 		this.amount = tenderEnteredAmt;
 	},
 
@@ -325,7 +407,31 @@ $.extend(SaleTransaction.prototype, {
 	addTxnHeader : function(txnHeader) {
 		this.transactionHeader = txnHeader;
 	},
+	addTxnSeqs : function() {
+		var seqVal = 1;
+
+		$.each(this.txnSaleLineItems, function() {
+			this.seqNo = seqVal;
+			seqVal = seqVal + 1;
+		});
+
+		$.each(this.taxLineItems, function() {
+			this.seqNo = seqVal;
+			seqVal = seqVal + 1;
+		});
+		
+		$.each(this.txnTenderLineItems, function() {
+			this.seqNo = seqVal;
+			seqVal = seqVal + 1;
+		});
+
+	},
+	preSaveActions : function() {
+		this.addTxnSeqs();
+	},
 	saveTxnDetails : function() {
+		this.preSaveActions();
+
 		var token = $("meta[name='_csrf']").attr("content");
 		var formdata = JSON.stringify(this);
 		// AJAX call here and refresh the sell item page with receipt printing
@@ -339,9 +445,9 @@ $.extend(SaleTransaction.prototype, {
 			success : function(data) {
 				alert(data);
 			},
-		beforeSend: function(xhr) {
-            xhr.setRequestHeader('X-CSRF-TOKEN', token)
-          }
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('X-CSRF-TOKEN', token)
+			}
 		});
 	}
 

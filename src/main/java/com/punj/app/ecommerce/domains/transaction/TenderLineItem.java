@@ -21,10 +21,15 @@ public class TenderLineItem implements Serializable {
 	private TransactionLineItemId transactionLineItemId;
 
 	private BigDecimal amount;
+	@Column(name = "tender_id")
+	private Integer tenderId;
 	@Column(name = "type_code")
 	private String type;
 	@Column(name = "action_code")
 	private String action;
+
+	@Column(name = "change_flag")
+	private Boolean changeFlag;
 
 	@Column(name = "foreign_amount")
 	private BigDecimal foreignAmount;
@@ -154,6 +159,36 @@ public class TenderLineItem implements Serializable {
 	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the tenderId
+	 */
+	public Integer getTenderId() {
+		return tenderId;
+	}
+
+	/**
+	 * @param tenderId
+	 *            the tenderId to set
+	 */
+	public void setTenderId(Integer tenderId) {
+		this.tenderId = tenderId;
+	}
+
+	/**
+	 * @return the changeFlag
+	 */
+	public Boolean getChangeFlag() {
+		return changeFlag;
+	}
+
+	/**
+	 * @param changeFlag
+	 *            the changeFlag to set
+	 */
+	public void setChangeFlag(Boolean changeFlag) {
+		this.changeFlag = changeFlag;
 	}
 
 	/*

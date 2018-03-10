@@ -16,7 +16,7 @@ CREATE OR REPLACE VIEW `commercedb`.`v_location_tax`
 AS
 SELECT 
     tlm.location_id , tl.code `billing_location`, tg.tax_group_id, tg.name `tax_group_name`, tg.description `tax_group_desc`, tgr.seq_no `tax_group_rate_seq`, tgr.name `tax_group_rate_name`, tgr.description `tax_group_rate_desc`,
-    tgr.compound_flag, tgr.type_code, trr.seq_no, trr.effective_Date, trr.expiry_date, trr.percentage, trr.amount
+    tgr.compound_flag, tgr.type_code, `trr`.`tax_rate_rule_id` AS `tax_rate_rule_id`, trr.seq_no, trr.effective_Date, trr.expiry_date, trr.percentage, trr.amount
 FROM
     commercedb.tax_location_mapping tlm,
     commercedb.tax_location tl,

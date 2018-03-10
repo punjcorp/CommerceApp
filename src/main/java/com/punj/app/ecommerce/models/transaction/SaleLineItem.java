@@ -6,6 +6,8 @@ package com.punj.app.ecommerce.models.transaction;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -40,6 +42,7 @@ public class SaleLineItem {
 
 	private BigDecimal netAmount;
 	private BigDecimal grossAmount;
+	private BigDecimal itemTotal;
 	// this is temp due to JS
 	private BigDecimal price;
 
@@ -72,6 +75,8 @@ public class SaleLineItem {
 	private String modifiedBy;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime modifiedDate;
+
+	private List<TaxLineItem> taxLineItems = new ArrayList<>();
 
 	/**
 	 * This section is for tax and discount information this might be changes to different classes later on
@@ -772,6 +777,34 @@ public class SaleLineItem {
 	 */
 	public void setIgstTaxRate(BigDecimal igstTaxRate) {
 		this.igstTaxRate = igstTaxRate;
+	}
+
+	/**
+	 * @return the taxLineItems
+	 */
+	public List<TaxLineItem> getTaxLineItems() {
+		return taxLineItems;
+	}
+
+	/**
+	 * @param taxLineItems the taxLineItems to set
+	 */
+	public void setTaxLineItems(List<TaxLineItem> taxLineItems) {
+		this.taxLineItems = taxLineItems;
+	}
+
+	/**
+	 * @return the itemTotal
+	 */
+	public BigDecimal getItemTotal() {
+		return itemTotal;
+	}
+
+	/**
+	 * @param itemTotal the itemTotal to set
+	 */
+	public void setItemTotal(BigDecimal itemTotal) {
+		this.itemTotal = itemTotal;
 	}
 
 }

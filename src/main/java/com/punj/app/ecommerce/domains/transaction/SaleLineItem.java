@@ -20,9 +20,9 @@ public class SaleLineItem implements Serializable {
 	@EmbeddedId
 	private SaleLineItemId saleLineItemId;
 
-	private Integer qty;
+	private BigDecimal qty;
 	@Column(name = "gross_qty")
-	private Integer grossQty;
+	private BigDecimal grossQty;
 
 	@Column(name = "unit_price")
 	private BigDecimal unitPrice;
@@ -53,7 +53,7 @@ public class SaleLineItem implements Serializable {
 	@Column(name = "org_location_id")
 	private Integer orgLocationId;
 	@Column(name = "org_business_date")
-	private LocalDateTime oegBusinessDate;
+	private LocalDateTime orgBusinessDate;
 	@Column(name = "org_register")
 	private Integer orgRegister;
 	@Column(name = "org_txn_no")
@@ -71,7 +71,7 @@ public class SaleLineItem implements Serializable {
 
 	@Column(name = "base_unit_price")
 	private BigDecimal baseUnitPrice;
-	@Column(name = "base_extended_amount")
+	@Column(name = "base_extended_price")
 	private BigDecimal baseExtendedAmt;
 	@Column(name = "new_description")
 	private String newDescription;
@@ -106,7 +106,7 @@ public class SaleLineItem implements Serializable {
 	/**
 	 * @return the qty
 	 */
-	public Integer getQty() {
+	public BigDecimal getQty() {
 		return qty;
 	}
 
@@ -114,14 +114,14 @@ public class SaleLineItem implements Serializable {
 	 * @param qty
 	 *            the qty to set
 	 */
-	public void setQty(Integer qty) {
+	public void setQty(BigDecimal qty) {
 		this.qty = qty;
 	}
 
 	/**
 	 * @return the grossQty
 	 */
-	public Integer getGrossQty() {
+	public BigDecimal getGrossQty() {
 		return grossQty;
 	}
 
@@ -129,7 +129,7 @@ public class SaleLineItem implements Serializable {
 	 * @param grossQty
 	 *            the grossQty to set
 	 */
-	public void setGrossQty(Integer grossQty) {
+	public void setGrossQty(BigDecimal grossQty) {
 		this.grossQty = grossQty;
 	}
 
@@ -314,18 +314,18 @@ public class SaleLineItem implements Serializable {
 	}
 
 	/**
-	 * @return the oegBusinessDate
+	 * @return the orgBusinessDate
 	 */
-	public LocalDateTime getOegBusinessDate() {
-		return oegBusinessDate;
+	public LocalDateTime getOrgBusinessDate() {
+		return orgBusinessDate;
 	}
 
 	/**
-	 * @param oegBusinessDate
-	 *            the oegBusinessDate to set
+	 * @param orgBusinessDate
+	 *            the orgBusinessDate to set
 	 */
-	public void setOegBusinessDate(LocalDateTime oegBusinessDate) {
-		this.oegBusinessDate = oegBusinessDate;
+	public void setOrgBusinessDate(LocalDateTime orgBusinessDate) {
+		this.orgBusinessDate = orgBusinessDate;
 	}
 
 	/**

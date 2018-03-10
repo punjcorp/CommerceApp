@@ -24,6 +24,10 @@ public class SaleItemTax implements Serializable {
 
 	private String taxGroupRateName;
 
+	private Integer taxRuleRateId;
+
+	private String taxRuleRateName;
+
 	private String typeCode;
 
 	private BigDecimal percentage;
@@ -148,6 +152,36 @@ public class SaleItemTax implements Serializable {
 	 */
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	/**
+	 * @return the taxRuleRateId
+	 */
+	public Integer getTaxRuleRateId() {
+		return taxRuleRateId;
+	}
+
+	/**
+	 * @param taxRuleRateId
+	 *            the taxRuleRateId to set
+	 */
+	public void setTaxRuleRateId(Integer taxRuleRateId) {
+		this.taxRuleRateId = taxRuleRateId;
+	}
+
+	/**
+	 * @return the taxRuleRateName
+	 */
+	public String getTaxRuleRateName() {
+		return taxRuleRateName;
+	}
+
+	/**
+	 * @param taxRuleRateName
+	 *            the taxRuleRateName to set
+	 */
+	public void setTaxRuleRateName(String taxRuleRateName) {
+		this.taxRuleRateName = taxRuleRateName;
 	}
 
 }

@@ -133,92 +133,65 @@ public class SaleItemServiceImpl implements SaleItemService {
 		saleItem.setItemId(item.getItemId());
 		saleItem.setName(item.getName());
 		saleItem.setLongDesc(item.getDescription());
-
 		saleItem.setImagePath(item.getImages().get(0).getImageURL());
 
 		BigDecimal itemPriceAmt = itemPrice.getItemPrice();
-		BigDecimal taxPercentage;
-		BigDecimal taxAmt;
 		saleItem.setPriceAmt(itemPriceAmt);
 		saleItem.setQty(1.0);
 
 		BigDecimal discountAmt = new BigDecimal("0");
 		saleItem.setDiscountAmt(discountAmt);
-
-		BigDecimal totalTaxAmt = new BigDecimal("0");
+		
+		BigDecimal totalTaxAmt = new BigDecimal("0");		
+		BigDecimal taxPercentage;
+		BigDecimal taxAmt;
 
 		if (taxList != null && !taxList.isEmpty()) {
 			SaleItemTax saleItemTax = null;
-			LocationTax locationTax = null;
-			if (taxList.size() == 2) {
-				saleItemTax = new SaleItemTax();
-				locationTax = taxList.get(0);
 
-				taxPercentage = locationTax.getPercentage();
-
-				saleItemTax.setPercentage(taxPercentage);
-				saleItemTax.setAmount(locationTax.getAmount());
-				saleItemTax.setTaxGroupName(locationTax.getGroupDesc());
-				saleItemTax.setTaxGroupRateName(locationTax.getGroupRateName());
-				saleItemTax.setTypeCode(locationTax.getTypeCode());
-
-				taxAmt = taxPercentage.multiply(itemPriceAmt).divide(new BigDecimal("100"));
-
-				totalTaxAmt = totalTaxAmt.add(taxAmt);
-
-				saleItemTax.setAmount(taxAmt);
-
-				saleItem.setSgstTax(saleItemTax);
-
-				saleItemTax = new SaleItemTax();
-				locationTax = taxList.get(1);
-
-				taxPercentage = locationTax.getPercentage();
-
-				saleItemTax.setPercentage(taxPercentage);
-				saleItemTax.setAmount(locationTax.getAmount());
-				saleItemTax.setTaxGroupName(locationTax.getGroupDesc());
-				saleItemTax.setTaxGroupRateName(locationTax.getGroupRateName());
-				saleItemTax.setTypeCode(locationTax.getTypeCode());
-
-				taxAmt = taxPercentage.multiply(itemPriceAmt).divide(new BigDecimal("100"));
-
-				totalTaxAmt = totalTaxAmt.add(taxAmt);
-
-				saleItemTax.setAmount(taxAmt);
-
-				saleItem.setCgstTax(saleItemTax);
-			} else {
-				saleItemTax = new SaleItemTax();
-				locationTax = taxList.get(0);
-
-				taxPercentage = locationTax.getPercentage();
-
-				saleItemTax.setPercentage(taxPercentage);
-				saleItemTax.setAmount(locationTax.getAmount());
-				saleItemTax.setTaxGroupName(locationTax.getGroupDesc());
-				saleItemTax.setTaxGroupRateName(locationTax.getGroupRateName());
-				saleItemTax.setTypeCode(locationTax.getTypeCode());
-
-				taxAmt = taxPercentage.multiply(itemPriceAmt).divide(new BigDecimal("100"));
-
-				totalTaxAmt = totalTaxAmt.add(taxAmt);
-
-				saleItemTax.setAmount(taxAmt);
-
-				saleItem.setIgstTax(saleItemTax);
-
+			for(LocationTax locationTax:taxList) {
+				saleItemTax=this.tranformItemTax(locationTax, itemPriceAmt);
+				if(saleItemTax.getTypeCode().equals(ServiceConstants.TAX_SGST)) {
+					saleItem.setSgstTax(saleItemTax);
+				} else if(saleItemTax.getTypeCode().equals(ServiceConstants.TAX_CGST)) {
+					saleItem.setCgstTax(saleItemTax);
+				} else if(saleItemTax.getTypeCode().equals(ServiceConstants.TAX_IGST)) {
+					saleItem.setIgstTax(saleItemTax);
+				}
+				totalTaxAmt = totalTaxAmt.add(saleItemTax.getAmount());
 			}
 		}
-		BigDecimal finaTotalAmt=itemPriceAmt.subtract(discountAmt).add(totalTaxAmt);
 
+		BigDecimal finaTotalAmt=itemPriceAmt.subtract(discountAmt).add(totalTaxAmt);
 		saleItem.setTaxAmt(totalTaxAmt);
 		saleItem.setTotalAmt(finaTotalAmt);
-
-
-
-		
+	
 		return saleItem;
 	}
 
+	private SaleItemTax tranformItemTax(LocationTax locationTax, BigDecimal itemPriceAmt) {
+		SaleItemTax saleItemTax = new SaleItemTax();
+		
+		BigDecimal taxPercentage = locationTax.getPercentage();
+
+		saleItemTax.setTaxGroupId(locationTax.getLocationTaxId().getTaxGroupId());
+		saleItemTax.setTaxRuleRateId(locationTax.getRateRuleId());
+		
+		
+		saleItemTax.setTaxGroupName(locationTax.getGroupDesc());
+		saleItemTax.setTaxGroupRateName(locationTax.getGroupRateName());
+		saleItemTax.setTypeCode(locationTax.getTypeCode());
+		
+		saleItemTax.setPercentage(taxPercentage);
+		if(taxPercentage!=null && taxPercentage.doubleValue() > 0) {
+			BigDecimal taxAmt = taxPercentage.multiply(itemPriceAmt).divide(new BigDecimal("100"));
+			saleItemTax.setAmount(taxAmt);
+		}else {
+			saleItemTax.setAmount(locationTax.getAmount());
+		}
+	
+		return saleItemTax; 
+	}
+	
+	
 }

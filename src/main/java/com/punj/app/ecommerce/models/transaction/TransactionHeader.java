@@ -26,7 +26,9 @@ public class TransactionHeader {
 	private String txnType;
 	private String status;
 
+	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
 	private LocalDateTime startTime;
+	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
 	private LocalDateTime endTime;
 
 	private Boolean offlineFlag;
@@ -40,7 +42,7 @@ public class TransactionHeader {
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
 
-	private BigDecimal netTotalAmount;
+	private BigDecimal subTotalAmount;
 	private BigDecimal totalDiscountAmt;
 	private BigDecimal totalSGSTTaxAmt;
 	private BigDecimal totalCGSTTaxAmt;
@@ -289,18 +291,18 @@ public class TransactionHeader {
 	}
 
 	/**
-	 * @return the netTotalAmount
+	 * @return the subTotalAmount
 	 */
-	public BigDecimal getNetTotalAmount() {
-		return netTotalAmount;
+	public BigDecimal getSubTotalAmount() {
+		return subTotalAmount;
 	}
 
 	/**
-	 * @param netTotalAmount
-	 *            the netTotalAmount to set
+	 * @param subTotalAmount
+	 *            the subTotalAmount to set
 	 */
-	public void setNetTotalAmount(BigDecimal netTotalAmount) {
-		this.netTotalAmount = netTotalAmount;
+	public void setSubTotalAmount(BigDecimal subTotalAmount) {
+		this.subTotalAmount = subTotalAmount;
 	}
 
 	/**

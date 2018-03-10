@@ -32,6 +32,8 @@ public class Transaction implements Serializable {
 	private BigDecimal totalAmt = new BigDecimal("0");
 	@Column(name = "tax_total")
 	private BigDecimal taxTotalAmt = new BigDecimal("0");
+	@Column(name = "discount_total")
+	private BigDecimal discountTotalAmt = new BigDecimal("0");
 	@Column(name = "round_total")
 	private BigDecimal roundTotalAmt = new BigDecimal("0");
 	@Column(name = "subtotal")
@@ -311,6 +313,21 @@ public class Transaction implements Serializable {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the discountTotalAmt
+	 */
+	public BigDecimal getDiscountTotalAmt() {
+		return discountTotalAmt;
+	}
+
+	/**
+	 * @param discountTotalAmt
+	 *            the discountTotalAmt to set
+	 */
+	public void setDiscountTotalAmt(BigDecimal discountTotalAmt) {
+		this.discountTotalAmt = discountTotalAmt;
 	}
 
 	/*

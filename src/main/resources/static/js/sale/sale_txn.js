@@ -98,8 +98,11 @@ $.extend(TxnAction.prototype, {
 		this.txnHeader.registerId = txn_registerId;
 		this.txnHeader.businessDate = txn_businessDate;
 		this.txnHeader.username = txn_user;
+		this.txnHeader.createdBy = txn_user;
+		
+		this.txnHeader.startTime = txnStartTime;
 
-		this.txnHeader.netTotalAmt = totalPrice;
+		this.txnHeader.subTotalAmt = totalPrice;
 		this.txnHeader.totalDiscountAmt = totalDiscount;
 		this.txnHeader.totalSGSTTaxAmt = totalSGSTTax;
 		this.txnHeader.totalCGSTTaxAmt = totalCGSTTax;
@@ -108,34 +111,36 @@ $.extend(TxnAction.prototype, {
 		this.txnHeader.totalDueAmt = totalAmt;
 
 	},
-	showTender : function(amount, tenderName) {
-		var tenderLineItem = this.addTenderItem(amount, tenderName);
+	showTender : function(amount, tenderId) {
+		var tenderLineItem = this.addTenderItem(amount, tenderId);
 		tenderLineItem.render();
 	},
-	addTenderItem : function(tenderEnteredAmt, tenderName) {
+	addTenderItem : function(tenderEnteredAmt, tenderId) {
 		var tenderLineItem = new TenderLineItem();
-		tenderLineItem.initialize(tenderEnteredAmt, tenderName);
+		tenderLineItem.initialize(tenderEnteredAmt, tenderId);
 		this.tenderLineItems.push(tenderLineItem);
 		return tenderLineItem;
 	},
 	removeTenderItem : function(removeIndex, totalDueAmt) {
 		var removeLineItem = this.tenderLineItems[removeIndex - 1];
+		this.tenderLineItems.splice(removeIndex-1, 1);
 		removeLineItem.obscureTenderLineItem(removeIndex);
 		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
 	},
 	processTender : function() {
 		var tenderRadio = $('input[name="tenderRadio"]');
-		var tenderName = tenderRadio.filter(':checked').val();
-		if (tenderName) {
+		var tenderId = tenderRadio.filter(':checked').val();
+		if (tenderId) {
+			//var tenderName = $('#'+tenderId+'tenderName').val();
 			var tenderEnteredAmt = +$('#dueAmt').val();
 			var totalDueAmt = +$('#hc_totalDueAmt').val();
-			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderName);
+			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderId);
 		} else {
 			alert('Please select tender for the payment');
 		}
 
 	},
-	calculateDue : function(tenderEnteredAmt, totalDueAmt, tenderName) {
+	calculateDue : function(tenderEnteredAmt, totalDueAmt, tenderId) {
 		var tliPaidAmt;
 		var totalPaidAmount = g_nbr_zero;
 		$("[id^=tli_amt_").each(function() {
@@ -149,40 +154,40 @@ $.extend(TxnAction.prototype, {
 		if (parseFloat(tenderEnteredAmt.toFixed(2)) > parseFloat(this.remainingAmount.toFixed(2))) {
 			var changeDueAmount = this.remainingAmount - tenderEnteredAmt;
 			this.calculateChangeDueAmount(changeDueAmount);
-			this.calculateBiggerAmt(tenderEnteredAmt, totalDueAmt, tenderName);
+			this.calculateBiggerAmt(tenderEnteredAmt, totalDueAmt, tenderId);
 		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) < parseFloat(this.remainingAmount.toFixed(2))) {
-			this.calculateLessAmt(tenderEnteredAmt, totalDueAmt, tenderName);
+			this.calculateLessAmt(tenderEnteredAmt, totalDueAmt, tenderId);
 		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) == parseFloat(this.remainingAmount.toFixed(2))) {
-			this.calculateEqualAmt(tenderEnteredAmt, tenderName);
+			this.calculateEqualAmt(tenderEnteredAmt, tenderId);
 		}
 	},
 
-	calculateBiggerAmt : function(tenderEnteredAmt, totalDueAmt, tenderName) {
+	calculateBiggerAmt : function(tenderEnteredAmt, totalDueAmt, tenderId) {
 		$('#btnTenderOK').addClass('d-none');
 		$('#btnCompleteTxn').removeClass('d-none');
 		if (tenderEnteredAmt.toFixed(2) != g_nbr_zero.toFixed(2)) {
-			this.showTender(tenderEnteredAmt, tenderName);
+			this.showTender(tenderEnteredAmt, tenderId);
 		}
 	},
-	calculateEqualAmt : function(tenderEnteredAmt, tenderName) {
+	calculateEqualAmt : function(tenderEnteredAmt, tenderId) {
 
 		$('#btnTenderOK').addClass('d-none');
 		$('#btnCompleteTxn').removeClass('d-none');
 
 		if (tenderEnteredAmt.toFixed(2) != g_nbr_zero.toFixed(2)) {
-			this.showTender(tenderEnteredAmt, tenderName);
+			this.showTender(tenderEnteredAmt, tenderId);
 		}
 		this.calculateChangeDueAmount(g_nbr_zero);
 		$('#dueAmt').val(g_nbr_zero.toFixed(2));
 
 	},
-	calculateLessAmt : function(tenderEnteredAmt, totalDueAmt, tenderName) {
+	calculateLessAmt : function(tenderEnteredAmt, totalDueAmt, tenderId) {
 		var amountAfterPayment = this.remainingAmount.toFixed(2) - tenderEnteredAmt.toFixed(2);
 
 		$('#dueAmt').val(amountAfterPayment.toFixed(2));
 
 		if (tenderEnteredAmt.toFixed(2) != g_nbr_zero.toFixed(2)) {
-			this.showTender(tenderEnteredAmt, tenderName);
+			this.showTender(tenderEnteredAmt, tenderId);
 		}
 		this.resetChangeDueAmount();
 
@@ -204,12 +209,20 @@ $.extend(TxnAction.prototype, {
 		$('#hc_changeDueAmt').val(g_nbr_zero.toFixed(2));
 		$('#tenderChangeDueAmt').text("INR " + g_nbr_zero.toFixed(2));
 	},
-
+	preTxnCompletion : function() {
+		this.txnHeader.endTime = txnEndTime;
+		var changeAmount=+$('#hc_changeDueAmt').val();
+		if(changeAmount<0){
+			var tenderCount=this.tenderLineItems.length;
+			this.tenderLineItems[tenderCount-1].changeFlag=true;
+			this.addTenderItem(changeAmount,tndr_change_id);
+		}
+	},	
 	processCompletedTxn : function() {
+		this.preTxnCompletion();
 		this.saleTxn.transactionHeader=this.txnHeader;
 		this.saleTxn.txnSaleLineItems=this.saleItemList;
 		this.saleTxn.txnTenderLineItems=this.tenderLineItems;
-		
 		this.saleTxn.saveTxnDetails();
 	}
 

@@ -2,6 +2,7 @@ package com.punj.app.ecommerce.domains.transaction;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -19,6 +20,9 @@ public class TaxLineItem implements Serializable {
 
 	@EmbeddedId
 	private TransactionLineItemId transactionLineItemId;
+
+	@Column(name = "item_id")
+	private BigInteger itemId;
 
 	@Column(name = "total_taxable_amount")
 	private BigDecimal totalTaxableAmt;
@@ -294,6 +298,21 @@ public class TaxLineItem implements Serializable {
 	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the itemId
+	 */
+	public BigInteger getItemId() {
+		return itemId;
+	}
+
+	/**
+	 * @param itemId
+	 *            the itemId to set
+	 */
+	public void setItemId(BigInteger itemId) {
+		this.itemId = itemId;
 	}
 
 	/*

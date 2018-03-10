@@ -27,6 +27,8 @@ public class LocationTax implements Serializable {
 	@EmbeddedId
 	private LocationTaxId locationTaxId;
 
+	@Column(name = "tax_rate_rule_id")
+	private Integer rateRuleId;
 	@Column(name = "tax_group_desc")
 	private String groupDesc;
 	@Column(name = "tax_group_rate_name")
@@ -209,6 +211,21 @@ public class LocationTax implements Serializable {
 	 */
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	/**
+	 * @return the rateRuleId
+	 */
+	public Integer getRateRuleId() {
+		return rateRuleId;
+	}
+
+	/**
+	 * @param rateRuleId
+	 *            the rateRuleId to set
+	 */
+	public void setRateRuleId(Integer rateRuleId) {
+		this.rateRuleId = rateRuleId;
 	}
 
 }
