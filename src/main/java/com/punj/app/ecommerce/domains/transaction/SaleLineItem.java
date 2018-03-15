@@ -28,6 +28,8 @@ public class SaleLineItem implements Serializable {
 	private BigDecimal unitPrice;
 	@Column(name = "extended_amount")
 	private BigDecimal extendedAmt;
+	@Column(name = "discount_amount")
+	private BigDecimal discountAmt;
 	@Column(name = "tax_amount")
 	private BigDecimal taxAmt;
 
@@ -536,6 +538,21 @@ public class SaleLineItem implements Serializable {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the discountAmt
+	 */
+	public BigDecimal getDiscountAmt() {
+		return discountAmt;
+	}
+
+	/**
+	 * @param discountAmt
+	 *            the discountAmt to set
+	 */
+	public void setDiscountAmt(BigDecimal discountAmt) {
+		this.discountAmt = discountAmt;
 	}
 
 	/*

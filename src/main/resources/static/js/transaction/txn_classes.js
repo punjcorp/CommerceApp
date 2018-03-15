@@ -151,6 +151,8 @@ $.extend(SaleLineItem.prototype, {
 	},
 	calculateSaleLineItemTax : function(itemId) {
 		var qty = +$('#li_qty' + itemId).val();
+		this.qty = qty;
+		
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
 
 		var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
@@ -167,18 +169,33 @@ $.extend(SaleLineItem.prototype, {
 	},
 	calculateSaleLineItemTotal : function(itemId) {
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
+		this.discount =discountAmt;
+		
 		var sgstTaxAmt = +$('#li_sgstAmt' + itemId).val();
+		this.sgstTax =sgstTaxAmt;
+			
 		var cgstTaxAmt = +$('#li_cgstAmt' + itemId).val();
+		this.cgstTax = cgstTaxAmt;
+		
 		var itemPrice = +$('#li_priceAmt' + itemId).val();
+		this.price =+$('#li_uh_priceAmt' + itemId).val();;
+		
 		var totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
 		totalItemPrice = totalItemPrice.toFixed(2);
 		$('#li_itemTotal' + itemId).text('INR ' + totalItemPrice);
+		this.itemTotal =totalItemPrice;
+		
 	},
 	renderSaleLineItem : function(saleLineItem) {
 
-		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-3"><span>';
-		saleLineItemHtml += '<b>' + saleLineItem.itemId + '-' + saleLineItem.itemName + '</b>';
-		saleLineItemHtml += '<br>' + saleLineItem.itemDesc;
+		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-3 padding-sm"><span>';
+
+		saleLineItemHtml += '<button type="button" id="btnDeleteSLI"';
+		saleLineItemHtml += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
+		saleLineItemHtml += ')" class="btn btn-danger btn-sm"><i class="fas fa-times fa-2x"></i></button> ';			
+		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
+		saleLineItemHtml += saleLineItem.itemName;
+/*		saleLineItemHtml += '<br>' + saleLineItem.itemDesc;*/
 		saleLineItemHtml += '</span></div>';
 
 		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
@@ -243,29 +260,41 @@ $.extend(SaleLineItem.prototype, {
 		var igstTax;
 		var igstTaxRate;
 
+		var igstTaxLineItem;
+		var sgstTaxLineItem;
+		var cgstTaxLineItem;
+		
+		//Retrieve tax and check for tax types
 		if (data.igstTax) {
 			igstTax = data.igstTax.amount;
 			igstTaxRate = data.igstTax.percentage;
 
-			var igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate);
-			this.taxLineItems.push(igstTaxLineItem);
+			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate);
 		} else {
 			cgstTax = data.cgstTax.amount;
 			cgstTaxRate = data.cgstTax.percentage;
 			sgstTax = data.sgstTax.amount;
 			sgstTaxRate = data.sgstTax.percentage;
 
-			var cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate);
-			var sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate);
-			this.taxLineItems.push(sgstTaxLineItem);
-			this.taxLineItems.push(cgstTaxLineItem);
+			cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate);
+			sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate);
 		}
 
+		//calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
 		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate,
 				itemTotal);
-
-		saleLineItem.taxLineItems = this.taxLineItems;
+		
+		/**
+		 * Update the tax line items in the sale item
+		 */
+		if (data.igstTax) {
+			saleLineItem.taxLineItems.push(igstTaxLineItem);
+		}else{
+			saleLineItem.taxLineItems.push(sgstTaxLineItem);
+			saleLineItem.taxLineItems.push(cgstTaxLineItem);
+		}
+		
 
 		return saleLineItem;
 	}
@@ -329,8 +358,14 @@ var TenderLineItem = function(tenderId, tenderIndex, code, name, amount) {
 }
 
 $.extend(TenderLineItem.prototype, {
+	clearTenderContainer : function() {
+		$('#tenderLineItemContainer').html('');
+	},
+	updateTenderIndex: function(tenderIndex) {
+			g_tenderIndex=tenderIndex;
+	},	
 	render : function() {
-		if (g_tenderIndex > 0) {
+		if (g_tenderIndex >= 0) {
 			$('#tenderLineItemContainer').removeClass('d-none');
 		}
 		var htmlContent = '<div class="row" id="' + g_tenderIndex + 'tenderLineItem">';
@@ -360,8 +395,6 @@ $.extend(TenderLineItem.prototype, {
 	},
 
 	initialize : function(tenderEnteredAmt, tenderId) {
-		this.tenderIndex = g_tenderIndex;
-		g_tenderIndex++;
 		var tenderName = $('#' + tenderId + 'tenderName').val();
 		var tenderType = $('#' + tenderId + 'tenderType').val();
 		this.tenderId = tenderId;
@@ -413,12 +446,15 @@ $.extend(SaleTransaction.prototype, {
 		$.each(this.txnSaleLineItems, function() {
 			this.seqNo = seqVal;
 			seqVal = seqVal + 1;
+			
+			var saleItemTaxLineItems=this.taxLineItems;
+			$.each(saleItemTaxLineItems, function() {
+				this.seqNo = seqVal;
+				seqVal = seqVal + 1;
+			});
+			
 		});
 
-		$.each(this.taxLineItems, function() {
-			this.seqNo = seqVal;
-			seqVal = seqVal + 1;
-		});
 		
 		$.each(this.txnTenderLineItems, function() {
 			this.seqNo = seqVal;
@@ -443,14 +479,13 @@ $.extend(SaleTransaction.prototype, {
 			contentType : "application/json; charset=utf-8",
 			dataType : "json",
 			success : function(data) {
-				alert(data);
+				receiptPrint(data);
 			},
 			beforeSend : function(xhr) {
 				xhr.setRequestHeader('X-CSRF-TOKEN', token)
 			}
 		});
 	}
-
 });
 /**
  * Class definition for Sale Transaction Ends

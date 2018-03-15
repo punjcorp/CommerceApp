@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +43,13 @@ public class TransactionTransformer {
 		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader());
 		txnDTO.setTxn(txn);
 
-		TransactionId txnId=txn.getTransactionId();
-		
+		TransactionId txnId = txn.getTransactionId();
+
 		List<TransactionLineItem> txnLIs = TransactionTransformer.transformTxnLineItems(saleTxn, txnId);
 		txnDTO.setTxnLineItems(txnLIs);
 
-		List<TaxLineItem> taxLIs=new ArrayList<>();
-		txnDTO= TransactionTransformer.transformSaleLineItems(txnDTO, saleTxn, taxLIs, txnId);
+		List<TaxLineItem> taxLIs = new ArrayList<>();
+		txnDTO = TransactionTransformer.transformSaleLineItems(txnDTO, saleTxn, taxLIs, txnId);
 
 		List<TenderLineItem> tenderLIs = TransactionTransformer.transformTenderLineItems(saleTxn, saleTxn.getTxnTenderLineItems(), txnId);
 		txnDTO.setTenderLineItems(tenderLIs);
@@ -80,14 +81,14 @@ public class TransactionTransformer {
 		txn.setPostVoidFlag(txnHeader.getPostVoidFlag());
 		txn.setSessionId(txnHeader.getSessionId());
 		txn.setStatus(ServiceConstants.TXN_STATUS_COMPLETED);
-		txn.setSubTotalAmt(txnHeader.getSubTotalAmount());
+		txn.setSubTotalAmt(txnHeader.getSubTotalAmt());
 		txn.setDiscountTotalAmt(txnHeader.getTotalDiscountAmt());
-		
-		//Recalculate everything so that all calulation are bug free
+
+		// Recalculate everything so that all calulation are bug free
 		// Check the possibility of tax recalculation again
 		txn.setTaxTotalAmt(txnHeader.getTotalCGSTTaxAmt().add(txnHeader.getTotalSGSTTaxAmt()));
 		txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).subtract(txn.getDiscountTotalAmt()));
-		
+
 		txn.setTxnType(MVCConstants.TXN_SALE_PARAM);
 		logger.info("The transaction header details has been transformed now");
 		return txn;
@@ -149,7 +150,7 @@ public class TransactionTransformer {
 			txnLIId.setBusinessDate(txnId.getBusinessDate());
 			txnLIId.setTransactionSeq(taxLineItem.getSeqNo());
 			txnLIId.setLineItemSeq(taxLineItem.getSeqNo().toString());
-			
+
 			txnLI.setTransactionLineItemId(txnLIId);
 
 			txnLI.setCreatedBy(saleTxn.getTransactionHeader().getCreatedBy());
@@ -211,27 +212,31 @@ public class TransactionTransformer {
 		saleLIId.setTransactionSeq(saleLineItem.getSeqNo());
 		saleLIId.setItemId(saleLineItem.getItemId());
 		saleLIId.setLineItemSeq(saleLineItem.getSeqNo().toString());
-		
+
 		saleLI.setSaleLineItemId(saleLIId);
 
 		saleLI.setInvAction(MVCConstants.ADD);
 		saleLI.setTxnType(MVCConstants.TXN_SALE_PARAM);
 		saleLI.setUpc(saleLineItem.getItemId() + "");
 
-		saleLI.setUnitPrice(saleLineItem.getPrice());
-		saleLI.setBaseUnitPrice(saleLineItem.getBaseUnitPrice());
 		saleLI.setQty(saleLineItem.getQty());
+		// Change this to multiply with pack item later on
 		saleLI.setGrossQty(saleLineItem.getQty());
-		if(saleLineItem.getIgstTax()!=null) {
+		saleLI.setDiscountAmt(saleLineItem.getDiscount());
+		saleLI.setUnitPrice(saleLineItem.getPrice());
+		saleLI.setBaseUnitPrice(saleLI.getUnitPrice());
+
+		if (saleLineItem.getIgstTax() != null) {
 			saleLI.setTaxAmt(saleLineItem.getIgstTax());
-		}else {
+		} else {
 			saleLI.setTaxAmt(saleLineItem.getSgstTax().add(saleLineItem.getCgstTax()));
 		}
-		
-		saleLI.setBaseExtendedAmt(saleLineItem.getBaseExtendedPrice());
-		saleLI.setExtendedAmt(saleLineItem.getItemTotal());
-		saleLI.setGrossAmt(saleLineItem.getGrossAmount());
-		saleLI.setNetAmt(saleLineItem.getNetAmount());
+
+		// All the amounts are recalculated
+		saleLI.setBaseExtendedAmt(saleLI.getUnitPrice().multiply(saleLI.getQty()));
+		saleLI.setExtendedAmt(saleLI.getBaseExtendedAmt().subtract(saleLI.getDiscountAmt()));
+		saleLI.setNetAmt(saleLI.getExtendedAmt());
+		saleLI.setGrossAmt(saleLI.getExtendedAmt().add(saleLI.getTaxAmt()));
 
 		saleLI.setEntryMethod(MVCConstants.MANUAL);
 		saleLI.setExcludeFlag(Boolean.FALSE);
@@ -256,30 +261,31 @@ public class TransactionTransformer {
 		return saleLI;
 	}
 
-	public static TransactionDTO  transformSaleLineItems(TransactionDTO txnDTO, SaleTransaction saleTxn, List<TaxLineItem> taxLIs, TransactionId txnId) {
+	public static TransactionDTO transformSaleLineItems(TransactionDTO txnDTO, SaleTransaction saleTxn, List<TaxLineItem> taxLIs, TransactionId txnId) {
 
 		List<com.punj.app.ecommerce.models.transaction.SaleLineItem> saleLineItems = saleTxn.getTxnSaleLineItems();
 		List<SaleLineItem> saleLIs = new ArrayList<>(saleLineItems.size());
 		SaleLineItem saleLI;
-		
-		taxLIs=new ArrayList<>();
+
+		taxLIs = new ArrayList<>();
 		List<TaxLineItem> tmpTaxLIs;
-		
+
 		for (com.punj.app.ecommerce.models.transaction.SaleLineItem saleLineItem : saleLineItems) {
 			saleLI = TransactionTransformer.transformSaleLineItem(saleTxn, saleLineItem, txnId);
 			saleLIs.add(saleLI);
 
-			tmpTaxLIs = TransactionTransformer.transformTaxLineItems(saleTxn, saleLineItem.getTaxLineItems(), txnId);
+			tmpTaxLIs = TransactionTransformer.transformTaxLineItems(saleTxn, saleLI, saleLineItem.getTaxLineItems(), txnId);
 			taxLIs.addAll(tmpTaxLIs);
 		}
 		txnDTO.setSaleLineItems(saleLIs);
 		txnDTO.setTaxLineItems(taxLIs);
-		
+
 		logger.info("All the Sale Line Items has been transformed now");
 		return txnDTO;
 	}
 
-	public static TaxLineItem transformTaxLineItem(SaleTransaction saleTxn,com.punj.app.ecommerce.models.transaction.TaxLineItem taxLineItem, TransactionId txnId) {
+	public static TaxLineItem transformTaxLineItem(SaleTransaction saleTxn, SaleLineItem saleLI,
+			com.punj.app.ecommerce.models.transaction.TaxLineItem taxLineItem, TransactionId txnId) {
 
 		TaxLineItem taxLI = new TaxLineItem();
 
@@ -290,9 +296,9 @@ public class TransactionTransformer {
 		taxLIId.setBusinessDate(txnId.getBusinessDate());
 		taxLIId.setTransactionSeq(taxLineItem.getSeqNo());
 		taxLIId.setLineItemSeq(taxLineItem.getSeqNo().toString());
-		
-		taxLI.setTransactionLineItemId(taxLIId);		
-		
+
+		taxLI.setTransactionLineItemId(taxLIId);
+
 		taxLI.setItemId(taxLineItem.getItemId());
 		taxLI.setCreatedBy(saleTxn.getTransactionHeader().getCreatedBy());
 		taxLI.setCreatedDate(LocalDateTime.now());
@@ -302,11 +308,18 @@ public class TransactionTransformer {
 		taxLI.setTaxOverrideAmt(taxLineItem.getTaxOverrideAmt());
 		taxLI.setTaxOverrideFlag(taxLineItem.getTaxOverrideFlag());
 		taxLI.setTaxOverridePercentage(taxLineItem.getTaxOverrideRate());
-		taxLI.setTaxRuleAmt(taxLineItem.getTaxRuleAmt());
-		taxLI.setTaxRulePercentage(taxLineItem.getTaxRuleRate());
+		
 		taxLI.setTaxRuleRateId(taxLineItem.getTaxRuleRateId());
-		taxLI.setTotalTaxableAmt(taxLineItem.getTotalTaxableAmt());
-		taxLI.setTotalTaxAmt(taxLineItem.getTotalTaxAmt());
+		
+		taxLI.setTotalTaxableAmt(saleLI.getNetAmt());
+		if(taxLineItem.getTaxRuleRate()!=null) {
+			taxLI.setTaxRulePercentage(taxLineItem.getTaxRuleRate());
+			taxLI.setTotalTaxAmt(taxLI.getTotalTaxableAmt().multiply(taxLI.getTaxRulePercentage()).divide(new BigDecimal(100)));
+		}else {
+			taxLI.setTaxRuleAmt(taxLineItem.getTaxRuleAmt());
+			taxLI.setTotalTaxAmt(taxLI.getTotalTaxableAmt().subtract(taxLI.getTaxRuleAmt().multiply(saleLI.getQty())));
+		}
+		
 		taxLI.setTotalTaxExemptAmt(taxLineItem.getTotalTaxExemptAmt());
 
 		taxLI.setVoidFlag(taxLineItem.getVoidFlag());
@@ -316,13 +329,14 @@ public class TransactionTransformer {
 
 	}
 
-	public static List<TaxLineItem> transformTaxLineItems(SaleTransaction saleTxn,List<com.punj.app.ecommerce.models.transaction.TaxLineItem> taxLineItems, TransactionId txnId) {
+	public static List<TaxLineItem> transformTaxLineItems(SaleTransaction saleTxn, SaleLineItem saleLI,
+			List<com.punj.app.ecommerce.models.transaction.TaxLineItem> taxLineItems, TransactionId txnId) {
 
 		List<TaxLineItem> taxLIs = new ArrayList<>(taxLineItems.size());
 		TaxLineItem taxLI;
 
 		for (com.punj.app.ecommerce.models.transaction.TaxLineItem taxLineItem : taxLineItems) {
-			taxLI = TransactionTransformer.transformTaxLineItem(saleTxn,taxLineItem, txnId);
+			taxLI = TransactionTransformer.transformTaxLineItem(saleTxn, saleLI, taxLineItem, txnId);
 			taxLIs.add(taxLI);
 		}
 
@@ -330,10 +344,11 @@ public class TransactionTransformer {
 		return taxLIs;
 	}
 
-	public static TenderLineItem transformTenderLineItem(SaleTransaction saleTxn,com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem, TransactionId txnId) {
+	public static TenderLineItem transformTenderLineItem(SaleTransaction saleTxn, com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem,
+			TransactionId txnId) {
 
 		TenderLineItem tndrLI = new TenderLineItem();
-		
+
 		TransactionLineItemId txnLineItemId = new TransactionLineItemId();
 		txnLineItemId.setLocationId(txnId.getLocationId());
 		txnLineItemId.setRegister(txnId.getRegister());
@@ -341,7 +356,7 @@ public class TransactionTransformer {
 		txnLineItemId.setBusinessDate(txnId.getBusinessDate());
 		txnLineItemId.setLineItemSeq(tenderLineItem.getSeqNo().toString());
 		tndrLI.setTransactionLineItemId(txnLineItemId);
-		
+
 		tndrLI.setTenderId(tenderLineItem.getTenderId());
 		tndrLI.setAction(tenderLineItem.getActionCode());
 		tndrLI.setAmount(tenderLineItem.getAmount());
@@ -355,12 +370,12 @@ public class TransactionTransformer {
 		return tndrLI;
 	}
 
-	public static List<TenderLineItem> transformTenderLineItems(SaleTransaction saleTxn,List<com.punj.app.ecommerce.models.transaction.TenderLineItem> tenderLineItems,
-			TransactionId txnId) {
+	public static List<TenderLineItem> transformTenderLineItems(SaleTransaction saleTxn,
+			List<com.punj.app.ecommerce.models.transaction.TenderLineItem> tenderLineItems, TransactionId txnId) {
 		List<TenderLineItem> tenderLIs = new ArrayList<>(tenderLineItems.size());
 		TenderLineItem tenderLI;
 		for (com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem : tenderLineItems) {
-			tenderLI = TransactionTransformer.transformTenderLineItem(saleTxn,tenderLineItem, txnId);
+			tenderLI = TransactionTransformer.transformTenderLineItem(saleTxn, tenderLineItem, txnId);
 			tenderLIs.add(tenderLI);
 		}
 		logger.info("All the tender line items has been transformed now");

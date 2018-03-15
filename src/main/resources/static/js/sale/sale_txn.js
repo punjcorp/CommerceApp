@@ -11,6 +11,7 @@ var TxnAction = function() {
 	this.txnHeader = new TransactionHeader();
 	this.saleLineItem = new SaleLineItem();
 	this.tenderLineItem = new TenderLineItem();
+	
 	this.saleItemList = new Array();
 	this.tenderLineItems = new Array();
 	this.remainingAmount = 0.00;
@@ -34,18 +35,34 @@ $.extend(TxnAction.prototype, {
 			alert("The selected item already exists in the transaction, please increase the quantity if needed");
 		} else {
 			this.saleLineItem.renderSaleLineItem(actualSaleItem);
+			// Check when we need to add this to list it should be after successful render as per my understanding
 			this.saleItemList.push(actualSaleItem);
 			this.renderHeaderTotals();
 		}
 	},
-	deleteSaleItemInList : function(removeItemId) {
+	deleteSaleItemInList : function(removeItemId, totalDueAmt) {
 		// Remove the Sale Line Item
 		this.saleItemList = $.grep(this.saleItemList, function(saleLineItem) {
 			return saleLineItem.itemId != removeItemId;
 		});
 		this.saleLineItem.obscureSaleLineItem(removeItemId);
-		this.calculateHeaderTotals();
+		this.removeAllTenderItems(totalDueAmt);
+		this.renderHeaderTotals();
 	},
+	reCalculateSaleItemAmounts: function(cntl, itemId) {
+		if (this.saleLineItem.validateSaleLineItem(cntl, itemId)){
+			var itemRcd= $.grep(this.saleItemList, function(item) {
+				return item.itemId == itemId;
+			})
+			if(itemRcd && itemRcd.length>0){
+				var modifiedSaleItem=itemRcd[0];
+				modifiedSaleItem.calculateAllAmounts(itemId);
+				this.renderHeaderTotals();
+			}
+		}
+
+	},	
+	
 	renderHeaderTotals : function() {
 		var totalAmt = 0.00;
 		var totalDiscount = 0.00;
@@ -113,6 +130,8 @@ $.extend(TxnAction.prototype, {
 	},
 	showTender : function(amount, tenderId) {
 		var tenderLineItem = this.addTenderItem(amount, tenderId);
+		var tenderIndex=this.tenderLineItems.length-1;
+		tenderLineItem.updateTenderIndex(tenderIndex);
 		tenderLineItem.render();
 	},
 	addTenderItem : function(tenderEnteredAmt, tenderId) {
@@ -122,16 +141,26 @@ $.extend(TxnAction.prototype, {
 		return tenderLineItem;
 	},
 	removeTenderItem : function(removeIndex, totalDueAmt) {
-		var removeLineItem = this.tenderLineItems[removeIndex - 1];
-		this.tenderLineItems.splice(removeIndex-1, 1);
-		removeLineItem.obscureTenderLineItem(removeIndex);
+		var removeLineItem = this.tenderLineItems[removeIndex];
+		removeLineItem.clearTenderContainer();
+		this.tenderLineItems.splice(removeIndex, 1);
+		$.each(this.tenderLineItems,function(index){
+			this.updateTenderIndex(index);
+			this.render();
+		});
 		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
+		
 	},
+	removeAllTenderItems : function(totalDueAmt) {
+		var rcdCount=this.tenderLineItems.length;
+		this.tenderLineItem.clearTenderContainer();
+		this.tenderLineItems=new Array();
+		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
+	},	
 	processTender : function() {
 		var tenderRadio = $('input[name="tenderRadio"]');
 		var tenderId = tenderRadio.filter(':checked').val();
 		if (tenderId) {
-			//var tenderName = $('#'+tenderId+'tenderName').val();
 			var tenderEnteredAmt = +$('#dueAmt').val();
 			var totalDueAmt = +$('#hc_totalDueAmt').val();
 			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderId);

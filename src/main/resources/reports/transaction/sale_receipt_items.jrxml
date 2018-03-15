@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt_items" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="58e7f647-fbb4-4d62-9e41-b45f40e96ab4">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceReportBeans"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="unitPrice" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[unitPrice]]></fieldDescription>
+	</field>
+	<field name="grossQty" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[grossQty]]></fieldDescription>
+	</field>
+	<field name="cgstTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cgstTaxAmount]]></fieldDescription>
+	</field>
+	<field name="seqNo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[seqNo]]></fieldDescription>
+	</field>
+	<field name="sgstTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[sgstTaxAmount]]></fieldDescription>
+	</field>
+	<field name="extendedAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[extendedAmount]]></fieldDescription>
+	</field>
+	<field name="netAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[netAmount]]></fieldDescription>
+	</field>
+	<field name="igstTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[igstTaxAmount]]></fieldDescription>
+	</field>
+	<field name="discount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[discount]]></fieldDescription>
+	</field>
+	<field name="grossAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[grossAmount]]></fieldDescription>
+	</field>
+	<field name="hsnNo" class="java.lang.String">
+		<fieldDescription><![CDATA[hsnNo]]></fieldDescription>
+	</field>
+	<field name="upcNo" class="java.lang.String">
+		<fieldDescription><![CDATA[upcNo]]></fieldDescription>
+	</field>
+	<field name="cgstTaxRate" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cgstTaxRate]]></fieldDescription>
+	</field>
+	<field name="itemId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[itemId]]></fieldDescription>
+	</field>
+	<field name="itemName" class="java.lang.String">
+		<fieldDescription><![CDATA[itemName]]></fieldDescription>
+	</field>
+	<field name="itemTotal" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[itemTotal]]></fieldDescription>
+	</field>
+	<field name="sgstTaxRate" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[sgstTaxRate]]></fieldDescription>
+	</field>
+	<field name="qty" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[qty]]></fieldDescription>
+	</field>
+	<field name="taxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[taxAmount]]></fieldDescription>
+	</field>
+	<field name="longDesc" class="java.lang.String">
+		<fieldDescription><![CDATA[longDesc]]></fieldDescription>
+	</field>
+	<field name="igstTaxRate" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[igstTaxRate]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="46" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="6" width="19" height="20" uuid="20937bb1-a56d-43b6-b989-968a05707b70"/>
+				<textFieldExpression><![CDATA[$F{seqNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="6" width="130" height="34" uuid="3b89d791-5f1c-4df6-b1d3-43b3bc2bbb48"/>
+				<textFieldExpression><![CDATA[$F{itemId}+" - "+$F{itemName}+"<br>"+$F{upcNo}+" - "+$F{longDesc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="6" width="50" height="20" uuid="ea8e9dce-3df0-44b8-ade5-eae75aca5933"/>
+				<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="6" width="40" height="20" uuid="43a56cd2-af92-424b-b0b0-bc655f6de82d"/>
+				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="6" width="70" height="20" uuid="938b4aaf-ee47-4b36-a158-886accc34140"/>
+				<textFieldExpression><![CDATA[$F{extendedAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="6" width="50" height="20" uuid="8dac1e30-4293-4aba-85cf-a07c798d86f1"/>
+				<textFieldExpression><![CDATA[$F{discount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="6" width="60" height="20" uuid="690fed5e-afcc-4b9f-82fe-ab2719936e5a"/>
+				<textFieldExpression><![CDATA[$F{sgstTaxAmount}+"<br>("+$F{sgstTaxRate}+" %)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="6" width="60" height="20" uuid="450d8215-cbc3-4712-a9ac-d29e88d746f9"/>
+				<textFieldExpression><![CDATA[$F{cgstTaxAmount}+"<br>("+$F{cgstTaxRate}+" %)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="6" width="75" height="20" uuid="7a7a4aba-bd12-4f22-a031-4db3bf13a1e6"/>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

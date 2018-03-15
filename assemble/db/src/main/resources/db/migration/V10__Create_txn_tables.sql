@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_item` (
   `qty` INT(5) NOT NULL,
   `gross_qty` INT(5) NOT NULL,
   `unit_price` DECIMAL(12,2) NOT NULL,
+  `discount_amount` DECIMAL(12,2) NOT NULL,  
   `extended_amount` DECIMAL(12,2) NOT NULL,
   `tax_amount` DECIMAL(12,2) NOT NULL,
   `return_flag` TINYINT NOT NULL,

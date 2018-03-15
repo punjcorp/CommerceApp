@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="595" pageHeight="421" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
+	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="locationInformation" class="com.punj.app.ecommerce.models.common.LocationBean">
+		<fieldDescription><![CDATA[locationInformation]]></fieldDescription>
+	</field>
+	<field name="txnSaleLineItems" class="java.util.List">
+		<fieldDescription><![CDATA[txnSaleLineItems]]></fieldDescription>
+	</field>
+	<field name="transactionHeader" class="com.punj.app.ecommerce.models.transaction.TransactionHeader">
+		<fieldDescription><![CDATA[transactionHeader]]></fieldDescription>
+	</field>
+	<field name="txnTenderLineItems" class="java.util.List">
+		<fieldDescription><![CDATA[txnTenderLineItems]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<textField>
+				<reportElement x="180" y="0" width="200" height="20" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
+				<textElement>
+					<font fontName="Calibri"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{locationInformation}.getLocationId()+" - "+$F{locationInformation}.getName()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="20" width="400" height="20" uuid="8f54dff4-7760-4e57-8057-8d7925464f4e"/>
+				<textFieldExpression><![CDATA[$F{locationInformation}.getAddress1()+", "+$F{locationInformation}.getCity()+", "+$F{locationInformation}.getState()+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="40" width="400" height="20" uuid="38491bf6-f59b-467a-81a1-787b7ba5904c"/>
+				<textFieldExpression><![CDATA["Phone: "+$F{locationInformation}.getTelephone1()+", Email: " +$F{locationInformation}.getEmail()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="89" splitType="Stretch">
+			<textField>
+				<reportElement x="80" y="9" width="120" height="17" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTxnNo()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="33" width="120" height="17" uuid="3f86fd80-e8ee-44dd-8a63-79b1206712aa"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getRegisterId()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="57" width="120" height="17" uuid="e4a9d15c-effa-455f-bb5f-2843adc25d9e"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTxnType()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="10" width="80" height="16" uuid="853f30af-900f-4c49-be13-e312746a8103"/>
+				<text><![CDATA[Txn No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="34" width="80" height="16" uuid="f47f64a8-780d-47df-ab7f-24201672ad8e"/>
+				<text><![CDATA[Register #]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="58" width="80" height="16" uuid="d193960a-6ce3-41d5-8e4a-84a78934d511"/>
+				<text><![CDATA[Txn Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="10" width="36" height="16" uuid="ad9a1b14-da01-4a09-adfd-acb1b2b207a4"/>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="435" y="9" width="120" height="17" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="354" y="34" width="80" height="16" uuid="eb9950f7-4960-44d4-abf7-b6de36495304"/>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="434" y="57" width="120" height="17" uuid="92e984d4-0a1c-442b-8d3f-848d32070dd7"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTxnType()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="434" y="33" width="120" height="17" uuid="45370602-22c5-4c48-bdfd-1e7c2c7274bd"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getRegisterId()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="355" y="58" width="80" height="16" uuid="e06afa84-4ef5-4be9-85e4-4c2faf11e848"/>
+				<text><![CDATA[Customer Email:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="0" width="595" height="1" uuid="580b3121-d800-4008-9bc1-d89a3c204be2"/>
+			</line>
+			<line>
+				<reportElement x="-20" y="83" width="595" height="1" uuid="d38dc68c-0a62-4da1-8d41-9d7cdec2b60b"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement x="420" y="9" width="60" height="20" uuid="94204461-c9c2-4da5-9944-953800076bab"/>
+				<text><![CDATA[CGST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="9" width="75" height="20" uuid="6a097988-d57a-4290-9383-44a0bf03c733"/>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="9" width="60" height="20" uuid="341fb749-032d-431d-a3f3-7843886b4989"/>
+				<text><![CDATA[SGST]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="9" width="50" height="20" uuid="31013ccb-dff6-425d-a073-6079f1bed49a"/>
+				<text><![CDATA[Discount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="9" width="70" height="20" uuid="4b559e35-2bd3-4472-aa19-c0f2401f0719"/>
+				<text><![CDATA[Extended Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="9" width="19" height="20" uuid="86e53b0a-e214-46a3-b0d7-0652ad53da2c"/>
+				<text><![CDATA[Sr.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="9" width="131" height="20" uuid="197ea620-55cb-422a-8c43-d4b91278aeaa"/>
+				<text><![CDATA[Item Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="9" width="50" height="20" uuid="97509476-a284-49e4-866f-9a81d0d17718"/>
+				<text><![CDATA[Unit Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="9" width="40" height="20" uuid="0a6756f5-750b-43c2-8812-4ae108bbea7c"/>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="50" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="0" width="554" height="49" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<subreportExpression><![CDATA["reports/transaction/sale_receipt_items.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement x="-21" y="-1" width="600" height="4" uuid="e6bb3111-ff03-4d46-bec3-d92871ffbc81"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="71" splitType="Stretch">
+			<textField>
+				<reportElement x="410" y="51" width="143" height="20" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="410" y="4" width="74" height="18" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
+				<text><![CDATA[Cashier:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="0" y="50" width="138" height="21" uuid="539ffc6a-23b6-45b3-81c1-08e18d7ff002"/>
+				<textFieldExpression><![CDATA[DATEFORMAT(date(),dd-MMM-yyyy)+" "+TIME( )]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="179" splitType="Stretch">
+			<line>
+				<reportElement x="-20" y="0" width="595" height="1" uuid="93100c5a-d989-4d65-bdf0-8048998610a0"/>
+			</line>
+			<line>
+				<reportElement x="-19" y="178" width="595" height="1" uuid="22d17804-d541-40d9-b218-08fe9a148f6a"/>
+			</line>
+			<textField>
+				<reportElement x="480" y="9" width="74" height="21" uuid="474e7945-8444-48d5-adcf-7d0c75a45166"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="37" width="74" height="21" uuid="87da7309-0085-445f-a7bd-14b7e398b73c"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="64" width="74" height="21" uuid="ed9869b9-6599-43a4-800c-3643f99fca0c"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="86" width="54" height="21" uuid="7a2c5a4c-47b0-4f8c-b82d-b2f385020fc1"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="108" width="54" height="21" uuid="20bb673f-b67f-4f9a-a2bc-d9b55d142263"/>
+				<textElement>
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="481" y="138" width="74" height="21" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
+				<textElement>
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="380" y="9" width="100" height="21" uuid="206022c2-2dae-4602-9a32-c154bc1ca24c"/>
+				<text><![CDATA[Subtotal Amount :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="37" width="100" height="21" uuid="97391194-5ff4-4fec-b415-5f71eb3f8a5b"/>
+				<text><![CDATA[Discount Amount :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="64" width="100" height="21" uuid="abfbef39-bb55-4cfb-935a-ca5483241c23"/>
+				<text><![CDATA[Total Tax Amount :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="86" width="70" height="21" uuid="aca6f5d1-50cc-4e60-a8a7-31873dd773c6"/>
+				<text><![CDATA[Total SGST :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="107" width="70" height="21" uuid="b1a6d827-ed11-408e-ad5d-80d195cd3245"/>
+				<text><![CDATA[Total CGST :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="138" width="100" height="21" uuid="78673dc5-a755-4eea-b067-ab9ba4477a29"/>
+				<textElement>
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Due :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="120" width="354" height="37" uuid="a48a9096-2109-466e-9b8f-ad05ebca9dad"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmt()]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

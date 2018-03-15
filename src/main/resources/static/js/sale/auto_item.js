@@ -94,7 +94,8 @@ function getItemDetails(event, ui) {
 	}, function(data, status) {
 
 		txnAction.showSaleLineItem(data);
-
+		reCalculateTenders();
+		
 	});
 
 	$('#searchText').val('');
@@ -102,11 +103,9 @@ function getItemDetails(event, ui) {
 }
 
 function saleItemChanged(cntl) {
-	var liIndex = cntl.id.replace(/[^0-9]/gi, '');
+	var itemId = cntl.id.replace(/[^0-9]/gi, '');
 
-	if (txnAction.saleLineItem.validateSaleLineItem(cntl, liIndex)) {
-		txnAction.saleLineItem.calculateAllAmounts(liIndex);
-		txnAction.renderHeaderTotals();
+	if (txnAction.reCalculateSaleItemAmounts(cntl, itemId)) {
 		this.reCalculateTenders();
 	}
 }
@@ -119,4 +118,15 @@ function deleteTender(deleteIndex) {
 function reCalculateTenders() {
 	var totalDueAmt = +$('#hc_totalDueAmt').val();
 	txnAction.calculateDue(0.00, totalDueAmt, 'Cash');
+}
+
+
+function deleteSaleItem(deleteItemId) {
+	var totalDueAmt = +$('#hc_totalDueAmt').val();
+	txnAction.deleteSaleItemInList(deleteItemId, totalDueAmt);
+}
+
+function receiptPrint(data){
+	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
+
 }

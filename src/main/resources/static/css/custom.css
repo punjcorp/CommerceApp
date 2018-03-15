@@ -665,3 +665,10 @@ a[id="contact"]::before {
 	padding-right: 10px;
 	padding-left: 10px;
 }
+
+.modal-lg{
+	max-width: 95% !important;
+}
+.modal-body{
+	height: 800px;
+}

@@ -42,7 +42,7 @@ public class TransactionHeader {
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
 
-	private BigDecimal subTotalAmount;
+	private BigDecimal subTotalAmt;
 	private BigDecimal totalDiscountAmt;
 	private BigDecimal totalSGSTTaxAmt;
 	private BigDecimal totalCGSTTaxAmt;
@@ -291,18 +291,18 @@ public class TransactionHeader {
 	}
 
 	/**
-	 * @return the subTotalAmount
+	 * @return the subTotalAmt
 	 */
-	public BigDecimal getSubTotalAmount() {
-		return subTotalAmount;
+	public BigDecimal getSubTotalAmt() {
+		return subTotalAmt;
 	}
 
 	/**
-	 * @param subTotalAmount
-	 *            the subTotalAmount to set
+	 * @param subTotalAmt
+	 *            the subTotalAmt to set
 	 */
-	public void setSubTotalAmount(BigDecimal subTotalAmount) {
-		this.subTotalAmount = subTotalAmount;
+	public void setSubTotalAmt(BigDecimal subTotalAmt) {
+		this.subTotalAmt = subTotalAmt;
 	}
 
 	/**
