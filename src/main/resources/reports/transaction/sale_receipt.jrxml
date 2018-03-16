@@ -216,32 +216,14 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="50" splitType="Stretch">
+		<band height="249" splitType="Stretch">
 			<subreport>
-				<reportElement x="1" y="0" width="584" height="49" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<reportElement x="1" y="0" width="584" height="239" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="31" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement x="490" y="20" width="94" height="10" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
-				<textElement>
-					<font fontName="Calibri" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="490" y="0" width="74" height="11" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
-				<textElement>
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Cashier:]]></text>
-			</staticText>
-		</band>
-	</pageFooter>
 	<summary>
 		<band height="79" splitType="Stretch">
 			<rectangle radius="7">
@@ -340,6 +322,20 @@
 					<font fontName="SansSerif" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmtWords()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="290" y="1" width="60" height="11" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Printed By:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="260" y="29" width="118" height="10" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
