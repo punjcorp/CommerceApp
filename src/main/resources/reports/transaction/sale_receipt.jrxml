@@ -37,6 +37,12 @@
 	</background>
 	<title>
 		<band height="50" splitType="Stretch">
+			<rectangle>
+				<reportElement x="-30" y="0" width="660" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
 			<textField>
 				<reportElement x="90" y="0" width="400" height="18" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
 				<textElement textAlignment="Center">
@@ -63,84 +69,84 @@
 	<pageHeader>
 		<band height="34" splitType="Stretch">
 			<textField>
-				<reportElement x="72" y="1" width="80" height="11" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
+				<reportElement x="72" y="5" width="80" height="11" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getTxnNo()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="270" y="15" width="80" height="11" uuid="3f86fd80-e8ee-44dd-8a63-79b1206712aa"/>
+				<reportElement x="270" y="19" width="80" height="11" uuid="3f86fd80-e8ee-44dd-8a63-79b1206712aa"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getRegisterId()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="270" y="0" width="100" height="11" uuid="e4a9d15c-effa-455f-bb5f-2843adc25d9e"/>
+				<reportElement x="270" y="4" width="100" height="11" uuid="e4a9d15c-effa-455f-bb5f-2843adc25d9e"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getTxnType()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="0" width="48" height="11" uuid="853f30af-900f-4c49-be13-e312746a8103"/>
+				<reportElement x="1" y="4" width="48" height="11" uuid="853f30af-900f-4c49-be13-e312746a8103"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Bill No]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="231" y="15" width="40" height="11" uuid="f47f64a8-780d-47df-ab7f-24201672ad8e"/>
+				<reportElement x="231" y="19" width="40" height="11" uuid="f47f64a8-780d-47df-ab7f-24201672ad8e"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Register#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="231" y="0" width="40" height="11" uuid="d193960a-6ce3-41d5-8e4a-84a78934d511"/>
+				<reportElement x="231" y="4" width="40" height="11" uuid="d193960a-6ce3-41d5-8e4a-84a78934d511"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Bill Type]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="454" y="0" width="36" height="11" uuid="ad9a1b14-da01-4a09-adfd-acb1b2b207a4"/>
+				<reportElement x="454" y="4" width="36" height="11" uuid="ad9a1b14-da01-4a09-adfd-acb1b2b207a4"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="491" y="0" width="94" height="11" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
+				<reportElement x="491" y="4" width="94" height="11" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getBusinessDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="15" width="70" height="11" uuid="eb9950f7-4960-44d4-abf7-b6de36495304"/>
+				<reportElement x="1" y="19" width="70" height="11" uuid="eb9950f7-4960-44d4-abf7-b6de36495304"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
 				<text><![CDATA[Customer Details]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="491" y="15" width="94" height="11" uuid="92e984d4-0a1c-442b-8d3f-848d32070dd7"/>
+				<reportElement x="491" y="19" width="94" height="11" uuid="92e984d4-0a1c-442b-8d3f-848d32070dd7"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="72" y="14" width="80" height="11" uuid="45370602-22c5-4c48-bdfd-1e7c2c7274bd"/>
+				<reportElement x="72" y="18" width="80" height="11" uuid="45370602-22c5-4c48-bdfd-1e7c2c7274bd"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getRegisterId()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="454" y="15" width="36" height="11" uuid="e06afa84-4ef5-4be9-85e4-4c2faf11e848"/>
+				<reportElement x="454" y="19" width="36" height="11" uuid="e06afa84-4ef5-4be9-85e4-4c2faf11e848"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
@@ -149,7 +155,13 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="17" splitType="Stretch">
+		<band height="18" splitType="Stretch">
+			<rectangle>
+				<reportElement x="-30" y="0" width="660" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
 				<reportElement x="470" y="3" width="40" height="14" uuid="94204461-c9c2-4da5-9944-953800076bab"/>
 				<textElement>
@@ -218,16 +230,19 @@
 	<detail>
 		<band height="212" splitType="Stretch">
 			<subreport>
-				<reportElement x="1" y="0" width="584" height="212" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<reportElement x="1" y="0" width="584" height="211" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
+			<line>
+				<reportElement x="-30" y="211" width="660" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+			</line>
 		</band>
 	</detail>
 	<summary>
 		<band height="79" splitType="Stretch">
 			<rectangle radius="7">
-				<reportElement x="391" y="0" width="193" height="79" uuid="b1e38d50-0d89-4c46-bd67-ae85df78f022"/>
+				<reportElement x="391" y="0" width="193" height="79" backcolor="#ACDBFC" uuid="b1e38d50-0d89-4c46-bd67-ae85df78f022"/>
 				<graphicElement>
 					<pen lineStyle="Solid"/>
 				</graphicElement>
@@ -325,13 +340,13 @@
 			</textField>
 			<staticText>
 				<reportElement x="290" y="1" width="60" height="11" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Printed By:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="260" y="29" width="118" height="10" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
+				<reportElement x="260" y="29" width="120" height="10" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
 				<textElement textAlignment="Center">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
