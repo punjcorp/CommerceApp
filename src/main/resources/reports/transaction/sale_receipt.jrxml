@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="612" pageHeight="422" columnWidth="584" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="14" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="612" pageHeight="422" columnWidth="598" leftMargin="14" rightMargin="0" topMargin="14" bottomMargin="14" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
@@ -38,7 +38,7 @@
 	<title>
 		<band height="50" splitType="Stretch">
 			<rectangle>
-				<reportElement x="-14" y="0" width="612" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
+				<reportElement x="-14" y="0" width="598" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
 				<graphicElement>
 					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
 				</graphicElement>
@@ -157,7 +157,7 @@
 	<columnHeader>
 		<band height="18" splitType="Stretch">
 			<rectangle>
-				<reportElement x="-14" y="0" width="612" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
+				<reportElement x="-14" y="0" width="598" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
 				<graphicElement>
 					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
 				</graphicElement>
@@ -235,7 +235,7 @@
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement x="-30" y="211" width="660" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+				<reportElement x="-14" y="211" width="598" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
 			</line>
 		</band>
 	</detail>
