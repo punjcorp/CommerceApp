@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 
@@ -29,5 +30,7 @@ public interface TransactionService {
 	public Transaction searchLocationOpenTxn(Integer locationId, LocalDateTime businessDate);
 
 	public TransactionId saveSaleTransaction(TransactionDTO txnDTO);
+	
+	public SaleTransactionReceiptDTO generateTransactionReceipt(TransactionId txnId);
 
 }

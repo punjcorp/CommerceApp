@@ -32,8 +32,86 @@ FROM
     and tgr.tax_location_id=trr.tax_location_id
     and tgr.tax_authority_id=trr.tax_authority_id
     and tgr.seq_no=trr.tax_group_rule_seq order by tg.name, tgr.name, tgr.seq_no, trr.seq_no;    
+
+-- -----------------------------------------------------
+-- View Creation `commercedb`.`v_receipt_li_item`
+-- -----------------------------------------------------
+CREATE OR REPLACE VIEW `commercedb`.`v_receipt_li_item`
+AS
+SELECT 
+    itm.name,
+    itm.long_desc,
+    li_itm.seq_no,    
+    li_itm.upc_no,
+    li_itm.qty,
+    li_itm.unit_price,
+    li_itm.extended_amount,
+    li_itm.discount_amount,
+    li_itm.tax_amount,
+    li_itm.gross_amount,
+    tax_dtl.*
+FROM
+    commercedb.txn_li_item li_itm,
+    commercedb.item itm,
+    (SELECT 
+        li_tax.location_id,
+            li_tax.register,
+            li_tax.business_date,
+            li_tax.txn_no,
+            li_tax.item_id,
+            MAX(CASE
+                WHEN tax_rr.type_code = 'SGST' THEN li_tax.tax_group_id
+            END) AS 'SGST_tax_group_id',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'SGST' THEN li_tax.tax_rule_rate_id
+            END) AS 'SGST_tax_rule_rate_id',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'SGST' THEN li_tax.tax_rule_percentage
+            END) AS 'SGST_percentage',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'SGST' THEN li_tax.total_tax_amount
+            END) AS 'SGST_amount',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'CGST' THEN li_tax.tax_group_id
+            END) AS 'CGST_tax_group_id',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'CGST' THEN li_tax.tax_rule_rate_id
+            END) AS 'CGST_tax_rule_rate_id',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'CGST' THEN li_tax.tax_rule_percentage
+            END) AS 'CGST_percentage',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'CGST' THEN li_tax.total_tax_amount
+            END) AS 'CGST_amount',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'IGST' THEN li_tax.tax_group_id
+            END) AS 'IGST_tax_group_id',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'IGST' THEN li_tax.tax_rule_rate_id
+            END) AS 'IGST_tax_rule_rate_id',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'IGST' THEN li_tax.tax_rule_percentage
+            END) AS 'IGST_percentage',
+            MAX(CASE
+                WHEN tax_rr.type_code = 'IGST' THEN li_tax.total_tax_amount
+            END) AS 'IGST_amount'            
+    FROM
+        commercedb.txn_li_tax li_tax, commercedb.tax_rate_rule tax_rr
+    WHERE
+        tax_rr.tax_rate_rule_id = li_tax.tax_rule_rate_id
+    GROUP BY li_tax.location_id , li_tax.register , li_tax.business_date , li_tax.txn_no , li_tax.item_id) tax_dtl
+WHERE
+    li_itm.item_id = itm.item_id
+        AND li_itm.location_id = tax_dtl.location_id
+        AND li_itm.register = tax_dtl.register
+        AND li_itm.business_date = tax_dtl.business_date
+        AND li_itm.txn_no = tax_dtl.txn_no
+        AND li_itm.item_id = tax_dtl.item_id;
+    
+    
     
     
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+

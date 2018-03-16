@@ -184,14 +184,14 @@ public class CommonServiceImpl implements CommonService {
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId) {
 		logger.info("The method to retrieve all the locations with last txn Status has been called");
 		RegisterDTO registerDTO = new RegisterDTO();
-		Register register=new Register();
-		RegisterId registerId=new RegisterId();
+		Register register = new Register();
+		RegisterId registerId = new RegisterId();
 		registerId.setLocationId(locationId);
 		register.setRegisterId(registerId);
-		
+
 		List<Register> registers = this.registerRepository.findAll(Example.of(register));
 		registerDTO.setRegisters(registers);
-		registerDTO.setLastTxnStatus(this.retrieveRegisterTxnStatus(locationId,registers));
+		registerDTO.setLastTxnStatus(this.retrieveRegisterTxnStatus(locationId, registers));
 		logger.info("All the register details with daily status has been retrieved successfully");
 		return registerDTO;
 	}
@@ -208,8 +208,19 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public List<Tender> retrieveTendersForReconcilation(Integer locationId) {
 		List<Tender> tenders = this.tenderRepository.getTendersForReconcilation(locationId);
-		logger.info("The valid {} tenders for reconcilation has been retrieved successfully ", tenders.size(),locationId);
+		logger.info("The valid {} tenders for reconcilation has been retrieved successfully ", tenders.size(), locationId);
 		return tenders;
-	}	
-	
+	}
+
+	@Override
+	public Location retrieveLocationDetails(Integer locationId) {
+		Location location=this.locationRepository.findOne(locationId);
+		if(location!=null) {
+			logger.info("The {} location details has been retrieved successfully");
+		}else {
+			logger.info("There is no valid {} location existing");
+		}
+		return location;
+	}
+
 }

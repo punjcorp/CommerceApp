@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
@@ -20,10 +21,15 @@ import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
+import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.transaction.SaleReceiptLineItem;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
+import com.punj.app.ecommerce.models.transaction.SaleTransactionReceipt;
 import com.punj.app.ecommerce.models.transaction.TransactionHeader;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
+import com.punj.app.ecommerce.utils.NumberToWordConverter;
 
 /**
  * @author admin
@@ -308,18 +314,18 @@ public class TransactionTransformer {
 		taxLI.setTaxOverrideAmt(taxLineItem.getTaxOverrideAmt());
 		taxLI.setTaxOverrideFlag(taxLineItem.getTaxOverrideFlag());
 		taxLI.setTaxOverridePercentage(taxLineItem.getTaxOverrideRate());
-		
+
 		taxLI.setTaxRuleRateId(taxLineItem.getTaxRuleRateId());
-		
+
 		taxLI.setTotalTaxableAmt(saleLI.getNetAmt());
-		if(taxLineItem.getTaxRuleRate()!=null) {
+		if (taxLineItem.getTaxRuleRate() != null) {
 			taxLI.setTaxRulePercentage(taxLineItem.getTaxRuleRate());
 			taxLI.setTotalTaxAmt(taxLI.getTotalTaxableAmt().multiply(taxLI.getTaxRulePercentage()).divide(new BigDecimal(100)));
-		}else {
+		} else {
 			taxLI.setTaxRuleAmt(taxLineItem.getTaxRuleAmt());
 			taxLI.setTotalTaxAmt(taxLI.getTotalTaxableAmt().subtract(taxLI.getTaxRuleAmt().multiply(saleLI.getQty())));
 		}
-		
+
 		taxLI.setTotalTaxExemptAmt(taxLineItem.getTotalTaxExemptAmt());
 
 		taxLI.setVoidFlag(taxLineItem.getVoidFlag());
@@ -380,6 +386,86 @@ public class TransactionTransformer {
 		}
 		logger.info("All the tender line items has been transformed now");
 		return tenderLIs;
+	}
+
+	public static SaleTransactionReceipt transformReceiptDetails(SaleTransactionReceiptDTO receiptDetails) {
+
+		SaleTransactionReceipt txnReceipt = new SaleTransactionReceipt();
+
+		TransactionHeader txnHeader = TransactionTransformer.transformTxnDetails(receiptDetails.getTxn());
+		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems());
+
+		txnReceipt.setTransactionHeader(txnHeader);
+		txnReceipt.setTxnSaleLineItems(receiptItemList);
+
+		LocationBean locationBean = CommonMVCTransformer.transformLocationDomainPartially(receiptDetails.getLocation(), Boolean.FALSE);
+		txnReceipt.setLocationDetails(locationBean);
+
+		logger.info("All the tender line items has been transformed now");
+		return txnReceipt;
+	}
+
+	public static TransactionHeader transformTxnDetails(Transaction txnDetails) {
+		TransactionHeader txnHeader = new TransactionHeader();
+		txnHeader.setLocationId(txnDetails.getTransactionId().getLocationId());
+		txnHeader.setRegisterId(txnDetails.getTransactionId().getRegister());
+		txnHeader.setTxnType(txnDetails.getTxnType());
+		txnHeader.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
+		txnHeader.setTxnNo(txnDetails.getTransactionId().getTransactionSeq());
+
+		txnHeader.setCreatedBy(txnDetails.getCreatedBy());
+		txnHeader.setSubTotalAmt(txnDetails.getSubTotalAmt());
+		txnHeader.setTotalDiscountAmt(txnDetails.getDiscountTotalAmt());
+		txnHeader.setTotalTaxAmt(txnDetails.getTaxTotalAmt());
+
+		txnHeader.setTotalDueAmt(txnDetails.getTotalAmt());
+		txnHeader.setTotalDueAmtWords(NumberToWordConverter.convertBigDecimalToWords(txnHeader.getTotalDueAmt()));
+
+		txnHeader.setUniqueTxnNo(txnDetails.getTransactionId().toString());
+		
+		logger.info("The receipt transaction header details has been transformed now");
+		return txnHeader;
+
+	}
+
+	public static List<SaleReceiptLineItem> transformTxnItemDetails(List<ReceiptItemTax> receiptItemTaxList) {
+
+		List<SaleReceiptLineItem> receiptItemList = new ArrayList<>(receiptItemTaxList.size());
+		SaleReceiptLineItem receiptItem;
+		int seqCount = 1;
+
+		for (ReceiptItemTax receiptItemTax : receiptItemTaxList) {
+			receiptItem = new SaleReceiptLineItem();
+			receiptItem.setCgstTaxAmount(receiptItemTax.getCgstAmount());
+			receiptItem.setCgstTaxRate(receiptItemTax.getCgstRate());
+			receiptItem.setSgstTaxAmount(receiptItemTax.getSgstAmount());
+			receiptItem.setSgstTaxRate(receiptItemTax.getCgstRate());
+			receiptItem.setIgstTaxAmount(receiptItemTax.getIgstAmount());
+			receiptItem.setIgstTaxRate(receiptItemTax.getIgstRate());
+
+			receiptItem.setDiscount(receiptItemTax.getDiscountAmount());
+			receiptItem.setExtendedAmount(receiptItemTax.getExtendedAmount());
+			receiptItem.setGrossAmount(receiptItemTax.getGrossAmount());
+			receiptItem.setGrossQty(receiptItemTax.getQty());
+			receiptItem.setHsnNo(receiptItemTax.getHsnNo());
+			receiptItem.setItemId(receiptItemTax.getSaleLineItemId().getItemId());
+			receiptItem.setItemName(receiptItemTax.getName());
+			receiptItem.setItemTotal(receiptItemTax.getGrossAmount());
+			receiptItem.setLongDesc(receiptItemTax.getLongDesc());
+			receiptItem.setNetAmount(receiptItemTax.getGrossAmount());
+			receiptItem.setQty(receiptItemTax.getQty());
+			receiptItem.setSeqNo(seqCount);
+			seqCount++;
+			receiptItem.setTaxAmount(receiptItemTax.getTaxAmount());
+			receiptItem.setUnitPrice(receiptItemTax.getUnitPrice());
+			receiptItem.setUpcNo(receiptItemTax.getUpcNo());
+			
+			receiptItemList.add(receiptItem);
+		}
+
+		logger.info("The receipt transaction header details has been transformed now");
+		return receiptItemList;
+
 	}
 
 }

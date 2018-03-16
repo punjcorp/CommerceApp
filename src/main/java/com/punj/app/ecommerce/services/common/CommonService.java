@@ -17,6 +17,8 @@ import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
  */
 public interface CommonService {
 
+	public Location retrieveLocationDetails(Integer locationId);
+	
 	public List<Location> retrieveAllLocations();
 
 	public LocationDTO retrieveLocationWithDailyStatus();

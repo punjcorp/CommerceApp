@@ -23,6 +23,8 @@ public class TransactionHeader {
 	@NotNull(message = "{commerce.error.item.empty}")
 	private Integer txnNo;
 
+	private String uniqueTxnNo;
+	
 	private String txnType;
 	private String status;
 
@@ -49,6 +51,8 @@ public class TransactionHeader {
 	private BigDecimal totalIGSTTaxAmt;
 	private BigDecimal totalTaxAmt;
 	private BigDecimal totalDueAmt;
+	
+	private String totalDueAmtWords;
 
 	/**
 	 * @return the locationId
@@ -395,4 +399,34 @@ public class TransactionHeader {
 		this.totalDueAmt = totalDueAmt;
 	}
 
+	/**
+	 * @return the totalDueAmtWords
+	 */
+	public String getTotalDueAmtWords() {
+		return totalDueAmtWords;
+	}
+
+	/**
+	 * @param totalDueAmtWords the totalDueAmtWords to set
+	 */
+	public void setTotalDueAmtWords(String totalDueAmtWords) {
+		this.totalDueAmtWords = totalDueAmtWords;
+	}
+
+	/**
+	 * @return the uniqueTxnNo
+	 */
+	public String getUniqueTxnNo() {
+		return uniqueTxnNo;
+	}
+
+	/**
+	 * @param uniqueTxnNo the uniqueTxnNo to set
+	 */
+	public void setUniqueTxnNo(String uniqueTxnNo) {
+		this.uniqueTxnNo = uniqueTxnNo;
+	}
+
+	
+	
 }

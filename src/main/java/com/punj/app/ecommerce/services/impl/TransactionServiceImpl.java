@@ -18,12 +18,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
+import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
+import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TaxLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TenderLineItemRepository;
@@ -32,6 +37,7 @@ import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 
@@ -49,6 +55,7 @@ public class TransactionServiceImpl implements TransactionService {
 	private SaleLineItemRepository saleLineItemRepository;
 	private TaxLineItemRepository taxLineItemRepository;
 	private TenderLineItemRepository tenderLineItemRepository;
+	private ReceiptItemTaxRepository receiptItemTaxRepository;
 
 	/**
 	 * @param commonService
@@ -93,6 +100,15 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	public void setTaxLineItemRepository(TaxLineItemRepository taxLineItemRepository) {
 		this.taxLineItemRepository = taxLineItemRepository;
+	}
+
+	/**
+	 * @param receiptItemTaxRepository
+	 *            the receiptItemTaxRepository to set
+	 */
+	@Autowired
+	public void setReceiptItemTaxRepository(ReceiptItemTaxRepository receiptItemTaxRepository) {
+		this.receiptItemTaxRepository = receiptItemTaxRepository;
 	}
 
 	/**
@@ -183,7 +199,8 @@ public class TransactionServiceImpl implements TransactionService {
 		TransactionId txnId = null;
 
 		Transaction txnDetails = txnDTO.getTxn();
-		BigInteger txnNo = this.commonService.getId(txnDetails.getTransactionId().getLocationId()+ "_" + txnDetails.getTransactionId().getRegister() + "_" + ServiceConstants.TXN_SEQ);
+		BigInteger txnNo = this.commonService
+				.getId(txnDetails.getTransactionId().getLocationId() + "_" + txnDetails.getTransactionId().getRegister() + "_" + ServiceConstants.TXN_SEQ);
 
 		if (txnNo != null) {
 			txnDetails.getTransactionId().setTransactionSeq(txnNo.intValue());
@@ -191,7 +208,7 @@ public class TransactionServiceImpl implements TransactionService {
 			if (txnHeader != null) {
 				logger.info("The sale transaction header details has been saved successfully");
 				txnId = txnHeader.getTransactionId();
-				Boolean txnLISaveResult = this.saveTransactionLineLineItems(txnDTO, txnId );
+				Boolean txnLISaveResult = this.saveTransactionLineLineItems(txnDTO, txnId);
 				if (!txnLISaveResult) {
 					txnId = null;
 				}
@@ -205,37 +222,37 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	@Transactional
-	private Boolean saveTransactionLineLineItems(TransactionDTO txnDTO,TransactionId txnId ) {
+	private Boolean saveTransactionLineLineItems(TransactionDTO txnDTO, TransactionId txnId) {
 		Boolean result = Boolean.FALSE;
 
 		List<TransactionLineItem> txnLineItems = txnDTO.getTxnLineItems();
-		for(TransactionLineItem txnLineItem:txnLineItems ) {
-			txnLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq()); 
+		for (TransactionLineItem txnLineItem : txnLineItems) {
+			txnLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq());
 		}
-		
+
 		txnLineItems = this.transactionLineItemRepository.save(txnLineItems);
 
 		if (txnLineItems != null) {
 			logger.info("There transaction line item details has been saved successfully");
 
 			List<SaleLineItem> saleLineItems = txnDTO.getSaleLineItems();
-			for(SaleLineItem saleLineItem:saleLineItems ) {
-				saleLineItem.getSaleLineItemId().setTransactionSeq(txnId.getTransactionSeq()); 
+			for (SaleLineItem saleLineItem : saleLineItems) {
+				saleLineItem.getSaleLineItemId().setTransactionSeq(txnId.getTransactionSeq());
 			}
 			saleLineItems = this.saleLineItemRepository.save(saleLineItems);
 			if (saleLineItems != null) {
 				logger.info("The sale line item details were saved successfully");
 
 				List<TaxLineItem> taxLineItems = txnDTO.getTaxLineItems();
-				for(TaxLineItem taxLineItem:taxLineItems ) {
-					taxLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq()); 
-				}				
+				for (TaxLineItem taxLineItem : taxLineItems) {
+					taxLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq());
+				}
 				Boolean taxSaveResult = this.saveTaxLineITems(taxLineItems);
 
 				List<TenderLineItem> tenderLineItems = txnDTO.getTenderLineItems();
-				for(TenderLineItem tenderLineItem:tenderLineItems ) {
-					tenderLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq()); 
-				}				
+				for (TenderLineItem tenderLineItem : tenderLineItems) {
+					tenderLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq());
+				}
 				Boolean tenderSaveResult = this.saveTenderLineItems(tenderLineItems);
 
 				if (taxSaveResult && tenderSaveResult) {
@@ -281,6 +298,60 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 
 		return result;
+	}
+
+	@Override
+	public SaleTransactionReceiptDTO generateTransactionReceipt(TransactionId txnId) {
+
+		SaleTransactionReceiptDTO txnReceipt = null;
+
+		Transaction txnDetails = this.transactionRepository.findOne(txnId);
+
+		if (txnDetails != null) {
+			logger.info("The txn receipt details has been retreived successfully");
+			txnReceipt = new SaleTransactionReceiptDTO();
+			txnReceipt.setTxn(txnDetails);
+
+			Location location = this.commonService.retrieveLocationDetails(txnId.getLocationId());
+			txnReceipt.setLocation(location);
+
+			ReceiptItemTax receiptItemTaxCriteria = new ReceiptItemTax();
+			SaleLineItemId saleLineItemId = new SaleLineItemId();
+			saleLineItemId.setLocationId(txnId.getLocationId());
+			saleLineItemId.setRegister(txnId.getRegister());
+			saleLineItemId.setBusinessDate(txnId.getBusinessDate());
+			saleLineItemId.setTransactionSeq(txnId.getTransactionSeq());
+
+			receiptItemTaxCriteria.setSaleLineItemId(saleLineItemId);
+
+			List<ReceiptItemTax> receiptItems = this.receiptItemTaxRepository.findAll(Example.of(receiptItemTaxCriteria));
+
+			if (receiptItems != null && !receiptItems.isEmpty()) {
+
+				TransactionLineItemId txnLineItemId = new TransactionLineItemId();
+				txnLineItemId.setLocationId(txnId.getLocationId());
+				txnLineItemId.setRegister(txnId.getRegister());
+				txnLineItemId.setBusinessDate(txnId.getBusinessDate());
+				txnLineItemId.setTransactionSeq(txnId.getTransactionSeq());
+
+				TenderLineItem tenderCriteria = new TenderLineItem();
+				tenderCriteria.setTransactionLineItemId(txnLineItemId);
+
+				List<TenderLineItem> tenders = this.tenderLineItemRepository.findAll(Example.of(tenderCriteria));
+
+				txnReceipt.setTxnLineItems(receiptItems);
+				txnReceipt.setTenderLineItems(tenders);
+
+				logger.info("The receipt line items were retrieved successfully ");
+			} else {
+				logger.info("The receipt line items were not found for the provided transaction");
+			}
+
+		} else {
+			logger.info("There was no details found for the provided transaction details");
+		}
+
+		return txnReceipt;
 	}
 
 }

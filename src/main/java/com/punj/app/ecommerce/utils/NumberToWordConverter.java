@@ -4,7 +4,7 @@
 package com.punj.app.ecommerce.utils;
 
 import java.math.BigDecimal;
-import java.util.Scanner;
+import java.text.DecimalFormat;
 
 /**
  * @author admin
@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class NumberToWordConverter {
 
 	public static void main(String[] args) {
-		BigDecimal number=new BigDecimal("142845782.50");
+		BigDecimal number = new BigDecimal("142845782.50");
 		System.out.println("Please type a number(max upto 9 digits)");
 		System.out.print("Number in words: " + convertBigDecimalToWords(number));
 	}
@@ -45,7 +45,7 @@ public class NumberToWordConverter {
 		if ((number / 100000) > 0) {
 			words += numberToWord(number / 100000) + " lac ";
 			number %= 100000;
-		}		
+		}
 		// check if number is divisible by 1 thousand
 		if ((number / 1000) > 0) {
 			words += numberToWord(number / 1000) + " thousand ";
@@ -75,16 +75,30 @@ public class NumberToWordConverter {
 	}
 
 	public static String convertBigDecimalToWords(BigDecimal amount) {
-		String data= amount.toString();
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(0);
+		df.setGroupingUsed(false);
+		String data = df.format(amount);
+		
 		String amounts[] = data.split("\\.");
 
 		Integer beforeDecimal = Integer.parseInt(amounts[0]);
-		Integer afterDecimal = Integer.parseInt(amounts[1]);
+		Integer afterDecimal;
+		if (amounts.length > 1) {
+			if (amounts[1].length() == 1) {
+				afterDecimal = Integer.parseInt(amounts[1]) * 10;
+			} else {
+				afterDecimal = Integer.parseInt(amounts[1]);
+			}
+		} else {
+			afterDecimal = 0;
+		}
 
 		StringBuilder word = new StringBuilder();
-		
+
 		word.append(numberToWord(beforeDecimal));
-		word.append(" and ");
+		word.append(" rupees and ");
 		word.append(numberToWord(afterDecimal));
 		word.append(" paise only");
 

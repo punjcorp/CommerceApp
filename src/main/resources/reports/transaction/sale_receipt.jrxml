@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="595" pageHeight="421" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="612" pageHeight="421" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="locationInformation" class="com.punj.app.ecommerce.models.common.LocationBean">
-		<fieldDescription><![CDATA[locationInformation]]></fieldDescription>
+	<field name="locationDetails" class="com.punj.app.ecommerce.models.common.LocationBean">
+		<fieldDescription><![CDATA[locationDetails]]></fieldDescription>
 	</field>
 	<field name="txnSaleLineItems" class="java.util.List">
 		<fieldDescription><![CDATA[txnSaleLineItems]]></fieldDescription>
@@ -32,18 +39,20 @@
 		<band height="60" splitType="Stretch">
 			<textField>
 				<reportElement x="180" y="0" width="200" height="20" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font fontName="Calibri"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{locationInformation}.getLocationId()+" - "+$F{locationInformation}.getName()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{locationDetails}.getLocationId()+" - "+$F{locationDetails}.getName()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="20" width="400" height="20" uuid="8f54dff4-7760-4e57-8057-8d7925464f4e"/>
-				<textFieldExpression><![CDATA[$F{locationInformation}.getAddress1()+", "+$F{locationInformation}.getCity()+", "+$F{locationInformation}.getState()+"."]]></textFieldExpression>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{locationDetails}.getAddress1()+", "+$F{locationDetails}.getCity()+", "+$F{locationDetails}.getState()+"."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="40" width="400" height="20" uuid="38491bf6-f59b-467a-81a1-787b7ba5904c"/>
-				<textFieldExpression><![CDATA["Phone: "+$F{locationInformation}.getTelephone1()+", Email: " +$F{locationInformation}.getEmail()]]></textFieldExpression>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["Phone: "+$F{locationDetails}.getTelephone1()+", Email: " +$F{locationDetails}.getEmail()]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -79,7 +88,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="435" y="9" width="120" height="17" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
-				<textFieldExpression><![CDATA[$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getBusinessDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="354" y="34" width="80" height="16" uuid="eb9950f7-4960-44d4-abf7-b6de36495304"/>
@@ -98,10 +107,10 @@
 				<text><![CDATA[Customer Email:]]></text>
 			</staticText>
 			<line>
-				<reportElement x="-20" y="0" width="595" height="1" uuid="580b3121-d800-4008-9bc1-d89a3c204be2"/>
+				<reportElement x="-20" y="0" width="650" height="1" uuid="580b3121-d800-4008-9bc1-d89a3c204be2"/>
 			</line>
 			<line>
-				<reportElement x="-20" y="83" width="595" height="1" uuid="d38dc68c-0a62-4da1-8d41-9d7cdec2b60b"/>
+				<reportElement x="-20" y="83" width="650" height="1" uuid="d38dc68c-0a62-4da1-8d41-9d7cdec2b60b"/>
 			</line>
 		</band>
 	</pageHeader>
@@ -149,78 +158,75 @@
 		<band height="50" splitType="Stretch">
 			<subreport>
 				<reportElement x="1" y="0" width="554" height="49" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
-				<subreportExpression><![CDATA["reports/transaction/sale_receipt_items.jasper"]]></subreportExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement x="-21" y="-1" width="600" height="4" uuid="e6bb3111-ff03-4d46-bec3-d92871ffbc81"/>
+				<reportElement x="-20" y="-1" width="650" height="1" uuid="e6bb3111-ff03-4d46-bec3-d92871ffbc81"/>
 			</line>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="71" splitType="Stretch">
-			<textField>
-				<reportElement x="410" y="51" width="143" height="20" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+		<band height="56" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="438" y="31" width="143" height="20" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="410" y="4" width="74" height="18" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
+				<reportElement x="413" y="4" width="74" height="18" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
 				<text><![CDATA[Cashier:]]></text>
 			</staticText>
-			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="0" y="50" width="138" height="21" uuid="539ffc6a-23b6-45b3-81c1-08e18d7ff002"/>
-				<textFieldExpression><![CDATA[DATEFORMAT(date(),dd-MMM-yyyy)+" "+TIME( )]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageFooter>
 	<summary>
 		<band height="179" splitType="Stretch">
 			<line>
-				<reportElement x="-20" y="0" width="595" height="1" uuid="93100c5a-d989-4d65-bdf0-8048998610a0"/>
+				<reportElement x="-20" y="0" width="650" height="1" uuid="93100c5a-d989-4d65-bdf0-8048998610a0"/>
 			</line>
 			<line>
-				<reportElement x="-19" y="178" width="595" height="1" uuid="22d17804-d541-40d9-b218-08fe9a148f6a"/>
+				<reportElement x="-20" y="178" width="650" height="1" uuid="22d17804-d541-40d9-b218-08fe9a148f6a"/>
 			</line>
-			<textField>
+			<textField pattern="#0.00#">
 				<reportElement x="480" y="9" width="74" height="21" uuid="474e7945-8444-48d5-adcf-7d0c75a45166"/>
 				<textElement>
 					<font fontName="Calibri" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getSubTotalAmt()]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#0.00#">
 				<reportElement x="480" y="37" width="74" height="21" uuid="87da7309-0085-445f-a7bd-14b7e398b73c"/>
 				<textElement>
 					<font fontName="Calibri" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDiscountAmt()]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#0.00#">
 				<reportElement x="480" y="64" width="74" height="21" uuid="ed9869b9-6599-43a4-800c-3643f99fca0c"/>
 				<textElement>
 					<font fontName="Calibri" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalTaxAmt()]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#0.00#" isBlankWhenNull="true">
 				<reportElement x="500" y="86" width="54" height="21" uuid="7a2c5a4c-47b0-4f8c-b82d-b2f385020fc1"/>
 				<textElement>
 					<font fontName="Calibri" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalSGSTTaxAmt()]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#0.00#" isBlankWhenNull="true">
 				<reportElement x="500" y="108" width="54" height="21" uuid="20bb673f-b67f-4f9a-a2bc-d9b55d142263"/>
 				<textElement>
 					<font fontName="Calibri" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalCGSTTaxAmt()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="481" y="138" width="74" height="21" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
+			<textField pattern="#0.00#">
+				<reportElement x="480" y="138" width="74" height="21" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
 				<textElement>
 					<font fontName="Calibri" size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmt()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="380" y="9" width="100" height="21" uuid="206022c2-2dae-4602-9a32-c154bc1ca24c"/>
@@ -251,7 +257,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="0" y="120" width="354" height="37" uuid="a48a9096-2109-466e-9b8f-ad05ebca9dad"/>
-				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmt()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmtWords()]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt_items" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="58e7f647-fbb4-4d62-9e41-b45f40e96ab4">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt_items" pageWidth="572" pageHeight="842" columnWidth="572" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="58e7f647-fbb4-4d62-9e41-b45f40e96ab4">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceReportBeans"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
@@ -87,7 +87,8 @@
 				<textFieldExpression><![CDATA[$F{seqNo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="20" y="6" width="130" height="34" uuid="3b89d791-5f1c-4df6-b1d3-43b3bc2bbb48"/>
+				<reportElement stretchType="RelativeToBandHeight" x="20" y="6" width="130" height="34" uuid="3b89d791-5f1c-4df6-b1d3-43b3bc2bbb48"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$F{itemId}+" - "+$F{itemName}+"<br>"+$F{upcNo}+" - "+$F{longDesc}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -107,16 +108,18 @@
 				<textFieldExpression><![CDATA[$F{discount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="360" y="6" width="60" height="20" uuid="690fed5e-afcc-4b9f-82fe-ab2719936e5a"/>
+				<reportElement x="360" y="6" width="60" height="34" uuid="690fed5e-afcc-4b9f-82fe-ab2719936e5a"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$F{sgstTaxAmount}+"<br>("+$F{sgstTaxRate}+" %)"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="420" y="6" width="60" height="20" uuid="450d8215-cbc3-4712-a9ac-d29e88d746f9"/>
+				<reportElement x="420" y="6" width="60" height="34" uuid="450d8215-cbc3-4712-a9ac-d29e88d746f9"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$F{cgstTaxAmount}+"<br>("+$F{cgstTaxRate}+" %)"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="480" y="6" width="75" height="20" uuid="7a7a4aba-bd12-4f22-a031-4db3bf13a1e6"/>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{grossAmount}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
