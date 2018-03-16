@@ -36,7 +36,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="46" splitType="Stretch">
+		<band height="50" splitType="Stretch">
 			<textField>
 				<reportElement x="90" y="0" width="400" height="18" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
 				<textElement textAlignment="Center">
@@ -61,7 +61,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="30" splitType="Stretch">
+		<band height="34" splitType="Stretch">
 			<textField>
 				<reportElement x="72" y="1" width="80" height="11" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
 				<textElement>
@@ -216,9 +216,9 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="249" splitType="Stretch">
+		<band height="212" splitType="Stretch">
 			<subreport>
-				<reportElement x="1" y="0" width="584" height="239" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<reportElement x="1" y="0" width="584" height="212" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
