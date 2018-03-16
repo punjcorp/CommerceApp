@@ -38,7 +38,7 @@
 	<title>
 		<band height="50" splitType="Stretch">
 			<rectangle>
-				<reportElement x="-30" y="0" width="660" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
+				<reportElement x="-14" y="0" width="612" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
 				<graphicElement>
 					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
 				</graphicElement>
@@ -157,7 +157,7 @@
 	<columnHeader>
 		<band height="18" splitType="Stretch">
 			<rectangle>
-				<reportElement x="-30" y="0" width="660" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
+				<reportElement x="-14" y="0" width="612" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
 				<graphicElement>
 					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
 				</graphicElement>
