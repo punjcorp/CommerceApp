@@ -39,6 +39,8 @@ public class TransactionHeader {
 	private String cancelReason;
 	private String sessionId;
 
+	private String printedBy;
+	
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
@@ -425,6 +427,20 @@ public class TransactionHeader {
 	 */
 	public void setUniqueTxnNo(String uniqueTxnNo) {
 		this.uniqueTxnNo = uniqueTxnNo;
+	}
+
+	/**
+	 * @return the printedBy
+	 */
+	public String getPrintedBy() {
+		return printedBy;
+	}
+
+	/**
+	 * @param printedBy the printedBy to set
+	 */
+	public void setPrintedBy(String printedBy) {
+		this.printedBy = printedBy;
 	}
 
 	

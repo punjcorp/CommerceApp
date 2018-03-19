@@ -4,10 +4,12 @@
 package com.punj.app.ecommerce.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
@@ -30,7 +32,8 @@ public interface TransactionService {
 	public Transaction searchLocationOpenTxn(Integer locationId, LocalDateTime businessDate);
 
 	public TransactionId saveSaleTransaction(TransactionDTO txnDTO);
-	
+
 	public SaleTransactionReceiptDTO generateTransactionReceipt(TransactionId txnId);
 
+	public Boolean saveTransactionReceipt(List<TransactionReceipt> txnReceipts);
 }

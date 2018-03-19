@@ -127,6 +127,12 @@ function deleteSaleItem(deleteItemId) {
 }
 
 function receiptPrint(data){
+	
+	var filename=receipt_file_prefix+data.uniqueTxnNo+'.pdf';
+	
+	//$('#receiptPDFContainer').attr("src",filename);
+	
+	
 	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
 
 }

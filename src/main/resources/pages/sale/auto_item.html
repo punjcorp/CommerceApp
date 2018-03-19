@@ -234,6 +234,7 @@
 		var txn_user = /*[[${#authentication.getPrincipal().getUsername()}]]*/;
 		var txn_businessDate = /*[[${{saleHeaderBean.businessDate}}]]*/;
 		var tndr_change_id=$('#hc_changeTenderId').val();
+		var receipt_file_prefix= /*[[@{/output/receipts/}]]*/;
 		
 		/*]]>*/
 	</script>
@@ -253,8 +254,8 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body">
-					<embed th:src="@{/test.pdf}" width="100%" height="100%" type='application/pdf'></embed>
+				<div class="modal-body" >
+				<object id="receiptPDFContainer" th:src="@{/output/receipts/79970020011110032018.pdf}" width="100%" height="100%"></object>
 				</div>
 			</div>
 		</div>

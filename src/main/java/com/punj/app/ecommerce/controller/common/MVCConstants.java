@@ -21,6 +21,11 @@ public final class MVCConstants {
 	public static final String PAGER= "pager";
 	public static final String YES="Y";
 	
+	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
+	public static final String RCPT_SALE_GIFT="Gift Receipt";
+	
+	
 	public static final String TXN_SALE_PARAM="SALE";
 	
 	

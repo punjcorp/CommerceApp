@@ -188,11 +188,10 @@ $.extend(SaleLineItem.prototype, {
 	},
 	renderSaleLineItem : function(saleLineItem) {
 
-		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-3 padding-sm"><span>';
-
-		saleLineItemHtml += '<button type="button" id="btnDeleteSLI"';
-		saleLineItemHtml += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
-		saleLineItemHtml += ')" class="btn btn-danger btn-sm"><i class="fas fa-times fa-2x"></i></button> ';			
+		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
+		saleLineItemHtml += '<img src="/images/default_image.png" class="img-fluid" alt="Image for item '+saleLineItem.itemId+'"/>';
+		saleLineItemHtml += '</div>';
+		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
 		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
 		saleLineItemHtml += saleLineItem.itemName;
 /*		saleLineItemHtml += '<br>' + saleLineItem.itemDesc;*/
@@ -237,9 +236,14 @@ $.extend(SaleLineItem.prototype, {
 		cgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
 		cgstTaxAmt += '"></input>';
 
-		var total = '<div class="col-2 padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
+		var total = '<div class="col-2 form-group padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
 		total += 'INR ' + saleLineItem.itemTotal.toFixed(2);
-		total += '</span></h5></div></div>';
+		total += '</span><button type="button" id="btnDeleteSLI"';
+		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
+		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
+		total += '</h5>';
+		total += '</div></div>';
+		
 
 		var finalSaleItemHtml = saleLineItemHtml + qty + priceAmt + discountAmt + sgstTaxAmt + cgstTaxAmt + total;
 

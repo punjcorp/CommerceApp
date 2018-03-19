@@ -74,8 +74,8 @@ public class PdfReportGenerator {
 
 	public void generatePDFFileReport(JasperPrint jasperPrint, String fileName, String username) throws JRException {
 		try {
-			JRPdfExporter exporter = new JRPdfExporter();
 
+			JRPdfExporter exporter = new JRPdfExporter();
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(fileName));
 

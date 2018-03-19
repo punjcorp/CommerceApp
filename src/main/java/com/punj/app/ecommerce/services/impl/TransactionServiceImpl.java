@@ -25,6 +25,7 @@ import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
+import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
@@ -33,6 +34,7 @@ import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TaxLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TenderLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
+import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -56,6 +58,16 @@ public class TransactionServiceImpl implements TransactionService {
 	private TaxLineItemRepository taxLineItemRepository;
 	private TenderLineItemRepository tenderLineItemRepository;
 	private ReceiptItemTaxRepository receiptItemTaxRepository;
+	private TransactionReceiptRepository txnReceiptRepository;
+
+	/**
+	 * @param txnReceiptRepository
+	 *            the txnReceiptRepository to set
+	 */
+	@Autowired
+	public void setTxnReceiptRepository(TransactionReceiptRepository txnReceiptRepository) {
+		this.txnReceiptRepository = txnReceiptRepository;
+	}
 
 	/**
 	 * @param commonService
@@ -324,7 +336,8 @@ public class TransactionServiceImpl implements TransactionService {
 
 			receiptItemTaxCriteria.setSaleLineItemId(saleLineItemId);
 
-			List<ReceiptItemTax> receiptItems = this.receiptItemTaxRepository.findAll(Example.of(receiptItemTaxCriteria));
+			List<ReceiptItemTax> receiptItems = this.receiptItemTaxRepository.findAll(Example.of(receiptItemTaxCriteria),
+					new Sort(Sort.Direction.ASC, "saleLineItemId.lineItemSeq"));
 
 			if (receiptItems != null && !receiptItems.isEmpty()) {
 
@@ -352,6 +365,14 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 
 		return txnReceipt;
+	}
+
+	public Boolean saveTransactionReceipt(List<TransactionReceipt> txnReceipts) {
+		Boolean result = Boolean.FALSE;
+		txnReceipts = this.txnReceiptRepository.save(txnReceipts);
+		logger.info("The transaction receipt details has been saved in the database now");
+		result = Boolean.TRUE;
+		return result;
 	}
 
 }

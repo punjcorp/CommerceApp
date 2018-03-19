@@ -12,15 +12,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.TransformerException;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
+import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.transaction.SaleReceiptLineItem;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
@@ -388,12 +391,13 @@ public class TransactionTransformer {
 		return tenderLIs;
 	}
 
-	public static SaleTransactionReceipt transformReceiptDetails(SaleTransactionReceiptDTO receiptDetails) {
+	public static SaleTransactionReceipt transformReceiptDetails(SaleTransactionReceiptDTO receiptDetails, String username) {
 
 		SaleTransactionReceipt txnReceipt = new SaleTransactionReceipt();
 
 		TransactionHeader txnHeader = TransactionTransformer.transformTxnDetails(receiptDetails.getTxn());
-		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems());
+		txnHeader.setPrintedBy(username);
+		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems(), txnHeader);
 
 		txnReceipt.setTransactionHeader(txnHeader);
 		txnReceipt.setTxnSaleLineItems(receiptItemList);
@@ -422,17 +426,21 @@ public class TransactionTransformer {
 		txnHeader.setTotalDueAmtWords(NumberToWordConverter.convertBigDecimalToWords(txnHeader.getTotalDueAmt()));
 
 		txnHeader.setUniqueTxnNo(txnDetails.getTransactionId().toString());
-		
+
 		logger.info("The receipt transaction header details has been transformed now");
 		return txnHeader;
 
 	}
 
-	public static List<SaleReceiptLineItem> transformTxnItemDetails(List<ReceiptItemTax> receiptItemTaxList) {
+	public static List<SaleReceiptLineItem> transformTxnItemDetails(List<ReceiptItemTax> receiptItemTaxList, TransactionHeader txnHeader) {
 
 		List<SaleReceiptLineItem> receiptItemList = new ArrayList<>(receiptItemTaxList.size());
 		SaleReceiptLineItem receiptItem;
 		int seqCount = 1;
+
+		BigDecimal sgstTaxTotal = new BigDecimal("0");
+		BigDecimal cgstTaxTotal = new BigDecimal("0");
+		BigDecimal igstTaxTotal = new BigDecimal("0");
 
 		for (ReceiptItemTax receiptItemTax : receiptItemTaxList) {
 			receiptItem = new SaleReceiptLineItem();
@@ -442,6 +450,13 @@ public class TransactionTransformer {
 			receiptItem.setSgstTaxRate(receiptItemTax.getCgstRate());
 			receiptItem.setIgstTaxAmount(receiptItemTax.getIgstAmount());
 			receiptItem.setIgstTaxRate(receiptItemTax.getIgstRate());
+
+			if (receiptItemTax.getSgstAmount() != null)
+				sgstTaxTotal = sgstTaxTotal.add(receiptItemTax.getSgstAmount());
+			if (receiptItemTax.getCgstAmount() != null)
+				cgstTaxTotal = cgstTaxTotal.add(receiptItemTax.getCgstAmount());
+			if (receiptItemTax.getIgstAmount() != null)
+				igstTaxTotal = igstTaxTotal.add(receiptItemTax.getIgstAmount());
 
 			receiptItem.setDiscount(receiptItemTax.getDiscountAmount());
 			receiptItem.setExtendedAmount(receiptItemTax.getExtendedAmount());
@@ -459,13 +474,42 @@ public class TransactionTransformer {
 			receiptItem.setTaxAmount(receiptItemTax.getTaxAmount());
 			receiptItem.setUnitPrice(receiptItemTax.getUnitPrice());
 			receiptItem.setUpcNo(receiptItemTax.getUpcNo());
-			
+
 			receiptItemList.add(receiptItem);
 		}
+
+		txnHeader.setTotalSGSTTaxAmt(sgstTaxTotal);
+		txnHeader.setTotalCGSTTaxAmt(cgstTaxTotal);
+		txnHeader.setTotalIGSTTaxAmt(igstTaxTotal);
 
 		logger.info("The receipt transaction header details has been transformed now");
 		return receiptItemList;
 
+	}
+
+	public static TransactionReceipt tranformReceiptDetails(TransactionHeader txnHeader, String receiptType, byte pdfBytes[]) throws TransformerException {
+		TransactionReceipt txnReceipt = null;
+		txnReceipt = new TransactionReceipt();
+
+		TransactionReceiptId txnReceiptId = new TransactionReceiptId();
+		txnReceiptId.setBusinessDate(txnHeader.getBusinessDate());
+		txnReceiptId.setLocationId(txnHeader.getLocationId());
+		txnReceiptId.setTransactionSeq(txnHeader.getTxnNo());
+		txnReceiptId.setRegister(txnHeader.getRegisterId());
+		txnReceiptId.setReceiptType(receiptType);
+
+		txnReceipt.setTransactionReceiptId(txnReceiptId);
+		txnReceipt.setCreatedBy(txnHeader.getCreatedBy());
+		txnReceipt.setCreatedDate(LocalDateTime.now());
+
+		/*
+		 * This section will convert the PDF file in byte array which can be saved into Entity object
+		 */
+		txnReceipt.setReceiptData(pdfBytes);
+
+		logger.info("The {} typeReceipt has been transformed successfully");
+
+		return txnReceipt;
 	}
 
 }
