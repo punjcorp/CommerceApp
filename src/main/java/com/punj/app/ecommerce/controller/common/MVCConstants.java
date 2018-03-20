@@ -17,16 +17,22 @@ public final class MVCConstants {
 	public static final Boolean LOC_FULL= Boolean.FALSE;
 	public static final String TNDR_CASH = "CASH";
 	public static final String SUCCESS = "success";
+	public static final String FAILURE = "failure";
 	public static final String ALERT = "alert";
 	public static final String PAGER= "pager";
 	public static final String YES="Y";
-	
+
+	public static final String LAST_TXN_NO="LAST_TXN_NO";
+	public static final String RCPT_PARAM="_RCPT";
+	public static final String RCPT_JASPER_PARAM="_JASPER";
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 	public static final String RCPT_SALE_GIFT="Gift Receipt";
 	
 	
 	public static final String TXN_SALE_PARAM="SALE";
+
+
 	
 	
 	public static final String ID_PARAM="id";
@@ -74,8 +80,8 @@ public final class MVCConstants {
 	public static final String ORDER_ITEMS_REPORT="/reports/order/purchase_order_item.jrxml";
 	public static final String ORDERS_REPORT_NAME="order_list_report.pdf";
 
-	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jrxml";
-	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jrxml";
+	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
+	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
 	
 

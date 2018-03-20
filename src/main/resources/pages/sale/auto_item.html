@@ -201,19 +201,19 @@
 									<th:block th:each="tenderBean,itrStat:${tenders}">
 										<input type="hidden" th:id="${tenderBean.tenderId+'tenderName'}" th:value="${tenderBean.name}"></input>
 										<input type="hidden" th:id="${tenderBean.tenderId+'tenderType'}" th:value="${tenderBean.tndrType}"></input>
-										<th:block th:if="${tenderBean.name =='Change'}"> 
+										<th:block th:if="${tenderBean.name =='Change'}">
 											<input type="hidden" id="hc_changeTenderId" th:value="${tenderBean.tenderId}"></input>
 										</th:block>
 										<th:block th:unless="${tenderBean.name =='Change'}">
-												<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.tenderId}"></input>
-											<div class="sm-btn">
-												<div class="box-text">
-													<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
-														th:if="${tenderBean.name=='Credit Card'}"><i class="fas fa-credit-card fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paypal'}"><i
-														class="fab fa-paypal fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paytm'}"><img th:src="@{/images/paytm_sm.png}"></img> </span>
+											<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.tenderId}"></input>
+												<div class="sm-btn">
+													<div class="box-text">
+														<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
+															th:if="${tenderBean.name=='Credit Card'}"><i class="fas fa-credit-card fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paypal'}"><i
+															class="fab fa-paypal fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paytm'}"><img th:src="@{/images/paytm_sm.png}"></img> </span>
+													</div>
 												</div>
-											</div>
-										</label>
+											</label>
 										</th:block>
 									</th:block>
 								</div>
@@ -231,17 +231,23 @@
 
 		var txn_locationId = /*[[${saleHeaderBean.locationId}]]*/;
 		var txn_registerId = /*[[${saleHeaderBean.registerId}]]*/;
+		var txn_registerName = /*[[${saleHeaderBean.registerName}]]*/;
+		
 		var txn_user = /*[[${#authentication.getPrincipal().getUsername()}]]*/;
 		var txn_businessDate = /*[[${{saleHeaderBean.businessDate}}]]*/;
 		var tndr_change_id=$('#hc_changeTenderId').val();
 		var receipt_file_prefix= /*[[@{/output/receipts/}]]*/;
+		var new_txn_prefix= /*[[@{/pos(registerId)}]]*/;
+		
+		var print_rcpt_url= /*[[@{/pos/receipt_print}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
+		var view_rcpt_url= /*[[@{/pos/view_last_receipt}]]*/;
+		var rcpt_txn_id= '';
+		var rcpt_txn_no= '';
+		var current_locale= /*[[${#locale.language}]]*/;
 		
 		/*]]>*/
 	</script>
-	
-	
-	
-	
 	<!-- Item Lookup Modal -->
 	<div class="modal fade " id="txnReceiptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
@@ -254,15 +260,28 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body" >
-				<object id="receiptPDFContainer" th:src="@{/output/receipts/79970020011110032018.pdf}" width="100%" height="100%"></object>
+				<div class="modal-body text-center">
+					<div id="receiptActions" class="col-12 text-center">
+						<button type="button" class="btn btn-info" id="btnViewTxnReceipt">
+							<i class="fas fa-file-alt fa-9x"></i>
+						</button>
+						<button type="button" class="btn btn-info" id="btnPrintReceiptAndNewTxn">
+							<i class="fas fa-print fa-9x"></i>
+						</button>
+						<button type="button" class="btn btn-info" id="btnNewTxn">
+							<i class="far fa-plus-square fa-9x"></i>
+						</button>
+					</div>
+					<div class="col-12 d-none text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-9x"></i>
+						<div>
+							<span th:text="#{commerce.screen.sale.receipt.generate}"></span>
+						</div>
+					</div>
+					<iframe id="receiptPDFContainer" class="p-5" th:src="@{/pdfviewer/web/viewer.html}" width="90%" height="90%" frameBorder="0"></iframe>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	
-	
-	
 </body>
 </html>

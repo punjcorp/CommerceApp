@@ -208,7 +208,8 @@ public final class ViewPathConstants {
 	 * The Transction section starts
 	 */
 	public static final String TXN_SAVE_URL="/pos/save_txn";
-
+	public static final String TXN_RCPT_PRINT_URL="/pos/receipt_print";
+	public static final String TXN_RCPT_VIEW_URL="/pos/view_last_receipt";
 	public static final String TXN_POST_VOID_URL="/pos/post_void_txn";
 
 	

@@ -282,7 +282,7 @@ public class DailyDeedController {
 		}
 
 		dailyDeedBean.setRegister(null);
-		
+
 		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 		model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
 		logger.info("All the beans needs for open store screen has been updated in model");
@@ -438,7 +438,9 @@ public class DailyDeedController {
 					return ViewPathConstants.REGISTER_OPEN_PAGE;
 				}
 				this.updateBeansForRegisterOpen(dailyDeedBean, model);
-				session.setAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
+
+				session.setAttribute(MVCConstants.REGISTER_ID_PARAM, dailyDeedBean.getRegisterId());
+				session.setAttribute(MVCConstants.REG_NAME_PARAM, dailyDeedBean.getRegisterName());
 				logger.info("The Register open process was successful and register is ready for sale now");
 			}
 		} catch (Exception e) {

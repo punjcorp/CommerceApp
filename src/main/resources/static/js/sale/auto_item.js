@@ -13,6 +13,8 @@ var txnAction = new TxnAction();
 var txnStartTime;
 var txnEndTime;
 
+
+var moneyVal='';
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
  * 
@@ -61,7 +63,50 @@ $(function() {
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		txnAction.processCompletedTxn();
 	});
+	
+	$('#btnNewTxn').click(function() {
+		startNewTxn();
+	});	
 
+	$('#btnPrintReceiptAndNewTxn').click(function() {
+		printTxnReceipt();
+	});
+	
+	$('#btnViewTxnReceipt').click(function() {
+		viewTxnReceipt();
+	});			
+	
+	 // use plugins and options as needed, for options, detail see
+    // http://i18next.com/docs/
+    i18next.init({
+      lng: current_locale, // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+      resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
+        en: {
+          translation: {
+              moneysign: 'INR'
+          }
+        },
+        hi: {
+            translation: {
+                moneysign: '₹'
+            }
+          },
+          pa: {
+              translation: {
+                  moneysign: 'ਪੈਸਾ'
+              }
+            }          
+      }
+    }, function(err, t) {
+      // for options see
+      // https://github.com/i18next/jquery-i18next#initialize-the-plugin
+      jqueryI18next.init(i18next, $);
+      moneyVal=i18next.t('moneysign');
+    });	
+	
+	
+    
+	
 });
 
 /* This section will allow the item listing to be in a specific format */
@@ -126,13 +171,55 @@ function deleteSaleItem(deleteItemId) {
 	txnAction.deleteSaleItemInList(deleteItemId, totalDueAmt);
 }
 
-function receiptPrint(data){
-	
-	var filename=receipt_file_prefix+data.uniqueTxnNo+'.pdf';
-	
-	//$('#receiptPDFContainer').attr("src",filename);
-	
-	
+function postTxnSave(data){
+	//Update the txn no after successful save
+	rcpt_txn_id= data.uniqueTxnNo;
+	rcpt_txn_no= data.txnNo;
+	rcpt_pdfBlob=data.pdfbytes;
 	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
+	
+}
+
+function viewTxnReceipt(){
+	$('#progressDiv').removeClass("d-none");
+
+	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+view_rcpt_url;
+	$('#receiptPDFContainer').attr("src",pdfRcptUrl);
+	$('#progressDiv').addClass("d-none");
+}
+
+function startNewTxn(){
+	var newTxnURL=new_txn_prefix+'='+txn_registerId +'&regName='+txn_registerName;
+	window.location.href = newTxnURL;
+}
+
+function printTxnReceipt(){
+	var txnHeader = new TransactionHeader();
+	txnHeader.uniqueTxnNo=rcpt_txn_id;
+	txnHeader.locationId=txn_locationId;
+	txnHeader.registerId=txn_registerId;
+	txnHeader.businessDate=txn_businessDate;
+	txnHeader.txnNo=rcpt_txn_no;
+
+	//The AJAX call for receipt printing
+	var token = $("meta[name='_csrf']").attr("content");
+	var formdata = JSON.stringify(txnHeader);
+	// AJAX call here and refresh the sell item page with receipt printing
+	$.ajax({
+		url : print_rcpt_url,
+		type : 'POST',
+		cache : false,
+		data : formdata,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			startNewTxn();
+		},
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});	
 
 }
+
+

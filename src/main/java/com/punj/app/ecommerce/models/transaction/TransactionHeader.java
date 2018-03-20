@@ -24,7 +24,8 @@ public class TransactionHeader {
 	private Integer txnNo;
 
 	private String uniqueTxnNo;
-	
+	private byte pdfbytes[];
+
 	private String txnType;
 	private String status;
 
@@ -40,7 +41,7 @@ public class TransactionHeader {
 	private String sessionId;
 
 	private String printedBy;
-	
+
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
@@ -53,7 +54,7 @@ public class TransactionHeader {
 	private BigDecimal totalIGSTTaxAmt;
 	private BigDecimal totalTaxAmt;
 	private BigDecimal totalDueAmt;
-	
+
 	private String totalDueAmtWords;
 
 	/**
@@ -409,7 +410,8 @@ public class TransactionHeader {
 	}
 
 	/**
-	 * @param totalDueAmtWords the totalDueAmtWords to set
+	 * @param totalDueAmtWords
+	 *            the totalDueAmtWords to set
 	 */
 	public void setTotalDueAmtWords(String totalDueAmtWords) {
 		this.totalDueAmtWords = totalDueAmtWords;
@@ -423,7 +425,8 @@ public class TransactionHeader {
 	}
 
 	/**
-	 * @param uniqueTxnNo the uniqueTxnNo to set
+	 * @param uniqueTxnNo
+	 *            the uniqueTxnNo to set
 	 */
 	public void setUniqueTxnNo(String uniqueTxnNo) {
 		this.uniqueTxnNo = uniqueTxnNo;
@@ -437,12 +440,26 @@ public class TransactionHeader {
 	}
 
 	/**
-	 * @param printedBy the printedBy to set
+	 * @param printedBy
+	 *            the printedBy to set
 	 */
 	public void setPrintedBy(String printedBy) {
 		this.printedBy = printedBy;
 	}
 
-	
-	
+	/**
+	 * @return the pdfbytes
+	 */
+	public byte[] getPdfbytes() {
+		return pdfbytes;
+	}
+
+	/**
+	 * @param pdfbytes
+	 *            the pdfbytes to set
+	 */
+	public void setPdfbytes(byte[] pdfbytes) {
+		this.pdfbytes = pdfbytes;
+	}
+
 }

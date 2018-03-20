@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.controller.transaction;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +24,10 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.common.web.CommerceContext;
@@ -31,7 +35,6 @@ import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.TransformerException;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
-import com.punj.app.ecommerce.controller.reports.PdfReportGenerator;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
@@ -44,13 +47,13 @@ import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 /**
  * @author admin
@@ -65,9 +68,6 @@ public class TransactionController {
 	private TransactionService transactionService;
 	private CommerceContext commerceContext;
 	private ResourceBundleMessageSource messageSource;
-
-	@Value("${commerce.receipt.base.path}")
-	private String receiptBasePath;
 
 	@Value("${commerce.resource.bundle.base}")
 	private String resourceBundleBase;
@@ -116,7 +116,7 @@ public class TransactionController {
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			txnReceipt = this.generateReceiptPDF(receiptDetails, saleTxn.getTransactionHeader().getCreatedBy(), locale);
+			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale);
 
 		}
 
@@ -130,50 +130,52 @@ public class TransactionController {
 
 	}
 
-	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, String username, Locale locale) {
+	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale) {
 		SaleTransactionReceipt txnReceipt = null;
 		try {
 			txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);
 			if (txnReceipt != null) {
-				String receiptFileName = this.receiptBasePath + txnReceipt.getTransactionHeader().getUniqueTxnNo() + ".pdf";
+				TransactionHeader txnHeader = txnReceipt.getTransactionHeader();
 				logger.info("The receipt details has been transformed successfully");
 				logger.info("Start the receipt PDF generation now");
 				List<SaleTransactionReceipt> txnList = new ArrayList<>(1);
 				txnList.add(txnReceipt);
 
 				InputStream txnReceiptReportStream = getClass().getResourceAsStream(MVCConstants.TXN_RECEIPT_REPORT);
-
-				JasperReport jasperReport;
-
-				jasperReport = JasperCompileManager.compileReport(txnReceiptReportStream);
-
-				ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
-
-				JRBeanCollectionDataSource txnDS = new JRBeanCollectionDataSource(txnList);
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(txnReceiptReportStream);
+				logger.debug("The parent receipt report has been compiled now");
 
 				InputStream txnReceiptStreamChild = getClass().getResourceAsStream(MVCConstants.TXN_RECEIPT_ITEMS_REPORT);
-				JasperReport jasperReportChild = JasperCompileManager.compileReport(txnReceiptStreamChild);
+				JasperReport jasperReportChild = (JasperReport) JRLoader.loadObject(txnReceiptStreamChild);
+				logger.debug("The child receipt report has been compiled now");
+
+				ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
+				JRBeanCollectionDataSource txnDS = new JRBeanCollectionDataSource(txnList);
+				logger.debug("The receipt data source and resource bundle is ready now");
 
 				Map<String, Object> paramMap = new HashMap<>();
-
 				paramMap.put(MVCConstants.SUB_REPORT_DIR, jasperReportChild);
 				paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
 				paramMap.put(JRParameter.REPORT_LOCALE, locale);
-
+				logger.debug("The parameter set for setting receipt data is ready");
 				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, txnDS);
+				logger.debug("The receipt report is ready with data to be used");
 
-				PdfReportGenerator pdfGenerator = PdfReportGenerator.getInstance();
+				String uniqueTxnNo = receiptDetails.getTxn().getTransactionId().toString();
+				byte pdfBytes[] = JasperExportManager.exportReportToPdf(jasperPrint);
+
+				// This is to print the receipt when user select the printing option
+				session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_JASPER_PARAM, jasperPrint);
+				// This is to show the receipt PDF in view screen
+				session.setAttribute(MVCConstants.LAST_TXN_NO, uniqueTxnNo);
+				session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM, pdfBytes);
+				txnHeader.setPdfbytes(pdfBytes);
+
 				// This section will save the receipt in database
-				List<TransactionReceipt> txnReceipts = this.getReceipts(jasperPrint, txnReceipt.getTransactionHeader());
+				List<TransactionReceipt> txnReceipts = this.getReceipts(pdfBytes, jasperPrint, txnHeader);
 				Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 				if (result) {
 					logger.info("The transaction receipts has been saved in DB successfully");
-					JasperPrintManager.printReport(jasperPrint, Boolean.FALSE);
-					logger.info("The report has been printed successfully");
-					// This is to generate receipt in file format
-					pdfGenerator.generatePDFFileReport(jasperPrint, receiptFileName, username);
-					logger.info("The transaction receipt was generated successfully");
-
 				} else {
 					logger.info("The transaction receipts were not saved due to unknown reason");
 				}
@@ -188,25 +190,47 @@ public class TransactionController {
 		return txnReceipt;
 	}
 
-	private List<TransactionReceipt> getReceipts(JasperPrint jasperPrint, TransactionHeader txnHeader) throws TransformerException {
+	private List<TransactionReceipt> getReceipts(byte pdfBytes[], JasperPrint jasperPrint, TransactionHeader txnHeader) throws TransformerException {
 		List<TransactionReceipt> txnReceipts = new ArrayList<>();
-		byte pdfBytes[];
-		try {
-			pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-			TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnHeader, MVCConstants.RCPT_SALE_STORE, pdfBytes);
-			if (txnReceipt != null)
-				txnReceipts.add(txnReceipt);
+		TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnHeader, MVCConstants.RCPT_SALE_STORE, pdfBytes);
+		if (txnReceipt != null) {
+			txnReceipts.add(txnReceipt);
 			logger.info("The transaction receipts has been transformed for saving in DB");
-		} catch (JRException e) {
-			logger.info("The transaction receipts tranformation has failed");
-			throw new TransformerException("The transaction receipts tranformation has failed", e);
 		}
 		return txnReceipts;
 	}
 
-	private void printReceipt() {
+	@PostMapping(value = ViewPathConstants.TXN_RCPT_PRINT_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	private TransactionHeader printReceipt(@RequestBody TransactionHeader txnHeader, Model model, HttpSession session, Locale locale) {
+		try {
+			JasperPrint jasperPrint = (JasperPrint) session.getAttribute(txnHeader.getUniqueTxnNo() + MVCConstants.RCPT_JASPER_PARAM);
+			if (jasperPrint != null) {
+				JasperPrintManager.printReport(jasperPrint, Boolean.FALSE);
+				logger.info("The {} txn receipt has been printed successfully", txnHeader.getUniqueTxnNo());
+			} else {
+				logger.info("The txn receipt is not found");
+			}
+		} catch (JRException e) {
+			logger.info("There was errror printing receipt for the {} txn", txnHeader.getUniqueTxnNo());
+		}
+		return txnHeader;
+	}
 
-		logger.info("The transaction receipt has been successfully sent to printer");
+	@GetMapping(value = ViewPathConstants.TXN_RCPT_VIEW_URL)
+	private void viewLastReceipt(Model model, HttpSession session, Locale locale, HttpServletResponse response) {
+		try {
+			String uniqueTxnNo = (String) session.getAttribute(MVCConstants.LAST_TXN_NO);
+			byte pdfBytes[] = (byte[]) session.getAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM);
+			response.setContentType("application/pdf");
+			response.setHeader("Content-disposition", "attachment; filename=" + uniqueTxnNo + ".pdf");
+			response.setContentLength(pdfBytes.length);
+			response.getOutputStream().write(pdfBytes);
+			logger.info("The {} txn receipt has been generated successfully", uniqueTxnNo);
+			response.getOutputStream().flush();
+		} catch (IOException e) {
+			logger.error("There is an error while generating receipt for last txn", e);
+		}
 	}
 
 }

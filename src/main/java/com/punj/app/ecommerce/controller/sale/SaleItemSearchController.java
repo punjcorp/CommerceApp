@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,19 +78,22 @@ public class SaleItemSearchController {
 	private void updateBeans(Model model, final HttpSession session, final HttpServletRequest req) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
-		DailyDeedBean dailyDeedBean = (DailyDeedBean) session.getAttribute(MVCConstants.DAILY_DEED_BEAN);
 
-		Integer registerId;
-		String registerName;
-
-		if (dailyDeedBean == null) {
-			registerId = new Integer(req.getParameter(MVCConstants.REGISTER_ID_PARAM));
-			registerName = (String) req.getParameter(MVCConstants.REG_NAME_PARAM);
-
-		} else {
-			registerId = dailyDeedBean.getRegisterId();
-			registerName = dailyDeedBean.getRegisterName();
+		String registerIdValue=req.getParameter(MVCConstants.REGISTER_ID_PARAM);
+		Integer registerId = null;
+		String registerName = null;
+	
+		if(StringUtils.isEmpty(registerIdValue)) {
+			registerId=(Integer)session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
+			registerName=(String)session.getAttribute(MVCConstants.REG_NAME_PARAM);
 		}
+		else {
+			registerId =new Integer(registerIdValue);
+			registerName=req.getParameter(MVCConstants.REG_NAME_PARAM);
+			session.setAttribute(MVCConstants.REGISTER_ID_PARAM, registerId);
+			session.setAttribute(MVCConstants.REG_NAME_PARAM, registerName);
+		}
+
 		SaleHeaderBean saleHeaderBean = new SaleHeaderBean();
 		Object openLocationId = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 		Object openLocationName = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_NAME);
@@ -100,7 +104,7 @@ public class SaleItemSearchController {
 			saleHeaderBean.setLocationName((String) openLocationName);
 		if (openBusinessDate != null)
 			saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
-
+		
 		List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
 		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
 

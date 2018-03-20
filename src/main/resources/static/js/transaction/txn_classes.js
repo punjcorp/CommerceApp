@@ -31,6 +31,7 @@ var TransactionHeader = function() {
 	this.businessDate;
 	this.username;
 	this.createdBy;
+	this.uniqueTxnNo;
 
 	this.startTime;
 	this.endTime;
@@ -182,6 +183,9 @@ $.extend(SaleLineItem.prototype, {
 		
 		var totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
 		totalItemPrice = totalItemPrice.toFixed(2);
+		
+		'INR '
+		
 		$('#li_itemTotal' + itemId).text('INR ' + totalItemPrice);
 		this.itemTotal =totalItemPrice;
 		
@@ -237,7 +241,7 @@ $.extend(SaleLineItem.prototype, {
 		cgstTaxAmt += '"></input>';
 
 		var total = '<div class="col-2 form-group padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
-		total += 'INR ' + saleLineItem.itemTotal.toFixed(2);
+		total += moneyVal+' ' + saleLineItem.itemTotal.toFixed(2);
 		total += '</span><button type="button" id="btnDeleteSLI"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
@@ -483,7 +487,7 @@ $.extend(SaleTransaction.prototype, {
 			contentType : "application/json; charset=utf-8",
 			dataType : "json",
 			success : function(data) {
-				receiptPrint(data);
+				postTxnSave(data);
 			},
 			beforeSend : function(xhr) {
 				xhr.setRequestHeader('X-CSRF-TOKEN', token)
