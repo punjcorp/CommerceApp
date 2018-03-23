@@ -94,16 +94,24 @@ public class SaleItemSearchController {
 			session.setAttribute(MVCConstants.REG_NAME_PARAM, registerName);
 		}
 
+		Integer openLocId=null;
 		SaleHeaderBean saleHeaderBean = new SaleHeaderBean();
 		Object openLocationId = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-		Object openLocationName = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_NAME);
-		Object openBusinessDate = commerceContext.getStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE);
-		if (openLocationId != null)
-			saleHeaderBean.setLocationId((Integer) openLocationId);
+		if (openLocationId != null) {
+			openLocId=(Integer)openLocationId;
+			saleHeaderBean.setLocationId(openLocId);
+		}
+
+		Object openLocationName = commerceContext.getStoreSettings(openLocId+"-"+CommerceConstants.OPEN_LOC_NAME);
+		Object openBusinessDate = commerceContext.getStoreSettings(openLocId+"-"+CommerceConstants.OPEN_BUSINESS_DATE);
+		Object defaultTender = commerceContext.getStoreSettings(openLocId+"-"+CommerceConstants.LOC_DEFAULT_TENDER);
 		if (openLocationName != null)
 			saleHeaderBean.setLocationName((String) openLocationName);
 		if (openBusinessDate != null)
 			saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
+		if(defaultTender!=null) {
+			saleHeaderBean.setDefaultTender((String)defaultTender);
+		}
 		
 		List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
 		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);

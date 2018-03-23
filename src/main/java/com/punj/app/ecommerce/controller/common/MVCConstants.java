@@ -28,6 +28,7 @@ public final class MVCConstants {
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 	public static final String RCPT_SALE_GIFT="Gift Receipt";
+	public static final String RCPT_NO_SALE="No Sale Receipt";
 	
 	
 	public static final String TXN_SALE_PARAM="SALE";
@@ -44,6 +45,7 @@ public final class MVCConstants {
 	public static final String REGISTER_ID_PARAM="registerId";
 	public static final String REG_NAME_PARAM="regName";	
 	public static final String B_DATE_PARAM="businessDate";
+	public static final String DEFAULT_TENDER_PARAM="defaultTender";
 	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
 
 	public static final String STATUS_RECEIVED="R";
@@ -63,6 +65,8 @@ public final class MVCConstants {
 	public static final String REPORT_OUTPUT_PDF="application/pdf";
 	public static final String SUB_REPORT_DIR="SUBREPORT_DIR";
 	public static final String REPORT_PERMISSION_PRINTING="PRINTING";
+	
+	public static final String EXPENSE_PARAM= "expenseBean";
 	
 	public static final String ADD_ORDER_ITEM_PARAM= "addOrderItem";
 	public static final String REMOVE_ORDER_ITEM_PARAM= "removeOrderItem";
@@ -101,6 +105,7 @@ public final class MVCConstants {
 	public static final String COMPLETED="COMPLETED";
 	public static final String MANUAL="MANUAL";
 	public static final String ADD="ADD";
+	public static final String SUBTRACT="SUBTRACT";
 	
 	
 	
@@ -115,6 +120,7 @@ public final class MVCConstants {
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
 	public static final String TENDER_BEANS= "tenders";
+	public static final String REASON_CODES= "reasonCodes";
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";

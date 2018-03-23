@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
-import com.punj.app.ecommerce.controller.common.TransformerException;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
@@ -39,7 +38,6 @@ import com.punj.app.ecommerce.utils.NumberToWordConverter;
  *
  */
 public class TransactionTransformer {
-
 	private static final Logger logger = LogManager.getLogger();
 
 	private TransactionTransformer() {
@@ -224,7 +222,11 @@ public class TransactionTransformer {
 
 		saleLI.setSaleLineItemId(saleLIId);
 
-		saleLI.setInvAction(MVCConstants.ADD);
+		/**
+		 * The inventory should be subtracted for all the sale line items
+		 */
+		saleLI.setInvAction(MVCConstants.SUBTRACT);
+
 		saleLI.setTxnType(MVCConstants.TXN_SALE_PARAM);
 		saleLI.setUpc(saleLineItem.getItemId() + "");
 
@@ -487,19 +489,18 @@ public class TransactionTransformer {
 
 	}
 
-	public static TransactionReceipt tranformReceiptDetails(TransactionHeader txnHeader, String receiptType, byte pdfBytes[]) throws TransformerException {
-		TransactionReceipt txnReceipt = null;
-		txnReceipt = new TransactionReceipt();
+	public static TransactionReceipt tranformReceiptDetails(TransactionId txnId, String username, String receiptType, byte[] pdfBytes) {
+		TransactionReceipt txnReceipt = new TransactionReceipt();
 
 		TransactionReceiptId txnReceiptId = new TransactionReceiptId();
-		txnReceiptId.setBusinessDate(txnHeader.getBusinessDate());
-		txnReceiptId.setLocationId(txnHeader.getLocationId());
-		txnReceiptId.setTransactionSeq(txnHeader.getTxnNo());
-		txnReceiptId.setRegister(txnHeader.getRegisterId());
+		txnReceiptId.setBusinessDate(txnId.getBusinessDate());
+		txnReceiptId.setLocationId(txnId.getLocationId());
+		txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
+		txnReceiptId.setRegister(txnId.getRegister());
 		txnReceiptId.setReceiptType(receiptType);
 
 		txnReceipt.setTransactionReceiptId(txnReceiptId);
-		txnReceipt.setCreatedBy(txnHeader.getCreatedBy());
+		txnReceipt.setCreatedBy(username);
 		txnReceipt.setCreatedDate(LocalDateTime.now());
 
 		/*
@@ -510,6 +511,15 @@ public class TransactionTransformer {
 		logger.info("The {} typeReceipt has been transformed successfully");
 
 		return txnReceipt;
+	}
+
+	public static List<TransactionReceipt> getReceipts(byte[] pdfBytes, TransactionId txnId, String username) {
+		List<TransactionReceipt> txnReceipts = new ArrayList<>();
+		TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnId, username, MVCConstants.RCPT_SALE_STORE, pdfBytes);
+		txnReceipts.add(txnReceipt);
+		logger.info("The transaction receipts has been transformed for saving in DB");
+
+		return txnReceipts;
 	}
 
 }

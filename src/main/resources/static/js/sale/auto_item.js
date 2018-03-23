@@ -13,8 +13,6 @@ var txnAction = new TxnAction();
 var txnStartTime;
 var txnEndTime;
 
-
-var moneyVal='';
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
  * 
@@ -83,17 +81,23 @@ $(function() {
       resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
         en: {
           translation: {
-              moneysign: 'INR'
+              common_currency_sign_inr: 'INR',
+              sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
+              sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
+              sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
+              sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
+              sale_txn_validate_tender:'Please select tender for the payment',
+              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00'              
           }
         },
         hi: {
             translation: {
-                moneysign: '₹'
+            	common_currency_sign_inr: '₹'
             }
           },
           pa: {
               translation: {
-                  moneysign: 'ਪੈਸਾ'
+            	  common_currency_sign_inr: 'ਪੈਸਾ'
               }
             }          
       }
@@ -101,10 +105,36 @@ $(function() {
       // for options see
       // https://github.com/i18next/jquery-i18next#initialize-the-plugin
       jqueryI18next.init(i18next, $);
-      moneyVal=i18next.t('moneysign');
+      
     });	
 	
 	
+    /*
+     * This section will register the shortcut keys for various functions on sale screen
+     */
+    
+    //item search selection
+    Mousetrap.bind('enter', function() { $('#searchText').focus(); });
+    //item qty selection
+    Mousetrap.bind('ctrl+q', function() { });
+    //item discount selection
+    Mousetrap.bind('ctrl+d', function() { });
+    //tender due text selection
+    Mousetrap.bind('ctrl+enter', function() { $('#dueAmt').focus();});            
+    // First tender selection - CASH
+    Mousetrap.bind('ctrl+1', function() { });
+    // First tender selection - Credit Card
+    Mousetrap.bind('ctrl+2', function() { });
+    // First tender selection - Paypal
+    Mousetrap.bind('ctrl+3', function() { });
+    // First tender selection - Paytm
+    Mousetrap.bind('ctrl+4', function() { });
+    // First tender selection - Print the Receipt
+    Mousetrap.bind('ctrl+shift+p', function() { });
+    // First tender selection - View the Receipt
+    Mousetrap.bind('ctrl+shift+v', function() { });
+    // First tender selection - Start New Txn
+    Mousetrap.bind('alt+enter', function() { });    
     
 	
 });

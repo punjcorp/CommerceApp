@@ -117,6 +117,7 @@ public class CommonMVCTransformer {
 		locationBean.setLocationId(location.getLocationId());
 		locationBean.setLocationType(location.getLocationType());
 		locationBean.setName(location.getName());
+		locationBean.setDefaultTender(location.getDefaultTender());
 		if (!partial) {
 			locationBean.setAddress1(location.getAddress1());
 			locationBean.setAddress2(location.getAddress2());

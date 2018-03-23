@@ -16,6 +16,7 @@ public class SaleHeaderBean {
 	private LocalDateTime businessDate;
 	private Integer registerId;
 	private String registerName;
+	private String defaultTender;
 
 	/**
 	 * @return the locationId
@@ -90,6 +91,21 @@ public class SaleHeaderBean {
 	 */
 	public void setRegisterName(String registerName) {
 		this.registerName = registerName;
+	}
+
+	/**
+	 * @return the defaultTender
+	 */
+	public String getDefaultTender() {
+		return defaultTender;
+	}
+
+	/**
+	 * @param defaultTender
+	 *            the defaultTender to set
+	 */
+	public void setDefaultTender(String defaultTender) {
+		this.defaultTender = defaultTender;
 	}
 
 }

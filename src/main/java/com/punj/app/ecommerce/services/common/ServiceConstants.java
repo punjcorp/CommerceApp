@@ -3,6 +3,8 @@
  */
 package com.punj.app.ecommerce.services.common;
 
+import java.math.BigDecimal;
+
 /**
  * @author admin
  *
@@ -14,6 +16,7 @@ public final class ServiceConstants {
 	}
 
 	public static final Integer REGISTER_ONE = 1;
+
 	public static final String TXN_SEQ = "TX_SEQ";
 
 	public static final String TXN_STATUS_STARTED = "STARTED";
@@ -25,6 +28,7 @@ public final class ServiceConstants {
 	public static final String TXN_CLOSE_STORE = "CLOSE_STORE";
 	public static final String TXN_OPEN_REGISTER = "OPEN_REGISTER";
 	public static final String TXN_CLOSE_REGISTER = "CLOSE_REGISTER";
+	public static final String TXN_NOSALE= "NOSALE";
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";
@@ -43,6 +47,7 @@ public final class ServiceConstants {
 	public static final String INV_ACTION_ADD = "ADD";
 	public static final String INV_ACTION_SUBSTRACT = "SUBTRACT";
 
+	public static final String SALE_TXN_FUNCTIONALITY = "SALE_TXN";
 	public static final String RECEIVE_ORDER_FUNCTIONALITY = "RECEIVE_ORDER";
 	public static final String STOCK_ADJUSTMENT_FUNCTIONALITY = "STOCK_ADJUSTMENT";
 

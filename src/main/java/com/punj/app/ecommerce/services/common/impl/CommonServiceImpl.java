@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,13 +26,16 @@ import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
+import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
 import com.punj.app.ecommerce.repositories.common.RegisterRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
+import com.punj.app.ecommerce.services.common.dtos.ReasonDTO;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -45,7 +49,23 @@ public class CommonServiceImpl implements CommonService {
 	private RegisterRepository registerRepository;
 	private IdGeneratorRepository idGenRepository;
 	private TenderRepository tenderRepository;
+	private ReasonSearchRepository reasonRepository;
 	private TransactionService txnService;
+
+	@Value("${commerce.list.max.perpage}")
+	private Integer maxResultPerPage;
+
+	@Value("${commerce.list.max.pageno}")
+	private Integer maxPageBtns;
+
+	/**
+	 * @param reasonRepository
+	 *            the reasonRepository to set
+	 */
+	@Autowired
+	public void setReasonRepository(ReasonSearchRepository reasonRepository) {
+		this.reasonRepository = reasonRepository;
+	}
 
 	/**
 	 * @param txnService
@@ -214,13 +234,30 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public Location retrieveLocationDetails(Integer locationId) {
-		Location location=this.locationRepository.findOne(locationId);
-		if(location!=null) {
+		Location location = this.locationRepository.findOne(locationId);
+		if (location != null) {
 			logger.info("The {} location details has been retrieved successfully");
-		}else {
+		} else {
 			logger.info("There is no valid {} location existing");
 		}
 		return location;
+	}
+
+	@Override
+	public ReasonDTO retrieveReasonCodes(String searchText, Pager pager) {
+
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+
+		ReasonDTO reasonDTO = this.reasonRepository.search(searchText, pager);
+		if (reasonDTO != null && reasonDTO.getReasonCodes() != null && !reasonDTO.getReasonCodes().isEmpty()) {
+			logger.info("The reason codes for {} type has been retrieved successfully", searchText);
+		} else {
+			logger.info("The {} type does not have any reason codes", searchText);
+		}
+		return reasonDTO;
 	}
 
 }

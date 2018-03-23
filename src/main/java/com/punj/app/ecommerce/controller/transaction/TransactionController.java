@@ -23,11 +23,11 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.common.web.CommerceContext;
@@ -110,13 +110,14 @@ public class TransactionController {
 
 	@PostMapping(value = ViewPathConstants.TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
+	@Transactional
 	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale) {
 		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn);
 		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale);
+			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale,txnId);
 
 		}
 
@@ -130,7 +131,7 @@ public class TransactionController {
 
 	}
 
-	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale) {
+	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,TransactionId txnId ) {
 		SaleTransactionReceipt txnReceipt = null;
 		try {
 			txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);
@@ -172,7 +173,7 @@ public class TransactionController {
 				txnHeader.setPdfbytes(pdfBytes);
 
 				// This section will save the receipt in database
-				List<TransactionReceipt> txnReceipts = this.getReceipts(pdfBytes, jasperPrint, txnHeader);
+				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId,username);
 				Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 				if (result) {
 					logger.info("The transaction receipts has been saved in DB successfully");
@@ -184,20 +185,8 @@ public class TransactionController {
 
 		} catch (JRException e) {
 			logger.error("There is an error while generating receipt for txn", e);
-		} catch (TransformerException e) {
-			logger.error("There is an error while transforming receipt for txn", e);
 		}
 		return txnReceipt;
-	}
-
-	private List<TransactionReceipt> getReceipts(byte pdfBytes[], JasperPrint jasperPrint, TransactionHeader txnHeader) throws TransformerException {
-		List<TransactionReceipt> txnReceipts = new ArrayList<>();
-		TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnHeader, MVCConstants.RCPT_SALE_STORE, pdfBytes);
-		if (txnReceipt != null) {
-			txnReceipts.add(txnReceipt);
-			logger.info("The transaction receipts has been transformed for saving in DB");
-		}
-		return txnReceipts;
 	}
 
 	@PostMapping(value = ViewPathConstants.TXN_RCPT_PRINT_URL, produces = { MediaType.APPLICATION_JSON_VALUE })

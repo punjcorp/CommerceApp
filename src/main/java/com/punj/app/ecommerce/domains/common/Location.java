@@ -48,6 +48,8 @@ public class Location implements Serializable {
 	private String neighborhood;
 	private String locale;
 	private String currency;
+	@Column(name = "default_tender")
+	private String defaultTender;
 	private String telephone1;
 	private String telephone2;
 	@Column(name = "store_manager")
@@ -368,6 +370,21 @@ public class Location implements Serializable {
 	 */
 	public void setLocationType(String locationType) {
 		this.locationType = locationType;
+	}
+
+	/**
+	 * @return the defaultTender
+	 */
+	public String getDefaultTender() {
+		return defaultTender;
+	}
+
+	/**
+	 * @param defaultTender
+	 *            the defaultTender to set
+	 */
+	public void setDefaultTender(String defaultTender) {
+		this.defaultTender = defaultTender;
 	}
 
 	/*

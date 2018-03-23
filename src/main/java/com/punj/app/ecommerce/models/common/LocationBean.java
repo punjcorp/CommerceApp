@@ -31,10 +31,12 @@ public class LocationBean {
 	private String manager;
 	private String email;
 
+	private String defaultTender;
+
 	private LocalDateTime lastBusinessDate;
 	private LocalDateTime lastCreatedDate;
 	private String lastStatus;
-	private Boolean eligibleForStoreOpen=Boolean.TRUE;
+	private Boolean eligibleForStoreOpen = Boolean.TRUE;
 
 	/**
 	 * @return the locationId
@@ -299,12 +301,26 @@ public class LocationBean {
 	}
 
 	/**
-	 * @param lastCreatedDate the lastCreatedDate to set
+	 * @param lastCreatedDate
+	 *            the lastCreatedDate to set
 	 */
 	public void setLastCreatedDate(LocalDateTime lastCreatedDate) {
 		this.lastCreatedDate = lastCreatedDate;
 	}
 
-	
-	
+	/**
+	 * @return the defaultTender
+	 */
+	public String getDefaultTender() {
+		return defaultTender;
+	}
+
+	/**
+	 * @param defaultTender
+	 *            the defaultTender to set
+	 */
+	public void setDefaultTender(String defaultTender) {
+		this.defaultTender = defaultTender;
+	}
+
 }

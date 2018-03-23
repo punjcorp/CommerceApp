@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
+import com.punj.app.ecommerce.domains.inventory.StockReason;
+import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
@@ -36,6 +40,7 @@ import com.punj.app.ecommerce.repositories.transaction.TenderLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
+import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
@@ -52,6 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private CommonService commonService;
+	private InventoryService inventoryService;
 	private TransactionRepository transactionRepository;
 	private TransactionLineItemRepository transactionLineItemRepository;
 	private SaleLineItemRepository saleLineItemRepository;
@@ -67,6 +73,15 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	public void setTxnReceiptRepository(TransactionReceiptRepository txnReceiptRepository) {
 		this.txnReceiptRepository = txnReceiptRepository;
+	}
+
+	/**
+	 * @param inventoryService
+	 *            the inventoryService to set
+	 */
+	@Autowired
+	public void setInventoryService(InventoryService inventoryService) {
+		this.inventoryService = inventoryService;
 	}
 
 	/**
@@ -134,8 +149,16 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	public Transaction saveTransaction(Transaction txnDetails) {
-		txnDetails = this.transactionRepository.save(txnDetails);
-		logger.info("The transaction has been created based on provided details successfully.");
+		BigInteger txnNo = this.commonService
+				.getId(txnDetails.getTransactionId().getLocationId() + "_" + txnDetails.getTransactionId().getRegister() + "_" + ServiceConstants.TXN_SEQ);
+		if (txnNo != null) {
+			logger.info("A new txn number {} has been generated now.", txnNo);
+			txnDetails.getTransactionId().setTransactionSeq(txnNo.intValue());
+			txnDetails = this.transactionRepository.save(txnDetails);
+			logger.info("The transaction has been created based on provided details successfully.");
+		} else {
+			logger.info("There was some issue generating a new transaction for the details");
+		}
 		return txnDetails;
 	}
 
@@ -209,32 +232,26 @@ public class TransactionServiceImpl implements TransactionService {
 	@Transactional
 	public TransactionId saveSaleTransaction(TransactionDTO txnDTO) {
 		TransactionId txnId = null;
-
 		Transaction txnDetails = txnDTO.getTxn();
-		BigInteger txnNo = this.commonService
-				.getId(txnDetails.getTransactionId().getLocationId() + "_" + txnDetails.getTransactionId().getRegister() + "_" + ServiceConstants.TXN_SEQ);
-
-		if (txnNo != null) {
-			txnDetails.getTransactionId().setTransactionSeq(txnNo.intValue());
-			Transaction txnHeader = this.saveTransaction(txnDetails);
-			if (txnHeader != null) {
-				logger.info("The sale transaction header details has been saved successfully");
-				txnId = txnHeader.getTransactionId();
-				Boolean txnLISaveResult = this.saveTransactionLineLineItems(txnDTO, txnId);
-				if (!txnLISaveResult) {
-					txnId = null;
-				}
-			} else {
-				logger.info("There is some issue while saving sale transaction header details");
+		Transaction txnHeader = this.saveTransaction(txnDetails);
+		if (txnHeader != null) {
+			logger.info("The sale transaction header details has been saved successfully");
+			txnId = txnHeader.getTransactionId();
+			Boolean txnLISaveResult = this.saveTransactionLineItems(txnDTO, txnId);
+			if (!txnLISaveResult) {
+				txnId = null;
 			}
-
+			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getCreatedBy());
+			this.inventoryService.updateInventory(itemStockDetails);
+			logger.info("The inventory updates for the sale items has been posted successfully");
+		} else {
+			logger.info("There is some issue while saving sale transaction header details");
 		}
 
 		return txnId;
 	}
 
-	@Transactional
-	private Boolean saveTransactionLineLineItems(TransactionDTO txnDTO, TransactionId txnId) {
+	private Boolean saveTransactionLineItems(TransactionDTO txnDTO, TransactionId txnId) {
 		Boolean result = Boolean.FALSE;
 
 		List<TransactionLineItem> txnLineItems = txnDTO.getTxnLineItems();
@@ -259,7 +276,7 @@ public class TransactionServiceImpl implements TransactionService {
 				for (TaxLineItem taxLineItem : taxLineItems) {
 					taxLineItem.getTransactionLineItemId().setTransactionSeq(txnId.getTransactionSeq());
 				}
-				Boolean taxSaveResult = this.saveTaxLineITems(taxLineItems);
+				Boolean taxSaveResult = this.saveTaxLineItems(taxLineItems);
 
 				List<TenderLineItem> tenderLineItems = txnDTO.getTenderLineItems();
 				for (TenderLineItem tenderLineItem : tenderLineItems) {
@@ -282,8 +299,7 @@ public class TransactionServiceImpl implements TransactionService {
 		return result;
 	}
 
-	@Transactional
-	private Boolean saveTaxLineITems(List<TaxLineItem> taxLineItems) {
+	private Boolean saveTaxLineItems(List<TaxLineItem> taxLineItems) {
 		Boolean result = Boolean.FALSE;
 
 		taxLineItems = this.taxLineItemRepository.save(taxLineItems);
@@ -297,7 +313,6 @@ public class TransactionServiceImpl implements TransactionService {
 		return result;
 	}
 
-	@Transactional
 	private Boolean saveTenderLineItems(List<TenderLineItem> tenderLineItems) {
 		Boolean result = Boolean.FALSE;
 
@@ -373,6 +388,38 @@ public class TransactionServiceImpl implements TransactionService {
 		logger.info("The transaction receipt details has been saved in the database now");
 		result = Boolean.TRUE;
 		return result;
+	}
+
+	private List<ItemStockJournal> createStockDetails(List<SaleLineItem> saleLineItems, String username) {
+
+		List<ItemStockJournal> itemStockDetails = new ArrayList<>(saleLineItems.size());
+		ItemStockJournal itemStockJournal = null;
+		Item item = null;
+
+		for (SaleLineItem saleLineItem : saleLineItems) {
+			itemStockJournal = new ItemStockJournal();
+			itemStockJournal.setCreatedBy(username);
+			itemStockJournal.setCreatedDate(LocalDateTime.now());
+
+			itemStockJournal.setLocationId(saleLineItem.getSaleLineItemId().getLocationId());
+
+			item = new Item();
+			item.setItemId(saleLineItem.getSaleLineItemId().getItemId());
+			itemStockJournal.setItemId(item.getItemId());
+
+			StockReason stockReason = new StockReason();
+			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKOUT);
+			itemStockJournal.setReasonCode(stockReason);
+
+			itemStockJournal.setFunctionality(ServiceConstants.SALE_TXN_FUNCTIONALITY);
+			itemStockJournal.setQty(saleLineItem.getQty().intValue());
+
+			itemStockDetails.add(itemStockJournal);
+		}
+
+		logger.info("The stock details has been created from Sale Txn Line Item details");
+		return itemStockDetails;
+
 	}
 
 }

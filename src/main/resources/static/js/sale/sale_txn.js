@@ -32,7 +32,7 @@ $.extend(TxnAction.prototype, {
 	showSaleLineItem : function(data) {
 		var actualSaleItem = this.saleLineItem.parseSaleLineItem(data);
 		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
-			alert("The selected item already exists in the transaction, please increase the quantity if needed");
+			alert(i18next.t('sale_txn_validate_item'));
 		} else {
 			this.saleLineItem.renderSaleLineItem(actualSaleItem);
 			// Check when we need to add this to list it should be after successful render as per my understanding
@@ -76,7 +76,7 @@ $.extend(TxnAction.prototype, {
 		$("[id^=li_").each(function() {
 			if (this.id.indexOf("li_itemTotal") >= 0) {
 				totalAmtText = $(this).text();
-				totalAmtText = +totalAmtText.replace('INR ', '');
+				totalAmtText = +totalAmtText.replace(i18next.t('common_currency_sign_inr')+' ', '');
 				totalAmt += totalAmtText;
 			}
 			if (this.id.indexOf("li_discountAmt") >= 0) {
@@ -98,10 +98,10 @@ $.extend(TxnAction.prototype, {
 
 		totalTax = totalSGSTTax + totalCGSTTax;
 
-		$('#salesHeaderSubTotalAmt').text('INR  ' + totalPrice.toFixed(2));
-		$('#salesHeaderDiscountAmt').text('INR  ' + totalDiscount.toFixed(2));
-		$('#salesHeaderTaxAmt').text('INR  ' + totalTax.toFixed(2));
-		$('#salesHeaderTotalAmt').text('INR  ' + totalAmt.toFixed(2));
+		$('#salesHeaderSubTotalAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalPrice.toFixed(2));
+		$('#salesHeaderDiscountAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalDiscount.toFixed(2));
+		$('#salesHeaderTaxAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalTax.toFixed(2));
+		$('#salesHeaderTotalAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalAmt.toFixed(2));
 
 		$('#hc_totalSubAmt').val(totalPrice.toFixed(2));
 		$('#hc_totalDiscountAmt').val(totalDiscount.toFixed(2));
@@ -165,7 +165,7 @@ $.extend(TxnAction.prototype, {
 			var totalDueAmt = +$('#hc_totalDueAmt').val();
 			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderId);
 		} else {
-			alert('Please select tender for the payment');
+			alert(i18next.t('sale_txn_validate_tender'));
 		}
 
 	},
@@ -229,14 +229,14 @@ $.extend(TxnAction.prototype, {
 			$('#dueAmt').val(g_nbr_zero.toFixed(2));
 			$('#tenderChangeDueCol').removeClass('d-none');
 			$('#hc_changeDueAmt').val(changeDueAmount.toFixed(2));
-			$('#tenderChangeDueAmt').text("INR " + changeDueAmount.toFixed(2));
+			$('#tenderChangeDueAmt').text(i18next.t('common_currency_sign_inr')+' ' + changeDueAmount.toFixed(2));
 		}
 	},
 
 	resetChangeDueAmount : function() {
 		$('#tenderChangeDueCol').addClass('d-none');
 		$('#hc_changeDueAmt').val(g_nbr_zero.toFixed(2));
-		$('#tenderChangeDueAmt').text("INR " + g_nbr_zero.toFixed(2));
+		$('#tenderChangeDueAmt').text(i18next.t('common_currency_sign_inr')+' ' + g_nbr_zero.toFixed(2));
 	},
 	preTxnCompletion : function() {
 		this.txnHeader.endTime = txnEndTime;

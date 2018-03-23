@@ -140,6 +140,7 @@ public class DailyDeedController {
 			for (LocationBean location : locations) {
 				if (location.getLocationId().equals(locationId)) {
 					dailyDeedBean.setLocationName(location.getName());
+					dailyDeedBean.setDefaultTender(location.getDefaultTender());
 					break;
 				}
 			}
@@ -164,9 +165,12 @@ public class DailyDeedController {
 	}
 
 	private void updateCommerceContext(DailyDeedBean dailyDeedBean) {
-		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, dailyDeedBean.getLocationId());
-		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
-		commerceContext.setStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
+		Integer locationId=dailyDeedBean.getLocationId();
+		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
+		commerceContext.setStoreSettings(locationId+"-"+CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
+		commerceContext.setStoreSettings(locationId+"-"+CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
+		//Get this from selected location later on
+		commerceContext.setStoreSettings(locationId+"-"+CommerceConstants.LOC_DEFAULT_TENDER,dailyDeedBean.getDefaultTender()); //MVCConstants.TNDR_CASH
 
 		logger.info("All the store open details has been updated in commerce app context now");
 
@@ -295,6 +299,7 @@ public class DailyDeedController {
 		try {
 			Integer locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
 			String locationName = (String) req.getParameter(MVCConstants.LOC_NAME_PARAM);
+			String defaultTender = (String) req.getParameter(MVCConstants.DEFAULT_TENDER_PARAM);
 			LocalDateTime businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
 			if (businessDate != null) {
 
@@ -306,6 +311,7 @@ public class DailyDeedController {
 					logger.info("The Store open transaction data has been retrieved successfully");
 					this.updateBeansForRegisterOpen(dailyDeedBean, model);
 					dailyDeedBean.setLocationName(locationName);
+					dailyDeedBean.setDefaultTender(defaultTender);
 
 					this.updateCommerceContext(dailyDeedBean);
 					logger.info("The Register open screen is ready for display");

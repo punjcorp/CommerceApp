@@ -23,6 +23,8 @@ public class DailyDeedBean {
 	@NotNull(message = "{commerce.error.location.empty}")
 	private Integer locationId;
 	private String locationName;
+	private String defaultTender;
+
 	@NotNull(message = "{commerce.error.date.empty}")
 	private LocalDateTime businessDate;
 	private Integer register;
@@ -224,6 +226,21 @@ public class DailyDeedBean {
 	 */
 	public void setRegisterName(String registerName) {
 		this.registerName = registerName;
+	}
+
+	/**
+	 * @return the defaultTender
+	 */
+	public String getDefaultTender() {
+		return defaultTender;
+	}
+
+	/**
+	 * @param defaultTender
+	 *            the defaultTender to set
+	 */
+	public void setDefaultTender(String defaultTender) {
+		this.defaultTender = defaultTender;
 	}
 
 }

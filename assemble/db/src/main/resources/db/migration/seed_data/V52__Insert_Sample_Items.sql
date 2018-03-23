@@ -39,6 +39,8 @@ insert into commercedb.style_generator(status) values('Y');
 -- -----------------------------------------------------
 -- Seed data for styles
 -- -----------------------------------------------------
+INSERT INTO `commercedb`.`item` (`item_id`, `name`, `long_desc`, `item_level`, `hierarchy_id`, `item_type`, `record_status`, `created_date`, `created_by`) VALUES ('1999999', 'Expense Parent', 'This is parent item for all type of expenses', '1', '1', 'Expense', 'A', now(), 'admin');
+INSERT INTO `commercedb`.`item` (`item_id`, `name`, `long_desc`, `item_level`, `parent_item_id`, `hierarchy_id`, `item_type`, `record_status`, `created_date`, `created_by`) VALUES ('19999990001', 'Order Payment', 'This item is to do the order payment', '2', '1999999', '1', 'Expense', 'A', now(), 'admin');
 insert into commercedb.item(item_id, `name`, long_desc, item_level, parent_item_id, hierarchy_id, item_type, record_status, created_date, created_by, modified_date, modified_by)
 values('1000000', 'Pants', 'This style is for all type of pants', '1', NULL, '1', 'Merchandise', 'A', '2018-01-19 20:12:57', 'admin@gmail.com', NULL, NULL);
 insert into commercedb.item(item_id, `name`, long_desc, item_level, parent_item_id, hierarchy_id, item_type, record_status, created_date, created_by, modified_date, modified_by)

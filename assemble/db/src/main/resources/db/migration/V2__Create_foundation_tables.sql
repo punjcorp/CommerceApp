@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`location` (
   `pincode` VARCHAR(6) NOT NULL,
   `neighborhood` VARCHAR(100) NULL,
   `locale` VARCHAR(10) NOT NULL,
+  `default_tender` VARCHAR(30) NOT NULL DEFAULT 'CASH',
   `currency` VARCHAR(3) NOT NULL,
   `telephone1` VARCHAR(12) NOT NULL,
   `telephone2` VARCHAR(12) NULL,

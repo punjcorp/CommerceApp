@@ -18,6 +18,7 @@ public final class ViewPathConstants {
 	/**
 	 * The common pages section starts
 	 */
+	public static final String GET_REASONS_URL="/get_reasons";
 	public static final String LIST_ITEM_URL = "/list_item";
 	public static final String DISPLAY_PAGE = "common/display";
 
@@ -211,6 +212,10 @@ public final class ViewPathConstants {
 	public static final String TXN_RCPT_PRINT_URL="/pos/receipt_print";
 	public static final String TXN_RCPT_VIEW_URL="/pos/view_last_receipt";
 	public static final String TXN_POST_VOID_URL="/pos/post_void_txn";
+	public static final String TXN_PROCESS_EXPENSE_URL="/pos/process_expense";
+	public static final String TXN_EXPENSE_URL="/pos/expenses";
+	public static final String TXN_EXPENSE_PAGE="/nosale/expenses";
+	
 
 	
 	/**

@@ -96,7 +96,7 @@ $.extend(SaleLineItem.prototype, {
 		if (cntl.id.indexOf('li_qty') == 0) {
 			var qtyValue = +$('#li_qty' + itemId).val();
 			if ((!qtyValue) || (qtyValue.toFixed(2) <= 0.00)) {
-				alert('The quantity should be a positive value always.Please correct the quantity.');
+				alert(i18next.t('sale_txn_validate_qty'));
 				$('#li_qty' + itemId).addClass("is-invalid");
 				$('#li_qty' + itemId).val(1);
 				$('#li_qty' + itemId).focus();
@@ -109,7 +109,7 @@ $.extend(SaleLineItem.prototype, {
 			var discountValue = +$('#li_discountAmt' + itemId).val();
 			var priceValue = +$('#li_priceAmt' + itemId).val();
 			if ((!discountValue) || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
-				alert('The discount amount should be between INR 0.00 and item price amount.Please correct the amount.');
+				alert(i18next.t('sale_txn_validate_range_discount'));
 
 				$('#li_discountAmt' + itemId).addClass("is-invalid");
 				$('#li_discountAmt' + itemId).focus();
@@ -144,7 +144,7 @@ $.extend(SaleLineItem.prototype, {
 		var itemPrice = +$('#li_priceAmt' + itemId).val();
 		if (discountAmt > itemPrice) {
 			$('#li_discountAmt' + itemId).val(0.00);
-			alert('The discount amount cannot be more than item price');
+			alert(i18next.t('sale_txn_validate_exceed_discount'));
 		} else {
 			$('#li_discountAmt' + itemId).val(discountAmt.toFixed(2));
 		}
@@ -184,9 +184,7 @@ $.extend(SaleLineItem.prototype, {
 		var totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
 		totalItemPrice = totalItemPrice.toFixed(2);
 		
-		'INR '
-		
-		$('#li_itemTotal' + itemId).text('INR ' + totalItemPrice);
+		$('#li_itemTotal' + itemId).text(i18next.t('common_currency_sign_inr')+' ' + totalItemPrice);
 		this.itemTotal =totalItemPrice;
 		
 	},
@@ -198,7 +196,6 @@ $.extend(SaleLineItem.prototype, {
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
 		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
 		saleLineItemHtml += saleLineItem.itemName;
-/*		saleLineItemHtml += '<br>' + saleLineItem.itemDesc;*/
 		saleLineItemHtml += '</span></div>';
 
 		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
@@ -241,7 +238,7 @@ $.extend(SaleLineItem.prototype, {
 		cgstTaxAmt += '"></input>';
 
 		var total = '<div class="col-2 form-group padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
-		total += moneyVal+' ' + saleLineItem.itemTotal.toFixed(2);
+		total += i18next.t('common_currency_sign_inr')+' ' + saleLineItem.itemTotal.toFixed(2);
 		total += '</span><button type="button" id="btnDeleteSLI"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
@@ -391,7 +388,7 @@ $.extend(TenderLineItem.prototype, {
 
 		htmlContent += '</div><div class="col-4">';
 		htmlContent += '<input id="tli_amt_' + g_tenderIndex + '" type="hidden" value="' + this.amount.toFixed(2) + '"></input>';
-		htmlContent += '<h5><span>INR ' + this.amount.toFixed(2) + '</span></h5>';
+		htmlContent += '<h5><span>'+i18next.t('common_currency_sign_inr')+' ' + this.amount.toFixed(2) + '</span></h5>';
 		htmlContent += '</div><div class="col-2">';
 		htmlContent += '<button type="button" id="btnDeleteTLI"';
 		htmlContent += 'onClick="deleteTender(' + g_tenderIndex;
@@ -417,7 +414,7 @@ $.extend(TenderLineItem.prototype, {
 	validateTenderLineItem : function() {
 		var tenderEnteredAmt = +$('#dueAmt').val();
 		if ((!tenderEnteredAmt) || (tenderEnteredAmt == '') || (tenderEnteredAmt <= 0.00)) {
-			alert('The tendered amount should be more than 0.00');
+			alert(i18next.t('sale_txn_validate_amount_tender'));
 			$('#dueAmt').addClass("is-invalid");
 			$('#dueAmt').focus();
 			return false;

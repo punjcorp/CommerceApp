@@ -2,12 +2,22 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<script src="../../static/js/pdfjs/pdf.js"></script>
-<script src="../../static/js/pdfjs/pdf.worker.js"></script>
+<link rel="stylesheet" href="../../static/tmp/v4/css/bootstrap.min.css">
+<script src="../../static/tmp/v4/js/jquery.min.js"></script>
+<script src="../../static/tmp/v4/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/mousetrap.min.js"></script>
+<script>
+Mousetrap.bind('ctrl+6', function() { $('#2').html('<b>here we go</b>'); });
+</script>
 </head>
 <body>
 
-<embed src="../../static/test.pdf" width="500" height="375" type='application/pdf'>
+<div id="1" class="card" height="200px" width="200px"> av</div>
+<div id="2" class="card" height="200px" width="200px">fdgdf</div>
+<div id="3" class="card" height="200px" width="200px">wer</div>
+<div id="4" class="card" height="200px" width="200px">dfgdd</div>
+<div id="5" class="card" height="200px" width="200px">dfgfd</div>
+<div id="6" class="card" height="200px" width="200px">rrrr</div>
 
 </body>
 </html>

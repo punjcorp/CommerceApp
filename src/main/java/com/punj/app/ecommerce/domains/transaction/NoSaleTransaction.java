@@ -3,11 +3,16 @@ package com.punj.app.ecommerce.domains.transaction;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 
@@ -36,6 +41,10 @@ public class NoSaleTransaction implements Serializable {
 	private String modifiedBy;
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
+
+	@OneToMany(mappedBy = "noSaleId.txnId", cascade = CascadeType.ALL)
+	@IndexedEmbedded
+	private List<NoSaleTender> noSaleTenders;
 
 	/**
 	 * @return the transactionId
@@ -155,6 +164,21 @@ public class NoSaleTransaction implements Serializable {
 	 */
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	/**
+	 * @return the noSaleTenders
+	 */
+	public List<NoSaleTender> getNoSaleTenders() {
+		return noSaleTenders;
+	}
+
+	/**
+	 * @param noSaleTenders
+	 *            the noSaleTenders to set
+	 */
+	public void setNoSaleTenders(List<NoSaleTender> noSaleTenders) {
+		this.noSaleTenders = noSaleTenders;
 	}
 
 	/**
