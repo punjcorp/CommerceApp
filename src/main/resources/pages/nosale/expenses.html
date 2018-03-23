@@ -22,7 +22,7 @@
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<form id="expenseForm" novalidate="novalidate" action="#" th:action="@{/pos/expense}" th:object="${expenseBean}" method="post">
+			<form id="expenseForm" th:action="@{/pos/expense}" th:object="${expenseBean}" method="post">
 				<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 				<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 				<div class="row m-3">
@@ -44,8 +44,9 @@
 																</span>
 															</div></span>
 													</div>
-													<input type="text" th:field="*{expenseType}" class="form-control input-sm"></input>
-													<input type="hidden" th:field="*{expenseId}" class="form-control input-sm"></input>
+													<input type="text" th:field="*{expenseType}" class="form-control input-sm"></input> <input type="hidden" th:field="*{expenseId}"
+														class="form-control input-sm"></input>
+													<div id="expenseTypeMsg"></div>
 												</div>
 											</div>
 										</div>
@@ -65,6 +66,7 @@
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toPayeeName}" class="form-control input-sm"></input>
 												</div>
+												<div id="payeeNameMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
@@ -72,8 +74,8 @@
 												<label><small><span th:text="#{commerce.screen.expense.total.amount}">Total Amount</span></small></label>
 												<div class="input-group text-left">
 													<label><h3>
-															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="totalAmount"> 0.00</span>
-															<input type="hidden" th:field="*{expenseAmount}"></input>
+															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="totalAmount"> 0.00</span> <input type="hidden"
+																th:field="*{expenseAmount}"></input>
 														</h3></label>
 												</div>
 											</div>
@@ -86,8 +88,7 @@
 												<div class="input-group text-left">
 													<textarea rows="4" th:field="*{remarks}" class="form-control input-sm"></textarea>
 												</div>
-												<div id="remarksMsg">
-												</div>
+												<div id="remarksMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
@@ -109,7 +110,8 @@
 						<!-- Expense Tenders Section Starts -->
 						<div class="card">
 							<div class="card-body">
-								<div class="card-text">
+								<div class="card-text" id="tenderAreaCard">
+									<div id="tenderSelectionMsg"></div>
 									<div class="box-radio-parent text-center">
 										<th:block th:each="tenderBean,itrStat:${tenders}">
 											<input type="hidden" th:id="${tenderBean.tenderId+'tenderName'}" th:value="${tenderBean.name}"></input>
@@ -142,6 +144,7 @@
 													</div>
 													<input type="text" th:field="*{tenderAmount}" class="form-control input-sm text-right"></input>
 												</div>
+												<div id="tenderAmountMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
@@ -162,14 +165,16 @@
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toAccountNo}" class="form-control input-sm"></input>
 												</div>
+												<div id="accountNoMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="form-group d-none" id="payeePhoneDiv">
 												<label><small><span th:text="#{commerce.screen.expense.payee.phone}">Payee Phone</span></small></label>
 												<div class="input-group text-left">
-													<input type="text" th:field="*{toPayeePhone}" class="form-control input-sm"></input>
+													<input type="number" th:field="*{toPayeePhone}" class="form-control input-sm"></input>
 												</div>
+												<div id="phoneMsg"></div>
 											</div>
 										</div>
 									</div>
@@ -180,6 +185,7 @@
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toBankName}" class="form-control input-sm"></input>
 												</div>
+												<div id="bankMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
@@ -188,6 +194,7 @@
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toBankBranch}" class="form-control input-sm"></input>
 												</div>
+												<div id="branchMsg"></div>
 											</div>
 										</div>
 									</div>
@@ -198,6 +205,7 @@
 												<div class="input-group text-left">
 													<textarea rows="2" th:field="*{tenderDetails}" class="form-control input-sm"></textarea>
 												</div>
+												<div id="tenderDetailsMsg"></div>
 											</div>
 										</div>
 									</div>

@@ -103,7 +103,7 @@ $.extend(ExpenseHeader.prototype, {
 		
 		return totalAmount;
 	},
-	setExpenseDetails: function(locationId, registerId,businessDate,username,expenseId, expenseType,expenseAmount,remarks){
+	setExpenseDetails: function(locationId, registerId,businessDate,username,expenseId, expenseType,expenseAmount,remarks,startTime, endTime){
 		
 		this.locationId=locationId;
 		this.registerId=registerId;
@@ -111,8 +111,8 @@ $.extend(ExpenseHeader.prototype, {
 		this.username=username;
 		this.createdBy=username;
 
-		//this.startTime;
-		//this.endTime;
+		this.startTime=startTime;
+		this.endTime=endTime;
 		this.expenseId=expenseId;
 		this.expenseAmount = expenseAmount;
 		this.expenseType=expenseType;
