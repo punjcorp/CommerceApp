@@ -9,6 +9,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 USE `commercedb` ;
 
+
 -- -----------------------------------------------------
 -- Table `commercedb`.`repository_master`
 -- -----------------------------------------------------
@@ -28,7 +29,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`repository_master` (
   PRIMARY KEY (`repository_id`))
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `commercedb`.`location_repository`
 -- -----------------------------------------------------
@@ -44,8 +44,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`location_repository` (
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   PRIMARY KEY (`repository_id`, `location_id`, `tender_id`),
-  INDEX `fk_location_repository_location1_idx` (`location_id` ASC),
-  INDEX `fk_location_repository_tender_master1_idx` (`tender_id` ASC),
   CONSTRAINT `fk_location_repository_repository_master1`
     FOREIGN KEY (`repository_id`)
     REFERENCES `commercedb`.`repository_master` (`repository_id`)
@@ -175,6 +173,9 @@ CREATE INDEX `fk_txn_tender_control_txn_master1_idx` ON `commercedb`.`txn_tender
 CREATE INDEX `fk_txn_tender_control_location_repository1_idx` ON `commercedb`.`txn_tender_control` (`from_repository_id` ASC);
 
 CREATE INDEX `fk_txn_tender_control_location_repository2_idx` ON `commercedb`.`txn_tender_control` (`to_repository_id` ASC);
+
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

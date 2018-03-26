@@ -14,11 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.supplier.SupplierAddress;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
+import com.punj.app.ecommerce.domains.supplier.ids.SupplierAddressId;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.repositories.AddressRepository;
+import com.punj.app.ecommerce.repositories.supplier.SupplierAddressRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierSearchRepository;
 import com.punj.app.ecommerce.services.SupplierService;
@@ -35,12 +39,22 @@ public class SupplierServiceImpl implements SupplierService {
 	private SupplierRepository supplierRepository;
 	private SupplierSearchRepository supplierSearchRepository;
 	private AddressRepository addressRepository;
+	private SupplierAddressRepository supplierAddressRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @param supplierAddressRepository
+	 *            the supplierAddressRepository to set
+	 */
+	@Autowired
+	public void setSupplierAddressRepository(SupplierAddressRepository supplierAddressRepository) {
+		this.supplierAddressRepository = supplierAddressRepository;
+	}
 
 	/**
 	 * @param supplierRepository
@@ -72,7 +86,7 @@ public class SupplierServiceImpl implements SupplierService {
 	@Override
 	public Supplier createSupplier(Supplier supplier) {
 
-		supplier = supplierRepository.save(supplier);
+		supplier = this.supplierRepository.save(supplier);
 
 		logger.info("The supplier {} has been created successfully.", supplier.getSupplierId());
 		return supplier;
@@ -86,7 +100,7 @@ public class SupplierServiceImpl implements SupplierService {
 		for (Supplier supplier : suppliers) {
 			Integer supplierId = supplier.getSupplierId();
 			if (supplierId != null) {
-				actualSupplier = supplierRepository.findOne(supplierId);
+				actualSupplier = this.supplierRepository.findOne(supplierId);
 				actualSupplier.setName(supplier.getName());
 				actualSupplier.setPhone1(supplier.getPhone1());
 				actualSupplier.setPhone2(supplier.getPhone2());
@@ -96,7 +110,7 @@ public class SupplierServiceImpl implements SupplierService {
 				actualSupplier = supplier;
 			}
 
-			finalSuppliers.add(supplierRepository.save(actualSupplier));
+			finalSuppliers.add(this.supplierRepository.save(actualSupplier));
 			logger.info("The {} supplier has been updated", supplier.getSupplierId());
 		}
 		return finalSuppliers;
@@ -105,7 +119,7 @@ public class SupplierServiceImpl implements SupplierService {
 	@Override
 	public Supplier searchSupplier(Supplier supplier) {
 
-		supplier = supplierRepository.findOne(Example.of(supplier));
+		supplier = this.supplierRepository.findOne(Example.of(supplier));
 		logger.info("The retreived supplier successfully.");
 		return supplier;
 	}
@@ -113,30 +127,32 @@ public class SupplierServiceImpl implements SupplierService {
 	@Override
 	public List<Supplier> getAll() {
 
-		List<Supplier> suppliers = supplierRepository.findAll();
+		List<Supplier> suppliers = this.supplierRepository.findAll();
 		logger.info("All the suppliers retreived successfully.");
 		return suppliers;
 	}
 
 	@Override
+	@Transactional
 	public void delete(Integer supplierId) {
 
-		Supplier supplier = supplierRepository.findOne(supplierId);
+		Supplier supplier = this.supplierRepository.findOne(supplierId);
 
 		List<Address> addresses = supplier.getAddresses();
 		BigInteger addressId = null;
 		for (Address address : addresses) {
 			addressId = address.getAddressId();
-			addressRepository.delete(addressId);
+			this.addressRepository.delete(addressId);
 			logger.info("The provided supplier {} address {} has been deleted successfully", supplierId, addressId);
 		}
 
-		supplierRepository.delete(supplierId);
+		this.supplierRepository.delete(supplierId);
 		logger.info("The provided supplier {} has been deleted successfully", supplierId);
 
 	}
 
 	@Override
+	@Transactional
 	public void deleteSuppliers(Set<Integer> supplierIds) {
 
 		for (Integer supplierId : supplierIds) {
@@ -148,19 +164,25 @@ public class SupplierServiceImpl implements SupplierService {
 
 	}
 
-	public void deleteAddress(Address supplierAddress) {
-		addressRepository.delete(supplierAddress);
-		logger.info("The provided address has been deleted from supplier addresses");
+	public void deleteAddress(Address supplierAddress, Integer supplierId) {
+		SupplierAddressId supAddressId = new SupplierAddressId();
+		supAddressId.setSupplierId(supplierId);
+		supAddressId.setAddressId(supplierAddress.getAddressId());
+		
+		this.supplierAddressRepository.delete(supAddressId);
+		logger.info("The provided address supplier relationship has been deleted successfully");
+		this.addressRepository.delete(supplierAddress);
+		logger.info("The provided address has been deleted from address master table");
 	}
 
 	@Override
 	public SupplierDTO searchSupplier(String text, Pager pager) {
-		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage + 1;
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
 		pager.setPageSize(maxResultPerPage);
 		pager.setStartCount(startCount);
 		pager.setMaxDisplayPage(maxPageBtns);
 
-		SupplierDTO suppliers = supplierSearchRepository.search(text, pager);
+		SupplierDTO suppliers = this.supplierSearchRepository.search(text, pager);
 		logger.info("The suppliers has been retrieved based on searched keyword");
 		return suppliers;
 	}

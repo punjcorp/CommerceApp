@@ -31,6 +31,6 @@ public interface SupplierService {
 
 	public void deleteSuppliers(Set<Integer> supplierIds);
 
-	public void deleteAddress(Address supplierAddress);
+	public void deleteAddress(Address supplierAddress, Integer supplierId);
 
 }

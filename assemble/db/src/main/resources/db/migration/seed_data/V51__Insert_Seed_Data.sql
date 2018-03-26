@@ -22,13 +22,28 @@ INSERT INTO `commercedb`.`location` (`location_id`, `location_type`, `name`, `de
 commit;
 
 -- -----------------------------------------------------
+-- Seed data for reason_codes
+-- -----------------------------------------------------
+truncate `commercedb`.`reason_codes`;
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Electricity Bill', 'Bill', 'This is for electricity Bill', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Water Bill', 'Bill', 'This is for MC water bill', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Internet Bill', 'Bill', 'This is for Internet Bill', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Tea', 'Daily Use', 'This is for tea ', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Snacks', 'Daily Use', 'This is for snacks', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Lease Rent', 'Bill', 'This is rent for the room', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Payment', 'General Expense', 'this is payment for anything which will be described in remarks', 'admin', now());
+commit;
+
+-- -----------------------------------------------------
 -- Seed data for tender_master table
 -- -----------------------------------------------------
 truncate `commercedb`.`tender_master`;
 INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cash', 'CASH', 'This is the cash tender description', 'admin', now());
 INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit Card', 'CC', 'This is credit card tender', 'admin', now());
-INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paypal', 'Paypal', 'This is paypal online payment', 'admin', now());
-INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paytm', 'Paytm', 'This is PAYTM online payment', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paypal', 'PAYPAL', 'This is paypal online payment', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paytm', 'PAYTM', 'This is PAYTM online payment', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cheque', 'CHEQUE', 'This is bank account cheque', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Change', 'CHANGE', 'This is change for cash tender', 'admin', now());
 
 commit;
 
@@ -42,10 +57,14 @@ INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, 
 INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
 INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
 INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '5', '0', 'admin', now());
+INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '6', '0', 'admin', now());
+
 
 INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
 INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
 INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
+
 commit;
 
 

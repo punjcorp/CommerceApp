@@ -5,244 +5,160 @@
 <title th:text="#{commerce.screen.supplier.add}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
-
 </head>
 <body>
-
 	<div id="wrapper">
-
 		<!-- This thymeleaf fragment include left menu -->
 		<div th:include="common/menu:: leftMenu"></div>
-
 		<!-- Page Content -->
 		<div id="page-content-wrapper">
-
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
-
-
-
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<div class="container">
 				<div class="card">
 					<div class="card-header">
-						<h3 th:text="#{commerce.screen.supplier.add}">Add a Supplier</h3>
+						<h3 th:text="#{commerce.screen.supplier.edit}">Edit Supplier</h3>
 					</div>
 					<div class="card-body">
 						<div class="card-text">
-							<div th:if="${ success!=null}" th:text="${success}"
-								class="alert alert-success " role="alert"></div>
-							<div th:if="${ alert!=null}" th:text="${alert}"
-								class="alert alert-danger " role="alert"></div>
-
-							<form class="form" id="editForm" action="#"
-								th:action="@{/edit_supplier}" th:object="${supplierBean}"
-								method="post">
+							<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+							<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+							<div id="supplierActions" class="col-12 p-4" th:if="${ success!=null}">
+								<a th:href="@{/admin/edit_supplier(supplierId=${supplierBean.supplierId})}" class="btn btn-sm btn-info"><i class="fas fa-user fa-2x mx-2"></i><span
+									th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_supplier}" class="btn btn-sm btn-success"><i
+									class="fas fa-user-plus fa-2x mx-2"></i><span th:text="#{commerce.home.menu.add.supplier}"></span></a> <a th:href="@{/admin/manage_supplier}"
+									class="btn btn-sm btn-success"><i class="fas fa-users fa-2x mx-2"></i><span th:text="#{commerce.home.menu.manage.supplier}"></span></a>
+							</div>
+							<form class="form" id="editForm" action="#" th:action="@{/admin/edit_supplier}" th:object="${supplierBean}" method="post">
 								<div class="form-group text-left">
-									<input type="hidden" th:field="*{supplierId}"></input> <label
-										th:text="#{commerce.screen.supplier.id}">Supplier Id</label> <span
+									<input type="hidden" th:field="*{supplierId}"></input> <label th:text="#{commerce.screen.supplier.id}">Supplier Id</label> <span
 										th:text="${supplierBean.supplierId}">#</span>
 								</div>
-
 								<div class="form-group text-left">
-									<input type="text" th:field="*{name}"
-										class="form-control input-sm "
-										th:placeholder="#{commerce.screen.supplier.name}"
-										maxlength="80"></input>
-									<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
-										class="text-danger">Name Error</div>
+									<input type="text" th:field="*{name}" class="form-control input-sm " th:placeholder="#{commerce.screen.supplier.name}" maxlength="80"></input>
+									<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-6 col-sm-6 col-md-6">
 										<div class="form-group  text-left">
-											<input type="text" th:field="*{phone1}"
-												class="form-control input-sm"
-												th:placeholder="#{commerce.screen.supplier.phone1}"
-												maxlength="10"></input>
-											<div th:if="${#fields.hasErrors('phone1')}"
-												th:errors="*{phone1}" class="text-danger">Phone 1
-												Error</div>
+											<input type="text" th:field="*{phone1}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.phone1}" maxlength="10"></input>
+											<div th:if="${#fields.hasErrors('phone1')}" th:errors="*{phone1}" class="text-danger">Phone 1 Error</div>
 										</div>
 									</div>
 									<div class="col-xs-6 col-sm-6 col-md-6">
 										<div class="form-group  text-left">
-											<input type="text" th:field="*{phone2}"
-												class="form-control input-sm"
-												th:placeholder="#{commerce.screen.supplier.phone2}"
-												maxlength="10"></input>
-											<div th:if="${#fields.hasErrors('phone2')}"
-												th:errors="*{phone2}" class="text-danger">Phone 2
-												Error</div>
+											<input type="text" th:field="*{phone2}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.phone2}" maxlength="10"></input>
+											<div th:if="${#fields.hasErrors('phone2')}" th:errors="*{phone2}" class="text-danger">Phone 2 Error</div>
 										</div>
 									</div>
 								</div>
 								<div class="form-group  text-left">
-									<input type="text" th:field="*{email}"
-										class="form-control input-sm"
-										th:placeholder="#{commerce.screen.supplier.email}"
-										maxlength="80"></input>
-									<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
-										class="text-danger">Email Error</div>
+									<input type="text" th:field="*{email}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.email}" maxlength="80"></input>
+									<div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Error</div>
 								</div>
-								<th:block th:each="address,itrStat:${supplierBean.addresses}">
-									<div class="row">
-										<div class="col-12" th:id="'addressOrg'+${itrStat.index}">
-											<div class="address form-group">
+								<div class="address form-group">
+									<th:block th:each="address,itrStat:${supplierBean.addresses}">
+										<div class="row">
+											<div class="col-12" th:id="'addressOrg'+${itrStat.index}">
 												<div class="form-group">
-													<input type="hidden"
-														th:field="${supplierBean.addresses[__${itrStat.index}__].addressId}"
-														class="form-control input-sm"></input> <input type="text"
-														th:field="${supplierBean.addresses[__${itrStat.index}__].address1}"
-														class="form-control input-sm"
-														th:placeholder="#{commerce.screen.address.line1}"
-														maxlength="150"></input>
-													<div
-														th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].address1')}"
-														th:errors="${supplierBean.addresses[__${itrStat.index}__].address1}"
-														class="text-danger">Address Line 1 Error</div>
+													<input type="hidden" th:field="${supplierBean.addresses[__${itrStat.index}__].addressId}" class="form-control input-sm"></input> <input
+														type="text" th:field="${supplierBean.addresses[__${itrStat.index}__].address1}" class="form-control input-sm"
+														th:placeholder="#{commerce.screen.address.line1}" maxlength="150"></input>
+													<div th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].address1')}"
+														th:errors="${supplierBean.addresses[__${itrStat.index}__].address1}" class="text-danger">Address Line 1 Error</div>
 												</div>
 												<div class="form-group">
-													<input type="text"
-														th:field="${supplierBean.addresses[__${itrStat.index}__].address2}"
-														class="form-control input-sm"
-														th:placeholder="#{commerce.screen.address.line2}"
-														maxlength="150"></input>
-													<div
-														th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].address2')}"
-														th:errors="${supplierBean.addresses[__${itrStat.index}__].address2}"
-														class="text-danger">Address Line 2 Error</div>
+													<input type="text" th:field="${supplierBean.addresses[__${itrStat.index}__].address2}" class="form-control input-sm"
+														th:placeholder="#{commerce.screen.address.line2}" maxlength="150"></input>
+													<div th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].address2')}"
+														th:errors="${supplierBean.addresses[__${itrStat.index}__].address2}" class="text-danger">Address Line 2 Error</div>
 												</div>
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text"
-																th:field="${supplierBean.addresses[__${itrStat.index}__].city}"
-																class="form-control input-sm"
-																th:placeholder="#{commerce.screen.address.city}"
-																maxlength="30"></input>
-															<div
-																th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].city')}"
-																th:errors="${supplierBean.addresses[__${itrStat.index}__].city}"
-																class="text-danger">City Error</div>
+															<input type="text" th:field="${supplierBean.addresses[__${itrStat.index}__].city}" class="form-control input-sm"
+																th:placeholder="#{commerce.screen.address.city}" maxlength="30"></input>
+															<div th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].city')}"
+																th:errors="${supplierBean.addresses[__${itrStat.index}__].city}" class="text-danger">City Error</div>
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text"
-																th:field="${supplierBean.addresses[__${itrStat.index}__].state}"
-																class="form-control input-sm"
-																th:placeholder="#{commerce.screen.address.state}"
-																maxlength="45"></input>
-															<div
-																th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].state')}"
-																th:errors="${supplierBean.addresses[__${itrStat.index}__].state}"
-																class="text-danger">State Error</div>
+															<input type="text" th:field="${supplierBean.addresses[__${itrStat.index}__].state}" class="form-control input-sm"
+																th:placeholder="#{commerce.screen.address.state}" maxlength="45"></input>
+															<div th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].state')}"
+																th:errors="${supplierBean.addresses[__${itrStat.index}__].state}" class="text-danger">State Error</div>
 														</div>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text"
-																th:field="${supplierBean.addresses[__${itrStat.index}__].country}"
-																class="form-control input-sm"
-																th:placeholder="#{commerce.screen.address.country}"
-																maxlength="45"></input>
-															<div
-																th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].country')}"
-																th:errors="${supplierBean.addresses[__${itrStat.index}__].country}"
-																class="text-danger">Country Error</div>
+															<input type="text" th:field="${supplierBean.addresses[__${itrStat.index}__].country}" class="form-control input-sm"
+																th:placeholder="#{commerce.screen.address.country}" maxlength="45"></input>
+															<div th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].country')}"
+																th:errors="${supplierBean.addresses[__${itrStat.index}__].country}" class="text-danger">Country Error</div>
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text"
-																th:field="${supplierBean.addresses[__${itrStat.index}__].pincode}"
-																class="form-control input-sm"
-																th:placeholder="#{commerce.screen.address.pincode}"
-																maxlength="6"></input>
-															<div
-																th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].pincode')}"
-																th:errors="${supplierBean.addresses[__${itrStat.index}__].pincode}"
-																class="text-danger">Pincode Error</div>
-
+															<input type="text" th:field="${supplierBean.addresses[__${itrStat.index}__].pincode}" class="form-control input-sm"
+																th:placeholder="#{commerce.screen.address.pincode}" maxlength="6"></input>
+															<div th:if="${#fields.hasErrors('addresses[__${itrStat.index}__].pincode')}"
+																th:errors="${supplierBean.addresses[__${itrStat.index}__].pincode}" class="text-danger">Pincode Error</div>
 														</div>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<select
-																th:field="${supplierBean.addresses[__${itrStat.index}__].addressType}"
-																class="form-control input-sm"
+															<select th:field="${supplierBean.addresses[__${itrStat.index}__].addressType}" class="form-control input-sm"
 																th:placeholder="#{commerce.screen.address.type}">
-																<option th:value="Home"
-																	th:text="#{commerce.screen.address.home}"></option>
-																<option th:value="Work"
-																	th:text="#{commerce.screen.address.work}"></option>
-																<option th:value="Warehouse"
-																	th:text="#{commerce.screen.address.warehouse}"></option>
+																<option th:value="Home" th:text="#{commerce.screen.address.home}"></option>
+																<option th:value="Work" th:text="#{commerce.screen.address.work}"></option>
+																<option th:value="Warehouse" th:text="#{commerce.screen.address.warehouse}"></option>
 															</select>
 														</div>
 													</div>
-													<div class="col-xs-6 col-sm-6 col-md-6"
-														th:if="${itrStat.size > 1}">
+													<div class="col-xs-6 col-sm-6 col-md-6" th:if="${itrStat.size > 1}">
 														<div class="form-group">
-															<!--<input type="hidden" name="id" th:value="${itrStat.index}"></input>-->
-															<input type="button"
-																th:onclick="'deleteAddress(\'/edit_supplier?removeSupplierAddress=&amp;id='+ ${itrStat.index} +'\')'"
-																class="btn btn-secondary btn-sm"
-																th:value="#{commerce.screen.btn.address.delete}"></input>
-															<!-- <a class="btn btn-secondary btn-sm" th:href="@{/delete_supplier_address(id=${itrStat.index})}">Delete</a> -->
+															<input type="button" th:onclick="'deleteAddress(\'/admin/edit_supplier?removeSupplierAddress=&amp;id='+ ${itrStat.index} +'\')'"
+																class="btn btn-secondary btn-sm" th:value="#{commerce.screen.btn.address.delete}"></input>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</th:block>
+									</th:block>
+								</div>
 								<div class="row">
 									<div class="col-12" id="addressClone"></div>
 								</div>
-
-
-
-								<div class="row">
-									<div class="col-xs-3 col-sm-3 col-md-3">
+								<div class="row" th:if="${success==null}">
+									<div class="col-xs-6 col-sm-6 col-md-6">
 										<div class="form-group">
-											<input type="submit" name="saveSupplier" value="Save"
-												th:value="#{commerce.screen.btn.submit.save}"
-												class="form-control btn btn-info btn-block"></input>
+											<div class="input-group">
+												<input type="submit" name="saveSupplier" value="Save" th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info mr-3"></input> <a
+													th:href="@{/admin/add_supplier}" class="btn btn-sm btn-success mr-3"><i class="fas fa-user fa-2x mx-2"></i><span
+													th:text="#{commerce.screen.supplier.btn.new.supplier}"></span></a> <a th:href="@{/admin/manage_supplier}" class="btn btn-sm btn-success mr-3"><i
+													class="fas fa-users fa-2x mx-2"></i><span th:text="#{commerce.home.menu.manage.supplier}"></span></a>
+												<button type="submit" name="addSupplierAddress" class="btn btn-secondary">
+													<i class="fas fa-address-card fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.address.add}"></span>
+												</button>
+											</div>
 										</div>
-									</div>
-									<div class="col-xs-3 col-sm-3 col-md-3">
-										<div class="form-group">
-											<input type="submit" name="addSupplierAddress"
-												class="btn btn-secondary"
-												th:value="#{commerce.screen.btn.address.add}"></input>
-											<!-- <a class="btn btn-secondary btn-sm" th:href="@{/add_supplier_address}"> <span th:text="#{commerce.screen.btn.address.add}"></span></a> -->
-
-										</div>
-
 									</div>
 								</div>
 							</form>
 						</div>
 					</div>
-
 				</div>
-
 			</div>
-
-
 		</div>
 		<!-- /#page-content-wrapper -->
-
 	</div>
 	<!-- /#wrapper -->
-
-
-
 	<script>
 		function deleteAddress(addressId) {
 
@@ -251,7 +167,5 @@
 			$('#editForm').submit();
 		}
 	</script>
-
-
 </body>
 </html>

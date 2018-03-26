@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
 import com.punj.app.ecommerce.domains.transaction.tender.ids.TenderCountId;
@@ -33,34 +34,32 @@ public class TenderCountDTOConverter {
 		throw new IllegalStateException("TenderCountDTOConverter class");
 	}
 
-	public static List<TenderCount> transformTenderList(List<TenderDTO> tenderDTOs, TransactionIdDTO txnIdDTO, String username) {
+	public static List<TenderCount> transformTenderList(List<TenderDTO> tenderDTOs, TransactionId txnId, String username) {
 		List<TenderCount> tenders = new ArrayList<>(tenderDTOs.size());
 		TenderCount tender;
 		for (TenderDTO tenderDTO : tenderDTOs) {
-			tender = TenderCountDTOConverter.transformTenderDTO(tenderDTO, txnIdDTO, username);
+			tender = TenderCountDTOConverter.transformTenderDTO(tenderDTO, txnId, username);
 			tenders.add(tender);
 		}
 		logger.info("The tender detail list has been transformed successfully");
 		return tenders;
 	}
 
-	private static TenderCount transformTenderDTO(TenderDTO tenderDTO, TransactionIdDTO txnIdDTO, String username) {
+	private static TenderCount transformTenderDTO(TenderDTO tenderDTO, TransactionId txnId, String username) {
 		TenderCount tenderCount = new TenderCount();
 
 		TenderCountId tenderCountId = new TenderCountId();
-		tenderCountId.setLocationId(txnIdDTO.getLocationId());
-		tenderCountId.setBusinessDate(txnIdDTO.getBusinessDate());
-		tenderCountId.setRegister(txnIdDTO.getRegister());
-		tenderCountId.setTransactionSeq(txnIdDTO.getTxnNo());
+		tenderCountId.setLocationId(txnId.getLocationId());
+		tenderCountId.setBusinessDate(txnId.getBusinessDate());
+		tenderCountId.setRegister(txnId.getRegister());
+		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
 		tenderCountId.setTenderId(tenderDTO.getTenderId());
 
 		tenderCount.setTenderCountId(tenderCountId);
-/*		BigDecimal amount = tenderDTO.getAmount();
-		BigInteger mediaCount = tenderDTO.getMediaCount();
-*/		
+
 		BigDecimal amount = new BigDecimal("1");
 		BigInteger mediaCount = new BigInteger("1");
-		
+
 		tenderCount.setTxnType(ServiceConstants.TXN_OPEN_STORE);
 		tenderCount.setAmount(amount);
 		tenderCount.setMediaCount(mediaCount);
@@ -100,7 +99,7 @@ public class TenderCountDTOConverter {
 
 		denomination.setCreatedBy(username);
 		denomination.setCreatedDate(LocalDateTime.now());
-		
+
 		logger.info("The denomination details from DTO has been transformed successfully");
 		return denomination;
 	}

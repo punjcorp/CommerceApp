@@ -84,8 +84,8 @@
 					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#supplier"  id="suppliermenu"
 						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.supplier}">Supplier</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="managesupplier" th:href="@{/manage_supplier}"><span th:text="#{commerce.home.menu.manage.supplier}">Manage Supplier</span></a></li>
-							<li><a id="addsupplier" th:href="@{/add_supplier}"><span th:text="#{commerce.home.menu.add.supplier}">Add New Supplier</span></a></li>
+							<li><a id="managesupplier" th:href="@{/admin/manage_supplier}"><span th:text="#{commerce.home.menu.manage.supplier}">Manage Supplier</span></a></li>
+							<li><a id="addsupplier" th:href="@{/admin/add_supplier}"><span th:text="#{commerce.home.menu.add.supplier}">Add New Supplier</span></a></li>
 						</ul></li>
 					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#style"  id="stylemenu"
 						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.style}">Style</span></a>

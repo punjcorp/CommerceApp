@@ -114,6 +114,20 @@ ENGINE = InnoDB;
 CREATE INDEX `fk_tender_master_tender_master1_idx` ON `commercedb`.`tender_master` (`sub_tender_id` ASC);
 
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`reason_codes`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`reason_codes` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`reason_codes` (
+  `reason_code_id` INT NOT NULL AUTO_INCREMENT,
+  `reason_name` VARCHAR(100) NOT NULL,
+  `type` VARCHAR(50) NOT NULL,
+  `description` VARCHAR(150) NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`reason_code_id`))
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

@@ -32,7 +32,9 @@ public class ExpenseBean {
 	private String createdBy;
 	private LocalDateTime createdDate;
 
+	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
 	private LocalDateTime startTime;
+	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
 	private LocalDateTime endTime;
 
 	private String uniqueTxnNo;

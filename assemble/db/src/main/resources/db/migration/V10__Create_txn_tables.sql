@@ -61,18 +61,14 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_master` (
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
-  INDEX `fk_txn_master_register_master1` (`location_id` ASC, `register` ASC),
   CONSTRAINT `fk_txn_master_register_master1`
-    FOREIGN KEY (`location_id`, `register`)
-    REFERENCES `commercedb`.`register_master` (`location_id`, `register_id`)
+    FOREIGN KEY (`location_id` , `register`)
+    REFERENCES `commercedb`.`register_master` (`location_id` , `register_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_txn_master_register_master1_idx` ON `commercedb`.`txn_master` (`register` ASC, `location_id` ASC);
-
-
-
+CREATE INDEX `fk_txn_master_register_master1_idx` ON `commercedb`.`txn_master` (`location_id` ASC, `register` ASC);
 
 
 -- -----------------------------------------------------
@@ -122,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_item` (
   `qty` INT(5) NOT NULL,
   `gross_qty` INT(5) NOT NULL,
   `unit_price` DECIMAL(12,2) NOT NULL,
-  `discount_amount` DECIMAL(12,2) NOT NULL,  
+  `discount_amount` DECIMAL(12,2) NOT NULL,
   `extended_amount` DECIMAL(12,2) NOT NULL,
   `tax_amount` DECIMAL(12,2) NOT NULL,
   `return_flag` TINYINT NOT NULL,
@@ -130,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_item` (
   `net_amount` DECIMAL(12,2) NULL,
   `gross_amount` DECIMAL(12,2) NULL,
   `returned_qty` INT(5) NULL,
-  `upc_no` BIGINT NULL,
+  `upc_no` VARCHAR(20) NULL,
   `txn_type` VARCHAR(20) NULL,
   `inv_action_code` VARCHAR(20) NULL,
   `org_location_id` INT(4) NULL,
@@ -313,6 +309,34 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_tender` (
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_txn_li_tender_txn_line_item_master1_idx` ON `commercedb`.`txn_li_tender` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC, `seq_no` ASC);
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`txn_no_sale_tender`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`txn_no_sale_tender` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`txn_no_sale_tender` (
+  `location_id` INT(4) NOT NULL,
+  `business_date` DATETIME NOT NULL,
+  `register` INT(3) NOT NULL,
+  `txn_no` INT(5) NOT NULL,
+  `amount` DECIMAL(12,2) NOT NULL,
+  `tender_id` INT NOT NULL,
+  `to_account_no` VARCHAR(100) NULL,
+  `to_bank_name` VARCHAR(100) NULL,
+  `to_bank_branch` VARCHAR(100) NULL,
+  `to_payee_name` VARCHAR(100) NULL,
+  `to_payee_phone` VARCHAR(20) NULL,
+  `to_details` VARCHAR(100) NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`, `created_date`),
+  CONSTRAINT `fk_txn_no_sale_tender_txn_no_sale1`
+    FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
+    REFERENCES `commercedb`.`txn_no_sale` (`location_id` , `business_date` , `register` , `txn_no`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 

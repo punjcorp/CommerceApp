@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
@@ -34,6 +37,7 @@ import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBeanDTO;
 import com.punj.app.ecommerce.services.SupplierService;
@@ -93,25 +97,24 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_SUPPLIER_URL, params = { MVCConstants.REMOVE_SUPPLIER_ADDRESS_PARAM })
-	public String removeRow(@ModelAttribute SupplierBean supplierBean, Model model, final BindingResult bindingResult,
-			final HttpServletRequest req) {
+	public String removeRow(@ModelAttribute SupplierBean supplierBean, Model model, final BindingResult bindingResult, final HttpServletRequest req) {
 		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.ID_PARAM));
 		supplierBean.getAddresses().remove(rowId.intValue());
 		return ViewPathConstants.ADD_SUPPLIER_PAGE;
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIER_PARAM })
-	public String saveSupplier(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult,
-			Model model, HttpSession session, Locale locale) {
+	public String saveSupplier(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult, Model model, HttpSession session, Locale locale) {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.ADD_SUPPLIER_PAGE;
 		try {
 			Supplier supplier = new Supplier();
 			this.updateDomain(supplierBean, supplier);
 
-			supplier = supplierService.createSupplier(supplier);
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.supplier.add.success",
-					new Object[] { supplier.getSupplierId() }, locale));
+			supplier = this.supplierService.createSupplier(supplier);
+			supplierBean.setSupplierId(supplier.getSupplierId());
+			model.addAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.supplier.add.success", new Object[] { supplier.getSupplierId() }, locale));
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The supplier details has been created successfully.");
 		} catch (Exception e) {
@@ -122,8 +125,7 @@ public class ManageSupplierController {
 	}
 
 	/**
-	 * This method is used to set the Domain objects so that the data can be
-	 * persisted to the database
+	 * This method is used to set the Domain objects so that the data can be persisted to the database
 	 * 
 	 * @param supplierBean
 	 * @param supplier
@@ -137,7 +139,6 @@ public class ManageSupplierController {
 		supplier.setPhone2(supplierBean.getPhone2());
 
 		List<AddressBean> addresses = supplierBean.getAddresses();
-
 
 		List<Address> supplierAddressList = new ArrayList<>();
 		Address address = null;
@@ -164,29 +165,32 @@ public class ManageSupplierController {
 	}
 
 	@GetMapping(value = ViewPathConstants.MANAGE_SUPPLIER_URL)
-	public String manageSupplier(Model model, HttpSession session) {
-		logger.info("The add method for new supplier has been called");
-		try {
-
-			SupplierBean supplierBean = new SupplierBean();
-			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
-
-			List<Supplier> supplierList = supplierService.getAll();
-			SupplierBeanDTO suppliers = new SupplierBeanDTO();
-
-			this.setSupplierList(supplierList, suppliers);
-
-			 model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
-
-			logger.info("The empty supplier object bean has been created");
-		} catch (Exception e) {
-			logger.error("An unknown error has occurred while retrieving all the suppliers.", e);
-			return ViewPathConstants.ERROR_PAGE;
-		}
-
+	public String manageSupplier(Model model, HttpSession session, final HttpServletRequest req) {
+		logger.info("The manage supplier method for supplier management has been called.");
+		model.addAttribute("searchBean", new SearchBean());
 		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 
 	}
+
+	/*
+	 * @GetMapping(value = ViewPathConstants.MANAGE_SUPPLIER_URL) public String manageSupplier(Model model, HttpSession session, final HttpServletRequest
+	 * req) { logger.info("The manage supplier method for supplier management has been called."); try {
+	 * 
+	 * SupplierBean supplierBean = new SupplierBean(); model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
+	 * 
+	 * List<Supplier> supplierList = this.supplierService.getAll(); SupplierBeanDTO suppliers = new SupplierBeanDTO();
+	 * 
+	 * this.setSupplierList(supplierList, suppliers);
+	 * 
+	 * model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
+	 * 
+	 * logger.info("The empty supplier object bean has been created"); } catch (Exception e) {
+	 * logger.error("An unknown error has occurred while retrieving all the suppliers.", e); return ViewPathConstants.ERROR_PAGE; }
+	 * 
+	 * return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
+	 * 
+	 * }
+	 */
 
 	private void setSupplierList(List<Supplier> supplierList, SupplierBeanDTO suppliers) {
 
@@ -201,21 +205,61 @@ public class ManageSupplierController {
 		logger.info("The supplier details has been added to the DTO object");
 	}
 
-	@PostMapping(ViewPathConstants.SEARCH_SUPPLIER_URL)
-	public String searchSupplier(@ModelAttribute SupplierBean supplierBean,
+	@PostMapping(ViewPathConstants.MANAGE_SUPPLIER_URL)
+	public String searchSupplierDetails(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
 			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
+		if (bindingResult.hasErrors() && !model.containsAttribute(MVCConstants.SUCCESS)) {
+			return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
+		}
+		try {
+			if (!model.containsAttribute(MVCConstants.SUCCESS)) {
+
+				Pager pager = new Pager();
+				if (!page.isPresent()) {
+					pager.setCurrentPageNo(1);
+				} else {
+					pager.setCurrentPageNo(page.get());
+				}
+
+				SupplierDTO supplierList = this.supplierService.searchSupplier(searchBean.getSearchText(), pager);
+				List<Supplier> suppliersList = supplierList.getSuppliers();
+
+				SupplierBeanDTO suppliers = new SupplierBeanDTO();
+
+				this.setSupplierList(suppliersList, suppliers);
+
+				Pager tmpPager = supplierList.getPager();
+				pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+						ViewPathConstants.SEARCH_SUPPLIER_URL);
+
+				model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
+				model.addAttribute(MVCConstants.PAGER, pager);
+				model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} supplier record has been retrieved");
+				logger.info("The supplier details has been retrieved successfully.");
+			} else {
+				model.addAttribute("org.springframework.validation.BindingResult.searchBean", null);
+			}
+			model.addAttribute(MVCConstants.SUPPLIER_BEAN, searchBean);
+		} catch (Exception e) {
+			model.addAttribute(MVCConstants.ALERT, "There is some error while retrieving suppliers");
+			logger.error("There is an error while searching for suppliers", e);
+		}
+		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
+	}
+
+	@PostMapping(ViewPathConstants.SEARCH_SUPPLIER_URL)
+	public String searchSupplier(@ModelAttribute SupplierBean supplierBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
+			HttpSession session) {
 		try {
 
 			Pager pager = new Pager();
-			if ( !page.isPresent()) {
+			if (!page.isPresent()) {
 				pager.setCurrentPageNo(1);
-			}else {
+			} else {
 				pager.setCurrentPageNo(page.get());
 			}
-			
-			
 
-			SupplierDTO supplierList = supplierService.searchSupplier(supplierBean.getName(), pager);
+			SupplierDTO supplierList = this.supplierService.searchSupplier(supplierBean.getName(), pager);
 			List<Supplier> suppliersList = supplierList.getSuppliers();
 
 			SupplierBeanDTO suppliers = new SupplierBeanDTO();
@@ -223,10 +267,10 @@ public class ManageSupplierController {
 			this.setSupplierList(suppliersList, suppliers);
 
 			Pager tmpPager = supplierList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(),ViewPathConstants.SEARCH_SUPPLIER_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.SEARCH_SUPPLIER_URL);
 
-			 model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
+			model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			model.addAttribute(MVCConstants.PAGER, pager);
 			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} supplier record has been retrieved");
@@ -239,8 +283,7 @@ public class ManageSupplierController {
 	}
 
 	/**
-	 * This method is used to set the details of retrieved suppliers to Bean object
-	 * so the details can be displayed on the screen
+	 * This method is used to set the details of retrieved suppliers to Bean object so the details can be displayed on the screen
 	 * 
 	 * @param supplierBean
 	 * @param supplier
@@ -290,7 +333,7 @@ public class ManageSupplierController {
 			Supplier supplier = new Supplier();
 			supplier.setSupplierId(supplierId);
 
-			supplier = supplierService.searchSupplier(supplier);
+			supplier = this.supplierService.searchSupplier(supplier);
 			logger.info("The requested supplier details retrieved successfully");
 
 			this.updateBean(supplierBean, supplier);
@@ -305,8 +348,7 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.ADD_SUPPLIER_ADDRESS_PARAM })
-	public String addRowForEdit(@ModelAttribute SupplierBean supplierBean, Model model,
-			final BindingResult bindingResult) {
+	public String addRowForEdit(@ModelAttribute SupplierBean supplierBean, Model model, final BindingResult bindingResult) {
 		supplierBean.getAddresses().add(new AddressBean());
 		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 		logger.info("A new address during for Supplier Edit screen has been added.");
@@ -314,15 +356,14 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.REMOVE_SUPPLIER_ADDRESS_PARAM })
-	public String removeRowForEdit(@ModelAttribute SupplierBean supplierBean, Model model,
-			final BindingResult bindingResult, final HttpServletRequest req) {
+	public String removeRowForEdit(@ModelAttribute SupplierBean supplierBean, Model model, final BindingResult bindingResult, final HttpServletRequest req) {
 		final Integer rowId = Integer.valueOf(req.getParameter(MVCConstants.ID_PARAM));
 
 		AddressBean addressBean = supplierBean.getAddresses().get(rowId);
 		Address supplierAddress = new Address();
 		this.updateSupplierAddressDomain(supplierBean.getSupplierId(), addressBean, supplierAddress);
 
-		supplierService.deleteAddress(supplierAddress);
+		this.supplierService.deleteAddress(supplierAddress, supplierBean.getSupplierId());
 		logger.info("The selected address for supplier has been deleted.");
 
 		supplierBean.getAddresses().remove(rowId.intValue());
@@ -340,17 +381,17 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIER_PARAM })
-	public String saveSupplierAfterEdit(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult,
-			Model model, HttpSession session, Locale locale) {
+	public String saveSupplierAfterEdit(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult, Model model, HttpSession session,
+			Locale locale) {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 		try {
 			Supplier supplier = new Supplier();
 			this.updateDomain(supplierBean, supplier);
 
-			supplier = supplierService.createSupplier(supplier);
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.supplier.add.success",
-					new Object[] { supplier.getSupplierId() }, locale));
+			supplier = this.supplierService.createSupplier(supplier);
+			model.addAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.supplier.add.success", new Object[] { supplier.getSupplierId(), supplier.getName() }, locale));
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The supplier details has been saved after edit successfully.");
 		} catch (Exception e) {
@@ -361,65 +402,73 @@ public class ManageSupplierController {
 	}
 
 	@GetMapping(ViewPathConstants.DELETE_SUPPLIER_URL)
-	public String deleteSupplier(Model model, HttpSession session, final HttpServletRequest req) {
+	public String deleteSupplier(Model model, HttpSession session, RedirectAttributes redirectAttrs, final HttpServletRequest req, Locale locale) {
 		try {
 			Integer supplierId = Integer.valueOf(req.getParameter(MVCConstants.SUPPLIER_ID_PARAM));
 
-			supplierService.delete(supplierId);
+			this.supplierService.delete(supplierId);
+
+			redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.supplier.delete.success", new Object[] { supplierId }, locale));
+			req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 
 			logger.info("The requested supplier for deletion has been deleted successfully");
 		} catch (Exception e) {
+			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.delete.failure", null, locale));
 			logger.error("There is an error while deleteing supplier", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
-		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_SUPPLIER_URL;
 	}
 
 	@PostMapping(value = ViewPathConstants.BULK_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIERS_PARAM })
-	public String saveSuppliers(@ModelAttribute SupplierBeanDTO suppliers, Model model, HttpSession session) {
+	public String saveSuppliers(@ModelAttribute SupplierBeanDTO suppliers, RedirectAttributes redirectAttrs, final HttpServletRequest req, Model model,
+			Locale locale) {
 		try {
+			if (suppliers != null) {
+				List<SupplierBean> supplierBeans = suppliers.getSuppliers();
+				List<String> supplierIds = suppliers.getSupplierIds();
+				Map<Integer, Integer> idIndex = new HashMap<>(supplierIds.size());
+				this.getSelectedIds(supplierIds, idIndex);
+				List<SupplierBean> finalSupplierBeans = new ArrayList<>(idIndex.size());
+				Set<Integer> ids = idIndex.keySet();
+				Integer index = null;
+				SupplierBean tmpSupplierBean = null;
+				for (Integer id : ids) {
+					index = idIndex.get(id);
+					tmpSupplierBean = supplierBeans.get(index);
+					tmpSupplierBean.setSupplierId(id);
+					finalSupplierBeans.add(tmpSupplierBean);
+				}
+				logger.info("The modified list of suppliers has been updated in beans");
 
-			List<SupplierBean> supplierBeans = suppliers.getSuppliers();
+				List<Supplier> supplierList = new ArrayList<>(finalSupplierBeans.size());
+				Supplier supplier = null;
+				for (SupplierBean supplierBean : finalSupplierBeans) {
+					supplier = new Supplier();
+					this.updateDomain(supplierBean, supplier);
+					supplierList.add(supplier);
+				}
+				logger.info("The supplier details has been updated in Domain objects");
 
-			List<String> supplierIds = suppliers.getSupplierIds();
-			Map<Integer, Integer> idIndex = new HashMap<>(supplierIds.size());
-
-			this.getSelectedIds(supplierIds, idIndex);
-
-			List<SupplierBean> finalSupplierBeans = new ArrayList<>(idIndex.size());
-
-			Set<Integer> ids = idIndex.keySet();
-			Integer index = null;
-			SupplierBean tmpSupplierBean = null;
-			for (Integer id : ids) {
-				index = idIndex.get(id);
-				tmpSupplierBean = supplierBeans.get(index);
-				tmpSupplierBean.setSupplierId(id);
-				finalSupplierBeans.add(tmpSupplierBean);
+				supplierService.updateSupplier(supplierList);
+				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.supplier.save.all.success", null, locale));
+				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				logger.info("The selected suppliers basic details has been updated successfully.");
+			} else {
+				logger.info("There was some error while saving bulk Supplier details.");
+				redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.save.all.failure", null, locale));
 			}
-			logger.info("The modified list of suppliers has been updated in beans");
 
-			List<Supplier> supplierList = new ArrayList<>(finalSupplierBeans.size());
-			Supplier supplier = null;
-			for (SupplierBean supplierBean : finalSupplierBeans) {
-				supplier = new Supplier();
-				this.updateDomain(supplierBean, supplier);
-				supplierList.add(supplier);
-			}
-			logger.info("The supplier details has been updated in Domain objects");
-
-			supplierService.updateSupplier(supplierList);
-			model.addAttribute(MVCConstants.SUCCESS, "The selected suppliers basic details has been updated");
-			logger.info("The selected suppliers basic details has been updated successfully.");
 		} catch (Exception e) {
+			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.save.all.failure", null, locale));
 			logger.error("There is an error while updating supplier basic details", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
-		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_SUPPLIER_URL;
 	}
 
 	@PostMapping(value = ViewPathConstants.BULK_SUPPLIER_URL, params = { MVCConstants.DELETE_SUPPLIERS_PARAM })
-	public String deleteSuppliers(@ModelAttribute SupplierBeanDTO suppliers, Model model, HttpSession session) {
+	public String deleteSuppliers(@ModelAttribute SupplierBeanDTO suppliers, RedirectAttributes redirectAttrs, final HttpServletRequest req, Model model,
+			Locale locale) {
 		try {
 			List<String> supplierIds = suppliers.getSupplierIds();
 
@@ -430,13 +479,14 @@ public class ManageSupplierController {
 			Set<Integer> ids = idIndexMap.keySet();
 
 			supplierService.deleteSuppliers(ids);
-			model.addAttribute(MVCConstants.SUCCESS, "The supplier record has been retrieved");
+			redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.supplier.delete.all.success", null, locale));
+			req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 			logger.info("The supplier details has been created successfully.");
 		} catch (Exception e) {
+			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.delete.failure", null, locale));
 			logger.error("There is an error while deleting supplier", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
-		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_SUPPLIER_URL;
 	}
 
 	private void getSelectedIds(List<String> supplierIds, Map<Integer, Integer> idIndex) {

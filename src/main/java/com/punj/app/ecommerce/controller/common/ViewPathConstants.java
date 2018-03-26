@@ -79,18 +79,18 @@ public final class ViewPathConstants {
 	/**
 	 * The supplier pages section starts
 	 */
-	public static final String SEARCH_SUPPLIER_URL = "/search_supplier";
-	public static final String MANAGE_SUPPLIER_URL = "/manage_supplier";
+	public static final String SEARCH_SUPPLIER_URL = "/admin/search_supplier";
+	public static final String MANAGE_SUPPLIER_URL = "/admin/manage_supplier";
 	public static final String MANAGE_SUPPLIER_PAGE = "supplier/manage_supplier";
 	
-	public static final String EDIT_SUPPLIER_URL ="/edit_supplier";
+	public static final String EDIT_SUPPLIER_URL ="/admin/edit_supplier";
 	public static final String EDIT_SUPPLIER_PAGE ="supplier/edit_supplier";
 	
-	public static final String ADD_SUPPLIER_URL ="/add_supplier";
+	public static final String ADD_SUPPLIER_URL ="/admin/add_supplier";
 	public static final String ADD_SUPPLIER_PAGE ="supplier/add_supplier";	
 	
-	public static final String DELETE_SUPPLIER_URL ="/delete_supplier";
-	public static final String BULK_SUPPLIER_URL ="/bulk_supplier_action";
+	public static final String DELETE_SUPPLIER_URL ="/admin/delete_supplier";
+	public static final String BULK_SUPPLIER_URL ="/admin/bulk_supplier_action";
 	
 	/**
 	 * The supplier pages section ends

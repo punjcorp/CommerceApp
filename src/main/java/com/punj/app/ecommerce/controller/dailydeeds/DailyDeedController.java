@@ -298,8 +298,8 @@ public class DailyDeedController {
 		logger.info("The show store open screen method has been called when store is already open");
 		try {
 			Integer locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
-			String locationName = (String) req.getParameter(MVCConstants.LOC_NAME_PARAM);
-			String defaultTender = (String) req.getParameter(MVCConstants.DEFAULT_TENDER_PARAM);
+			String locationName = req.getParameter(MVCConstants.LOC_NAME_PARAM);
+			String defaultTender = req.getParameter(MVCConstants.DEFAULT_TENDER_PARAM);
 			LocalDateTime businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
 			if (businessDate != null) {
 
