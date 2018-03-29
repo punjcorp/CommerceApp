@@ -57,7 +57,7 @@ public final class ViewPathConstants {
 	public static final String MANAGE_ORDER_PAGE = "order/manage_order";
 	public static final String MANAGE_ORDER_URL= "/manage_order";
 	
-	public static final String ADD_ORDER_URL = "/add_order";
+	public static final String ADD_ORDER_URL = "/admin/add_order";
 	public static final String ADD_ORDER_PAGE = "order/add_order";	
 	
 	public static final String EDIT_ORDER_URL = "/edit_order";
@@ -65,6 +65,8 @@ public final class ViewPathConstants {
 	
 	public static final String APPROVE_ORDER_URL = "/approve_order";
 	public static final String DELETE_ORDER_URL = "/delete_order";
+	
+	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
 	
 	public static final String BULK_ORDER_URL = "/bulk_order_action";
 	public static final String RECEIVE_ORDER_URL = "/receive_order";
@@ -91,6 +93,9 @@ public final class ViewPathConstants {
 	
 	public static final String DELETE_SUPPLIER_URL ="/admin/delete_supplier";
 	public static final String BULK_SUPPLIER_URL ="/admin/bulk_supplier_action";
+	
+	public static final String SUPPLIER_PAYMENT_URL ="/admin/supplier/payment";
+	public static final String SUPPLIER_PAYMENT_PAGE ="/supplier/supplier_payments";
 	
 	/**
 	 * The supplier pages section ends
@@ -222,6 +227,11 @@ public final class ViewPathConstants {
 	 * The Transaction section ends
 	 */	
 	
+	/**
+	 * The account payment pages section starts
+	 */
+	public static final String PAYMENT_ACCOUNT_DTLS_URL ="/admin/payment_account";
+	public static final String SAVE_PAYMENT_DTLS_URL="admin/save_payment";
 	
 }
 

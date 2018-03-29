@@ -59,4 +59,10 @@ public final class ServiceConstants {
 	public static final String STOCK_FROM_BUCKET_IND = "F";
 	public static final String STOCK_TO_BUCKET_IND = "T";
 
+	public static final String PAYMENT_FULL = "full";
+	public static final String PAYMENT_PART = "part";
+	public static final String PAYMENT_ADVANCE= "advance";
+	
+	public static final String ACCOUNT_TYPE_SUPPLIER= "SUPPLIER";
+	
 }

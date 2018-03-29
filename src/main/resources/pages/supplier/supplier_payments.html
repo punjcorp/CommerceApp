@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.supplier.payment.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<th:block th:replace="common/header:: header"></th:block>
+<script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../js/parsley.min.js" th:src="@{/js/parsley.min.js}"></script>
+<script src="../../js/moment.js" th:src="@{/js/moment.js}"></script>
+<script src="../../js/supplier/payment_classes.js" th:src="@{/js/supplier/payment_classes.js}"></script>
+<script src="../../js/supplier/payment.js" th:src="@{/js/supplier/payment.js}"></script>
+<link href="../../static/css/box_radio.css" th:href="@{/css/box_radio.css}" rel="stylesheet" />
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/pos_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<form id="paymentForm" th:action="@{/admin/supplier/payment}" th:object="${accountDTO}" method="post">
+				<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+				<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+				<div class="row m-3">
+					<div class="col">
+						<!-- Expense details Section Starts -->
+						<div class="card">
+							<div class="card-body">
+								<div class="card-text">
+									<!-- Expense Form section starts -->
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.ids}">Supplier Id Lookup</span></small></label>
+												<div class="input-group text-left">
+													<div class="input-group-prepend">
+														<span class="input-group-text"><i class="fas fa-users fa-2x"></i> </span>
+													</div>
+													<input type="text" th:field="*{entityType}" class="form-control input-sm"></input>
+													<input type="hidden" th:field="*{entityId}"></input>
+													<input type="hidden" id="h_entityType" th:value="SUPPLIER"></input>
+													<div id="entityTypeMsg"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.amount.advance}">Net Advance Amount Balance</span></small></label>
+												<div class="input-group text-left">
+													<label><h3>
+															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_advanceAmt"> 0.00</span> <input type="hidden"
+																th:field="*{advanceAmt}"></input>
+														</h3></label>
+												</div>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.amount.due}">Net Due Amount Balance</span></small></label>
+												<div class="input-group text-left">
+													<label><h3>
+															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_dueAmt"> 0.00</span> <input type="hidden"
+																th:field="*{dueAmt}"></input>
+														</h3></label>
+												</div>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.amount.total}">Total Payment Amount</span></small></label>
+												<div class="input-group text-left">
+													<label><h3>
+															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_paymentAmt"> 0.00</span> <input type="hidden"
+																th:field="*{paymentAmt}"></input>
+														</h3></label>
+												</div>		
+												<div id="paymentAmtMsg"></div>									
+											</div>
+										</div>										
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.type}">Payment Type</span></small></label>
+												<div class="input-group text-left">
+													<select th:field="*{journalType}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.payment.type}">
+														<option th:value="full" th:text="#{commerce.screen.supplier.payment.full}"></option>
+														<option th:value="part" th:text="#{commerce.screen.supplier.payment.part}"></option>
+														<option th:value="advance" th:text="#{commerce.screen.supplier.payment.advance}"></option>
+													</select>
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.expense.remarks}">Remarks</span></small></label>
+												<div class="input-group text-left">
+													<textarea rows="4" th:field="*{remarks}" class="form-control input-sm"></textarea>
+												</div>
+												<div id="remarksMsg"></div>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group">
+												<label></label>
+												<div class="input-group text-left">
+													<button type="button" class="btn btn-success mr-3" id="btnSavePayment" th:text="#{commerce.screen.supplier.payment.btn.submit.save}"></button>
+													<button type="button" class="btn btn-secondary" id="btnReset" th:text="#{commerce.screen.btn.submit.clear}"></button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- Expense Form section ends -->
+								</div>
+							</div>
+						</div>
+						<!-- Expense details Section Ends -->
+					</div>
+					<div class="col-4">
+						<div id="supplierDetails"></div>
+					</div>
+				</div>
+				<div class="row m-3">
+					<div class="col">
+						<!-- Expense Tenders Section Starts -->
+						<div class="card">
+							<div class="card-body">
+								<div class="card-text" id="tenderAreaCard">
+									<div id="tenderSelectionMsg"></div>
+									<div class="box-radio-parent text-center">
+										<th:block th:each="tenderBean,itrStat:${tenders}">
+											<input type="hidden" th:id="${tenderBean.tenderId+'tenderName'}" th:value="${tenderBean.name}"></input>
+											<input type="hidden" th:id="${tenderBean.tenderId+'tenderType'}" th:value="${tenderBean.tndrType}"></input>
+											<th:block th:if="${tenderBean.name =='Change'}">
+												<input type="hidden" id="hc_changeTenderId" th:value="${tenderBean.tenderId}"></input>
+											</th:block>
+											<th:block th:unless="${tenderBean.name =='Change'}">
+												<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.tenderId}"
+													th:checked="${accountDTO.defaultTender==tenderBean.tndrType}"></input>
+													<div class="sm-btn">
+														<div class="box-text">
+															<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
+																th:if="${tenderBean.name=='Credit Card'}"><i class="fas fa-credit-card fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paypal'}"><i
+																class="fab fa-paypal fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paytm'}"><img th:src="@{/images/paytm_sm.png}"></img> </span> <span
+																th:if="${tenderBean.name=='Cheque'}"><i class="fas fa-id-card fa-4x"></i> </span>
+														</div>
+													</div>
+												</label>
+											</th:block>
+										</th:block>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.amount}">Payment Option Amount</span></small></label>
+												<div class="input-group text-left">
+													<div class="input-group-prepend">
+														<span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
+													</div>
+													<input type="number" step="0.01" th:field="*{tenderAmount}" class="form-control input-sm text-right"></input>
+												</div>
+												<div id="tenderAmountMsg"></div>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group">
+												<label><small></small></label>
+												<div class="input-group text-left">
+													<button type="button" id="btnAddTender" class="btn btn-small btn-success">
+														<i class="far fa-plus-square fa-2x"></i>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group d-none" id="payeeAccountDiv">
+												<label><small><span th:text="#{commerce.screen.expense.payee.account}">Payee Account</span></small></label>
+												<div class="input-group text-left">
+													<input type="text" th:field="*{accountNo}" class="form-control input-sm"></input>
+												</div>
+												<div id="accountNoMsg"></div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group d-none" id="payeeBankDiv">
+												<label><small><span th:text="#{commerce.screen.expense.bank.name}">Bank Name</span></small></label>
+												<div class="input-group text-left">
+													<input type="text" th:field="*{bankName}" class="form-control input-sm"></input>
+												</div>
+												<div id="bankMsg"></div>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group d-none" id="payeeBranchDiv">
+												<label><small><span th:text="#{commerce.screen.expense.bank.branch}">Bank Branch</span></small></label>
+												<div class="input-group text-left">
+													<input type="text" th:field="*{bankBranch}" class="form-control input-sm"></input>
+												</div>
+												<div id="branchMsg"></div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.expense.tender.details}">Additional Details</span></small></label>
+												<div class="input-group text-left">
+													<textarea rows="2" th:field="*{tenderComment}" class="form-control input-sm"></textarea>
+												</div>
+												<div id="tenderCommentMsg"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Expense Tender Section Ends -->
+					</div>
+					<div class="col-4">
+						<div class="border-box-filled-light d-none" id="tenderLineItemContainer"></div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var logo_paytm= /*[[@{/images/paytm_sm.png}]]*/;
+		
+		/*]]>*/
+	</script>
+</body>
+</html>

@@ -45,6 +45,9 @@ public class Order implements Serializable {
 	@Column(name = "order_id", updatable = false, nullable = false)
 	private BigInteger orderId;
 
+	@Column(name = "location_id")
+	private Integer locationId;
+
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -274,60 +277,19 @@ public class Order implements Serializable {
 		this.modifiedDate = modifiedDate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * @return the locationId
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
-		result = prime * result + ((orderItems == null) ? 0 : orderItems.hashCode());
-		result = prime * result + ((supplier == null) ? 0 : supplier.hashCode());
-		return result;
+	public Integer getLocationId() {
+		return locationId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @param locationId
+	 *            the locationId to set
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Order other = (Order) obj;
-		if (orderId == null) {
-			if (other.orderId != null) {
-				return false;
-			}
-		} else if (!orderId.equals(other.orderId)) {
-			return false;
-		}
-		if (orderItems == null) {
-			if (other.orderItems != null) {
-				return false;
-			}
-		} else if (!orderItems.equals(other.orderItems)) {
-			return false;
-		}
-		if (supplier == null) {
-			if (other.supplier != null) {
-				return false;
-			}
-		} else if (!supplier.equals(other.supplier)) {
-			return false;
-		}
-		return true;
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 }

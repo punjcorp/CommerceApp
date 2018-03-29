@@ -64,6 +64,17 @@
 											Error</div>
 									</div>
 								</div>
+								<div class="col-4">
+									<div class="input-group form-group text-left">
+										<input type="text" th:field="*{locationId}"
+											class="form-control input-sm "
+											th:placeholder="#{commerce.screen.order.location}"
+											maxlength="80"></input>
+										<div th:if="${#fields.hasErrors('locationId')}"
+											th:errors="*{locationId}" class="text-danger">Location
+											Error</div>
+									</div>
+								</div>																
 							</div>
 							<th:block th:each="orderItem,itrStat:${orderBean.orderItems}">
 								<div class="orderitem form-group">
@@ -83,19 +94,6 @@
 													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].itemId')}"
 													th:errors="${orderBean.orderItems[__${itrStat.index}__].itemId}"
 													class="text-danger">Item Id Error</div>
-											</div>
-										</div>
-										<div class="col-2">
-											<div class="form-group">
-												<input type="text"
-													th:field="${orderBean.orderItems[__${itrStat.index}__].locationId}"
-													class="form-control input-sm"
-													th:placeholder="#{commerce.screen.order.location}"
-													maxlength="150"></input>
-												<div
-													th:if="${#fields.hasErrors('orderItems[__${itrStat.index}__].locationId')}"
-													th:errors="${orderBean.orderItems[__${itrStat.index}__].locationId}"
-													class="text-danger">Location Error</div>
 											</div>
 										</div>
 										<div class="col-1">

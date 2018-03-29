@@ -95,6 +95,32 @@ ENGINE = InnoDB;
 CREATE INDEX `fk_supplier_addresses_address_master1_idx` ON `commercedb`.`supplier_address` (`address_id` ASC);
 
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`purchase_order_payment`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`purchase_order_payment` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_payment` (
+  `order_id` BIGINT NOT NULL,
+  `tender_id` INT NOT NULL,
+  `amount` DECIMAL(12,2) NOT NULL,
+  `paye_account` VARCHAR(40) NULL,
+  `bank_name` VARCHAR(80) NULL,
+  `bank_branch` VARCHAR(80) NULL,
+  `description` VARCHAR(150) NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`order_id`),
+  CONSTRAINT `fk_purchase_order_payment_purchase_order1`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `commercedb`.`purchase_order` (`order_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

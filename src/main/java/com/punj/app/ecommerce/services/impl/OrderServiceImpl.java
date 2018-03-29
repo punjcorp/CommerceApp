@@ -22,6 +22,7 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
+import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderItemRepository;
@@ -30,6 +31,7 @@ import com.punj.app.ecommerce.repositories.order.OrderSearchRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.OrderService;
+import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -46,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 	private SupplierRepository supplierRepository;
 	private ItemRepository itemRepository;
 	private OrderSearchRepository orderSearchRepository;
-
+	private PaymentAccountService paymentService;
 	private InventoryService inventoryService;
 
 	@Value("${commerce.list.max.perpage}")
@@ -54,6 +56,15 @@ public class OrderServiceImpl implements OrderService {
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @param paymentService
+	 *            the paymentService to set
+	 */
+	@Autowired
+	public void setPaymentService(PaymentAccountService paymentService) {
+		this.paymentService = paymentService;
+	}
 
 	/**
 	 * @return the inventoryService
@@ -229,8 +240,9 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> approveOrders(List<Order> orders) {
-
+	@Transactional
+	public List<Order> approveOrders(List<Order> orders,String username) {
+		
 		List<Order> finalOrders = new ArrayList<>(orders.size());
 		Order actualOrder = null;
 		for (Order order : orders) {
@@ -238,15 +250,48 @@ public class OrderServiceImpl implements OrderService {
 			if (orderId != null) {
 				actualOrder = orderRepository.findOne(orderId);
 				actualOrder.setStatus("A");
-
 			} else {
 				actualOrder = order;
 			}
-
-			finalOrders.add(orderRepository.save(actualOrder));
-			logger.info("The {} purchase order has been approved now", order.getOrderId());
+			finalOrders.add(actualOrder);
 		}
+		finalOrders = this.orderRepository.save(finalOrders);
+		if (finalOrders != null && !finalOrders.isEmpty()) {
+			logger.info("All the {} purchase orders has been approved now", finalOrders.size());
+			List<AccountHead> accountHeads=this.getOrderAccounts(finalOrders);
+			accountHeads = this.paymentService.updateAccountsDue(accountHeads,username);
+			if(accountHeads!=null && !accountHeads.isEmpty()) {
+				logger.info("All the order accounts has been updated for the due amounts");
+			}else {
+				logger.info("There was some errors while updating order accounts for the due amounts");
+			}
+		}
+
 		return finalOrders;
+	}
+
+	private List<AccountHead> getOrderAccounts(List<Order> orders) {
+		List<AccountHead> accountHeads=new ArrayList<>(orders.size());
+		AccountHead accountHead;
+		
+		for(Order order:orders) {
+			accountHead= this.getOrderAccount(order);
+			accountHeads.add(accountHead);
+		}
+		logger.info("All the account head details has been created for provided orders");
+		return accountHeads;
+	}
+	
+	private AccountHead getOrderAccount(Order order) {
+		AccountHead accountHead=new AccountHead();
+		accountHead.setLocationId(order.getLocationId());
+		accountHead.setEntityType(ServiceConstants.ACCOUNT_TYPE_SUPPLIER);
+		accountHead.setEntityId(new BigInteger(order.getSupplier().getSupplierId().toString()));
+		
+		accountHead.setDueAmount(order.getTotalAmount());
+		
+		logger.info("All the account head details has been set for the provided order.");
+		return accountHead;
 	}
 
 	@Override
@@ -277,8 +322,8 @@ public class OrderServiceImpl implements OrderService {
 	public void deleteOrderItem(OrderItem orderItem) {
 
 		orderItemRepository.delete(orderItem.getOrderItemId());
-		logger.info("The selected item {} has been deleted from order {} successfully",
-				orderItem.getOrderItemId().getItemId(), orderItem.getOrderItemId().getOrder().getOrderId());
+		logger.info("The selected item {} has been deleted from order {} successfully", orderItem.getOrderItemId().getItemId(),
+				orderItem.getOrderItemId().getOrder().getOrderId());
 
 	}
 
@@ -303,7 +348,7 @@ public class OrderServiceImpl implements OrderService {
 		logger.debug("The order status has been marked as R now", orderId);
 
 		List<OrderItem> orderItems = order.getOrderItems();
-		List<ItemStockJournal> inventoryDetails=this.createStockDetails(orderItems, username);
+		List<ItemStockJournal> inventoryDetails = this.createStockDetails(order, orderItems, username);
 
 		this.inventoryService.updateInventory(inventoryDetails);
 		logger.debug("The order items inventory has been updated successfully", orderId);
@@ -312,7 +357,7 @@ public class OrderServiceImpl implements OrderService {
 		return order;
 	}
 
-	private List<ItemStockJournal> createStockDetails(List<OrderItem> orderItems, String username) {
+	private List<ItemStockJournal> createStockDetails(Order order, List<OrderItem> orderItems, String username) {
 
 		List<ItemStockJournal> itemStockDetails = new ArrayList<>(orderItems.size());
 		ItemStockJournal itemStockJournal = null;
@@ -323,7 +368,7 @@ public class OrderServiceImpl implements OrderService {
 			itemStockJournal.setCreatedBy(username);
 			itemStockJournal.setCreatedDate(LocalDateTime.now());
 
-			itemStockJournal.setLocationId(orderItem.getOrderItemId().getLocation());
+			itemStockJournal.setLocationId(order.getLocationId());
 
 			item = new Item();
 			item.setItemId(orderItem.getOrderItemId().getItemId());
@@ -332,10 +377,10 @@ public class OrderServiceImpl implements OrderService {
 			StockReason stockReason = new StockReason();
 			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
 			itemStockJournal.setReasonCode(stockReason);
-			
+
 			itemStockJournal.setFunctionality(ServiceConstants.RECEIVE_ORDER_FUNCTIONALITY);
 			itemStockJournal.setQty(orderItem.getDelieveredQty());
-			
+
 			itemStockDetails.add(itemStockJournal);
 		}
 

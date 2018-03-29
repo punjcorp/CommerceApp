@@ -3,20 +3,17 @@
  */
 package com.punj.app.ecommerce.models.order;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.money.MonetaryAmount;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.javamoney.moneta.Money;
-
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.utils.Pager;
-import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -27,6 +24,8 @@ public class OrderBean {
 	private BigInteger orderId;
 	@NotNull
 	private Integer supplierId;
+	@NotNull
+	private Integer locationId;
 
 	private SupplierBean supplier;
 
@@ -36,19 +35,19 @@ public class OrderBean {
 	private String createdBy;
 	private LocalDateTime createdDate;
 
-	private MonetaryAmount estimatedCost=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount discountAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount taxAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount totalAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount paidAmount=Money.of(0, Utils.getLocaleCurrency());
+	private BigDecimal estimatedCost = BigDecimal.ZERO;
+	private BigDecimal discountAmount = BigDecimal.ZERO;
+	private BigDecimal taxAmount = BigDecimal.ZERO;
+	private BigDecimal totalAmount = BigDecimal.ZERO;
+	private BigDecimal paidAmount = BigDecimal.ZERO;
 
 	private String status;
 
 	private Pager pager;
 
 	public OrderBean() {
-		orderItems = new ArrayList<>();
-		orderItems.add(new OrderItemBean());
+		this.orderItems = new ArrayList<>();
+		this.orderItems.add(new OrderItemBean());
 
 	}
 
@@ -80,6 +79,36 @@ public class OrderBean {
 	 */
 	public void setSupplierId(Integer supplierId) {
 		this.supplierId = supplierId;
+	}
+
+	/**
+	 * @return the locationId
+	 */
+	public Integer getLocationId() {
+		return locationId;
+	}
+
+	/**
+	 * @param locationId
+	 *            the locationId to set
+	 */
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
+	}
+
+	/**
+	 * @return the supplier
+	 */
+	public SupplierBean getSupplier() {
+		return supplier;
+	}
+
+	/**
+	 * @param supplier
+	 *            the supplier to set
+	 */
+	public void setSupplier(SupplierBean supplier) {
+		this.supplier = supplier;
 	}
 
 	/**
@@ -128,39 +157,24 @@ public class OrderBean {
 	}
 
 	/**
-	 * @return the totalAmount
+	 * @return the estimatedCost
 	 */
-	public MonetaryAmount getTotalAmount() {
-		return totalAmount;
+	public BigDecimal getEstimatedCost() {
+		return estimatedCost;
 	}
 
 	/**
-	 * @param totalAmount
-	 *            the totalAmount to set
+	 * @param estimatedCost
+	 *            the estimatedCost to set
 	 */
-	public void setTotalAmount(MonetaryAmount totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
-	/**
-	 * @return the paidAmount
-	 */
-	public MonetaryAmount getPaidAmount() {
-		return paidAmount;
-	}
-
-	/**
-	 * @param paidAmount
-	 *            the paidAmount to set
-	 */
-	public void setPaidAmount(MonetaryAmount paidAmount) {
-		this.paidAmount = paidAmount;
+	public void setEstimatedCost(BigDecimal estimatedCost) {
+		this.estimatedCost = estimatedCost;
 	}
 
 	/**
 	 * @return the discountAmount
 	 */
-	public MonetaryAmount getDiscountAmount() {
+	public BigDecimal getDiscountAmount() {
 		return discountAmount;
 	}
 
@@ -168,14 +182,14 @@ public class OrderBean {
 	 * @param discountAmount
 	 *            the discountAmount to set
 	 */
-	public void setDiscountAmount(MonetaryAmount discountAmount) {
+	public void setDiscountAmount(BigDecimal discountAmount) {
 		this.discountAmount = discountAmount;
 	}
 
 	/**
 	 * @return the taxAmount
 	 */
-	public MonetaryAmount getTaxAmount() {
+	public BigDecimal getTaxAmount() {
 		return taxAmount;
 	}
 
@@ -183,8 +197,38 @@ public class OrderBean {
 	 * @param taxAmount
 	 *            the taxAmount to set
 	 */
-	public void setTaxAmount(MonetaryAmount taxAmount) {
+	public void setTaxAmount(BigDecimal taxAmount) {
 		this.taxAmount = taxAmount;
+	}
+
+	/**
+	 * @return the totalAmount
+	 */
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	/**
+	 * @param totalAmount
+	 *            the totalAmount to set
+	 */
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	/**
+	 * @return the paidAmount
+	 */
+	public BigDecimal getPaidAmount() {
+		return paidAmount;
+	}
+
+	/**
+	 * @param paidAmount
+	 *            the paidAmount to set
+	 */
+	public void setPaidAmount(BigDecimal paidAmount) {
+		this.paidAmount = paidAmount;
 	}
 
 	/**
@@ -215,36 +259,6 @@ public class OrderBean {
 	 */
 	public void setPager(Pager pager) {
 		this.pager = pager;
-	}
-
-	/**
-	 * @return the estimatedCost
-	 */
-	public MonetaryAmount getEstimatedCost() {
-		return estimatedCost;
-	}
-
-	/**
-	 * @param estimatedCost
-	 *            the estimatedCost to set
-	 */
-	public void setEstimatedCost(MonetaryAmount estimatedCost) {
-		this.estimatedCost = estimatedCost;
-	}
-
-	/**
-	 * @return the supplier
-	 */
-	public SupplierBean getSupplier() {
-		return supplier;
-	}
-
-	/**
-	 * @param supplier
-	 *            the supplier to set
-	 */
-	public void setSupplier(SupplierBean supplier) {
-		this.supplier = supplier;
 	}
 
 }

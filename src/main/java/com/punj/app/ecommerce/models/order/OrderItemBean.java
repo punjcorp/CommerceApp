@@ -3,16 +3,14 @@
  */
 package com.punj.app.ecommerce.models.order;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.money.MonetaryAmount;
 import javax.validation.constraints.NotNull;
 
-import org.javamoney.moneta.Money;
-
 import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
-import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -23,24 +21,21 @@ public class OrderItemBean {
 	private BigInteger itemId;
 
 	private BigInteger orderId;
-	@NotNull
-	private Integer locationId;
 
 	@NotNull
 	private Integer orderedQty;
 
-	// @Digits(integer = 8, fraction = 2)
-	private MonetaryAmount costAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount totalCost=Money.of(0, Utils.getLocaleCurrency());
+	private BigDecimal costAmount = BigDecimal.ZERO;
+	private BigDecimal totalCost = BigDecimal.ZERO;
 
 	private Integer delieveredQty;
 	private LocalDateTime delieveredDate;
 
-	private MonetaryAmount costActualAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount totalActualCost=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount discountAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount taxAmount=Money.of(0, Utils.getLocaleCurrency());
-	private MonetaryAmount totalActualAmount=Money.of(0, Utils.getLocaleCurrency());
+	private BigDecimal costActualAmount = BigDecimal.ZERO;
+	private BigDecimal totalActualCost = BigDecimal.ZERO;
+	private BigDecimal discountAmount = BigDecimal.ZERO;
+	private BigDecimal taxAmount = BigDecimal.ZERO;
+	private BigDecimal totalActualAmount = BigDecimal.ZERO;
 
 	private SupplierItemBean supplierItem;
 
@@ -52,8 +47,7 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param itemId
-	 *            the itemId to set
+	 * @param itemId the itemId to set
 	 */
 	public void setItemId(BigInteger itemId) {
 		this.itemId = itemId;
@@ -67,26 +61,10 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param orderId
-	 *            the orderId to set
+	 * @param orderId the orderId to set
 	 */
 	public void setOrderId(BigInteger orderId) {
 		this.orderId = orderId;
-	}
-
-	/**
-	 * @return the locationId
-	 */
-	public Integer getLocationId() {
-		return locationId;
-	}
-
-	/**
-	 * @param locationId
-	 *            the locationId to set
-	 */
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
 	}
 
 	/**
@@ -97,8 +75,7 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param orderedQty
-	 *            the orderedQty to set
+	 * @param orderedQty the orderedQty to set
 	 */
 	public void setOrderedQty(Integer orderedQty) {
 		this.orderedQty = orderedQty;
@@ -107,30 +84,28 @@ public class OrderItemBean {
 	/**
 	 * @return the costAmount
 	 */
-	public MonetaryAmount getCostAmount() {
+	public BigDecimal getCostAmount() {
 		return costAmount;
 	}
 
 	/**
-	 * @param costAmount
-	 *            the costAmount to set
+	 * @param costAmount the costAmount to set
 	 */
-	public void setCostAmount(MonetaryAmount costAmount) {
+	public void setCostAmount(BigDecimal costAmount) {
 		this.costAmount = costAmount;
 	}
 
 	/**
 	 * @return the totalCost
 	 */
-	public MonetaryAmount getTotalCost() {
+	public BigDecimal getTotalCost() {
 		return totalCost;
 	}
 
 	/**
-	 * @param totalCost
-	 *            the totalCost to set
+	 * @param totalCost the totalCost to set
 	 */
-	public void setTotalCost(MonetaryAmount totalCost) {
+	public void setTotalCost(BigDecimal totalCost) {
 		this.totalCost = totalCost;
 	}
 
@@ -142,8 +117,7 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param delieveredQty
-	 *            the delieveredQty to set
+	 * @param delieveredQty the delieveredQty to set
 	 */
 	public void setDelieveredQty(Integer delieveredQty) {
 		this.delieveredQty = delieveredQty;
@@ -157,40 +131,79 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param delieveredDate
-	 *            the delieveredDate to set
+	 * @param delieveredDate the delieveredDate to set
 	 */
 	public void setDelieveredDate(LocalDateTime delieveredDate) {
 		this.delieveredDate = delieveredDate;
 	}
 
 	/**
+	 * @return the costActualAmount
+	 */
+	public BigDecimal getCostActualAmount() {
+		return costActualAmount;
+	}
+
+	/**
+	 * @param costActualAmount the costActualAmount to set
+	 */
+	public void setCostActualAmount(BigDecimal costActualAmount) {
+		this.costActualAmount = costActualAmount;
+	}
+
+	/**
+	 * @return the totalActualCost
+	 */
+	public BigDecimal getTotalActualCost() {
+		return totalActualCost;
+	}
+
+	/**
+	 * @param totalActualCost the totalActualCost to set
+	 */
+	public void setTotalActualCost(BigDecimal totalActualCost) {
+		this.totalActualCost = totalActualCost;
+	}
+
+	/**
 	 * @return the discountAmount
 	 */
-	public MonetaryAmount getDiscountAmount() {
+	public BigDecimal getDiscountAmount() {
 		return discountAmount;
 	}
 
 	/**
-	 * @param discountAmount
-	 *            the discountAmount to set
+	 * @param discountAmount the discountAmount to set
 	 */
-	public void setDiscountAmount(MonetaryAmount discountAmount) {
+	public void setDiscountAmount(BigDecimal discountAmount) {
 		this.discountAmount = discountAmount;
+	}
+
+	/**
+	 * @return the taxAmount
+	 */
+	public BigDecimal getTaxAmount() {
+		return taxAmount;
+	}
+
+	/**
+	 * @param taxAmount the taxAmount to set
+	 */
+	public void setTaxAmount(BigDecimal taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 
 	/**
 	 * @return the totalActualAmount
 	 */
-	public MonetaryAmount getTotalActualAmount() {
+	public BigDecimal getTotalActualAmount() {
 		return totalActualAmount;
 	}
 
 	/**
-	 * @param totalActualAmount
-	 *            the totalActualAmount to set
+	 * @param totalActualAmount the totalActualAmount to set
 	 */
-	public void setTotalActualAmount(MonetaryAmount totalActualAmount) {
+	public void setTotalActualAmount(BigDecimal totalActualAmount) {
 		this.totalActualAmount = totalActualAmount;
 	}
 
@@ -202,56 +215,10 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param supplierItem
-	 *            the supplierItem to set
+	 * @param supplierItem the supplierItem to set
 	 */
 	public void setSupplierItem(SupplierItemBean supplierItem) {
 		this.supplierItem = supplierItem;
-	}
-
-	/**
-	 * @return the costActualAmount
-	 */
-	public MonetaryAmount getCostActualAmount() {
-		return costActualAmount;
-	}
-
-	/**
-	 * @param costActualAmount
-	 *            the costActualAmount to set
-	 */
-	public void setCostActualAmount(MonetaryAmount costActualAmount) {
-		this.costActualAmount = costActualAmount;
-	}
-
-	/**
-	 * @return the totalActualCost
-	 */
-	public MonetaryAmount getTotalActualCost() {
-		return totalActualCost;
-	}
-
-	/**
-	 * @param totalActualCost
-	 *            the totalActualCost to set
-	 */
-	public void setTotalActualCost(MonetaryAmount totalActualCost) {
-		this.totalActualCost = totalActualCost;
-	}
-
-	/**
-	 * @return the taxAmount
-	 */
-	public MonetaryAmount getTaxAmount() {
-		return taxAmount;
-	}
-
-	/**
-	 * @param taxAmount
-	 *            the taxAmount to set
-	 */
-	public void setTaxAmount(MonetaryAmount taxAmount) {
-		this.taxAmount = taxAmount;
 	}
 
 }

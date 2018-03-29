@@ -172,26 +172,6 @@ public class ManageSupplierController {
 
 	}
 
-	/*
-	 * @GetMapping(value = ViewPathConstants.MANAGE_SUPPLIER_URL) public String manageSupplier(Model model, HttpSession session, final HttpServletRequest
-	 * req) { logger.info("The manage supplier method for supplier management has been called."); try {
-	 * 
-	 * SupplierBean supplierBean = new SupplierBean(); model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
-	 * 
-	 * List<Supplier> supplierList = this.supplierService.getAll(); SupplierBeanDTO suppliers = new SupplierBeanDTO();
-	 * 
-	 * this.setSupplierList(supplierList, suppliers);
-	 * 
-	 * model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
-	 * 
-	 * logger.info("The empty supplier object bean has been created"); } catch (Exception e) {
-	 * logger.error("An unknown error has occurred while retrieving all the suppliers.", e); return ViewPathConstants.ERROR_PAGE; }
-	 * 
-	 * return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
-	 * 
-	 * }
-	 */
-
 	private void setSupplierList(List<Supplier> supplierList, SupplierBeanDTO suppliers) {
 
 		List<SupplierBean> supplierBeanList = new ArrayList<>();
@@ -230,7 +210,7 @@ public class ManageSupplierController {
 
 				Pager tmpPager = supplierList.getPager();
 				pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
-						ViewPathConstants.SEARCH_SUPPLIER_URL);
+						ViewPathConstants.MANAGE_SUPPLIER_URL);
 
 				model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
 				model.addAttribute(MVCConstants.PAGER, pager);
@@ -243,41 +223,6 @@ public class ManageSupplierController {
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, "There is some error while retrieving suppliers");
 			logger.error("There is an error while searching for suppliers", e);
-		}
-		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
-	}
-
-	@PostMapping(ViewPathConstants.SEARCH_SUPPLIER_URL)
-	public String searchSupplier(@ModelAttribute SupplierBean supplierBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
-			HttpSession session) {
-		try {
-
-			Pager pager = new Pager();
-			if (!page.isPresent()) {
-				pager.setCurrentPageNo(1);
-			} else {
-				pager.setCurrentPageNo(page.get());
-			}
-
-			SupplierDTO supplierList = this.supplierService.searchSupplier(supplierBean.getName(), pager);
-			List<Supplier> suppliersList = supplierList.getSuppliers();
-
-			SupplierBeanDTO suppliers = new SupplierBeanDTO();
-
-			this.setSupplierList(suppliersList, suppliers);
-
-			Pager tmpPager = supplierList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
-					ViewPathConstants.SEARCH_SUPPLIER_URL);
-
-			model.addAttribute(MVCConstants.SUPPLIERS_BEAN, suppliers);
-			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
-			model.addAttribute(MVCConstants.PAGER, pager);
-			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} supplier record has been retrieved");
-			logger.info("The supplier details has been retrieved successfully.");
-		} catch (Exception e) {
-			logger.error("There is an error while searching for suppliers", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}

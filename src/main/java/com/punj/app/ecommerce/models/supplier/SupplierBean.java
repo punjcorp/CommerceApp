@@ -36,6 +36,8 @@ public class SupplierBean {
 	private String email;
 	@Valid
 	private List<AddressBean> addresses;
+	
+	private AddressBean primaryAddress;
 
 	private List<SupplierItemBean> items;
 
@@ -165,6 +167,23 @@ public class SupplierBean {
 	 */
 	public void setItems(List<SupplierItemBean> items) {
 		this.items = items;
+	}
+
+	/**
+	 * @return the primaryAddress
+	 */
+	public AddressBean getPrimaryAddress() {
+		if(this.addresses!=null && !this.addresses.isEmpty()) {
+			return this.addresses.get(0);
+		}
+		return this.primaryAddress;
+	}
+
+	/**
+	 * @param primaryAddress the primaryAddress to set
+	 */
+	public void setPrimaryAddress(AddressBean primaryAddress) {
+		this.primaryAddress = primaryAddress;
 	}
 
 }

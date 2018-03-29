@@ -31,12 +31,7 @@ public class OrderItemFieldBridge implements TwoWayFieldBridge {
 		TermVector termVector = luceneOptions.getTermVector();
 		Float boost = luceneOptions.getBoost();
 
-		Field field = new Field(name + ".locationId", String.valueOf(orderItemId.getLocation()),
-				store, index, termVector);
-		field.setBoost(boost);
-		document.add(field);
-
-		field = new Field(name + ".itemId", String.valueOf(orderItemId.getItemId()), store, index, termVector);
+		Field field = new Field(name + ".itemId", String.valueOf(orderItemId.getItemId()), store, index, termVector);
 		field.setBoost(boost);
 		document.add(field);
 
@@ -49,11 +44,8 @@ public class OrderItemFieldBridge implements TwoWayFieldBridge {
 
 	@Override
 	public Object get(String name, Document document) {
-		IndexableField fieldLocation = document.getField(name + ".locationId");
 		IndexableField fieldItemId = document.getField(name + ".itemId");
-
 		OrderItemId orderItemId = new OrderItemId();
-		orderItemId.setLocation(new Integer(fieldLocation.stringValue()));
 		orderItemId.setItemId(new BigInteger(fieldItemId.stringValue()));
 		return orderItemId;
 	}
@@ -62,8 +54,6 @@ public class OrderItemFieldBridge implements TwoWayFieldBridge {
 	public String objectToString(Object object) {
 		OrderItemId orderItemId = (OrderItemId) object;
 		StringBuilder stringData = new StringBuilder();
-		stringData.append(orderItemId.getLocation());
-		stringData.append(" ");
 		stringData.append(orderItemId.getItemId());
 		return stringData.toString();
 	}

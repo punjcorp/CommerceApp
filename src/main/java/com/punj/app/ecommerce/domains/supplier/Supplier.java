@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.domains.supplier;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -48,6 +49,17 @@ public class Supplier implements Serializable {
 	@Field
 	private String email;
 
+	@Column(name = "created_by")
+	private String createdBy;
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
+
+	@Column(name = "modified_by")
+	private String modifiedBy;
+	@Column(name = "modified_date")
+	private LocalDateTime modifiedDate;	
+	
+	
 	@IndexedEmbedded
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "supplier_address", joinColumns = @JoinColumn(name = "supplier_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
@@ -141,6 +153,64 @@ public class Supplier implements Serializable {
 	 */
 	public void setAddresses(List<Address> addresses) {
 		this.addresses = addresses;
+	}
+
+	
+	
+	/**
+	 * @return the createdBy
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	/**
+	 * @return the createdDate
+	 */
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	/**
+	 * @param createdDate the createdDate to set
+	 */
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the modifiedBy
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	/**
+	 * @param modifiedBy the modifiedBy to set
+	 */
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	/**
+	 * @return the modifiedDate
+	 */
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	/**
+	 * @param modifiedDate the modifiedDate to set
+	 */
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 
 	/*

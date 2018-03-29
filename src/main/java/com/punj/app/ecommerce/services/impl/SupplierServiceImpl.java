@@ -16,8 +16,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
-import com.punj.app.ecommerce.domains.supplier.SupplierAddress;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.supplier.ids.SupplierAddressId;
 import com.punj.app.ecommerce.domains.user.Address;
@@ -25,7 +25,10 @@ import com.punj.app.ecommerce.repositories.AddressRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierAddressRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierSearchRepository;
+import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.SupplierService;
+import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -40,6 +43,8 @@ public class SupplierServiceImpl implements SupplierService {
 	private SupplierSearchRepository supplierSearchRepository;
 	private AddressRepository addressRepository;
 	private SupplierAddressRepository supplierAddressRepository;
+	private PaymentAccountService paymentService;
+	private CommonService commonService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -47,6 +52,24 @@ public class SupplierServiceImpl implements SupplierService {
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
 
+	/**
+	 * @param paymentService
+	 *            the paymentService to set
+	 */
+	@Autowired
+	public void setPaymentService(PaymentAccountService paymentService) {
+		this.paymentService = paymentService;
+	}
+
+	/**
+	 * @param commonService
+	 *            the commonService to set
+	 */
+	@Autowired
+	public void setCommonService(CommonService commonService) {
+		this.commonService = commonService;
+	}	
+	
 	/**
 	 * @param supplierAddressRepository
 	 *            the supplierAddressRepository to set
@@ -84,11 +107,24 @@ public class SupplierServiceImpl implements SupplierService {
 	}
 
 	@Override
+	@Transactional
 	public Supplier createSupplier(Supplier supplier) {
 
 		supplier = this.supplierRepository.save(supplier);
+		if (supplier != null) {
 
-		logger.info("The supplier {} has been created successfully.", supplier.getSupplierId());
+			List<AccountHead> accountHeads = this.paymentService.setupPaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER,
+					new BigInteger(supplier.getSupplierId().toString()), supplier.getCreatedBy());
+			if (accountHeads != null && !accountHeads.isEmpty()) {
+				logger.info("The supplier {} with all location account setup has been created successfully.", supplier.getSupplierId());
+			} else {
+				logger.info("There was some issue while setting up the supplier account for all the locations.");
+			}
+
+		} else {
+			logger.info("There was some issue while creating a new supplier record");
+		}
+
 		return supplier;
 	}
 
@@ -168,7 +204,7 @@ public class SupplierServiceImpl implements SupplierService {
 		SupplierAddressId supAddressId = new SupplierAddressId();
 		supAddressId.setSupplierId(supplierId);
 		supAddressId.setAddressId(supplierAddress.getAddressId());
-		
+
 		this.supplierAddressRepository.delete(supAddressId);
 		logger.info("The provided address supplier relationship has been deleted successfully");
 		this.addressRepository.delete(supplierAddress);

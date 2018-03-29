@@ -124,9 +124,11 @@ public final class MVCConstants {
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
+	public static final String ORDER_BEAN_DTO= "orderBeanDTO";
 	public static final String ORDER_BEAN= "orderBean";
 	public static final String CARD_BEAN="cardBean";
 	public static final String SUPPLIER_BEAN= "supplierBean";
+	public static final String ACCOUNT_PAYMENT_DTO= "accountDTO";
 	public static final String ITEM_BEAN= "itemBean";
 	public static final String INV_ADJUST_BEAN= "invAdjustBean";
 	public static final String INV_ADJUSTS_BEAN= "invAdjusts";

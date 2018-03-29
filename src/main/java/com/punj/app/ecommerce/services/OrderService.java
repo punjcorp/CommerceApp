@@ -32,7 +32,7 @@ public interface OrderService {
 
 	public List<Order> updateOrders(List<Order> orders);
 
-	public List<Order> approveOrders(List<Order> orders);
+	public List<Order> approveOrders(List<Order> orders, String username);
 
 	public Order approveOrder(BigInteger orderId);
 

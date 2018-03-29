@@ -22,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -158,16 +159,23 @@ public class ItemLookupController {
 		return items.getItems();
 	}
 
+	@PostMapping(value = ViewPathConstants.ORDER_ITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public List<ItemBean> lookupOrderItem(@RequestBody @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
+		return this.lookupSKU(searchBean, bindingResult, model, session);
+				
+	}
+
 	@GetMapping(value = ViewPathConstants.SALEITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	public SaleItem lookupSaleItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId) {
-		SaleItem saleItem=null;
+		SaleItem saleItem = null;
 		try {
 
 			saleItem = saleItemService.getItem(itemId, locationId);
 
 			logger.info("the {} item details for sale item has been retrieved successfully", itemId);
-			
+
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving skus for sku lookup screen", e);
 			return null;

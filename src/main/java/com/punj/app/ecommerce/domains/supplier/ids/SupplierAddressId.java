@@ -17,6 +17,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class SupplierAddressId implements Serializable {
 
+	private static final long serialVersionUID = -2743584053445878461L;
+	
 	@Column(name = "supplier_id")
 	private Integer supplierId;
 	@Column(name = "address_id")

@@ -39,9 +39,9 @@ public class OrderItem implements Serializable {
 
 	// Estimated Amount
 	@Column(name = "cost_amount")
-	private BigDecimal costAmount = new BigDecimal("0.0");
+	private BigDecimal costAmount = BigDecimal.ZERO;
 	@Column(name = "total_cost")
-	private BigDecimal totalCost = new BigDecimal("0.0");
+	private BigDecimal totalCost = BigDecimal.ZERO;
 
 	@Column(name = "delievered_qty")
 	private Integer delieveredQty = 0;
@@ -50,15 +50,15 @@ public class OrderItem implements Serializable {
 
 	// Actual Amounts
 	@Column(name = "cost_actual_amount")
-	private BigDecimal actualUnitCost = new BigDecimal("0.0");
+	private BigDecimal actualUnitCost = BigDecimal.ZERO;
 	@Column(name = "total_actual_cost")
-	private BigDecimal totalActualCost = new BigDecimal("0.0");
+	private BigDecimal totalActualCost = BigDecimal.ZERO;
 	@Column(name = "discount_amount")
-	private BigDecimal discountAmount = new BigDecimal("0.0");
+	private BigDecimal discountAmount = BigDecimal.ZERO;
 	@Column(name = "tax_amount")
-	private BigDecimal taxAmount = new BigDecimal("0.0");
+	private BigDecimal taxAmount = BigDecimal.ZERO;
 	@Column(name = "total_Actual_amount")
-	private BigDecimal actualTotalAmount = new BigDecimal("0.0");
+	private BigDecimal actualTotalAmount = BigDecimal.ZERO;
 
 	/**
 	 * @return the orderItemId

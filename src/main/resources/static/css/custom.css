@@ -528,7 +528,6 @@ a[id="contact"]::before {
 	text-align: left;
 	height: auto;
 	padding: 10px;
-	font-size: 16px;
 	height: auto;
 	border-color: orange;
 }
@@ -670,4 +669,9 @@ a[id="contact"]::before {
 }
 .modal-body{
 	height: 800px;
+}
+
+
+.color-blue{
+	color:#05386B;
 }

@@ -19,6 +19,8 @@ import com.punj.app.ecommerce.domains.supplier.ids.SupplierAddressId;
 @Table(name = "supplier_address")
 public class SupplierAddress implements Serializable {
 
+	private static final long serialVersionUID = 9179137389174644338L;
+	
 	@EmbeddedId
 	private SupplierAddressId supplierAddressId;
 
