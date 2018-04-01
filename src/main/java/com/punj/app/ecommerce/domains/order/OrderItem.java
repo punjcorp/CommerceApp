@@ -35,30 +35,36 @@ public class OrderItem implements Serializable {
 	private OrderItemId orderItemId;
 
 	@Column(name = "ordered_qty")
-	private Integer orderedQty;
+	private BigDecimal orderedQty;
 
 	// Estimated Amount
+	@Column(name = "unit_cost")
+	private BigDecimal unitCost = BigDecimal.ZERO;
 	@Column(name = "cost_amount")
 	private BigDecimal costAmount = BigDecimal.ZERO;
+	@Column(name = "tax_amount")
+	private BigDecimal taxAmount = BigDecimal.ZERO;
 	@Column(name = "total_cost")
 	private BigDecimal totalCost = BigDecimal.ZERO;
 
+	@Column(name = "actual_unit_cost")
+	private BigDecimal actualUnitCost = BigDecimal.ZERO;
+
 	@Column(name = "delievered_qty")
-	private Integer delieveredQty = 0;
+	private BigDecimal delieveredQty = BigDecimal.ZERO;
 	@Column(name = "delievered_date")
 	private LocalDateTime delieveredDate;
 
 	// Actual Amounts
-	@Column(name = "cost_actual_amount")
-	private BigDecimal actualUnitCost = BigDecimal.ZERO;
-	@Column(name = "total_actual_cost")
-	private BigDecimal totalActualCost = BigDecimal.ZERO;
-	@Column(name = "discount_amount")
-	private BigDecimal discountAmount = BigDecimal.ZERO;
-	@Column(name = "tax_amount")
-	private BigDecimal taxAmount = BigDecimal.ZERO;
-	@Column(name = "total_Actual_amount")
-	private BigDecimal actualTotalAmount = BigDecimal.ZERO;
+	@Column(name = "actual_cost_amount")
+	private BigDecimal actualCostAmount = BigDecimal.ZERO;
+
+	@Column(name = "actual_discount_amount")
+	private BigDecimal actualDiscountAmount = BigDecimal.ZERO;
+	@Column(name = "actual_tax_amount")
+	private BigDecimal actualTaxAmount = BigDecimal.ZERO;
+	@Column(name = "actual_total_cost")
+	private BigDecimal actualTotalCost = BigDecimal.ZERO;
 
 	/**
 	 * @return the orderItemId
@@ -76,18 +82,33 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @return the totalCost
+	 * @return the orderedQty
 	 */
-	public BigDecimal getTotalCost() {
-		return totalCost;
+	public BigDecimal getOrderedQty() {
+		return orderedQty;
 	}
 
 	/**
-	 * @param totalCost
-	 *            the totalCost to set
+	 * @param orderedQty
+	 *            the orderedQty to set
 	 */
-	public void setTotalCost(BigDecimal totalCost) {
-		this.totalCost = totalCost;
+	public void setOrderedQty(BigDecimal orderedQty) {
+		this.orderedQty = orderedQty;
+	}
+
+	/**
+	 * @return the unitCost
+	 */
+	public BigDecimal getUnitCost() {
+		return unitCost;
+	}
+
+	/**
+	 * @param unitCost
+	 *            the unitCost to set
+	 */
+	public void setUnitCost(BigDecimal unitCost) {
+		this.unitCost = unitCost;
 	}
 
 	/**
@@ -106,39 +127,54 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @return the discountAmount
+	 * @return the taxAmount
 	 */
-	public BigDecimal getDiscountAmount() {
-		return discountAmount;
+	public BigDecimal getTaxAmount() {
+		return taxAmount;
 	}
 
 	/**
-	 * @param discountAmount
-	 *            the discountAmount to set
+	 * @param taxAmount
+	 *            the taxAmount to set
 	 */
-	public void setDiscountAmount(BigDecimal discountAmount) {
-		this.discountAmount = discountAmount;
+	public void setTaxAmount(BigDecimal taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 
 	/**
-	 * @return the orderedQty
+	 * @return the totalCost
 	 */
-	public Integer getOrderedQty() {
-		return orderedQty;
+	public BigDecimal getTotalCost() {
+		return totalCost;
 	}
 
 	/**
-	 * @param orderedQty
-	 *            the orderedQty to set
+	 * @param totalCost
+	 *            the totalCost to set
 	 */
-	public void setOrderedQty(Integer orderedQty) {
-		this.orderedQty = orderedQty;
+	public void setTotalCost(BigDecimal totalCost) {
+		this.totalCost = totalCost;
+	}
+
+	/**
+	 * @return the actualUnitCost
+	 */
+	public BigDecimal getActualUnitCost() {
+		return actualUnitCost;
+	}
+
+	/**
+	 * @param actualUnitCost
+	 *            the actualUnitCost to set
+	 */
+	public void setActualUnitCost(BigDecimal actualUnitCost) {
+		this.actualUnitCost = actualUnitCost;
 	}
 
 	/**
 	 * @return the delieveredQty
 	 */
-	public Integer getDelieveredQty() {
+	public BigDecimal getDelieveredQty() {
 		return delieveredQty;
 	}
 
@@ -146,7 +182,7 @@ public class OrderItem implements Serializable {
 	 * @param delieveredQty
 	 *            the delieveredQty to set
 	 */
-	public void setDelieveredQty(Integer delieveredQty) {
+	public void setDelieveredQty(BigDecimal delieveredQty) {
 		this.delieveredQty = delieveredQty;
 	}
 
@@ -166,119 +202,63 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @return the actualUnitCost
+	 * @return the actualCostAmount
 	 */
-	public BigDecimal getActualUnitCost() {
-		return actualUnitCost;
+	public BigDecimal getActualCostAmount() {
+		return actualCostAmount;
 	}
 
 	/**
-	 * @param actualUnitCost
-	 *            the actualUnitCost to set
+	 * @param actualCostAmount
+	 *            the actualCostAmount to set
 	 */
-	public void setActualUnitCost(BigDecimal actualUnitCost) {
-		this.actualUnitCost = actualUnitCost;
+	public void setActualCostAmount(BigDecimal actualCostAmount) {
+		this.actualCostAmount = actualCostAmount;
 	}
 
 	/**
-	 * @return the totalActualCost
+	 * @return the actualDiscountAmount
 	 */
-	public BigDecimal getTotalActualCost() {
-		return totalActualCost;
+	public BigDecimal getActualDiscountAmount() {
+		return actualDiscountAmount;
 	}
 
 	/**
-	 * @param totalActualCost
-	 *            the totalActualCost to set
+	 * @param actualDiscountAmount
+	 *            the actualDiscountAmount to set
 	 */
-	public void setTotalActualCost(BigDecimal totalActualCost) {
-		this.totalActualCost = totalActualCost;
+	public void setActualDiscountAmount(BigDecimal actualDiscountAmount) {
+		this.actualDiscountAmount = actualDiscountAmount;
 	}
 
 	/**
-	 * @return the taxAmount
+	 * @return the actualTaxAmount
 	 */
-	public BigDecimal getTaxAmount() {
-		return taxAmount;
+	public BigDecimal getActualTaxAmount() {
+		return actualTaxAmount;
 	}
 
 	/**
-	 * @param taxAmount
-	 *            the taxAmount to set
+	 * @param actualTaxAmount
+	 *            the actualTaxAmount to set
 	 */
-	public void setTaxAmount(BigDecimal taxAmount) {
-		this.taxAmount = taxAmount;
+	public void setActualTaxAmount(BigDecimal actualTaxAmount) {
+		this.actualTaxAmount = actualTaxAmount;
 	}
 
 	/**
-	 * @return the actualTotalAmount
+	 * @return the actualTotalCost
 	 */
-	public BigDecimal getActualTotalAmount() {
-		return actualTotalAmount;
+	public BigDecimal getActualTotalCost() {
+		return actualTotalCost;
 	}
 
 	/**
-	 * @param actualTotalAmount
-	 *            the actualTotalAmount to set
+	 * @param actualTotalCost
+	 *            the actualTotalCost to set
 	 */
-	public void setActualTotalAmount(BigDecimal actualTotalAmount) {
-		this.actualTotalAmount = actualTotalAmount;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((orderItemId == null) ? 0 : orderItemId.hashCode());
-		result = prime * result + ((orderedQty == null) ? 0 : orderedQty.hashCode());
-		result = prime * result + ((totalActualCost == null) ? 0 : totalActualCost.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		OrderItem other = (OrderItem) obj;
-		if (orderItemId == null) {
-			if (other.orderItemId != null) {
-				return false;
-			}
-		} else if (!orderItemId.equals(other.orderItemId)) {
-			return false;
-		}
-		if (orderedQty == null) {
-			if (other.orderedQty != null) {
-				return false;
-			}
-		} else if (!orderedQty.equals(other.orderedQty)) {
-			return false;
-		}
-		if (totalActualCost == null) {
-			if (other.totalActualCost != null) {
-				return false;
-			}
-		} else if (!totalActualCost.equals(other.totalActualCost)) {
-			return false;
-		}
-		return true;
+	public void setActualTotalCost(BigDecimal actualTotalCost) {
+		this.actualTotalCost = actualTotalCost;
 	}
 
 }

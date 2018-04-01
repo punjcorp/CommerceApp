@@ -230,7 +230,7 @@
 	<detail>
 		<band height="211" splitType="Stretch">
 			<subreport>
-				<reportElement x="1" y="0" width="584" height="210" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<reportElement positionType="FixRelativeToBottom" x="1" y="0" width="584" height="210" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>

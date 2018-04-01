@@ -80,8 +80,16 @@ public final class MVCConstants {
 		
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";
-	public static final String ORDER_REPORT="/reports/order/purchase_order.jrxml";
-	public static final String ORDER_ITEMS_REPORT="/reports/order/purchase_order_item.jrxml";
+	
+	public static final String ORDER_REPORT="/reports/order/purchase_order.jasper";
+	public static final String ORDER_HEADER_REPORT="/reports/order/purchase_order_header.jasper";
+	public static final String ORDER_FOOTER_REPORT="/reports/order/purchase_order_footer.jasper";
+	public static final String ORDER_ITEMS_REPORT="/reports/order/purchase_order_item.jasper";
+	public static final String SUPPLIER_REPORT="/reports/supplier/supplier.jasper";
+	public static final String DELIEVERY_LOCATION_REPORT="/reports/common/location.jasper";
+	
+	
+	
 	public static final String ORDERS_REPORT_NAME="order_list_report.pdf";
 
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
@@ -89,13 +97,16 @@ public final class MVCConstants {
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
 	
 
-	public static final String ORDER_ITEM_REPORT_PARAM="ORDER_ITEM_REPORT";
+	public static final String ORDER_HEADER_REPORT_PARAM="ORDER_HEADER_REPORT";
+	public static final String ORDER_FOOTER_REPORT_PARAM="ORDER_FOOTER_REPORT";
+	public static final String ORDER_ITEMS_REPORT_PARAM="ORDER_ITEMS_REPORT";
 	public static final String SUPPLIER_REPORT_PARAM="SUPPLIER_REPORT";
-	public static final String SUPPLIER_ADDRESS_REPORT_PARAM="SUPPLIER_ADDRESS_REPORT";
-	public static final String DELIVERY_ADDRESS_REPORT_PARAM="DELIVERY_ADDRESS_REPORT";
+	public static final String DELIVERY_LOCATION_REPORT_PARAM="DELIVERY_LOCATION_REPORT";
+	
+	public static final String ORDER_DATA_PARAM="ORDER_DATA";
+	public static final String ORDER_ITEMS_DATA_PARAM="ORDER_ITEMS_DATA";
 	public static final String SUPPLIER_DATA_PARAM="SUPPLIER_DATA";
-	public static final String SUPPLIER_ADDRESS_DATA_PARAM="SUPPLIER_ADDRESS_DATA";
-	public static final String DELIVERY_ADDRESS_DATA_PARAM="DELIVERY_ADDRESS_DATA";
+	public static final String DELIVERY_LOCATION_DATA_PARAM="DELIVERY_LOCATION_DATA";
 	
 	
 	
@@ -113,7 +124,6 @@ public final class MVCConstants {
 	public static final String ADDRESSES_PARAM="addresses";
 	
 	
-	public static final String SUPPLIER_REPORT="/reports/supplier/supplier.jrxml";
 	public static final String ADDRESS_REPORT="/reports/address/address.jrxml";
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
@@ -124,6 +134,10 @@ public final class MVCConstants {
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
+	public static final String LAST_ORDER_BEAN= "lastOrder";
+	public static final String LAST_ORDER_REPORT= "lastOrderReport";
+	public static final String LAST_ORDER_REPORT_JASPER= "lastOrderReportJasper";
+	public static final String LAST_ORDER_REPORT_PDF= "lastOrderReportPDF";
 	public static final String ORDER_BEAN_DTO= "orderBeanDTO";
 	public static final String ORDER_BEAN= "orderBean";
 	public static final String CARD_BEAN="cardBean";

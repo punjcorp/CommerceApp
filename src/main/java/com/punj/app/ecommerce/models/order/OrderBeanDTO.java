@@ -5,6 +5,8 @@ package com.punj.app.ecommerce.models.order;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 
@@ -14,7 +16,9 @@ import com.punj.app.ecommerce.models.common.SearchBean;
  */
 public class OrderBeanDTO {
 
+	@Valid
 	private OrderBean order;
+	@Valid
 	private SearchBean supplierSearch;
 	private SearchBean itemSearch;
 	private List<LocationBean> locations;

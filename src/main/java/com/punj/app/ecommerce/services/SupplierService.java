@@ -3,11 +3,13 @@
  */
 package com.punj.app.ecommerce.services;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
+import com.punj.app.ecommerce.domains.supplier.SupplierItem;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -32,5 +34,7 @@ public interface SupplierService {
 	public void deleteSuppliers(Set<Integer> supplierIds);
 
 	public void deleteAddress(Address supplierAddress, Integer supplierId);
+
+	public SupplierItem getSupplierItem(BigInteger itemId, Integer supplierId);
 
 }

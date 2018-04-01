@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.lookup;
  * 
  */
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +32,14 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
+import com.punj.app.ecommerce.domains.supplier.SupplierItem;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.SaleItemService;
+import com.punj.app.ecommerce.services.SupplierService;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -50,6 +53,7 @@ public class ItemLookupController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
 	private SaleItemService saleItemService;
+	private SupplierService supplierService;
 
 	/**
 	 * @param itemService
@@ -58,6 +62,15 @@ public class ItemLookupController {
 	@Autowired
 	public void setItemService(ItemService itemService) {
 		this.itemService = itemService;
+	}
+
+	/**
+	 * @param supplierService
+	 *            the supplierService to set
+	 */
+	@Autowired
+	public void setSupplierService(SupplierService supplierService) {
+		this.supplierService = supplierService;
 	}
 
 	/**
@@ -161,9 +174,9 @@ public class ItemLookupController {
 
 	@PostMapping(value = ViewPathConstants.ORDER_ITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public List<ItemBean> lookupOrderItem(@RequestBody @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
+	public List<ItemBean> lookupOrderItems(@RequestBody @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
 		return this.lookupSKU(searchBean, bindingResult, model, session);
-				
+
 	}
 
 	@GetMapping(value = ViewPathConstants.SALEITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -180,6 +193,15 @@ public class ItemLookupController {
 			logger.error("There is an error while retrieving skus for sku lookup screen", e);
 			return null;
 		}
+		return saleItem;
+	}
+
+	@GetMapping(value = ViewPathConstants.SEARCH_ORDER_ITEM_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public SaleItem lookupOrderItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId,
+			@RequestParam("supplierId") Integer supplierId) {
+		SaleItem saleItem = this.itemService.retrieveItemDetails(locationId, supplierId, itemId, Boolean.FALSE);
+		logger.info("The order line item has been retrieved successfully");
 		return saleItem;
 	}
 

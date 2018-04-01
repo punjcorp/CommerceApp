@@ -19,10 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
+import com.punj.app.ecommerce.domains.supplier.SupplierItem;
 import com.punj.app.ecommerce.domains.supplier.ids.SupplierAddressId;
+import com.punj.app.ecommerce.domains.supplier.ids.SupplierItemId;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.repositories.AddressRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierAddressRepository;
+import com.punj.app.ecommerce.repositories.supplier.SupplierItemRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierSearchRepository;
 import com.punj.app.ecommerce.services.PaymentAccountService;
@@ -40,6 +43,7 @@ public class SupplierServiceImpl implements SupplierService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private SupplierRepository supplierRepository;
+	private SupplierItemRepository supplierItemRepository;
 	private SupplierSearchRepository supplierSearchRepository;
 	private AddressRepository addressRepository;
 	private SupplierAddressRepository supplierAddressRepository;
@@ -68,8 +72,8 @@ public class SupplierServiceImpl implements SupplierService {
 	@Autowired
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
-	}	
-	
+	}
+
 	/**
 	 * @param supplierAddressRepository
 	 *            the supplierAddressRepository to set
@@ -77,6 +81,15 @@ public class SupplierServiceImpl implements SupplierService {
 	@Autowired
 	public void setSupplierAddressRepository(SupplierAddressRepository supplierAddressRepository) {
 		this.supplierAddressRepository = supplierAddressRepository;
+	}
+
+	/**
+	 * @param supplierItemRepository
+	 *            the supplierItemRepository to set
+	 */
+	@Autowired
+	public void setSupplierItemRepository(SupplierItemRepository supplierItemRepository) {
+		this.supplierItemRepository = supplierItemRepository;
 	}
 
 	/**
@@ -221,6 +234,18 @@ public class SupplierServiceImpl implements SupplierService {
 		SupplierDTO suppliers = this.supplierSearchRepository.search(text, pager);
 		logger.info("The suppliers has been retrieved based on searched keyword");
 		return suppliers;
+	}
+
+	@Override
+	public SupplierItem getSupplierItem(BigInteger itemId, Integer supplierId) {
+
+		SupplierItemId supplierItemId = new SupplierItemId();
+		supplierItemId.setItemId(itemId);
+		supplierItemId.setSupplierId(supplierId);
+
+		SupplierItem supplierItem = this.supplierItemRepository.findOne(supplierItemId);
+		logger.info("The supplier item was retreived successfully");
+		return supplierItem;
 	}
 
 }

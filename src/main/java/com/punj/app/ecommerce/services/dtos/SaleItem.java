@@ -20,6 +20,7 @@ public class SaleItem implements Serializable {
 	private String longDesc;
 	private String imagePath;
 
+	private BigDecimal unitCostAmt;
 	private BigDecimal priceAmt;
 	private BigDecimal discountAmt;
 	private BigDecimal taxAmt;
@@ -209,6 +210,20 @@ public class SaleItem implements Serializable {
 	 */
 	public void setIgstTax(SaleItemTax igstTax) {
 		this.igstTax = igstTax;
+	}
+
+	/**
+	 * @return the unitCostAmt
+	 */
+	public BigDecimal getUnitCostAmt() {
+		return unitCostAmt;
+	}
+
+	/**
+	 * @param unitCostAmt the unitCostAmt to set
+	 */
+	public void setUnitCostAmt(BigDecimal unitCostAmt) {
+		this.unitCostAmt = unitCostAmt;
 	}
 
 }

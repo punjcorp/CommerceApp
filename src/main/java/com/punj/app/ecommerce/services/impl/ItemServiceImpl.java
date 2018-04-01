@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
+import com.punj.app.ecommerce.domains.item.ItemLocationTax;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.SKUCounter;
 import com.punj.app.ecommerce.domains.item.StyleCounter;
@@ -43,6 +45,9 @@ import com.punj.app.ecommerce.repositories.item.ItemSearchRepository;
 import com.punj.app.ecommerce.repositories.item.SKUCounterRepository;
 import com.punj.app.ecommerce.repositories.item.StyleCounterRepository;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.dtos.SaleItem;
+import com.punj.app.ecommerce.services.dtos.SaleItemTax;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -61,6 +66,7 @@ public class ItemServiceImpl implements ItemService {
 	private HierarchyRepository hierarchyRepository;
 	private StyleCounterRepository styleRepository;
 	private SKUCounterRepository skuRepository;
+	private CommonService commonService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -73,6 +79,15 @@ public class ItemServiceImpl implements ItemService {
 	 */
 	public ItemRepository getItemRepository() {
 		return itemRepository;
+	}
+
+	/**
+	 * @param commonService
+	 *            the commonService to set
+	 */
+	@Autowired
+	public void setCommonService(CommonService commonService) {
+		this.commonService = commonService;
 	}
 
 	/**
@@ -243,8 +258,7 @@ public class ItemServiceImpl implements ItemService {
 
 		List<Attribute> attributeList = attributeRepository.findAll();
 
-		logger.info("All the attributes-{} for a new style creation has been retrieved successfully",
-				attributeList.size());
+		logger.info("All the attributes-{} for a new style creation has been retrieved successfully", attributeList.size());
 
 		return attributeList;
 	}
@@ -267,8 +281,7 @@ public class ItemServiceImpl implements ItemService {
 			finalList.add(itemAttr.getItemAttributeId().getAttribute());
 		}
 
-		logger.info("All the attributes-{} for a new style creation has been retrieved successfully",
-				attributeList.size());
+		logger.info("All the attributes-{} for a new style creation has been retrieved successfully", attributeList.size());
 
 		return finalList;
 	}
@@ -423,7 +436,7 @@ public class ItemServiceImpl implements ItemService {
 
 		return items;
 	}
-	
+
 	@Override
 	public ItemDTO searchSKUs(String text, Pager pager) {
 		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
@@ -435,7 +448,7 @@ public class ItemServiceImpl implements ItemService {
 		logger.info("The searched skus has been retrieved using keywords successfully");
 
 		return items;
-	}	
+	}
 
 	@Override
 	public ItemDTO listItems(Item itemCriteria, Pager pager) {
@@ -455,7 +468,7 @@ public class ItemServiceImpl implements ItemService {
 		ItemDTO itemDTO = new ItemDTO();
 		itemDTO.setItems(items);
 
-		pager.setResultSize((int)itemsPage.getTotalElements());
+		pager.setResultSize((int) itemsPage.getTotalElements());
 
 		itemDTO.setPager(pager);
 
@@ -469,6 +482,76 @@ public class ItemServiceImpl implements ItemService {
 		Item item = this.getStyle(itemNumber);
 		logger.info("The item object has been retrieved successfully for item ->{} .", itemNumber);
 		return item;
+	}
+
+	@Override
+	
+	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId, Boolean outOfStateFlag) {
+
+		ItemLocationTax itemLocTax = this.commonService.retrieveItemDetails(locationId, supplierId, itemId);
+		SaleItem saleItem =null;
+		if(itemLocTax!=null) {
+			saleItem = this.transformItemDetails(itemLocTax, outOfStateFlag);
+			logger.info("The item object has been retrieved successfully for item");
+		}else {
+			logger.info("There was no record found for the search criteria");
+		}
+
+		return saleItem;
+	}
+
+	private SaleItem transformItemDetails(ItemLocationTax itemLocTax, Boolean outOfStateFlag) {
+		SaleItem saleItem = new SaleItem();
+
+		saleItem.setItemId(itemLocTax.getItemLocationTaxId().getItemId());
+		saleItem.setName(itemLocTax.getName());
+		saleItem.setLongDesc(itemLocTax.getLongDesc());
+		// Check this out
+		saleItem.setImagePath(itemLocTax.getName());
+		saleItem.setQty(1.0);
+		saleItem.setUnitCostAmt(itemLocTax.getBaseUnitCost());
+
+
+		saleItem.setPriceAmt(saleItem.getUnitCostAmt().multiply(BigDecimal.valueOf(saleItem.getQty())));
+
+		SaleItemTax saleItemTax = new SaleItemTax();
+		saleItemTax.setAmount(itemLocTax.getSgstAmount());
+		saleItemTax.setPercentage(itemLocTax.getSgstRate());
+		saleItemTax.setTaxRuleRateName(itemLocTax.getSgstCode());
+		saleItemTax.setTypeCode(itemLocTax.getSgstCode());
+		saleItem.setSgstTax(saleItemTax);
+
+		saleItemTax = new SaleItemTax();
+		saleItemTax.setAmount(itemLocTax.getCgstAmount());
+		saleItemTax.setPercentage(itemLocTax.getCgstRate());
+		saleItemTax.setTaxRuleRateName(itemLocTax.getCgstCode());
+		saleItemTax.setTypeCode(itemLocTax.getCgstCode());
+		saleItem.setCgstTax(saleItemTax);
+
+		saleItemTax = new SaleItemTax();
+		saleItemTax.setAmount(itemLocTax.getIgstAmount());
+		saleItemTax.setPercentage(itemLocTax.getIgstRate());
+		saleItemTax.setTaxRuleRateName(itemLocTax.getIgstCode());
+		saleItemTax.setTypeCode(itemLocTax.getIgstCode());
+		saleItem.setIgstTax(saleItemTax);
+
+		if (outOfStateFlag) {
+			saleItem.getIgstTax().setAmount(saleItem.getUnitCostAmt().multiply(saleItem.getIgstTax().getPercentage().divide(new BigDecimal(100))));
+			saleItem.setTaxAmt(saleItem.getIgstTax().getAmount());
+		} else {
+			saleItem.getSgstTax().setAmount(saleItem.getUnitCostAmt().multiply(saleItem.getSgstTax().getPercentage().divide(new BigDecimal(100))));
+			saleItem.getCgstTax().setAmount(saleItem.getUnitCostAmt().multiply(saleItem.getCgstTax().getPercentage().divide(new BigDecimal(100))));
+
+			saleItem.setTaxAmt(saleItem.getCgstTax().getAmount().add(saleItem.getSgstTax().getAmount()));
+		}
+
+		saleItem.setDiscountAmt(BigDecimal.ZERO);
+
+		saleItem.setTotalAmt(saleItem.getPriceAmt().add(saleItem.getTaxAmt()));
+
+		logger.info("The item details from database has been transformed to Sale Item");
+
+		return saleItem;
 	}
 
 }

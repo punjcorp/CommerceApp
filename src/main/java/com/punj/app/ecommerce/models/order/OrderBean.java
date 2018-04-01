@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.models.order;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -19,12 +20,14 @@ import com.punj.app.ecommerce.utils.Pager;
  * @author admin
  *
  */
-public class OrderBean {
+public class OrderBean implements Serializable {
 
+	private static final long serialVersionUID = -4016931635705372146L;
+	
 	private BigInteger orderId;
-	@NotNull
+	@NotNull(message = "{commerce.error.string.empty}")
 	private Integer supplierId;
-	@NotNull
+	@NotNull(message = "{commerce.error.string.empty}")
 	private Integer locationId;
 
 	private SupplierBean supplier;
@@ -38,6 +41,9 @@ public class OrderBean {
 	private BigDecimal estimatedCost = BigDecimal.ZERO;
 	private BigDecimal discountAmount = BigDecimal.ZERO;
 	private BigDecimal taxAmount = BigDecimal.ZERO;
+	private BigDecimal cgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal sgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal igstTaxAmount = BigDecimal.ZERO;
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	private BigDecimal paidAmount = BigDecimal.ZERO;
 
@@ -259,6 +265,51 @@ public class OrderBean {
 	 */
 	public void setPager(Pager pager) {
 		this.pager = pager;
+	}
+
+	/**
+	 * @return the cgstTaxAmount
+	 */
+	public BigDecimal getCgstTaxAmount() {
+		return cgstTaxAmount;
+	}
+
+	/**
+	 * @param cgstTaxAmount
+	 *            the cgstTaxAmount to set
+	 */
+	public void setCgstTaxAmount(BigDecimal cgstTaxAmount) {
+		this.cgstTaxAmount = cgstTaxAmount;
+	}
+
+	/**
+	 * @return the sgstTaxAmount
+	 */
+	public BigDecimal getSgstTaxAmount() {
+		return sgstTaxAmount;
+	}
+
+	/**
+	 * @param sgstTaxAmount
+	 *            the sgstTaxAmount to set
+	 */
+	public void setSgstTaxAmount(BigDecimal sgstTaxAmount) {
+		this.sgstTaxAmount = sgstTaxAmount;
+	}
+
+	/**
+	 * @return the igstTaxAmount
+	 */
+	public BigDecimal getIgstTaxAmount() {
+		return igstTaxAmount;
+	}
+
+	/**
+	 * @param igstTaxAmount
+	 *            the igstTaxAmount to set
+	 */
+	public void setIgstTaxAmount(BigDecimal igstTaxAmount) {
+		this.igstTaxAmount = igstTaxAmount;
 	}
 
 }

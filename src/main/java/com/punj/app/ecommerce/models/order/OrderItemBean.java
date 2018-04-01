@@ -7,8 +7,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-import javax.money.MonetaryAmount;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
 
@@ -17,25 +18,35 @@ import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
  *
  */
 public class OrderItemBean {
-	@NotNull
+	@NotNull(message = "{commerce.error.string.empty}")
 	private BigInteger itemId;
 
 	private BigInteger orderId;
 
-	@NotNull
-	private Integer orderedQty;
+	@NotNull(message = "{commerce.error.string.empty}")
+	private BigDecimal orderedQty;
 
+	@NotNull(message = "{commerce.error.string.empty}")
+	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal costAmount = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
 
-	private Integer delieveredQty;
+	private BigDecimal cgstRate = BigDecimal.ZERO;
+	private BigDecimal sgstRate = BigDecimal.ZERO;
+	private BigDecimal igstRate = BigDecimal.ZERO;
+	private BigDecimal cgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal sgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal igstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal taxAmount = BigDecimal.ZERO;
+
+	private BigDecimal delieveredQty;
 	private LocalDateTime delieveredDate;
 
-	private BigDecimal costActualAmount = BigDecimal.ZERO;
-	private BigDecimal totalActualCost = BigDecimal.ZERO;
-	private BigDecimal discountAmount = BigDecimal.ZERO;
-	private BigDecimal taxAmount = BigDecimal.ZERO;
-	private BigDecimal totalActualAmount = BigDecimal.ZERO;
+	private BigDecimal actualUnitCost = BigDecimal.ZERO;
+	private BigDecimal actualCostAmount = BigDecimal.ZERO;
+	private BigDecimal actualTotalCost = BigDecimal.ZERO;
+	private BigDecimal actualDiscountAmount = BigDecimal.ZERO;
+	private BigDecimal actualTaxAmount = BigDecimal.ZERO;
 
 	private SupplierItemBean supplierItem;
 
@@ -47,7 +58,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param itemId the itemId to set
+	 * @param itemId
+	 *            the itemId to set
 	 */
 	public void setItemId(BigInteger itemId) {
 		this.itemId = itemId;
@@ -61,7 +73,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param orderId the orderId to set
+	 * @param orderId
+	 *            the orderId to set
 	 */
 	public void setOrderId(BigInteger orderId) {
 		this.orderId = orderId;
@@ -70,15 +83,31 @@ public class OrderItemBean {
 	/**
 	 * @return the orderedQty
 	 */
-	public Integer getOrderedQty() {
+	public BigDecimal getOrderedQty() {
 		return orderedQty;
 	}
 
 	/**
-	 * @param orderedQty the orderedQty to set
+	 * @param orderedQty
+	 *            the orderedQty to set
 	 */
-	public void setOrderedQty(Integer orderedQty) {
+	public void setOrderedQty(BigDecimal orderedQty) {
 		this.orderedQty = orderedQty;
+	}
+
+	/**
+	 * @return the unitCost
+	 */
+	public BigDecimal getUnitCost() {
+		return unitCost;
+	}
+
+	/**
+	 * @param unitCost
+	 *            the unitCost to set
+	 */
+	public void setUnitCost(BigDecimal unitCost) {
+		this.unitCost = unitCost;
 	}
 
 	/**
@@ -89,7 +118,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param costAmount the costAmount to set
+	 * @param costAmount
+	 *            the costAmount to set
 	 */
 	public void setCostAmount(BigDecimal costAmount) {
 		this.costAmount = costAmount;
@@ -103,23 +133,130 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param totalCost the totalCost to set
+	 * @param totalCost
+	 *            the totalCost to set
 	 */
 	public void setTotalCost(BigDecimal totalCost) {
 		this.totalCost = totalCost;
 	}
 
 	/**
+	 * @return the cgstRate
+	 */
+	public BigDecimal getCgstRate() {
+		return cgstRate;
+	}
+
+	/**
+	 * @param cgstRate
+	 *            the cgstRate to set
+	 */
+	public void setCgstRate(BigDecimal cgstRate) {
+		this.cgstRate = cgstRate;
+	}
+
+	/**
+	 * @return the sgstRate
+	 */
+	public BigDecimal getSgstRate() {
+		return sgstRate;
+	}
+
+	/**
+	 * @param sgstRate
+	 *            the sgstRate to set
+	 */
+	public void setSgstRate(BigDecimal sgstRate) {
+		this.sgstRate = sgstRate;
+	}
+
+	/**
+	 * @return the igstRate
+	 */
+	public BigDecimal getIgstRate() {
+		return igstRate;
+	}
+
+	/**
+	 * @param igstRate
+	 *            the igstRate to set
+	 */
+	public void setIgstRate(BigDecimal igstRate) {
+		this.igstRate = igstRate;
+	}
+
+	/**
+	 * @return the cgstTaxAmount
+	 */
+	public BigDecimal getCgstTaxAmount() {
+		return cgstTaxAmount;
+	}
+
+	/**
+	 * @param cgstTaxAmount
+	 *            the cgstTaxAmount to set
+	 */
+	public void setCgstTaxAmount(BigDecimal cgstTaxAmount) {
+		this.cgstTaxAmount = cgstTaxAmount;
+	}
+
+	/**
+	 * @return the sgstTaxAmount
+	 */
+	public BigDecimal getSgstTaxAmount() {
+		return sgstTaxAmount;
+	}
+
+	/**
+	 * @param sgstTaxAmount
+	 *            the sgstTaxAmount to set
+	 */
+	public void setSgstTaxAmount(BigDecimal sgstTaxAmount) {
+		this.sgstTaxAmount = sgstTaxAmount;
+	}
+
+	/**
+	 * @return the igstTaxAmount
+	 */
+	public BigDecimal getIgstTaxAmount() {
+		return igstTaxAmount;
+	}
+
+	/**
+	 * @param igstTaxAmount
+	 *            the igstTaxAmount to set
+	 */
+	public void setIgstTaxAmount(BigDecimal igstTaxAmount) {
+		this.igstTaxAmount = igstTaxAmount;
+	}
+
+	/**
+	 * @return the taxAmount
+	 */
+	public BigDecimal getTaxAmount() {
+		return taxAmount;
+	}
+
+	/**
+	 * @param taxAmount
+	 *            the taxAmount to set
+	 */
+	public void setTaxAmount(BigDecimal taxAmount) {
+		this.taxAmount = taxAmount;
+	}
+
+	/**
 	 * @return the delieveredQty
 	 */
-	public Integer getDelieveredQty() {
+	public BigDecimal getDelieveredQty() {
 		return delieveredQty;
 	}
 
 	/**
-	 * @param delieveredQty the delieveredQty to set
+	 * @param delieveredQty
+	 *            the delieveredQty to set
 	 */
-	public void setDelieveredQty(Integer delieveredQty) {
+	public void setDelieveredQty(BigDecimal delieveredQty) {
 		this.delieveredQty = delieveredQty;
 	}
 
@@ -131,80 +268,86 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param delieveredDate the delieveredDate to set
+	 * @param delieveredDate
+	 *            the delieveredDate to set
 	 */
 	public void setDelieveredDate(LocalDateTime delieveredDate) {
 		this.delieveredDate = delieveredDate;
 	}
 
 	/**
-	 * @return the costActualAmount
+	 * @return the actualUnitCost
 	 */
-	public BigDecimal getCostActualAmount() {
-		return costActualAmount;
+	public BigDecimal getActualUnitCost() {
+		return actualUnitCost;
 	}
 
 	/**
-	 * @param costActualAmount the costActualAmount to set
+	 * @param actualUnitCost
+	 *            the actualUnitCost to set
 	 */
-	public void setCostActualAmount(BigDecimal costActualAmount) {
-		this.costActualAmount = costActualAmount;
+	public void setActualUnitCost(BigDecimal actualUnitCost) {
+		this.actualUnitCost = actualUnitCost;
 	}
 
 	/**
-	 * @return the totalActualCost
+	 * @return the actualCostAmount
 	 */
-	public BigDecimal getTotalActualCost() {
-		return totalActualCost;
+	public BigDecimal getActualCostAmount() {
+		return actualCostAmount;
 	}
 
 	/**
-	 * @param totalActualCost the totalActualCost to set
+	 * @param actualCostAmount
+	 *            the actualCostAmount to set
 	 */
-	public void setTotalActualCost(BigDecimal totalActualCost) {
-		this.totalActualCost = totalActualCost;
+	public void setActualCostAmount(BigDecimal actualCostAmount) {
+		this.actualCostAmount = actualCostAmount;
 	}
 
 	/**
-	 * @return the discountAmount
+	 * @return the actualTotalCost
 	 */
-	public BigDecimal getDiscountAmount() {
-		return discountAmount;
+	public BigDecimal getActualTotalCost() {
+		return actualTotalCost;
 	}
 
 	/**
-	 * @param discountAmount the discountAmount to set
+	 * @param actualTotalCost
+	 *            the actualTotalCost to set
 	 */
-	public void setDiscountAmount(BigDecimal discountAmount) {
-		this.discountAmount = discountAmount;
+	public void setActualTotalCost(BigDecimal actualTotalCost) {
+		this.actualTotalCost = actualTotalCost;
 	}
 
 	/**
-	 * @return the taxAmount
+	 * @return the actualDiscountAmount
 	 */
-	public BigDecimal getTaxAmount() {
-		return taxAmount;
+	public BigDecimal getActualDiscountAmount() {
+		return actualDiscountAmount;
 	}
 
 	/**
-	 * @param taxAmount the taxAmount to set
+	 * @param actualDiscountAmount
+	 *            the actualDiscountAmount to set
 	 */
-	public void setTaxAmount(BigDecimal taxAmount) {
-		this.taxAmount = taxAmount;
+	public void setActualDiscountAmount(BigDecimal actualDiscountAmount) {
+		this.actualDiscountAmount = actualDiscountAmount;
 	}
 
 	/**
-	 * @return the totalActualAmount
+	 * @return the actualTaxAmount
 	 */
-	public BigDecimal getTotalActualAmount() {
-		return totalActualAmount;
+	public BigDecimal getActualTaxAmount() {
+		return actualTaxAmount;
 	}
 
 	/**
-	 * @param totalActualAmount the totalActualAmount to set
+	 * @param actualTaxAmount
+	 *            the actualTaxAmount to set
 	 */
-	public void setTotalActualAmount(BigDecimal totalActualAmount) {
-		this.totalActualAmount = totalActualAmount;
+	public void setActualTaxAmount(BigDecimal actualTaxAmount) {
+		this.actualTaxAmount = actualTaxAmount;
 	}
 
 	/**
@@ -215,7 +358,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param supplierItem the supplierItem to set
+	 * @param supplierItem
+	 *            the supplierItem to set
 	 */
 	public void setSupplierItem(SupplierItemBean supplierItem) {
 		this.supplierItem = supplierItem;

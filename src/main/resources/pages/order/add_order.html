@@ -23,7 +23,7 @@
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<form class="form" id="addForm" action="#" th:action="@{/admin/add_order}" th:object="${orderBeanDTO}" method="post">
-				<div class="row">
+				<div class="row m-3">
 					<div class="col">
 						<div class="card">
 							<div class="card-header">
@@ -45,19 +45,74 @@
 													id/Name/Email/Address/Phone#</small>
 												<div th:if="${#fields.hasErrors('supplierSearch.searchText')}" th:errors="*{supplierSearch.searchText}" class="text-danger">Search
 													Text Error</div>
+												<div id="supplierMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="form-group text-left">
 												<div class="input-group">
-													<input type="text" th:field="*{order.locationId}" class="form-control input-sm " th:placeholder="#{commerce.screen.order.location}"
-														maxlength="80"></input>
-													<div th:if="${#fields.hasErrors('order.locationId')}" th:errors="*{order.locationId}" class="text-danger">Location Error</div>
+													<select th:field="*{order.locationId}" class="form-control input-sm">
+														<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.location}">Select
+															Location</option>
+														<option th:each="location: ${orderBeanDTO.locations}" th:value="${location.locationId}"
+															th:text="${location.locationId} + ' - ' +${location.name}"></option>
+													</select>
 												</div>
+												<div th:if="${#fields.hasErrors('order.locationId')}" th:errors="*{order.locationId}" class="text-danger">Location Error</div>
+												<div id="locationMsg"></div>
 											</div>
 										</div>
 									</div>
 									<div class="orderitem">
+										<div class="row">
+											<div class="col-3 text-left">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.details}"></span>
+												</h6>
+											</div>
+											<div class="col padding-sm text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.qty}"></span>
+												</h6>
+											</div>
+											<div class="col text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.unit.cost}"></span>
+												</h6>
+											</div>
+											<div class="col text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.cost}"></span>
+												</h6>
+											</div>
+											<div class="col-2 text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.tax}"></span>
+												</h6>
+											</div>
+											<div class="col-3 text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.total}"></span>
+												</h6>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3"></div>
+											<div class="col"></div>
+											<div class="col"></div>
+											<div class="col"></div>
+											<div class="col-1 padding-sm text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.sgst}"></span>
+												</h6>
+											</div>
+											<div class="col-1 padding-sm text-center">
+												<h6>
+													<span th:text="#{commerce.screen.order.item.cgst}"></span>
+												</h6>
+											</div>
+											<div class="col-3"></div>
+										</div>
 										<th:block th:each="orderItem,itrStat:${orderBeanDTO.order.orderItems}">
 											<div class="form-group">
 												<div class="row">
@@ -75,46 +130,64 @@
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" class="form-control input-sm"
-																th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input>
+															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" onChange="saleItemChanged(this);"
+																class="form-control input-sm" th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input>
 															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].orderedQty')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" class="text-danger">Quantity Error</div>
 														</div>
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].costAmount}" class="form-control input-sm"
-																th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].costAmount')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].costAmount}" class="text-danger">Unit Cost Error</div>
+															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}" onChange="saleItemChanged(this);"
+																class="form-control input-sm" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
+															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].unitCost')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}" class="text-danger">Cost Error</div>
 														</div>
 													</div>
-													<div class="col padding-sm">
+													<div class="col padding-sm text-center">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}" class="form-control input-sm"
-																th:placeholder="#{commerce.screen.order.total.cost}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].totalCost')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}" class="text-danger">Total Cost Error</div>
+															<label> <span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_costAmount'"
+																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].costAmount}"></span> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].costAmount}"></input>
+															</label>
 														</div>
 													</div>
-													<div class="col padding-sm">
+													<div class="col-1 padding-sm text-center">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxAmount}" class="form-control input-sm"
-																th:placeholder="#{commerce.screen.order.amount.item.total.tax}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].taxAmount')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxAmount}" class="text-danger">Item Tax Total Error</div>
+															<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_sgstTaxAmount'"
+																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxAmount}"></span></label>
+															<div>
+																<small>(<span th:id="'lbl_'+${itrStat.index}+'_sgstRate'"
+																	th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></span> %)
+																</small>
+															</div>
 														</div>
 													</div>
-													<div class="col padding-sm">
+													<div class="col-1 padding-sm text-center">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalActualAmount}" class="form-control input-sm"
-																th:placeholder="#{commerce.screen.order.amount.item.total}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].totalActualAmount')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalActualAmount}" class="text-danger">Item Total Amount Error</div>
+															<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_cgstTaxAmount'"
+																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxAmount}"></span></label>
+															<div>
+																<small>(<span th:id="'lbl_'+${itrStat.index}+'_cgstRate'"
+																	th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></span> %)
+																</small>
+															</div>
+															<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxAmount}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxAmount}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxAmount}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxAmount}"></input>
 														</div>
 													</div>
-													<div class="col padding-sm">
+													<div class="col-3 text-right">
 														<div class="form-group">
+															<label><h6>
+																	<span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_totalCost'"
+																		th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}"></span>
+																</h6></label> <input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}"></input>
+																<span>  </span>
 															<button type="submit" name="addOrderItem" class="btn btn-secondary btn-sm">
 																<i class="far fa-plus-square fa-2x"></i>
 															</button>
@@ -127,18 +200,6 @@
 												</div>
 											</div>
 										</th:block>
-									</div>
-									<div class="row">
-										<div class="col-xs-6 col-sm-6 col-md-6"></div>
-										<div class="col-xs-3 col-sm-3 col-md-3 text-right">
-											<span th:text="#{commerce.screen.btn.order.estimated.total.cost}">Total Estimated Cost</span>
-										</div>
-										<div class="col-xs-3 col-sm-3 col-md-3">
-											<div id="totalOrderCost">
-												INR <span th:text="${orderBeanDTO.order.estimatedCost}">0.0</span>
-											</div>
-											<input type="hidden" th:field="*{order.estimatedCost}"></input>
-										</div>
 									</div>
 									<div class="row">
 										<div class="col-xs-2 col-sm-2 col-md-2">
@@ -240,7 +301,69 @@
 								</div>
 							</div>
 						</div>
-						<div id="orderTotals"></div>
+						<div id="orderTotals">
+							<div class="card border-box-filled">
+								<div class="row">
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.add.total.subtotal}">Sub Total Cost</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{order.estimatedCost}"></input> <label><h5>
+														<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_estimatedCost"
+															th:text="${orderBeanDTO.order.estimatedCost}"></span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.add.total.tax}">Total Tax</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{order.taxAmount}"></input> <label><h5>
+														<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_taxAmount" th:text="${orderBeanDTO.order.taxAmount}"></span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.add.total.tax.sgst}">Total SGST Tax</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{order.sgstTaxAmount}"></input> <label><h5>
+														<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_sgstTaxAmount"
+															th:text="${orderBeanDTO.order.sgstTaxAmount}"></span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.add.total.tax.cgst}">Total CGST Tax</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{order.cgstTaxAmount}"></input> <label><h5>
+														<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_cgstTaxAmount"
+															th:text="${orderBeanDTO.order.cgstTaxAmount}"></span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.add.total.amount}">Total Amount</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{order.totalAmount}"></input> <label><h5>
+														<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_totalAmount" th:text="${orderBeanDTO.order.totalAmount}"></span>
+													</h5></label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</form>
@@ -251,9 +374,48 @@
 	<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
 
-		var totalRecords = '';
-
+		var txn_orderId = /*[[${orderBeanDTO.order.orderId}]]*/;
+		var newOrderURL = /*[[@{/admin/add_order}]]*/;
+		
+		var print_rcpt_url= /*[[@{/admin/print_order_report}]]*/;
+		var view_rcpt_url= /*[[@{/admin/view_order_report}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
+		
 		/*]]>*/
 	</script>
+	
+	<!-- Order Report Lookup Modal-->
+	<div class="modal fade " id="orderReportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.order.report.print}"> Purchase Order Report</span>
+					</h5>
+				</div>
+				<div class="modal-body text-center">
+					<div id="receiptActions" class="col-12 text-center">
+						<button type="button" class="btn btn-info p-3 m-5" id="btnViewOrderReport">
+							<i class="fas fa-file-alt fa-9x"></i>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-5" id="btnPrintReportAndNewOrder">
+							<i class="fas fa-print fa-9x"></i>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-5" id="btnNewOrder">
+							<i class="far fa-plus-square fa-9x"></i>
+						</button>
+					</div>
+					<div class="col-12 d-none text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-9x"></i>
+						<div>
+							<span th:text="#{commerce.screen.order.report.generate}"></span>
+						</div>
+					</div>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="90%" frameBorder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>	
+	
 </body>
 </html>

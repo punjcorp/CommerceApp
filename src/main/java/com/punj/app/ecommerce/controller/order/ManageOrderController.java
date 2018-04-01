@@ -27,7 +27,6 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
@@ -152,11 +151,11 @@ public class ManageOrderController {
 			orderItem.setDelieveredQty(orderItemBean.getDelieveredQty());
 			orderItem.setDelieveredDate(LocalDateTime.now());
 
-			orderItem.setActualUnitCost(orderItemBean.getCostActualAmount());
+			orderItem.setActualUnitCost(orderItemBean.getActualUnitCost());
 			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setDiscountAmount(orderItemBean.getDiscountAmount());
+			orderItem.setActualDiscountAmount(orderItemBean.getActualDiscountAmount());
 			orderItem.setTaxAmount(orderItemBean.getTaxAmount());
-			orderItem.setActualTotalAmount(orderItemBean.getTotalActualAmount());
+			orderItem.setActualTotalCost(orderItemBean.getActualTotalCost());
 
 			orderItems.add(orderItem);
 
@@ -316,15 +315,15 @@ public class ManageOrderController {
 			orderItemBean.setDelieveredQty(orderItem.getDelieveredQty());
 			orderItemBean.setDelieveredDate(orderItem.getDelieveredDate());
 
-			orderItemBean.setCostActualAmount(orderItem.getActualUnitCost());
+			orderItemBean.setActualCostAmount(orderItem.getActualCostAmount());
 
-			orderItemBean.setTotalActualCost(orderItem.getTotalActualCost());
+			orderItemBean.setActualTotalCost(orderItem.getActualTotalCost());
 
-			orderItemBean.setDiscountAmount(orderItem.getDiscountAmount());
+			orderItemBean.setActualDiscountAmount(orderItem.getActualDiscountAmount());
 
 			orderItemBean.setTaxAmount(orderItem.getTaxAmount());
 
-			orderItemBean.setTotalActualAmount(orderItem.getActualTotalAmount());
+			orderItemBean.setActualTotalCost(orderItem.getActualTotalCost());
 
 			orderItemBeanList.add(orderItemBean);
 		}
@@ -778,9 +777,9 @@ public class ManageOrderController {
 
 			orderItem.setActualUnitCost(orderItemBean.getCostAmount());
 			orderItem.setCostAmount(orderItemBean.getTotalCost());
-			orderItem.setDiscountAmount(orderItemBean.getDiscountAmount());
+			orderItem.setActualDiscountAmount(orderItemBean.getActualDiscountAmount());
 			orderItem.setTaxAmount(orderItemBean.getTaxAmount());
-			orderItem.setActualTotalAmount(orderItemBean.getTotalCost());
+			orderItem.setActualTotalCost(orderItemBean.getActualTotalCost());
 
 			totalAmount = totalAmount.add(orderItemBean.getTotalCost());
 
@@ -890,73 +889,7 @@ public class ManageOrderController {
 		logger.info("The Order details has been updated in Order Beans");
 	}
 
-	@GetMapping(ViewPathConstants.PRINT_ORDER_URL)
-	public void printOrder(Model model, HttpSession session, final HttpServletRequest req, HttpServletResponse response, Locale locale) {
-		// set header as pdf
-		response.setContentType(MVCConstants.REPORT_OUTPUT_PDF);
 
-		try {
-			// set input and output stream
-			ServletOutputStream servletOutputStream = response.getOutputStream();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
-
-			Order order = orderService.searchOrder(orderId);
-
-			List<OrderBean> orderCollection = new ArrayList<>();
-			OrderBean orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order, locale);
-			List<AddressBean> primaryAddress = this.getSupplierAddress(orderBean.getSupplier().getAddresses());
-
-			orderCollection.add(orderBean);
-
-			InputStream orderReportStream = getClass().getResourceAsStream(MVCConstants.ORDER_REPORT);
-
-			JasperReport jasperReport = JasperCompileManager.compileReport(orderReportStream);
-
-			JRBeanCollectionDataSource orderDS = new JRBeanCollectionDataSource(orderCollection);
-
-			InputStream orderReportStreamChild = getClass().getResourceAsStream(MVCConstants.ORDER_ITEMS_REPORT);
-			JasperReport jasperReportChild = JasperCompileManager.compileReport(orderReportStreamChild);
-
-			InputStream supplierReportStream = getClass().getResourceAsStream(MVCConstants.SUPPLIER_REPORT);
-			JasperReport jasperSupplierReport = JasperCompileManager.compileReport(supplierReportStream);
-
-			InputStream supplierAddressReportStream = getClass().getResourceAsStream(MVCConstants.ADDRESS_REPORT);
-			JasperReport jasperSupplierAddressReport = JasperCompileManager.compileReport(supplierAddressReportStream);
-
-			InputStream deliveryAddressReportStream = getClass().getResourceAsStream(MVCConstants.ADDRESS_REPORT);
-			JasperReport jasperDelieveryAddressReport = JasperCompileManager.compileReport(deliveryAddressReportStream);
-
-			List<SupplierBean> supplierList = new ArrayList<>();
-
-			supplierList.add(orderBean.getSupplier());
-
-			Map<String, Object> paramMap = new HashMap<>();
-
-			paramMap.put(MVCConstants.ORDER_ITEM_REPORT_PARAM, jasperReportChild);
-			paramMap.put(MVCConstants.SUPPLIER_REPORT_PARAM, jasperSupplierReport);
-			paramMap.put(MVCConstants.SUPPLIER_ADDRESS_REPORT_PARAM, jasperSupplierAddressReport);
-			paramMap.put(MVCConstants.DELIVERY_ADDRESS_REPORT_PARAM, jasperDelieveryAddressReport);
-
-			paramMap.put(MVCConstants.SUPPLIER_DATA_PARAM, supplierList);
-			paramMap.put(MVCConstants.SUPPLIER_ADDRESS_DATA_PARAM, primaryAddress);
-			paramMap.put(MVCConstants.DELIVERY_ADDRESS_DATA_PARAM, primaryAddress);
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, orderDS);
-
-			// export to pdf
-			JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
-
-			response.setContentLength(baos.size());
-			baos.writeTo(servletOutputStream);
-
-			logger.info("The selected purchase order report has been printed successfully");
-		} catch (Exception e) {
-			logger.error("There is an error while retrieving purchase order for updation", e);
-		}
-	}
 
 	public List<AddressBean> getSupplierAddress(List<AddressBean> addresses) {
 		List<AddressBean> primaryAddress = new ArrayList<>();

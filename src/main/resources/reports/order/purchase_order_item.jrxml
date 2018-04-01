@@ -1,13 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_items" language="groovy" pageWidth="612" pageHeight="792" columnWidth="594" leftMargin="0" rightMargin="18" topMargin="0" bottomMargin="0" uuid="fddeabd7-7c64-4be8-b68c-63fd517d9070">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<field name="locationId" class="java.lang.Integer"/>
-	<field name="itemId" class="java.math.BigInteger"/>
-	<field name="orderedQty" class="java.lang.Integer"/>
-	<field name="costAmount" class="java.math.BigDecimal"/>
-	<field name="totalCost" class="java.math.BigDecimal"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="cgstTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cgstTaxAmount]]></fieldDescription>
+	</field>
+	<field name="sgstTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[sgstTaxAmount]]></fieldDescription>
+	</field>
+	<field name="orderId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[orderId]]></fieldDescription>
+	</field>
+	<field name="actualDiscountAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[actualDiscountAmount]]></fieldDescription>
+	</field>
+	<field name="igstTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[igstTaxAmount]]></fieldDescription>
+	</field>
+	<field name="costAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[costAmount]]></fieldDescription>
+	</field>
+	<field name="supplierItem" class="com.punj.app.ecommerce.models.supplier.SupplierItemBean">
+		<fieldDescription><![CDATA[supplierItem]]></fieldDescription>
+	</field>
+	<field name="orderedQty" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[orderedQty]]></fieldDescription>
+	</field>
+	<field name="itemId" class="java.math.BigInteger">
+		<fieldDescription><![CDATA[itemId]]></fieldDescription>
+	</field>
+	<field name="actualUnitCost" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[actualUnitCost]]></fieldDescription>
+	</field>
+	<field name="unitCost" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[unitCost]]></fieldDescription>
+	</field>
+	<field name="actualTaxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[actualTaxAmount]]></fieldDescription>
+	</field>
+	<field name="cgstRate" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cgstRate]]></fieldDescription>
+	</field>
+	<field name="delieveredDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[delieveredDate]]></fieldDescription>
+	</field>
+	<field name="actualCostAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[actualCostAmount]]></fieldDescription>
+	</field>
+	<field name="sgstRate" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[sgstRate]]></fieldDescription>
+	</field>
+	<field name="igstRate" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[igstRate]]></fieldDescription>
+	</field>
+	<field name="taxAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[taxAmount]]></fieldDescription>
+	</field>
+	<field name="actualTotalCost" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[actualTotalCost]]></fieldDescription>
+	</field>
+	<field name="delieveredQty" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[delieveredQty]]></fieldDescription>
+	</field>
+	<field name="totalCost" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[totalCost]]></fieldDescription>
+	</field>
 	<variable name="totalCost_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
 		<variableExpression><![CDATA[$F{totalCost}]]></variableExpression>
 	</variable>
@@ -15,84 +77,106 @@
 		<band splitType="Stretch"/>
 	</background>
 	<columnHeader>
-		<band height="37" splitType="Stretch">
-			<rectangle radius="5">
-				<reportElement mode="Opaque" x="0" y="0" width="576" height="37" backcolor="#67C6E6" uuid="0ca13e6f-cf2e-4e18-a147-92d212bde523"/>
+		<band height="15" splitType="Stretch">
+			<rectangle radius="0">
+				<reportElement stretchType="ElementGroupHeight" mode="Opaque" x="0" y="0" width="612" height="15" backcolor="#67C6E6" uuid="0ca13e6f-cf2e-4e18-a147-92d212bde523"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="14" y="11" width="100" height="20" uuid="10999334-b2ba-46dd-ad5b-4fab22cf8e32"/>
+				<reportElement x="1" y="2" width="100" height="11" uuid="10999334-b2ba-46dd-ad5b-4fab22cf8e32"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Item#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="121" y="11" width="100" height="20" uuid="cad1ec05-96c8-4577-aa3e-f7d58a4c0b86"/>
+				<reportElement x="118" y="2" width="100" height="11" uuid="deb773f6-ebff-43d3-a381-94e5c4a9e952"/>
 				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Location]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="233" y="11" width="100" height="20" uuid="deb773f6-ebff-43d3-a381-94e5c4a9e952"/>
-				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ordered Quantity]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="344" y="11" width="97" height="20" uuid="c808d0d0-5a83-4b24-bf3d-1b4c8a0c9514"/>
+				<reportElement x="222" y="2" width="97" height="11" uuid="c808d0d0-5a83-4b24-bf3d-1b4c8a0c9514"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unit Cost]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="461" y="11" width="100" height="20" uuid="ddfe0282-96d9-4c7b-b476-5838ca338d98"/>
+				<reportElement x="461" y="2" width="100" height="11" uuid="ddfe0282-96d9-4c7b-b476-5838ca338d98"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="2" width="100" height="11" uuid="1d384371-4f2a-4dbc-8847-6cbca70643c5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c94f04c1-9eb7-4fea-80e9-13f3d407702f"/>
+				</reportElement>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[taxAmount]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="26" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement x="14" y="0" width="100" height="20" uuid="474b614d-bbc3-4944-9d65-176361b2ab39"/>
+				<reportElement x="1" y="2" width="100" height="11" uuid="474b614d-bbc3-4944-9d65-176361b2ab39"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{itemId}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="121" y="0" width="100" height="20" uuid="ee7960fd-9873-42f8-9887-3849d8e9c1fc"/>
-				<textFieldExpression><![CDATA[$F{locationId}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="233" y="0" width="100" height="20" uuid="fd80b011-e034-4fcc-87b3-bf9a2043a6f0"/>
+				<reportElement x="118" y="2" width="100" height="11" uuid="fd80b011-e034-4fcc-87b3-bf9a2043a6f0"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{orderedQty}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="341" y="0" width="100" height="20" uuid="8f4d461c-1f42-4296-a7f9-315f18cc1ffc"/>
+				<reportElement x="223" y="2" width="100" height="11" uuid="8f4d461c-1f42-4296-a7f9-315f18cc1ffc"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{costAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="461" y="0" width="111" height="20" uuid="bc28a53f-f00a-46a4-b638-8f9f444cfa3b"/>
+				<reportElement x="461" y="2" width="111" height="11" uuid="bc28a53f-f00a-46a4-b638-8f9f444cfa3b"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{totalCost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="2" width="100" height="11" uuid="c004581d-cd9e-4d7b-b47a-a254b2229362">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c94f04c1-9eb7-4fea-80e9-13f3d407702f"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{taxAmount}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="26" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<staticText>
-				<reportElement x="341" y="1" width="100" height="20" uuid="c964055c-ed81-4aa1-9378-fb69e4ea86fe"/>
+				<reportElement x="341" y="2" width="100" height="14" uuid="c964055c-ed81-4aa1-9378-fb69e4ea86fe"/>
 				<textElement textAlignment="Right">
-					<font size="14" isBold="true"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="461" y="1" width="111" height="20" uuid="dab03974-6882-43c6-b515-27c64b864243"/>
+				<reportElement x="461" y="2" width="111" height="14" uuid="dab03974-6882-43c6-b515-27c64b864243"/>
 				<textElement>
-					<font size="14"/>
+					<font fontName="Calibri" size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totalCost_1}]]></textFieldExpression>
 			</textField>

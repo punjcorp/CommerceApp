@@ -126,8 +126,67 @@ VIEW `commercedb`.`v_receipt_li_item` AS
             AND (`li_itm`.`txn_no` = `tax_dtl`.`txn_no`)
             AND (`li_itm`.`item_id` = `tax_dtl`.`item_id`));
     
-    
-    
+-- -----------------------------------------------------
+-- View Creation `commercedb`.`v_item_location_tax`
+-- -----------------------------------------------------    
+CREATE OR REPLACE VIEW `commercedb`.`v_item_location_tax` AS
+    SELECT 
+        `itm`.`item_id` AS `item_id`,
+        `itm`.`name` AS `name`,
+        `itm`.`long_desc` AS `long_desc`,
+        `itmopt`.`unit_cost` AS `base_unit_cost`,
+        `supitm`.`supplier_id` AS `supplier_id`,
+        `supitm`.`unit_cost` AS `supplier_unit_cost`,
+        `taxdtl`.`location_id` AS `location_id`,
+        `taxdtl`.`tax_group_id` AS `tax_group_id`,
+        `taxdtl`.`tax_group_name` AS `tax_group_name`,
+        `taxdtl`.`sgst_rate` AS `sgst_rate`,
+        `taxdtl`.`sgst_amount` AS `sgst_amount`,
+        `taxdtl`.`sgst_code` AS `sgst_code`,
+        `taxdtl`.`cgst_rate` AS `cgst_rate`,
+        `taxdtl`.`cgst_amount` AS `cgst_amount`,
+        `taxdtl`.`cgst_code` AS `cgst_code`,
+        `taxdtl`.`igst_rate` AS `igst_rate`,
+        `taxdtl`.`igst_amount` AS `igst_amount`,
+        `taxdtl`.`igst_code` AS `igst_code`
+    FROM
+        (((`commercedb`.`item` `itm`
+        LEFT JOIN `commercedb`.`item_options` `itmopt` ON ((`itm`.`item_id` = `itmopt`.`item_id`)))
+        LEFT JOIN (SELECT 
+            `vlt`.`location_id` AS `location_id`,
+                `vlt`.`tax_group_id` AS `tax_group_id`,
+                `vlt`.`tax_group_name` AS `tax_group_name`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`percentage`
+                END)) AS `sgst_rate`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`amount`
+                END)) AS `sgst_amount`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`type_code`
+                END)) AS `sgst_code`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`percentage`
+                END)) AS `cgst_rate`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`amount`
+                END)) AS `cgst_amount`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`type_code`
+                END)) AS `cgst_code`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`percentage`
+                END)) AS `igst_rate`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`amount`
+                END)) AS `igst_amount`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`type_code`
+                END)) AS `igst_code`
+        FROM
+            `commercedb`.`v_location_tax` `vlt`
+        GROUP BY `vlt`.`location_id` , `vlt`.`tax_group_id`) `taxdtl` ON ((`itmopt`.`tax_group_id` = `taxdtl`.`tax_group_id`)))
+        LEFT JOIN `commercedb`.`supplier_item` `supitm` ON ((`supitm`.`item_id` = `itm`.`item_id`)));
     
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

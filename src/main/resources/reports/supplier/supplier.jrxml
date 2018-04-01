@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="supplier" language="groovy" pageWidth="200" pageHeight="842" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ba6bc30d-70e6-448c-95a0-7ffb454c45ad">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -10,61 +11,95 @@
 	<field name="addresses" class="java.util.List">
 		<fieldDescription><![CDATA[addresses]]></fieldDescription>
 	</field>
-	<field name="email" class="java.lang.String">
-		<fieldDescription><![CDATA[email]]></fieldDescription>
+	<field name="supplierId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[supplierId]]></fieldDescription>
+	</field>
+	<field name="pager" class="com.punj.app.ecommerce.utils.Pager">
+		<fieldDescription><![CDATA[pager]]></fieldDescription>
 	</field>
 	<field name="name" class="java.lang.String">
 		<fieldDescription><![CDATA[name]]></fieldDescription>
 	</field>
-	<field name="phone1" class="java.lang.String">
-		<fieldDescription><![CDATA[phone1]]></fieldDescription>
-	</field>
 	<field name="phone2" class="java.lang.String">
 		<fieldDescription><![CDATA[phone2]]></fieldDescription>
 	</field>
-	<field name="supplierId" class="java.lang.Integer">
-		<fieldDescription><![CDATA[supplierId]]></fieldDescription>
+	<field name="primaryAddress" class="com.punj.app.ecommerce.models.common.AddressBean">
+		<fieldDescription><![CDATA[primaryAddress]]></fieldDescription>
+	</field>
+	<field name="items" class="java.util.List">
+		<fieldDescription><![CDATA[items]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[email]]></fieldDescription>
+	</field>
+	<field name="phone1" class="java.lang.String">
+		<fieldDescription><![CDATA[phone1]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="64" splitType="Stretch">
+		<band height="80" splitType="Stretch">
 			<textField>
-				<reportElement x="1" y="1" width="199" height="20" uuid="dc916b8b-e890-4f14-8095-47dc66a8c9b7"/>
+				<reportElement stretchType="RelativeToTallestObject" x="30" y="1" width="170" height="11" uuid="dc916b8b-e890-4f14-8095-47dc66a8c9b7"/>
 				<textElement>
+					<font fontName="Calibri" size="8"/>
 					<paragraph lineSpacing="Proportional"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="12" width="50" height="20" uuid="60586e0d-9622-4f0f-bff9-a8d4026685f2"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="12" width="30" height="11" uuid="60586e0d-9622-4f0f-bff9-a8d4026685f2"/>
 				<textElement>
+					<font size="8"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<text><![CDATA[Phone# :]]></text>
+				<text><![CDATA[Phone]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="50" y="12" width="150" height="20" uuid="d26e83d0-b5e1-4610-9dac-3e85f37e1de7"/>
+				<reportElement stretchType="RelativeToTallestObject" x="30" y="12" width="80" height="11" uuid="d26e83d0-b5e1-4610-9dac-3e85f37e1de7"/>
 				<textElement>
+					<font fontName="Calibri" size="8"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{phone1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  " +$F{phone1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="23" width="40" height="20" uuid="2b227d83-7ea0-4852-9815-21d5ef9132c1"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="23" width="30" height="11" uuid="2b227d83-7ea0-4852-9815-21d5ef9132c1"/>
 				<textElement>
+					<font size="8"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<text><![CDATA[Email :]]></text>
+				<text><![CDATA[Email]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="40" y="23" width="160" height="20" uuid="202e60b8-d1e4-41e0-9b29-6c62732cc1a4"/>
+				<reportElement x="30" y="23" width="170" height="11" uuid="202e60b8-d1e4-41e0-9b29-6c62732cc1a4"/>
 				<textElement>
+					<font fontName="Calibri" size="8"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  " +$F{email}]]></textFieldExpression>
 			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="110" y="12" width="90" height="11" uuid="53350ce5-5edd-4718-a949-cdb842b3d1f2"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[",  " +$F{phone2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="1" width="30" height="11" uuid="9c665b9e-df6a-40dc-b146-2e0f7d9fcdc5"/>
+				<textElement>
+					<font size="8"/>
+					<paragraph lineSpacing="Fixed"/>
+				</textElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="30" y="34" width="170" height="46" uuid="ea621ee1-c68b-476b-ae8a-f0cd25ef7db8"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA["reports/address/address.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 </jasperReport>

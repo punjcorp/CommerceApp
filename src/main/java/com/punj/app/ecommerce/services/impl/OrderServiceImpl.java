@@ -379,7 +379,7 @@ public class OrderServiceImpl implements OrderService {
 			itemStockJournal.setReasonCode(stockReason);
 
 			itemStockJournal.setFunctionality(ServiceConstants.RECEIVE_ORDER_FUNCTIONALITY);
-			itemStockJournal.setQty(orderItem.getDelieveredQty());
+			itemStockJournal.setQty(orderItem.getDelieveredQty().intValue());
 
 			itemStockDetails.add(itemStockJournal);
 		}

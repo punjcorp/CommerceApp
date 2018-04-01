@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services.common.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,12 +23,18 @@ import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
+import com.punj.app.ecommerce.domains.item.ItemLocationTax;
+import com.punj.app.ecommerce.domains.item.ids.ItemLocationTaxId;
+import com.punj.app.ecommerce.domains.supplier.SupplierItem;
+import com.punj.app.ecommerce.domains.supplier.ids.SupplierItemId;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
 import com.punj.app.ecommerce.repositories.common.RegisterRepository;
+import com.punj.app.ecommerce.repositories.item.ItemLocTaxRepository;
+import com.punj.app.ecommerce.repositories.supplier.SupplierItemRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -50,6 +57,8 @@ public class CommonServiceImpl implements CommonService {
 	private IdGeneratorRepository idGenRepository;
 	private TenderRepository tenderRepository;
 	private ReasonSearchRepository reasonRepository;
+	private ItemLocTaxRepository itemLocTaxRepository;
+	private SupplierItemRepository supItemRepository;
 	private TransactionService txnService;
 
 	@Value("${commerce.list.max.perpage}")
@@ -59,12 +68,30 @@ public class CommonServiceImpl implements CommonService {
 	private Integer maxPageBtns;
 
 	/**
+	 * @param supItemRepository
+	 *            the supItemRepository to set
+	 */
+	@Autowired
+	public void setSupplierItemRepository(SupplierItemRepository supItemRepository) {
+		this.supItemRepository = supItemRepository;
+	}
+
+	/**
 	 * @param reasonRepository
 	 *            the reasonRepository to set
 	 */
 	@Autowired
 	public void setReasonRepository(ReasonSearchRepository reasonRepository) {
 		this.reasonRepository = reasonRepository;
+	}
+
+	/**
+	 * @param itemLocTaxRepository
+	 *            the itemLocTaxRepository to set
+	 */
+	@Autowired
+	public void setItemLocTaxRepository(ItemLocTaxRepository itemLocTaxRepository) {
+		this.itemLocTaxRepository = itemLocTaxRepository;
 	}
 
 	/**
@@ -258,6 +285,33 @@ public class CommonServiceImpl implements CommonService {
 			logger.info("The {} type does not have any reason codes", searchText);
 		}
 		return reasonDTO;
+	}
+
+	@Override
+	public ItemLocationTax retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId) {
+		ItemLocationTaxId itemLocTaxId = new ItemLocationTaxId();
+		itemLocTaxId.setLocationId(locationId);
+		itemLocTaxId.setItemId(itemId);
+
+		ItemLocationTax itemLocTax = this.itemLocTaxRepository.findOne(itemLocTaxId);
+		if (itemLocTax != null) {
+
+			SupplierItemId supplierItemId = new SupplierItemId();
+			supplierItemId.setItemId(itemId);
+			supplierItemId.setSupplierId(supplierId);
+
+			SupplierItem supplierItem = this.supItemRepository.findOne(supplierItemId);
+			if(supplierItem!=null) {
+				if(supplierItem.getUnitCost()!=null && supplierItem.getUnitCost().compareTo(BigDecimal.ZERO)==1) {
+					itemLocTax.setBaseUnitCost(supplierItem.getUnitCost());
+					logger.info("The supplier unit cost was set for this item");
+				}
+			}
+			logger.info("The item details has been successfully retrieved");
+		} else {
+			logger.info("There was some error while retrieving the item details");
+		}
+		return itemLocTax;
 	}
 
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="address" language="groovy" pageWidth="200" pageHeight="842" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f22f773c-0af5-4f43-830b-9d3472af9c89">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="country" class="java.lang.String">
+		<fieldDescription><![CDATA[country]]></fieldDescription>
+	</field>
+	<field name="eligibleForStoreOpen" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[eligibleForStoreOpen]]></fieldDescription>
+	</field>
+	<field name="pincode" class="java.lang.String">
+		<fieldDescription><![CDATA[pincode]]></fieldDescription>
+	</field>
+	<field name="lastCreatedDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[lastCreatedDate]]></fieldDescription>
+	</field>
+	<field name="manager" class="java.lang.String">
+		<fieldDescription><![CDATA[manager]]></fieldDescription>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<fieldDescription><![CDATA[address2]]></fieldDescription>
+	</field>
+	<field name="city" class="java.lang.String">
+		<fieldDescription><![CDATA[city]]></fieldDescription>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<fieldDescription><![CDATA[address1]]></fieldDescription>
+	</field>
+	<field name="locationType" class="java.lang.String">
+		<fieldDescription><![CDATA[locationType]]></fieldDescription>
+	</field>
+	<field name="telephone2" class="java.lang.String">
+		<fieldDescription><![CDATA[telephone2]]></fieldDescription>
+	</field>
+	<field name="telephone1" class="java.lang.String">
+		<fieldDescription><![CDATA[telephone1]]></fieldDescription>
+	</field>
+	<field name="lastBusinessDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[lastBusinessDate]]></fieldDescription>
+	</field>
+	<field name="locationId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[locationId]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<field name="neighborhood" class="java.lang.String">
+		<fieldDescription><![CDATA[neighborhood]]></fieldDescription>
+	</field>
+	<field name="state" class="java.lang.String">
+		<fieldDescription><![CDATA[state]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[email]]></fieldDescription>
+	</field>
+	<field name="lastStatus" class="java.lang.String">
+		<fieldDescription><![CDATA[lastStatus]]></fieldDescription>
+	</field>
+	<field name="defaultTender" class="java.lang.String">
+		<fieldDescription><![CDATA[defaultTender]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="80" splitType="Stretch">
+			<textField>
+				<reportElement x="30" y="1" width="170" height="11" uuid="b55d6c7d-8cbb-4f68-a362-58a299788af8"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  :  "+$F{manager}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="1" width="30" height="11" uuid="4ec285f9-c2c3-4cd9-8bfb-23fa031e5743"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[C/O]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="30" y="23" width="170" height="11" uuid="fd4984b7-82c5-40a7-88ef-d12d309b2345"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  :  "+$F{email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="23" width="30" height="11" uuid="3d561846-b5f2-4409-9112-43baac1ceb9d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Email]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="30" y="12" width="80" height="11" uuid="f29b3a73-ad81-42bc-8b80-54ffa0651a14"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  :  "+$F{telephone1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="12" width="30" height="11" uuid="0c0f7022-69f0-428f-a451-671d90536190"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Phone]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="12" width="90" height="11" uuid="4328e3c4-1058-4aa5-9a8d-1736aaef0d09"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[",  "+$F{telephone2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="35" width="170" height="11" uuid="a485cf50-5f6b-43e7-8d7a-baef229a3f5c"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address1}+", "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="46" width="170" height="11" uuid="bc092de5-63ac-4374-95c1-83fc39c38b29"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address2}+", "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="57" width="170" height="11" uuid="1b16fbc3-c4db-4303-8997-c91cb0de6969"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{city}+", "+$F{state}+", "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="68" width="170" height="11" uuid="e9b24d14-f75a-45be-a94d-9dc8d375c779"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{country}+", "+$F{pincode}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
