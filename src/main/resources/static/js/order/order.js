@@ -253,14 +253,27 @@ function renderOrderItem(orderItem) {
 
 	$('#order\\.orderItems' + targetItemIndex + '\\.costAmount').val((+orderItem.priceAmt).toFixed(2));
 	$('#lbl_' + targetItemIndex + '_costAmount').text((+orderItem.priceAmt).toFixed(2));
+	
+	
 
 	if (orderItem.igstTax && orderItem.igstTax.amount) {
+		$('#order\\.orderItems' + targetItemIndex + '\\.taxGroupId').val(orderItem.igstTax.taxGroupId);
+		$('#order\\.orderItems' + targetItemIndex + '\\.igstRateRuleId').val(orderItem.igstTax.taxRuleRateId);
+		$('#order\\.orderItems' + targetItemIndex + '\\.igstCode').val(orderItem.igstTax.typeCode);
+		
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstTaxAmount').val(orderItem.igstTax.amount.toFixed(2));
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstRate').val(orderItem.igstTax.percentage.toFixed(2));
 
 		$('#lbl_' + targetItemIndex + '_igstTaxAmount').text(orderItem.igstTax.amount.toFixed(2));
 
 	} else if (orderItem.cgstTax && orderItem.cgstTax.amount) {
+		$('#order\\.orderItems' + targetItemIndex + '\\.taxGroupId').val(orderItem.sgstTax.taxGroupId);
+		$('#order\\.orderItems' + targetItemIndex + '\\.sgstRateRuleId').val(orderItem.sgstTax.taxRuleRateId);
+		$('#order\\.orderItems' + targetItemIndex + '\\.cgstRateRuleId').val(orderItem.cgstTax.taxRuleRateId);
+		$('#order\\.orderItems' + targetItemIndex + '\\.sgstCode').val(orderItem.sgstTax.typeCode);
+		$('#order\\.orderItems' + targetItemIndex + '\\.cgstCode').val(orderItem.cgstTax.typeCode);
+		
+		
 		$('#order\\.orderItems' + targetItemIndex + '\\.sgstTaxAmount').val(orderItem.sgstTax.amount.toFixed(2));
 		$('#order\\.orderItems' + targetItemIndex + '\\.cgstTaxAmount').val(orderItem.cgstTax.amount.toFixed(2));
 		$('#order\\.orderItems' + targetItemIndex + '\\.sgstRate').val(orderItem.sgstTax.percentage.toFixed(2));
@@ -445,6 +458,25 @@ function startNewOrder(){
 	
 
 function printOrderReport(){
+	
+	//The AJAX call for receipt printing
+	var token = $("meta[name='_csrf']").attr("content");
+	var formdata = JSON.stringify(accountDTO);
+	// AJAX call here and refresh the sell item page with receipt printing
+	$.ajax({
+		url : print_rcpt_url,
+		type : 'POST',
+		cache : false,
+		data : formdata,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			startNewOrder();
+		},
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});	
 	
 }
 

@@ -20,7 +20,6 @@ public class OrderBeanDTO {
 	private OrderBean order;
 	@Valid
 	private SearchBean supplierSearch;
-	private SearchBean itemSearch;
 	private List<LocationBean> locations;
 
 	/**
@@ -51,21 +50,6 @@ public class OrderBeanDTO {
 	 */
 	public void setSupplierSearch(SearchBean supplierSearch) {
 		this.supplierSearch = supplierSearch;
-	}
-
-	/**
-	 * @return the itemSearch
-	 */
-	public SearchBean getItemSearch() {
-		return itemSearch;
-	}
-
-	/**
-	 * @param itemSearch
-	 *            the itemSearch to set
-	 */
-	public void setItemSearch(SearchBean itemSearch) {
-		this.itemSearch = itemSearch;
 	}
 
 	/**

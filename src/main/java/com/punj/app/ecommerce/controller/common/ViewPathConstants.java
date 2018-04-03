@@ -64,7 +64,7 @@ public final class ViewPathConstants {
 	public static final String PRINT_ORDER_URL = "/admin/print_order_report";
 	public static final String VIEW_ORDER_URL = "/admin/view_order_report";
 	
-	public static final String EDIT_ORDER_URL = "/edit_order";
+	public static final String EDIT_ORDER_URL = "/admin/edit_order";
 	public static final String EDIT_ORDER_PAGE= "order/edit_order";
 	
 	public static final String APPROVE_ORDER_URL = "/approve_order";

@@ -5,7 +5,6 @@ package com.punj.app.ecommerce.domains.item;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -35,10 +34,12 @@ public class ItemLocationTax implements Serializable {
 	private BigDecimal baseUnitCost;
 
 	@Column(name = "tax_group_id")
-	private Integer taxGRoupId;
+	private Integer taxGroupId;
 	@Column(name = "tax_group_name")
 	private String taxGroupName;
 
+	@Column(name = "sgst_rate_rule_id")
+	private Integer sgstRateRuleId;
 	@Column(name = "sgst_amount")
 	private BigDecimal sgstAmount;
 	@Column(name = "sgst_rate")
@@ -46,6 +47,8 @@ public class ItemLocationTax implements Serializable {
 	@Column(name = "sgst_code")
 	private String sgstCode;
 
+	@Column(name = "cgst_rate_rule_id")
+	private Integer cgstRateRuleId;
 	@Column(name = "cgst_amount")
 	private BigDecimal cgstAmount;
 	@Column(name = "cgst_rate")
@@ -53,6 +56,8 @@ public class ItemLocationTax implements Serializable {
 	@Column(name = "cgst_code")
 	private String cgstCode;
 
+	@Column(name = "igst_rate_rule_id")
+	private Integer igstRateRuleId;
 	@Column(name = "igst_amount")
 	private BigDecimal igstAmount;
 	@Column(name = "igst_rate")
@@ -121,19 +126,19 @@ public class ItemLocationTax implements Serializable {
 	}
 
 
+
 	/**
-	 * @return the taxGRoupId
+	 * @return the taxGroupId
 	 */
-	public Integer getTaxGRoupId() {
-		return taxGRoupId;
+	public Integer getTaxGroupId() {
+		return taxGroupId;
 	}
 
 	/**
-	 * @param taxGRoupId
-	 *            the taxGRoupId to set
+	 * @param taxGroupId the taxGroupId to set
 	 */
-	public void setTaxGRoupId(Integer taxGRoupId) {
-		this.taxGRoupId = taxGRoupId;
+	public void setTaxGroupId(Integer taxGroupId) {
+		this.taxGroupId = taxGroupId;
 	}
 
 	/**
@@ -284,6 +289,51 @@ public class ItemLocationTax implements Serializable {
 	 */
 	public void setIgstCode(String igstCode) {
 		this.igstCode = igstCode;
+	}
+
+	/**
+	 * @return the sgstRateRuleId
+	 */
+	public Integer getSgstRateRuleId() {
+		return sgstRateRuleId;
+	}
+
+	/**
+	 * @param sgstRateRuleId
+	 *            the sgstRateRuleId to set
+	 */
+	public void setSgstRateRuleId(Integer sgstRateRuleId) {
+		this.sgstRateRuleId = sgstRateRuleId;
+	}
+
+	/**
+	 * @return the cgstRateRuleId
+	 */
+	public Integer getCgstRateRuleId() {
+		return cgstRateRuleId;
+	}
+
+	/**
+	 * @param cgstRateRuleId
+	 *            the cgstRateRuleId to set
+	 */
+	public void setCgstRateRuleId(Integer cgstRateRuleId) {
+		this.cgstRateRuleId = cgstRateRuleId;
+	}
+
+	/**
+	 * @return the igstRateRuleId
+	 */
+	public Integer getIgstRateRuleId() {
+		return igstRateRuleId;
+	}
+
+	/**
+	 * @param igstRateRuleId
+	 *            the igstRateRuleId to set
+	 */
+	public void setIgstRateRuleId(Integer igstRateRuleId) {
+		this.igstRateRuleId = igstRateRuleId;
 	}
 
 }

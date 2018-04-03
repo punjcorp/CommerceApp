@@ -378,73 +378,8 @@ public class ManageOrderController {
 		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@GetMapping(ViewPathConstants.EDIT_ORDER_URL)
-	public String editOrder(Model model, HttpSession session, final HttpServletRequest req, Locale locale) {
-		try {
-			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
-			Order order = orderService.searchOrder(orderId);
 
-			OrderBean orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order, locale);
-
-			this.calculateOrderCost(orderBean, locale);
-
-			SupplierBean supplierBean = new SupplierBean();
-			ItemBean itemBean = new ItemBean();
-			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
-			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
-			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
-
-			logger.info("The selected purchase order has been updated successfully");
-		} catch (Exception e) {
-			logger.error("There is an error while retrieving purchase order for updation", e);
-			return ViewPathConstants.ERROR_PAGE;
-		}
-		return ViewPathConstants.EDIT_ORDER_PAGE;
-	}
-
-	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.ADD_ORDER_ITEM_PARAM })
-	public String addRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale) {
-		orderBean.getOrderItems().add(new OrderItemBean());
-
-		SupplierBean supplierBean = new SupplierBean();
-		ItemBean itemBean = new ItemBean();
-
-		this.calculateOrderCost(orderBean, locale);
-
-		model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
-		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
-		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
-		logger.info("A new purchase order item has been added to your purchase order");
-
-		return ViewPathConstants.EDIT_ORDER_PAGE;
-	}
-
-	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.REMOVE_ORDER_ITEM_PARAM })
-	public String removeRowEdit(@ModelAttribute OrderBean orderBean, Model model, final BindingResult bindingResult, Locale locale,
-			final HttpServletRequest req) {
-		final Integer rowId = Integer.valueOf(req.getParameter(MVCConstants.ID_PARAM));
-		OrderItemBean orderItemBean = orderBean.getOrderItems().get(rowId.intValue());
-		OrderItem orderItem = new OrderItem();
-
-		this.updateOrderItem(orderItemBean, orderItem, orderBean.getOrderId());
-
-		orderService.deleteOrderItem(orderItem);
-
-		orderBean.getOrderItems().remove(rowId.intValue());
-		SupplierBean supplierBean = new SupplierBean();
-		ItemBean itemBean = new ItemBean();
-
-		this.calculateOrderCost(orderBean, locale);
-
-		model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
-		model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
-		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
-
-		logger.info("The selected purchase order item has been deleted now");
-		return ViewPathConstants.EDIT_ORDER_PAGE;
-	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrderAfterEdit(@ModelAttribute @Valid OrderBean orderBean, BindingResult bindingResult, @ModelAttribute SupplierBean supplierBean,

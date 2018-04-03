@@ -515,6 +515,8 @@ public class ItemServiceImpl implements ItemService {
 		saleItem.setPriceAmt(saleItem.getUnitCostAmt().multiply(BigDecimal.valueOf(saleItem.getQty())));
 
 		SaleItemTax saleItemTax = new SaleItemTax();
+		saleItemTax.setTaxGroupId(itemLocTax.getTaxGroupId());
+		saleItemTax.setTaxRuleRateId(itemLocTax.getSgstRateRuleId());
 		saleItemTax.setAmount(itemLocTax.getSgstAmount());
 		saleItemTax.setPercentage(itemLocTax.getSgstRate());
 		saleItemTax.setTaxRuleRateName(itemLocTax.getSgstCode());
@@ -522,6 +524,8 @@ public class ItemServiceImpl implements ItemService {
 		saleItem.setSgstTax(saleItemTax);
 
 		saleItemTax = new SaleItemTax();
+		saleItemTax.setTaxGroupId(itemLocTax.getTaxGroupId());
+		saleItemTax.setTaxRuleRateId(itemLocTax.getCgstRateRuleId());
 		saleItemTax.setAmount(itemLocTax.getCgstAmount());
 		saleItemTax.setPercentage(itemLocTax.getCgstRate());
 		saleItemTax.setTaxRuleRateName(itemLocTax.getCgstCode());
@@ -529,6 +533,8 @@ public class ItemServiceImpl implements ItemService {
 		saleItem.setCgstTax(saleItemTax);
 
 		saleItemTax = new SaleItemTax();
+		saleItemTax.setTaxGroupId(itemLocTax.getTaxGroupId());
+		saleItemTax.setTaxRuleRateId(itemLocTax.getIgstRateRuleId());
 		saleItemTax.setAmount(itemLocTax.getIgstAmount());
 		saleItemTax.setPercentage(itemLocTax.getIgstRate());
 		saleItemTax.setTaxRuleRateName(itemLocTax.getIgstCode());

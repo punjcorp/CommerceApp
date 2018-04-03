@@ -23,7 +23,7 @@ import com.punj.app.ecommerce.utils.Pager;
 public class OrderBean implements Serializable {
 
 	private static final long serialVersionUID = -4016931635705372146L;
-	
+
 	private BigInteger orderId;
 	@NotNull(message = "{commerce.error.string.empty}")
 	private Integer supplierId;
@@ -34,6 +34,8 @@ public class OrderBean implements Serializable {
 
 	@Valid
 	private List<OrderItemBean> orderItems;
+
+	private List<OrderItemTaxBean> orderItemTaxes;
 
 	private String createdBy;
 	private LocalDateTime createdDate;
@@ -54,6 +56,26 @@ public class OrderBean implements Serializable {
 	public OrderBean() {
 		this.orderItems = new ArrayList<>();
 		this.orderItems.add(new OrderItemBean());
+
+	}
+
+	public OrderBean(OrderBean newOrderBean) {
+
+		this.orderItems = newOrderBean.getOrderItems();
+		this.orderId = newOrderBean.getOrderId();
+		this.supplierId = newOrderBean.getSupplierId();
+		this.locationId = newOrderBean.getLocationId();
+		this.supplier = newOrderBean.getSupplier();
+		this.createdBy = newOrderBean.getCreatedBy();
+		this.createdDate = newOrderBean.getCreatedDate();
+		this.estimatedCost = newOrderBean.getEstimatedCost();
+		this.discountAmount = newOrderBean.getDiscountAmount();
+		this.taxAmount = newOrderBean.getTaxAmount();
+		this.cgstTaxAmount = newOrderBean.getCgstTaxAmount();
+		this.sgstTaxAmount = newOrderBean.getSgstTaxAmount();
+		this.igstTaxAmount = newOrderBean.getIgstTaxAmount();
+		this.totalAmount = newOrderBean.getTotalAmount();
+		this.paidAmount = newOrderBean.getPaidAmount();
 
 	}
 
@@ -310,6 +332,21 @@ public class OrderBean implements Serializable {
 	 */
 	public void setIgstTaxAmount(BigDecimal igstTaxAmount) {
 		this.igstTaxAmount = igstTaxAmount;
+	}
+
+	/**
+	 * @return the orderItemTaxes
+	 */
+	public List<OrderItemTaxBean> getOrderItemTaxes() {
+		return orderItemTaxes;
+	}
+
+	/**
+	 * @param orderItemTaxes
+	 *            the orderItemTaxes to set
+	 */
+	public void setOrderItemTaxes(List<OrderItemTaxBean> orderItemTaxes) {
+		this.orderItemTaxes = orderItemTaxes;
 	}
 
 }

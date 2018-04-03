@@ -101,6 +101,7 @@ public final class MVCConstants {
 	public static final String ORDER_FOOTER_REPORT_PARAM="ORDER_FOOTER_REPORT";
 	public static final String ORDER_ITEMS_REPORT_PARAM="ORDER_ITEMS_REPORT";
 	public static final String SUPPLIER_REPORT_PARAM="SUPPLIER_REPORT";
+	public static final String SUPPLIER_ADDRESS_REPORT_PARAM="SUPPLIER_ADDRESS_REPORT";
 	public static final String DELIVERY_LOCATION_REPORT_PARAM="DELIVERY_LOCATION_REPORT";
 	
 	public static final String ORDER_DATA_PARAM="ORDER_DATA";
@@ -108,6 +109,10 @@ public final class MVCConstants {
 	public static final String SUPPLIER_DATA_PARAM="SUPPLIER_DATA";
 	public static final String DELIVERY_LOCATION_DATA_PARAM="DELIVERY_LOCATION_DATA";
 	
+	
+	public static final String TAX_SGST="SGST";
+	public static final String TAX_CGST="CGST";
+	public static final String TAX_IGST="IGST";
 	
 	
 	public static final String SALE_ITEM_PARAM="SALE_ITEM";
@@ -124,7 +129,7 @@ public final class MVCConstants {
 	public static final String ADDRESSES_PARAM="addresses";
 	
 	
-	public static final String ADDRESS_REPORT="/reports/address/address.jrxml";
+	public static final String ADDRESS_REPORT="/reports/address/address.jasper";
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";

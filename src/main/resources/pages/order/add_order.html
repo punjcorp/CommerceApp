@@ -172,9 +172,18 @@
 																	th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></span> %)
 																</small>
 															</div>
+															
 															<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxAmount}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxAmount}"></input> <input type="hidden"
-																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxAmount}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxAmount}"></input>
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxGroupId}"></input> 
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstCode}"></input>
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstCode}"></input>
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstCode}"></input>																
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRateRuleId}"></input>
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRateRuleId}"></input>
+																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRateRuleId}"></input>
+																<input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
@@ -370,19 +379,7 @@
 		</div>
 		<!-- /#page-content-wrapper -->
 	</div>
-	<!-- /#wrapper -->
-	<script type="text/javascript" th:inline="javascript">
-		/*<![CDATA[*/
 
-		var txn_orderId = /*[[${orderBeanDTO.order.orderId}]]*/;
-		var newOrderURL = /*[[@{/admin/add_order}]]*/;
-		
-		var print_rcpt_url= /*[[@{/admin/print_order_report}]]*/;
-		var view_rcpt_url= /*[[@{/admin/view_order_report}]]*/;
-		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
-		
-		/*]]>*/
-	</script>
 	
 	<!-- Order Report Lookup Modal-->
 	<div class="modal fade " id="orderReportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -395,27 +392,48 @@
 				</div>
 				<div class="modal-body text-center">
 					<div id="receiptActions" class="col-12 text-center">
-						<button type="button" class="btn btn-info p-3 m-5" id="btnViewOrderReport">
-							<i class="fas fa-file-alt fa-9x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewOrderReport">
+							<i class="fas fa-file-alt fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-5" id="btnPrintReportAndNewOrder">
-							<i class="fas fa-print fa-9x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReportAndNewOrder">
+							<i class="fas fa-print fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-5" id="btnNewOrder">
-							<i class="far fa-plus-square fa-9x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewOrder">
+							<i class="far fa-plus-square fa-5x"></i>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">
-						<i class="fas fa-cog fa-spin fa-9x"></i>
+						<i class="fas fa-cog fa-spin fa-5x"></i>
 						<div>
 							<span th:text="#{commerce.screen.order.report.generate}"></span>
 						</div>
 					</div>
-					<iframe id="reportPDFContainer" class="p-5" width="90%" height="90%" frameBorder="0"></iframe>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="70%" frameBorder="0"></iframe>
 				</div>
 			</div>
 		</div>
 	</div>	
+	
+	<!-- /#wrapper -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		var txn_orderId = /*[[${orderBeanDTO.order.orderId}]]*/;
+		var newOrderURL = /*[[@{/admin/add_order}]]*/;
+		
+		var print_rcpt_url= /*[[@{/admin/print_order_report}]]*/;
+		var view_rcpt_url= /*[[@{/admin/view_order_report}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
+		
+		
+		if(txn_orderId && txn_orderId!='undefined' && txn_orderId!=''){
+			postOrderSave();
+		}
+		
+		/*]]>*/
+	</script>	
+	
+	
 	
 </body>
 </html>

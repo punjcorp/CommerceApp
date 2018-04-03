@@ -117,35 +117,35 @@
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[",  "+$F{telephone2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{telephone2}.isEmpty())?",  ":",  "+$F{telephone2}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="30" y="35" width="170" height="11" uuid="a485cf50-5f6b-43e7-8d7a-baef229a3f5c"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{address1}+", "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  "+$F{address1}+", "]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="30" y="46" width="170" height="11" uuid="bc092de5-63ac-4374-95c1-83fc39c38b29"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{address2}+", "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{address2}.isEmpty())?" ":"  :  "+$F{address2}+", "]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="30" y="57" width="170" height="11" uuid="1b16fbc3-c4db-4303-8997-c91cb0de6969"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{city}+", "+$F{state}+", "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  "+$F{city}+", "+$F{state}+", "]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="30" y="68" width="170" height="11" uuid="e9b24d14-f75a-45be-a94d-9dc8d375c779"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{country}+", "+$F{pincode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  "+$F{country}+", "+$F{pincode}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

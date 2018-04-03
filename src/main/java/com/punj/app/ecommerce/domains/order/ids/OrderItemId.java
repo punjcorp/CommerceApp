@@ -25,6 +25,8 @@ import com.punj.app.ecommerce.domains.order.Order;
 @Embeddable
 public class OrderItemId implements Serializable {
 
+	private static final long serialVersionUID = 1679248001557027020L;
+
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "order_id")

@@ -37,6 +37,8 @@ public interface OrderService {
 	public Order approveOrder(BigInteger orderId);
 
 	public void deleteOrderItem(OrderItem orderItem);
+	
+	public Order updateOrderTotals(BigInteger orderId, String username);
 
 	public OrderDTO findAll();
 	

@@ -82,6 +82,7 @@ public class Order implements Serializable {
 	@IndexedEmbedded
 	private List<OrderItem> orderItems;
 
+
 	/**
 	 * @return the orderId
 	 */

@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +24,14 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
+import com.punj.app.ecommerce.domains.order.OrderItemTax;
+import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
+import com.punj.app.ecommerce.domains.order.ids.OrderItemTaxId;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderItemRepository;
+import com.punj.app.ecommerce.repositories.order.OrderItemTaxRepository;
 import com.punj.app.ecommerce.repositories.order.OrderRepository;
 import com.punj.app.ecommerce.repositories.order.OrderSearchRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
@@ -50,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
 	private OrderSearchRepository orderSearchRepository;
 	private PaymentAccountService paymentService;
 	private InventoryService inventoryService;
+	private OrderItemTaxRepository orderItemTaxRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -64,6 +71,15 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	public void setPaymentService(PaymentAccountService paymentService) {
 		this.paymentService = paymentService;
+	}
+
+	/**
+	 * @param paymentService
+	 *            the paymentService to set
+	 */
+	@Autowired
+	public void setOrderItemTaxRepository(OrderItemTaxRepository orderItemTaxRepository) {
+		this.orderItemTaxRepository = orderItemTaxRepository;
 	}
 
 	/**
@@ -241,8 +257,8 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public List<Order> approveOrders(List<Order> orders,String username) {
-		
+	public List<Order> approveOrders(List<Order> orders, String username) {
+
 		List<Order> finalOrders = new ArrayList<>(orders.size());
 		Order actualOrder = null;
 		for (Order order : orders) {
@@ -258,11 +274,11 @@ public class OrderServiceImpl implements OrderService {
 		finalOrders = this.orderRepository.save(finalOrders);
 		if (finalOrders != null && !finalOrders.isEmpty()) {
 			logger.info("All the {} purchase orders has been approved now", finalOrders.size());
-			List<AccountHead> accountHeads=this.getOrderAccounts(finalOrders);
-			accountHeads = this.paymentService.updateAccountsDue(accountHeads,username);
-			if(accountHeads!=null && !accountHeads.isEmpty()) {
+			List<AccountHead> accountHeads = this.getOrderAccounts(finalOrders);
+			accountHeads = this.paymentService.updateAccountsDue(accountHeads, username);
+			if (accountHeads != null && !accountHeads.isEmpty()) {
 				logger.info("All the order accounts has been updated for the due amounts");
-			}else {
+			} else {
 				logger.info("There was some errors while updating order accounts for the due amounts");
 			}
 		}
@@ -271,25 +287,25 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private List<AccountHead> getOrderAccounts(List<Order> orders) {
-		List<AccountHead> accountHeads=new ArrayList<>(orders.size());
+		List<AccountHead> accountHeads = new ArrayList<>(orders.size());
 		AccountHead accountHead;
-		
-		for(Order order:orders) {
-			accountHead= this.getOrderAccount(order);
+
+		for (Order order : orders) {
+			accountHead = this.getOrderAccount(order);
 			accountHeads.add(accountHead);
 		}
 		logger.info("All the account head details has been created for provided orders");
 		return accountHeads;
 	}
-	
+
 	private AccountHead getOrderAccount(Order order) {
-		AccountHead accountHead=new AccountHead();
+		AccountHead accountHead = new AccountHead();
 		accountHead.setLocationId(order.getLocationId());
 		accountHead.setEntityType(ServiceConstants.ACCOUNT_TYPE_SUPPLIER);
 		accountHead.setEntityId(new BigInteger(order.getSupplier().getSupplierId().toString()));
-		
+
 		accountHead.setDueAmount(order.getTotalAmount());
-		
+
 		logger.info("All the account head details has been set for the provided order.");
 		return accountHead;
 	}
@@ -312,19 +328,54 @@ public class OrderServiceImpl implements OrderService {
 
 	public Order searchOrder(BigInteger orderId) {
 
-		Order order = orderRepository.findOne(orderId);
+		Order order = this.orderRepository.findOne(orderId);
 		logger.info("The selected purchase order {} has been retrieved", order.getOrderId());
 
 		return order;
 	}
 
 	@Override
+	@Transactional
 	public void deleteOrderItem(OrderItem orderItem) {
 
-		orderItemRepository.delete(orderItem.getOrderItemId());
+		this.orderItemTaxRepository.delete(orderItem.getOrderItemTaxes());
+		logger.info("The order item taxes has been deleted from the order");
+
+		this.orderItemRepository.delete(orderItem.getOrderItemId());
+
 		logger.info("The selected item {} has been deleted from order {} successfully", orderItem.getOrderItemId().getItemId(),
 				orderItem.getOrderItemId().getOrder().getOrderId());
 
+	}
+
+	@Override
+	public Order updateOrderTotals(BigInteger orderId, String username) {
+
+		Order order = this.orderRepository.findOne(orderId);
+
+		order.setModifiedBy(username);
+		order.setModifiedDate(LocalDateTime.now());
+
+		BigDecimal estimatedCost = BigDecimal.ZERO;
+		BigDecimal taxAmount = BigDecimal.ZERO;
+		BigDecimal totalAmount = BigDecimal.ZERO;
+
+		for (OrderItem orderItem : order.getOrderItems()) {
+			estimatedCost = estimatedCost.add(orderItem.getTotalCost());
+			taxAmount = taxAmount.add(orderItem.getCostAmount());
+			totalAmount = totalAmount.add(orderItem.getTaxAmount());
+		}
+
+		order.setEstimatedCost(estimatedCost);
+		order.setTaxAmount(taxAmount);
+		order.setTotalAmount(totalAmount);
+
+		order = this.orderRepository.save(order);
+		if (order != null)
+			logger.info("The order totals has been updated successfully");
+		else
+			logger.info("There was some issue while updating order total amounts");
+		return order;
 	}
 
 	@Override

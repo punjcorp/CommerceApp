@@ -6,10 +6,13 @@ package com.punj.app.ecommerce.domains.order;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.DocumentId;
@@ -66,6 +69,9 @@ public class OrderItem implements Serializable {
 	@Column(name = "actual_total_cost")
 	private BigDecimal actualTotalCost = BigDecimal.ZERO;
 
+	@OneToMany(mappedBy = "orderItemTaxId.orderItemId", cascade = CascadeType.ALL)
+	private List<OrderItemTax> orderItemTaxes;
+	
 	/**
 	 * @return the orderItemId
 	 */
@@ -259,6 +265,20 @@ public class OrderItem implements Serializable {
 	 */
 	public void setActualTotalCost(BigDecimal actualTotalCost) {
 		this.actualTotalCost = actualTotalCost;
+	}
+
+	/**
+	 * @return the orderItemTaxes
+	 */
+	public List<OrderItemTax> getOrderItemTaxes() {
+		return orderItemTaxes;
+	}
+
+	/**
+	 * @param orderItemTaxes the orderItemTaxes to set
+	 */
+	public void setOrderItemTaxes(List<OrderItemTax> orderItemTaxes) {
+		this.orderItemTaxes = orderItemTaxes;
 	}
 
 }

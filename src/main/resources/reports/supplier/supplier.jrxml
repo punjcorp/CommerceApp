@@ -5,6 +5,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<subDataset name="Table Dataset 1" uuid="a43cdbc7-9339-425b-8ea4-a6b112d1a228"/>
+	<parameter name="SUPPLIER_ADDRESS_REPORT" class="net.sf.jasperreports.engine.JasperReport" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -46,7 +47,7 @@
 					<font fontName="Calibri" size="8"/>
 					<paragraph lineSpacing="Proportional"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  "+$F{name}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="12" width="30" height="11" uuid="60586e0d-9622-4f0f-bff9-a8d4026685f2"/>
@@ -85,7 +86,7 @@
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[",  " +$F{phone2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{phone2}.isEmpty())?",  ":",  "+$F{phone2}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="1" width="30" height="11" uuid="9c665b9e-df6a-40dc-b146-2e0f7d9fcdc5"/>
@@ -96,9 +97,9 @@
 				<text><![CDATA[Name]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="30" y="34" width="170" height="46" uuid="ea621ee1-c68b-476b-ae8a-f0cd25ef7db8"/>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
-				<subreportExpression><![CDATA["reports/address/address.jasper"]]></subreportExpression>
+				<reportElement x="40" y="34" width="160" height="46" uuid="ea621ee1-c68b-476b-ae8a-f0cd25ef7db8"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{addresses})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUPPLIER_ADDRESS_REPORT}]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

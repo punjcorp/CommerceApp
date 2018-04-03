@@ -121,6 +121,29 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_payment` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`purchase_order_items_tax`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`purchase_order_items_tax` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items_tax` (
+  `order_id` BIGINT NOT NULL,
+  `item_id` BIGINT NOT NULL,
+  `tax_group_id` INT NOT NULL,
+  `tax_rate_rule_id` INT NOT NULL,
+  `tax_amount` DECIMAL(12,2) NOT NULL,
+  `tax_percentage` DECIMAL(12,2) NOT NULL,
+  `tax_code` VARCHAR(30) NOT NULL,
+  `taxable_amount` DECIMAL(12,2) NOT NULL,
+  PRIMARY KEY (`order_id`, `item_id`, `tax_group_id`, `tax_rate_rule_id`),
+  CONSTRAINT `fk_purchase_order_items_tax_purchase_order_items1`
+    FOREIGN KEY (`order_id` , `item_id`)
+    REFERENCES `commercedb`.`purchase_order_items` (`order_id` , `item_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
