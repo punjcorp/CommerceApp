@@ -29,6 +29,7 @@ public class OrderBean implements Serializable {
 	private Integer supplierId;
 	@NotNull(message = "{commerce.error.string.empty}")
 	private Integer locationId;
+	private String locationName;
 
 	private SupplierBean supplier;
 
@@ -49,7 +50,15 @@ public class OrderBean implements Serializable {
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	private BigDecimal paidAmount = BigDecimal.ZERO;
 
+	private BigDecimal actualSubTotalCost = BigDecimal.ZERO;
+	private BigDecimal actualTaxAmount = BigDecimal.ZERO;
+	private BigDecimal actualCgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal actualSgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal actualIgstTaxAmount = BigDecimal.ZERO;
+	private BigDecimal actualTotalAmount = BigDecimal.ZERO;
+
 	private String status;
+	private String comments;
 
 	private Pager pager;
 
@@ -347,6 +356,126 @@ public class OrderBean implements Serializable {
 	 */
 	public void setOrderItemTaxes(List<OrderItemTaxBean> orderItemTaxes) {
 		this.orderItemTaxes = orderItemTaxes;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+	/**
+	 * @param locationName
+	 *            the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+	/**
+	 * @return the actualSubTotalCost
+	 */
+	public BigDecimal getActualSubTotalCost() {
+		return actualSubTotalCost;
+	}
+
+	/**
+	 * @param actualSubTotalCost
+	 *            the actualSubTotalCost to set
+	 */
+	public void setActualSubTotalCost(BigDecimal actualSubTotalCost) {
+		this.actualSubTotalCost = actualSubTotalCost;
+	}
+
+	/**
+	 * @return the actualTaxAmount
+	 */
+	public BigDecimal getActualTaxAmount() {
+		return actualTaxAmount;
+	}
+
+	/**
+	 * @param actualTaxAmount
+	 *            the actualTaxAmount to set
+	 */
+	public void setActualTaxAmount(BigDecimal actualTaxAmount) {
+		this.actualTaxAmount = actualTaxAmount;
+	}
+
+	/**
+	 * @return the actualCgstTaxAmount
+	 */
+	public BigDecimal getActualCgstTaxAmount() {
+		return actualCgstTaxAmount;
+	}
+
+	/**
+	 * @param actualCgstTaxAmount
+	 *            the actualCgstTaxAmount to set
+	 */
+	public void setActualCgstTaxAmount(BigDecimal actualCgstTaxAmount) {
+		this.actualCgstTaxAmount = actualCgstTaxAmount;
+	}
+
+	/**
+	 * @return the actualSgstTaxAmount
+	 */
+	public BigDecimal getActualSgstTaxAmount() {
+		return actualSgstTaxAmount;
+	}
+
+	/**
+	 * @param actualSgstTaxAmount
+	 *            the actualSgstTaxAmount to set
+	 */
+	public void setActualSgstTaxAmount(BigDecimal actualSgstTaxAmount) {
+		this.actualSgstTaxAmount = actualSgstTaxAmount;
+	}
+
+	/**
+	 * @return the actualIgstTaxAmount
+	 */
+	public BigDecimal getActualIgstTaxAmount() {
+		return actualIgstTaxAmount;
+	}
+
+	/**
+	 * @param actualIgstTaxAmount
+	 *            the actualIgstTaxAmount to set
+	 */
+	public void setActualIgstTaxAmount(BigDecimal actualIgstTaxAmount) {
+		this.actualIgstTaxAmount = actualIgstTaxAmount;
+	}
+
+	/**
+	 * @return the actualTotalAmount
+	 */
+	public BigDecimal getActualTotalAmount() {
+		return actualTotalAmount;
+	}
+
+	/**
+	 * @param actualTotalAmount
+	 *            the actualTotalAmount to set
+	 */
+	public void setActualTotalAmount(BigDecimal actualTotalAmount) {
+		this.actualTotalAmount = actualTotalAmount;
 	}
 
 }

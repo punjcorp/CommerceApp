@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +34,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
@@ -175,28 +178,61 @@ public class OrderController {
 			return ViewPathConstants.ADD_ORDER_PAGE;
 		}
 		try {
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			OrderBean orderBean = orderBeanDTO.getOrder();
-			Order order = OrderTransformer.transformOrderBean(orderBeanDTO.getOrder(), userDetails.getUsername(), MVCConstants.STATUS_CREATED);
-			order = this.orderService.createOrder(order);
-			logger.info("The {} order details has been saved successfully", order.getOrderId());
-			orderBean.setOrderId(order.getOrderId());
-			orderBean.setCreatedBy(order.getCreatedBy());
-			orderBean.setCreatedDate(order.getCreatedDate());
-
-			this.updateOrderModelDetails(model, orderBeanDTO);
-
-			// This seection is to update order report details
-			OrderReportBean orderReportBean = this.generateOrderReportBean(orderBeanDTO.getOrder(), userDetails.getUsername());
-			session.setAttribute(MVCConstants.LAST_ORDER_REPORT, orderReportBean);
-			this.generateReport(session);
-			logger.info("The {} order report objects has been updated successfully", order.getOrderId());
-
-			model.addAttribute(MVCConstants.SUCCESS,
-					messageSource.getMessage("commerce.screen.order.add.success", new Object[] { order.getOrderId() }, locale));
+			this.prepareOrderDetailsForSaving(orderBeanDTO, model, session, authentication, locale, MVCConstants.STATUS_CREATED);
 
 		} catch (Exception e) {
 			logger.error("There is an error while creating new purchase order", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.ADD_ORDER_PAGE;
+		}
+		return ViewPathConstants.ADD_ORDER_PAGE;
+	}
+
+	private void prepareOrderDetailsForSaving(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale,
+			String status) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		OrderBean orderBean = orderBeanDTO.getOrder();
+		Order order = OrderTransformer.transformOrderBean(orderBean, userDetails.getUsername(), status, Boolean.FALSE);
+		order = this.orderService.createOrder(order);
+		logger.info("The {} order details has been saved successfully", order.getOrderId());
+		orderBean.setOrderId(order.getOrderId());
+		orderBean.setStatus(order.getStatus());
+		orderBean.setCreatedBy(order.getCreatedBy());
+		orderBean.setCreatedDate(order.getCreatedDate());
+
+		this.updateOrderModelDetails(model, orderBeanDTO);
+
+		// This section is to update order report details
+		OrderReportBean orderReportBean = this.generateOrderReportBean(orderBeanDTO.getOrder(), userDetails.getUsername());
+		session.setAttribute(MVCConstants.LAST_ORDER_REPORT, orderReportBean);
+		this.generateReport(session);
+		logger.info("The {} order report objects has been updated successfully", order.getOrderId());
+
+		if (status.equals(MVCConstants.STATUS_APPROVED)) {
+			model.addAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.order.add.approve.success", new Object[] { order.getOrderId() }, locale));
+		} else {
+			model.addAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.order.add.success", new Object[] { order.getOrderId() }, locale));
+		}
+	}
+
+
+
+	@PostMapping(value = ViewPathConstants.ADD_ORDER_URL, params = { MVCConstants.APPROVE_ORDER_PARAM })
+	public String approveOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale, HttpSession session,
+			Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.ADD_ORDER_PAGE;
+		}
+		try {
+
+			this.prepareOrderDetailsForSaving(orderBeanDTO, model, session, authentication, locale, MVCConstants.STATUS_APPROVED);
+
+		} catch (Exception e) {
+			logger.error("There is an error while approving new purchase order", e);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.ADD_ORDER_PAGE;
@@ -385,5 +421,66 @@ public class OrderController {
 		}
 		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
+
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
+	public String saveOrderAfterEdit(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale,
+			HttpSession session, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.EDIT_ORDER_PAGE;
+		}
+		try {
+			this.prepareOrderDetailsAfterUpdates(orderBeanDTO, model, session, authentication, locale,orderBeanDTO.getOrder().getStatus());
+		} catch (Exception e) {
+			logger.error("There is an error while updating purchase order", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateOrderModelDetails(model, orderBeanDTO);
+		}
+		return ViewPathConstants.EDIT_ORDER_PAGE;
+	}
+	
+	private void prepareOrderDetailsAfterUpdates(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		OrderBean orderBean = orderBeanDTO.getOrder();
+		Order order = OrderTransformer.transformOrderBean(orderBean, userDetails.getUsername(), status, Boolean.TRUE);
+		order = this.orderService.createOrder(order);
+		logger.info("The {} order details has been saved successfully", order.getOrderId());
+		orderBean.setOrderId(order.getOrderId());
+
+		this.updateOrderModelDetails(model, orderBeanDTO);
+
+		// This section is to update order report details
+		OrderReportBean orderReportBean = this.generateOrderReportBean(orderBeanDTO.getOrder(), userDetails.getUsername());
+		session.setAttribute(MVCConstants.LAST_ORDER_REPORT, orderReportBean);
+		this.generateReport(session);
+		logger.info("The {} order report objects has been updated successfully", order.getOrderId());
+
+		if (order.getStatus().equals(MVCConstants.STATUS_APPROVED)) {
+			model.addAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.order.edit.approve.success", new Object[] { order.getOrderId() }, locale));
+		} else {
+			model.addAttribute(MVCConstants.SUCCESS,
+					messageSource.getMessage("commerce.screen.order.edit.save.success", new Object[] { order.getOrderId() }, locale));
+		}
+	}	
+	
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.APPROVE_ORDER_PARAM })
+	public String approveOrderAfterEdit(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale, HttpSession session,
+			Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.EDIT_ORDER_PAGE;
+		}
+		try {
+
+			this.prepareOrderDetailsAfterUpdates(orderBeanDTO, model, session, authentication, locale, MVCConstants.STATUS_APPROVED);
+
+		} catch (Exception e) {
+			logger.error("There is an error while approving new purchase order", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateOrderModelDetails(model, orderBeanDTO);
+		}
+		return ViewPathConstants.EDIT_ORDER_PAGE;
+	}	
 
 }

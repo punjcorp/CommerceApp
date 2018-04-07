@@ -126,20 +126,36 @@ $(function() {
 	});
 
 	
-	$('#btnNewOrder').click(function() {
-		startNewOrder();
-	});	
+	$('#btnViewOrderReport').click(function() {
+		viewOrderReport();
+	});			
 
 	$('#btnPrintReportAndNewOrder').click(function() {
 		printOrderReport();
 	});
 	
-	$('#btnViewOrderReport').click(function() {
-		viewOrderReport();
-	});			
+	$('#btnEditOrder').click(function() {
+		editOrder();
+	});		
+
+	$('#btnApproveOrder').click(function() {
+		approveOrder();
+	});		
+
+	
+	$('#btnReceiveOrder').click(function() {
+		receiveOrder();
+	});		
+	
+	
+	$('#btnNewOrder').click(function() {
+		startNewOrder();
+	});	
+
 	
 	
 	calculateTotals();
+	calculateActualTotals();
 	
 });
 
@@ -248,6 +264,8 @@ function getItemDetails(event, ui) {
 }
 
 function renderOrderItem(orderItem) {
+	$('#order\\.orderItems' + targetItemIndex + '\\.itemDesc').val(orderItem.name);
+	$('#itemSearchHelp').html(orderItem.name +'<br>'+orderItem.longDesc);
 	$('#order\\.orderItems' + targetItemIndex + '\\.orderedQty').val(orderItem.qty.toFixed(2));
 	$('#order\\.orderItems' + targetItemIndex + '\\.unitCost').val((+orderItem.unitCostAmt).toFixed(2));
 
@@ -301,6 +319,15 @@ function saleItemChanged(cntl) {
 
 }
 
+
+function actualDetailsChanged(cntl) {
+
+	var orderItemIdx = cntl.id.replace(/[^0-9]/gi, '');
+	calculateActualAmounts(orderItemIdx, cntl.id);
+
+}
+
+
 function calculateAmounts(orderItemIdx, cntlId) {
 	var orderQty = +$('#order\\.orderItems' + orderItemIdx + '\\.orderedQty').val();
 	var unitCost = +$('#order\\.orderItems' + orderItemIdx + '\\.unitCost').val();
@@ -337,11 +364,6 @@ function calculateAmounts(orderItemIdx, cntlId) {
 	// The totals are calculated based on the item action or order action
 	calculateTotals();
 	
-	if(txn_orderId && txn_orderId!='undefined' && txn_orderId!=''){
-		postOrderSave();	
-	}
-
-
 }
 
 function calculateTotals() {
@@ -402,6 +424,100 @@ function calculateTotals() {
 	}
 }
 
+function calculateActualAmounts(orderItemIdx, cntlId) {
+	var orderQty = +$('#order\\.orderItems' + orderItemIdx + '\\.delieveredQty').val();
+	var unitCost = +$('#order\\.orderItems' + orderItemIdx + '\\.actualUnitCost').val();
+
+	var costAmount = orderQty * unitCost;
+
+	$('#order\\.orderItems' + orderItemIdx + '\\.actualCostAmount').val(costAmount.toFixed(2));
+	$('#lbl_' + orderItemIdx + '_actualCostAmount').text(costAmount.toFixed(2));
+
+	var igstTaxRate = +$('#order\\.orderItems' + orderItemIdx + '\\.igstRate').val();
+	var sgstTaxRate = +$('#order\\.orderItems' + orderItemIdx + '\\.sgstRate').val();
+	var cgstTaxRate = +$('#order\\.orderItems' + orderItemIdx + '\\.cgstRate').val();
+
+	var igstTaxAmount = (igstTaxRate * costAmount) / 100;
+	var sgstTaxAmount = (sgstTaxRate * costAmount) / 100;
+	var cgstTaxAmount = (cgstTaxRate * costAmount) / 100;
+
+	$('#order\\.orderItems' + orderItemIdx + '\\.sgstActualTaxAmount').val(sgstTaxAmount.toFixed(2));
+	$('#order\\.orderItems' + orderItemIdx + '\\.cgstActualTaxAmount').val(cgstTaxAmount.toFixed(2));
+	$('#order\\.orderItems' + orderItemIdx + '\\.igstActualTaxAmount').val(igstTaxAmount.toFixed(2));
+
+	var taxAmount = sgstTaxAmount + cgstTaxAmount;
+
+	var totalCost = costAmount + taxAmount;
+
+	$('#order\\.orderItems' + orderItemIdx + '\\.actualTaxAmount').val(taxAmount.toFixed(2));
+	$('#order\\.orderItems' + orderItemIdx + '\\.actualTotalCost').val(totalCost.toFixed(2));
+	$('#lbl_' + orderItemIdx + '_actualTotalCost').text(totalCost.toFixed(2));
+	$('#lbl_' + orderItemIdx + '_actualTaxAmount').text(taxAmount.toFixed(2));
+	
+	// The totals are calculated based on the item action or order action
+	calculateActualTotals();
+	
+}
+
+function calculateActualTotals() {
+
+	if($("[id^=order\\.orderItems][id$=\\.sgstActualTaxAmount]").length>0){
+		
+	
+	
+	var totalSGSTAmt = 0.00;
+
+	$("[id^=order\\.orderItems][id$=\\.sgstActualTaxAmount]").map(function() {
+		totalSGSTAmt += (+$(this).val());
+	});
+
+	var totalCGSTAmt = 0.00;
+
+	$("[id^=order\\.orderItems][id$=\\.cgstActualTaxAmount]").map(function() {
+		totalCGSTAmt += (+$(this).val());
+	});
+
+	var totalIGSTAmt = 0.00;
+
+	$("[id^=order\\.orderItems][id$=\\.igstActualTaxAmount]").map(function() {
+		totalIGSTAmt += (+$(this).val());
+	});
+
+	var totalTaxAmt = 0.00;
+
+	$("[id^=order\\.orderItems][id$=\\.actualTaxAmount]").map(function() {
+		totalTaxAmt += (+$(this).val());
+	});
+
+	$('#order\\.actualTaxAmount').val(totalTaxAmt.toFixed(2));
+	$('#order\\.actualSgstTaxAmount').val(totalSGSTAmt.toFixed(2));
+	$('#order\\.actualCgstTaxAmount').val(totalCGSTAmt.toFixed(2));
+
+	$('#lbl_actualTaxAmount').text(totalTaxAmt.toFixed(2));
+	$('#lbl_actualSgstTaxAmount').text(totalSGSTAmt.toFixed(2));
+	$('#lbl_actualCgstTaxAmount').text(totalCGSTAmt.toFixed(2));
+
+	var totalCost = 0.00;
+	$("[id^=order\\.orderItems][id$=\\.actualTotalCost]").map(function() {
+		totalCost += (+$(this).val());
+	});
+
+	var totalCostAmount = 0.00;
+	$("[id^=order\\.orderItems][id$=\\.actualCostAmount]").map(function() {
+		totalCostAmount += (+$(this).val());
+	});
+
+	$('#order\\.actualSubTotalCost').val(totalCostAmount.toFixed(2));
+	$('#order\\.actualTotalAmount').val(totalCost.toFixed(2));
+
+	$('#lbl_actualSubTotalCost').text(totalCostAmount.toFixed(2));
+	$('#lbl_actualTotalAmount').text(totalCost.toFixed(2));
+	
+	
+	}
+}
+
+
 function validateSupplierAndLocation() {
 	var validationPassed = true;
 
@@ -451,11 +567,13 @@ function postOrderSave(){
 	
 }
 
-
-function startNewOrder(){
-	window.location.href = newOrderURL;
-}
+function viewOrderReport(){
+	$('#progressDiv').removeClass("d-none");
+	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+view_rcpt_url;
+	$('#reportPDFContainer').attr("src",pdfRcptUrl);
+	$('#progressDiv').addClass("d-none");
 	
+}
 
 function printOrderReport(){
 	
@@ -480,12 +598,21 @@ function printOrderReport(){
 	
 }
 
-
-function viewOrderReport(){
-	$('#progressDiv').removeClass("d-none");
-	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+view_rcpt_url;
-	$('#reportPDFContainer').attr("src",pdfRcptUrl);
-	$('#progressDiv').addClass("d-none");
 	
+function editOrder(){
+	window.location.href = editOrderURL+'='+txn_orderId;
 }
 
+function approveOrder(){
+	window.location.href = approveOrderURL+'='+txn_orderId;
+}
+
+
+function receiveOrder(){
+	window.location.href = receiveOrderURL+'='+txn_orderId;
+}
+
+
+function startNewOrder(){
+	window.location.href = newOrderURL;
+}

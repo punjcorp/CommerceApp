@@ -37,6 +37,13 @@ public class OrderItemTax implements Serializable {
 	@Column(name = "tax_percentage")
 	private BigDecimal taxRulePercentage;
 
+	@Column(name = "actual_taxable_amount")
+	private BigDecimal actualTaxableAmt;
+
+	@Column(name = "actual_tax_amount")
+	private BigDecimal actualTaxRuleAmt;
+	
+	
 	/**
 	 * @return the orderItemTaxId
 	 */
@@ -110,6 +117,34 @@ public class OrderItemTax implements Serializable {
 	 */
 	public void setTaxCode(String taxCode) {
 		this.taxCode = taxCode;
+	}
+
+	/**
+	 * @return the actualTaxableAmt
+	 */
+	public BigDecimal getActualTaxableAmt() {
+		return actualTaxableAmt;
+	}
+
+	/**
+	 * @param actualTaxableAmt the actualTaxableAmt to set
+	 */
+	public void setActualTaxableAmt(BigDecimal actualTaxableAmt) {
+		this.actualTaxableAmt = actualTaxableAmt;
+	}
+
+	/**
+	 * @return the actualTaxRuleAmt
+	 */
+	public BigDecimal getActualTaxRuleAmt() {
+		return actualTaxRuleAmt;
+	}
+
+	/**
+	 * @param actualTaxRuleAmt the actualTaxRuleAmt to set
+	 */
+	public void setActualTaxRuleAmt(BigDecimal actualTaxRuleAmt) {
+		this.actualTaxRuleAmt = actualTaxRuleAmt;
 	}
 
 }

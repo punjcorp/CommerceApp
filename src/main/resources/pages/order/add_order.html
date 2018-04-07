@@ -37,6 +37,12 @@
 										<div class="col-6">
 											<div class="form-group text-left">
 												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-search"
+																data-fa-transform="shrink-10 right-12 up-4"></i>
+														</span>
+														</span>
+													</div>
 													<input type="hidden" th:field="*{order.supplierId}"></input> <input type="text" th:field="*{supplierSearch.searchText}"
 														class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.search.text}" placeholder="Enter keyword to search"
 														aria-describedby="searchHelp"></input>
@@ -60,6 +66,17 @@
 												</div>
 												<div th:if="${#fields.hasErrors('order.locationId')}" th:errors="*{order.locationId}" class="text-danger">Location Error</div>
 												<div id="locationMsg"></div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.order.comments}">Comments</span></small></label>
+												<div class="input-group text-left">
+													<textarea rows="4" th:field="*{order.comments}" class="form-control input-sm"></textarea>
+												</div>
+												<div id="commentsMsg"></div>
 											</div>
 										</div>
 									</div>
@@ -119,11 +136,20 @@
 													<div class="col-3">
 														<div class="form-group text-left">
 															<div class="input-group">
+																<div class="input-group-prepend">
+																	<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-file-alt"
+																			data-fa-transform="rotate-180"></i> <i class="fas fa-search" data-fa-transform="shrink-10 right-10 up-4"></i>
+																	</span>
+																	</span>
+																</div>
 																<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="form-control input-sm"
-																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input>
+																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input> <input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input>
 															</div>
-															<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.item.search.keywords}">Enter keywords like
-																Item#/Name/Description</small>
+															<small id="itemSearchHelp" class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc==null}"
+																th:text="#{commerce.screen.item.search.keywords}">Enter keywords like Item#/Name/Description</small> <small id="itemSearchHelp"
+																class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc!=null}"
+																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"> Item Name</small>
 															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].itemId')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="text-danger">Item Id Error</div>
 														</div>
@@ -172,18 +198,16 @@
 																	th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></span> %)
 																</small>
 															</div>
-															
 															<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxAmount}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxAmount}"></input> <input type="hidden"
-																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxAmount}"></input>
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxGroupId}"></input> 
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstCode}"></input>
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstCode}"></input>
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstCode}"></input>																
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRateRuleId}"></input>
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRateRuleId}"></input>
-																<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRateRuleId}"></input>
-																<input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxAmount}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxGroupId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstCode}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstCode}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstCode}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRateRuleId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRateRuleId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRateRuleId}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
@@ -195,8 +219,7 @@
 															<label><h6>
 																	<span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_totalCost'"
 																		th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}"></span>
-																</h6></label> <input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}"></input>
-																<span>  </span>
+																</h6></label> <input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].totalCost}"></input> <span> </span>
 															<button type="submit" name="addOrderItem" class="btn btn-secondary btn-sm">
 																<i class="far fa-plus-square fa-2x"></i>
 															</button>
@@ -211,9 +234,19 @@
 										</th:block>
 									</div>
 									<div class="row">
-										<div class="col-xs-2 col-sm-2 col-md-2">
+										<div class="col-xs-4 col-sm-4 col-md-4">
 											<div class="form-group">
-												<input type="submit" name="saveOrder" value="Save" th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info"></input>
+												<label></label>
+												<div class="input-group text-left">
+													<button type="submit" name="saveOrder" value="Save" class="btn btn-info mx-2"
+														th:if="${orderBeanDTO.order.status==null || orderBeanDTO.order.status=='C'}">
+														<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
+													</button>
+													<button type="submit" name="approveOrder" value="Approve" class="btn btn-info"
+														th:if="${orderBeanDTO.order.status==null || orderBeanDTO.order.status=='C'}">
+														<i class="fas fa-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
+													</button>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -379,8 +412,6 @@
 		</div>
 		<!-- /#page-content-wrapper -->
 	</div>
-
-	
 	<!-- Order Report Lookup Modal-->
 	<div class="modal fade " id="orderReportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
@@ -393,13 +424,42 @@
 				<div class="modal-body text-center">
 					<div id="receiptActions" class="col-12 text-center">
 						<button type="button" class="btn btn-info p-3 m-2" id="btnViewOrderReport">
-							<i class="fas fa-file-alt fa-5x"></i>
+							<div class="fa-5x">
+								<i class="fas fa-file-alt"></i>
+							</div>
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReportAndNewOrder">
-							<i class="fas fa-print fa-5x"></i>
+							<div class="fa-5x">
+								<i class="fas fa-print"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnEditOrder" th:if="${orderBeanDTO.order.status=='C'}">
+							<div class="fa-5x">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-pencil-alt"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnApproveOrder" th:if="${orderBeanDTO.order.status=='C'}">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-check"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnReceiveOrder" th:if="${orderBeanDTO.order.status=='A'}">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-arrow-left"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnNewOrder">
-							<i class="far fa-plus-square fa-5x"></i>
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-plus"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">
@@ -408,18 +468,21 @@
 							<span th:text="#{commerce.screen.order.report.generate}"></span>
 						</div>
 					</div>
-					<iframe id="reportPDFContainer" class="p-5" width="90%" height="70%" frameBorder="0"></iframe>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="90%" frameBorder="0"></iframe>
 				</div>
 			</div>
 		</div>
-	</div>	
-	
+	</div>
 	<!-- /#wrapper -->
 	<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
 
 		var txn_orderId = /*[[${orderBeanDTO.order.orderId}]]*/;
 		var newOrderURL = /*[[@{/admin/add_order}]]*/;
+		var editOrderURL = /*[[@{/admin/edit_order(orderId)}]]*/;
+		var approveOrderURL = /*[[@{/admin/approve_order(orderId)}]]*/;
+		var receiveOrderURL = /*[[@{/admin/receive_order(orderId)}]]*/;
+		
 		
 		var print_rcpt_url= /*[[@{/admin/print_order_report}]]*/;
 		var view_rcpt_url= /*[[@{/admin/view_order_report}]]*/;
@@ -431,9 +494,6 @@
 		}
 		
 		/*]]>*/
-	</script>	
-	
-	
-	
+	</script>
 </body>
 </html>

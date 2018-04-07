@@ -18,6 +18,8 @@ import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
 public class OrderItemBean {
 	@NotNull(message = "{commerce.error.string.empty}")
 	private BigInteger itemId;
+	
+	private String itemDesc;
 
 	private BigInteger orderId;
 	private Integer taxGroupId;
@@ -32,17 +34,24 @@ public class OrderItemBean {
 
 	private String sgstCode;
 	private String cgstCode;
-	private String igstCode;	
-	
+	private String igstCode;
+
 	private Integer sgstRateRuleId;
 	private Integer cgstRateRuleId;
 	private Integer igstRateRuleId;
+
 	private BigDecimal cgstRate = BigDecimal.ZERO;
 	private BigDecimal sgstRate = BigDecimal.ZERO;
 	private BigDecimal igstRate = BigDecimal.ZERO;
+
 	private BigDecimal cgstTaxAmount = BigDecimal.ZERO;
 	private BigDecimal sgstTaxAmount = BigDecimal.ZERO;
 	private BigDecimal igstTaxAmount = BigDecimal.ZERO;
+
+	private BigDecimal cgstActualTaxAmount = BigDecimal.ZERO;
+	private BigDecimal sgstActualTaxAmount = BigDecimal.ZERO;
+	private BigDecimal igstActualTaxAmount = BigDecimal.ZERO;
+
 	private BigDecimal taxAmount = BigDecimal.ZERO;
 
 	private BigDecimal delieveredQty;
@@ -439,7 +448,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param sgstCode the sgstCode to set
+	 * @param sgstCode
+	 *            the sgstCode to set
 	 */
 	public void setSgstCode(String sgstCode) {
 		this.sgstCode = sgstCode;
@@ -453,7 +463,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param cgstCode the cgstCode to set
+	 * @param cgstCode
+	 *            the cgstCode to set
 	 */
 	public void setCgstCode(String cgstCode) {
 		this.cgstCode = cgstCode;
@@ -467,10 +478,70 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param igstCode the igstCode to set
+	 * @param igstCode
+	 *            the igstCode to set
 	 */
 	public void setIgstCode(String igstCode) {
 		this.igstCode = igstCode;
+	}
+
+	/**
+	 * @return the cgstActualTaxAmount
+	 */
+	public BigDecimal getCgstActualTaxAmount() {
+		return cgstActualTaxAmount;
+	}
+
+	/**
+	 * @param cgstActualTaxAmount
+	 *            the cgstActualTaxAmount to set
+	 */
+	public void setCgstActualTaxAmount(BigDecimal cgstActualTaxAmount) {
+		this.cgstActualTaxAmount = cgstActualTaxAmount;
+	}
+
+	/**
+	 * @return the sgstActualTaxAmount
+	 */
+	public BigDecimal getSgstActualTaxAmount() {
+		return sgstActualTaxAmount;
+	}
+
+	/**
+	 * @param sgstActualTaxAmount
+	 *            the sgstActualTaxAmount to set
+	 */
+	public void setSgstActualTaxAmount(BigDecimal sgstActualTaxAmount) {
+		this.sgstActualTaxAmount = sgstActualTaxAmount;
+	}
+
+	/**
+	 * @return the igstActualTaxAmount
+	 */
+	public BigDecimal getIgstActualTaxAmount() {
+		return igstActualTaxAmount;
+	}
+
+	/**
+	 * @param igstActualTaxAmount
+	 *            the igstActualTaxAmount to set
+	 */
+	public void setIgstActualTaxAmount(BigDecimal igstActualTaxAmount) {
+		this.igstActualTaxAmount = igstActualTaxAmount;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
 	}
 
 }

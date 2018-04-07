@@ -54,9 +54,9 @@ public final class ViewPathConstants {
 	 * The purchase order pages section starts
 	 */
 	public static final String SEARCH_ORDER_ITEM_URL = "/search_order_item";
-	public static final String SEARCH_ORDER_URL = "/search_order";
+	public static final String SEARCH_ORDER_URL = "/admin/search_order";
 	public static final String MANAGE_ORDER_PAGE = "order/manage_order";
-	public static final String MANAGE_ORDER_URL= "/manage_order";
+	public static final String MANAGE_ORDER_URL= "/admin/manage_order";
 	
 	public static final String ADD_ORDER_URL = "/admin/add_order";
 	public static final String ADD_ORDER_PAGE = "order/add_order";	
@@ -67,16 +67,16 @@ public final class ViewPathConstants {
 	public static final String EDIT_ORDER_URL = "/admin/edit_order";
 	public static final String EDIT_ORDER_PAGE= "order/edit_order";
 	
-	public static final String APPROVE_ORDER_URL = "/approve_order";
+	public static final String APPROVE_ORDER_URL = "/admin/approve_order";
 	public static final String DELETE_ORDER_URL = "/delete_order";
 	
 	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
 	
-	public static final String BULK_ORDER_URL = "/bulk_order_action";
-	public static final String RECEIVE_ORDER_URL = "/receive_order";
+	public static final String BULK_ORDER_URL = "/admin/bulk_order_action";
+	public static final String RECEIVE_ORDER_URL = "/admin/receive_order";
 	public static final String RECEIVE_ORDER_PAGE ="order/receive_order";
 	
-	public static final String PRINT_ORDERS_URL = "/print_orders";
+	public static final String PRINT_ORDERS_URL = "/admin/print_orders";
 	
 	
 	/**

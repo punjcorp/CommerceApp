@@ -71,6 +71,7 @@ public final class MVCConstants {
 	public static final String ADD_ORDER_ITEM_PARAM= "addOrderItem";
 	public static final String REMOVE_ORDER_ITEM_PARAM= "removeOrderItem";
 	public static final String SAVE_ORDER_PARAM= "saveOrder";
+	public static final String APPROVE_ORDER_PARAM= "approveOrder";
 	public static final String SAVE_ORDERS_PARAM= "saveOrders";
 	public static final String APPROVE_ORDERS_PARAM= "approveOrders";
 	public static final String DELETE_ORDERS_PARAM= "deleteOrders";

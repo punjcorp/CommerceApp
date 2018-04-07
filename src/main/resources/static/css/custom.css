@@ -1,3 +1,4 @@
+
 html {
 	font-size: 12px;
 }
@@ -654,6 +655,10 @@ a[id="contact"]::before {
     vertical-align: middle;
 }
 
+.col-width-sm{
+	max-width: 20px;
+}
+
 .padding-sm{
 	padding-right: 2px;
 	padding-left: 2px;
@@ -666,10 +671,11 @@ a[id="contact"]::before {
 
 .modal-lg{
 	max-width: 95% !important;
-	max-height: 80% !important;
+	height: auto;
+	max-height: 100%;
 }
 .modal-body{
-	height: 800px;
+	height: 600px;
 }
 
 

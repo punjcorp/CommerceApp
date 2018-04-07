@@ -28,10 +28,18 @@ body, html {
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success" role="alert"></div>
 					<form action="#" th:action="@{/login}" th:object="${loginBean}" method="post">
 						<div class="input-group form-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text"> <i class="fas fa-user"></i>
+								</span>
+							</div>
 							<input type="email" class="form-control" th:field="*{username}" placeholder="Email Address" th:placeholder="#{commerce.screen.login.username}"
 								required="required" autofocus=""></input>
 						</div>
 						<div class="input-group form-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text"> <i class="fas fa-key"></i>
+								</span>
+							</div>
 							<input type="password" class="form-control" th:field="*{password}" placeholder="Password" th:placeholder="#{commerce.screen.login.password}"
 								required="required"></input>
 						</div>
@@ -43,7 +51,8 @@ body, html {
 								</button>
 							</div>
 							<div class="col-4">
-								<a th:href="@{/register}" class="btn btn-info"><i class="fas fa-user-plus"></i> <span th:text="#{commerce.link.signup}"> Signup now!</span></a>
+								<a th:href="@{/register}" class="btn btn-info"><i class="fas fa-user-plus"></i> <span th:text="#{commerce.link.signup}"> Signup
+										now!</span></a>
 							</div>
 						</div>
 					</form>

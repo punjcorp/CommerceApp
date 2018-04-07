@@ -37,6 +37,9 @@ public class OrderItem implements Serializable {
 	@DocumentId
 	private OrderItemId orderItemId;
 
+	@Column(name = "item_name")
+	private String itemDesc;
+	
 	@Column(name = "ordered_qty")
 	private BigDecimal orderedQty;
 
@@ -279,6 +282,20 @@ public class OrderItem implements Serializable {
 	 */
 	public void setOrderItemTaxes(List<OrderItemTax> orderItemTaxes) {
 		this.orderItemTaxes = orderItemTaxes;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
 	}
 
 }

@@ -58,7 +58,7 @@ public class Order implements Serializable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
-	@Column(name = "total_estimated_cost")
+	@Column(name = "sub_total_cost")
 	private BigDecimal estimatedCost = new BigDecimal("0.0");
 
 	@Column(name = "discount_amount")
@@ -70,8 +70,17 @@ public class Order implements Serializable {
 	@Column(name = "paid_amount")
 	private BigDecimal paidAmount = new BigDecimal("0.0");
 
+	@Column(name = "actual_sub_total_cost")
+	private BigDecimal actualSubTotalCost = new BigDecimal("0.0");
+	@Column(name = "actual_tax_amount")
+	private BigDecimal actualTaxAmount = new BigDecimal("0.0");
+	@Column(name = "actual_total_amount")
+	private BigDecimal actualTotalAmount = new BigDecimal("0.0");
+
 	@Field
 	private String status;
+
+	private String comments;
 
 	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
@@ -81,7 +90,6 @@ public class Order implements Serializable {
 	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
 	private List<OrderItem> orderItems;
-
 
 	/**
 	 * @return the orderId
@@ -291,6 +299,66 @@ public class Order implements Serializable {
 	 */
 	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	/**
+	 * @return the actualSubTotalCost
+	 */
+	public BigDecimal getActualSubTotalCost() {
+		return actualSubTotalCost;
+	}
+
+	/**
+	 * @param actualSubTotalCost
+	 *            the actualSubTotalCost to set
+	 */
+	public void setActualSubTotalCost(BigDecimal actualSubTotalCost) {
+		this.actualSubTotalCost = actualSubTotalCost;
+	}
+
+	/**
+	 * @return the actualTaxAmount
+	 */
+	public BigDecimal getActualTaxAmount() {
+		return actualTaxAmount;
+	}
+
+	/**
+	 * @param actualTaxAmount
+	 *            the actualTaxAmount to set
+	 */
+	public void setActualTaxAmount(BigDecimal actualTaxAmount) {
+		this.actualTaxAmount = actualTaxAmount;
+	}
+
+	/**
+	 * @return the actualTotalAmount
+	 */
+	public BigDecimal getActualTotalAmount() {
+		return actualTotalAmount;
+	}
+
+	/**
+	 * @param actualTotalAmount
+	 *            the actualTotalAmount to set
+	 */
+	public void setActualTotalAmount(BigDecimal actualTotalAmount) {
+		this.actualTotalAmount = actualTotalAmount;
 	}
 
 }
