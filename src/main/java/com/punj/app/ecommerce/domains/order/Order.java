@@ -26,6 +26,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 
 /**
@@ -45,8 +46,9 @@ public class Order implements Serializable {
 	@Column(name = "order_id", updatable = false, nullable = false)
 	private BigInteger orderId;
 
-	@Column(name = "location_id")
-	private Integer locationId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "location_id")
+	private Location location;
 
 	@Column(name = "created_by")
 	private String createdBy;
@@ -287,18 +289,18 @@ public class Order implements Serializable {
 	}
 
 	/**
-	 * @return the locationId
+	 * @return the location
 	 */
-	public Integer getLocationId() {
-		return locationId;
+	public Location getLocation() {
+		return location;
 	}
 
 	/**
-	 * @param locationId
-	 *            the locationId to set
+	 * @param location
+	 *            the location to set
 	 */
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	/**

@@ -33,6 +33,22 @@
 								<div class="card-text">
 									<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 									<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+									<div id="orderActions" class="col-12 p-4" th:if="${ alert!=null}">
+										<a th:href="@{/admin/edit_order(orderId=${orderBeanDTO.order.orderId})}" class="btn btn-sm btn-info"
+											th:if="${orderBeanDTO.order.status=='C'}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+													class="far fa-file-powerpoint"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span>
+										</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_order}" class="btn btn-sm btn-success"><span
+											class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-plus"
+													data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span>
+										</span> <span th:text="#{commerce.home.menu.add.order}"></span></a> <a th:href="@{/admin/manage_order}" class="btn btn-sm btn-success"> <span
+											class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-cog"
+													data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span>
+										</span> <span th:text="#{commerce.home.menu.search.order}"></span>
+										</a>
+									</div>
 									<div class="row">
 										<div class="col-2">
 											<label><small><span th:text="#{commerce.screen.order.id}">Order Id</span></small></label>

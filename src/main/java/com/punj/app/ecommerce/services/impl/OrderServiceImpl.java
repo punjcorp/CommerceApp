@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +23,6 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
-import com.punj.app.ecommerce.domains.order.OrderItemTax;
-import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
-import com.punj.app.ecommerce.domains.order.ids.OrderItemTaxId;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
@@ -300,7 +296,7 @@ public class OrderServiceImpl implements OrderService {
 
 	private AccountHead getOrderAccount(Order order) {
 		AccountHead accountHead = new AccountHead();
-		accountHead.setLocationId(order.getLocationId());
+		accountHead.setLocationId(order.getLocation().getLocationId());
 		accountHead.setEntityType(ServiceConstants.ACCOUNT_TYPE_SUPPLIER);
 		accountHead.setEntityId(new BigInteger(order.getSupplier().getSupplierId().toString()));
 
@@ -419,7 +415,7 @@ public class OrderServiceImpl implements OrderService {
 			itemStockJournal.setCreatedBy(username);
 			itemStockJournal.setCreatedDate(LocalDateTime.now());
 
-			itemStockJournal.setLocationId(order.getLocationId());
+			itemStockJournal.setLocationId(order.getLocation().getLocationId());
 
 			item = new Item();
 			item.setItemId(orderItem.getOrderItemId().getItemId());

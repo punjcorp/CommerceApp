@@ -48,6 +48,11 @@ public final class MVCConstants {
 	public static final String DEFAULT_TENDER_PARAM="defaultTender";
 	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
 
+	public static final String STATUS_RECEIVED_DESC="Received";
+	public static final String STATUS_APPROVED_DESC="Approved";
+	public static final String STATUS_CREATED_DESC="Created";
+	public static final String STATUS_ACTIVE_DESC="Active";	
+	
 	public static final String STATUS_RECEIVED="R";
 	public static final String STATUS_APPROVED="A";
 	public static final String STATUS_CREATED="C";

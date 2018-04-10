@@ -27,6 +27,7 @@ public class OrderBean implements Serializable {
 	private BigInteger orderId;
 	@NotNull(message = "{commerce.error.string.empty}")
 	private Integer supplierId;
+	private String supplierName;
 	@NotNull(message = "{commerce.error.string.empty}")
 	private Integer locationId;
 	private String locationName;
@@ -58,6 +59,7 @@ public class OrderBean implements Serializable {
 	private BigDecimal actualTotalAmount = BigDecimal.ZERO;
 
 	private String status;
+	private String displayStatus;
 	private String comments;
 
 	private Pager pager;
@@ -476,6 +478,34 @@ public class OrderBean implements Serializable {
 	 */
 	public void setActualTotalAmount(BigDecimal actualTotalAmount) {
 		this.actualTotalAmount = actualTotalAmount;
+	}
+
+	/**
+	 * @return the supplierName
+	 */
+	public String getSupplierName() {
+		return supplierName;
+	}
+
+	/**
+	 * @param supplierName the supplierName to set
+	 */
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
+	}
+
+	/**
+	 * @return the displayStatus
+	 */
+	public String getDisplayStatus() {
+		return displayStatus;
+	}
+
+	/**
+	 * @param displayStatus the displayStatus to set
+	 */
+	public void setDisplayStatus(String displayStatus) {
+		this.displayStatus = displayStatus;
 	}
 
 }

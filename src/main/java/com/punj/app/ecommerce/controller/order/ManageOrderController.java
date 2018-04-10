@@ -3,7 +3,6 @@ package com.punj.app.ecommerce.controller.order;
  * 
  */
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -19,11 +18,7 @@ import java.util.Set;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +29,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
@@ -49,16 +44,15 @@ import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.models.common.AddressBean;
-import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeansDTO;
 import com.punj.app.ecommerce.models.order.OrderItemBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.utils.Pager;
+import com.punj.app.ecommerce.utils.Utils;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -118,7 +112,9 @@ public class ManageOrderController {
 		order.setCreatedDate(LocalDateTime.now());
 		order.setStatus(status);
 
-		order.setLocationId(orderBean.getLocationId());
+		Location location = new Location();
+		location.setLocationId(orderBean.getLocationId());
+		order.setLocation(location);
 
 		order.setEstimatedCost(orderBean.getEstimatedCost());
 		order.setDiscountAmount(orderBean.getDiscountAmount());
@@ -228,7 +224,7 @@ public class ManageOrderController {
 		this.updateSupplierBean(supplierBean, order.getSupplier());
 		orderBean.setSupplier(supplierBean);
 
-		orderBean.setLocationId(order.getLocationId());
+		orderBean.setLocationId(order.getLocation().getLocationId());
 
 		orderBean.setCreatedBy(order.getCreatedBy());
 		orderBean.setCreatedDate(order.getCreatedDate());
@@ -244,6 +240,8 @@ public class ManageOrderController {
 		orderBean.setEstimatedCost(order.getEstimatedCost());
 
 		orderBean.setStatus(order.getStatus());
+		orderBean.setDisplayStatus(Utils.showStatus(order.getStatus()));
+		orderBean.setComments(order.getComments());
 
 		logger.info("The basic details for the order has been updated in Bean object now");
 
@@ -378,7 +376,6 @@ public class ManageOrderController {
 		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-
 	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.SAVE_ORDERS_PARAM })
 	public String saveOrders(@ModelAttribute OrderBeansDTO orders, Model model, HttpSession session, Locale locale) {
 		try {
@@ -511,8 +508,6 @@ public class ManageOrderController {
 		logger.info("The total cost based on all items cost has been calculated");
 	}
 
-
-
 	private void receiveAllOrderItems(Order order, OrderBean orderBean, UserDetails userDetails) {
 		order.setOrderId(orderBean.getOrderId());
 
@@ -520,7 +515,9 @@ public class ManageOrderController {
 		supplier.setSupplierId(orderBean.getSupplierId());
 		order.setSupplier(supplier);
 
-		order.setLocationId(orderBean.getLocationId());
+		Location location = new Location();
+		location.setLocationId(orderBean.getLocationId());
+		order.setLocation(location);
 
 		if (userDetails != null)
 			order.setCreatedBy(userDetails.getUsername());
@@ -669,8 +666,6 @@ public class ManageOrderController {
 
 		logger.info("The Order details has been updated in Order Beans");
 	}
-
-
 
 	public List<AddressBean> getSupplierAddress(List<AddressBean> addresses) {
 		List<AddressBean> primaryAddress = new ArrayList<>();

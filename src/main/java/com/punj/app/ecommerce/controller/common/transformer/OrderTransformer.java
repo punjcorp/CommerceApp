@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.OrderItemTax;
@@ -38,6 +39,15 @@ public class OrderTransformer {
 	}
 
 	public static Order transformOrderBeanAsReceivedAll(OrderBean orderBean, String username) {
+		
+		orderBean.setActualCgstTaxAmount(orderBean.getCgstTaxAmount());
+		orderBean.setActualIgstTaxAmount(orderBean.getIgstTaxAmount());
+		orderBean.setActualSgstTaxAmount(orderBean.getSgstTaxAmount());
+		orderBean.setActualSubTotalCost(orderBean.getEstimatedCost());
+		orderBean.setActualTaxAmount(orderBean.getTaxAmount());
+		orderBean.setActualTotalAmount(orderBean.getTotalAmount());
+		
+		
 		Order order = OrderTransformer.transformOrderBean(orderBean, username, MVCConstants.STATUS_RECEIVED, Boolean.TRUE);
 
 		List<OrderItem> orderItems = order.getOrderItems();
@@ -74,7 +84,9 @@ public class OrderTransformer {
 		OrderBean orderBean = new OrderBean();
 
 		orderBean.setOrderId(order.getOrderId());
-		orderBean.setLocationId(order.getLocationId());
+		
+		orderBean.setLocationId(order.getLocation().getLocationId());
+		orderBean.setLocationName(order.getLocation().getName());
 		orderBean.setStatus(order.getStatus());
 		orderBean.setComments(order.getComments());
 
@@ -248,7 +260,10 @@ public class OrderTransformer {
 		}
 		order.setStatus(status);
 		order.setComments(orderBean.getComments());
-		order.setLocationId(orderBean.getLocationId());
+		
+		Location location=new Location();
+		location.setLocationId(orderBean.getLocationId());
+		order.setLocation(location);
 
 
 		order.setDiscountAmount(orderBean.getDiscountAmount());

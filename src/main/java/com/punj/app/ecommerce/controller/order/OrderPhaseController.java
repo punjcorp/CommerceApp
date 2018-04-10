@@ -33,9 +33,12 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeanDTO;
+import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
@@ -158,15 +161,18 @@ public class OrderPhaseController {
 					this.updateOrderModelDetails(model, orderBeanDTO);
 					logger.info("The selected purchase order has been retrieved for receival successfully");
 				} else {
+					this.emptyOrderBeanDTO(model);
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.manage.receive.status", null, locale));
 					logger.info("There order is not eligible for the receipt!!");
 				}
 			} else {
+				this.emptyOrderBeanDTO(model);
 				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.manage.receive.noorder", null, locale));
 				logger.info("There is no order number specified for deletion");
 			}
 
 		} catch (Exception e) {
+			this.emptyOrderBeanDTO(model);			
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while retrieving purchase order for receival", e);
 		}
@@ -228,7 +234,7 @@ public class OrderPhaseController {
 
 			logger.info("All the purchase order items has been marked as received successfully");
 			model.addAttribute(MVCConstants.SUCCESS,
-					messageSource.getMessage("commerce.screen.order.receive.receive.all.success", new Object[] { order.getOrderId() }, locale));
+					messageSource.getMessage("commerce.screen.order.receive.all.success", new Object[] { order.getOrderId() }, locale));
 
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
@@ -237,5 +243,20 @@ public class OrderPhaseController {
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
 	}	
 	
+	private void emptyOrderBeanDTO(Model model) {
+		OrderBeanDTO orderBeanDTO = new OrderBeanDTO();
 
+		OrderBean orderBean = new OrderBean();
+
+		SupplierBean supplierBean = new SupplierBean();
+		AddressBean primaryAddress = new AddressBean();
+		supplierBean.setPrimaryAddress(primaryAddress);
+		orderBean.setSupplier(supplierBean);
+		orderBeanDTO.setOrder(orderBean);
+
+		orderBeanDTO.setSupplierSearch(new SearchBean());
+		this.updateOrderModelDetails(model, orderBeanDTO);
+
+		logger.info("An empty Order Bean DTO has been created and set with needed objects");
+	}
 }

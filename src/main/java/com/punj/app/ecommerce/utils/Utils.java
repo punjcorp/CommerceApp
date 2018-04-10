@@ -18,6 +18,8 @@ import org.javamoney.moneta.Money;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
+
 public class Utils {
 	private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
@@ -33,10 +35,27 @@ public class Utils {
 	public static BCryptPasswordEncoder getPassEncoder() {
 		return ENCODER;
 	}
-	
+
+	public static String showStatus(String status) {
+
+		switch (status) {
+		case MVCConstants.STATUS_CREATED:
+			return MVCConstants.STATUS_CREATED_DESC;
+		case MVCConstants.STATUS_APPROVED:
+			return MVCConstants.STATUS_APPROVED_DESC;
+
+		case MVCConstants.STATUS_RECEIVED:
+			return MVCConstants.STATUS_RECEIVED_DESC;
+
+		default:
+			return "";
+		}
+
+	}
+
 	public static LocalDateTime parseDate(String date) {
 		return LocalDateTime.parse(date, dateFormatter);
-	}	
+	}
 
 	public static String formatDate(LocalDateTime date) {
 		return date.format(formatter);
@@ -52,19 +71,19 @@ public class Utils {
 	}
 
 	public static List<MonetaryAmount> getDenominations() {
-		if(denominations.isEmpty()) {
-			denominations.add(Money.of(0.50,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(1,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(2,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(5,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(10,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(20,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(50,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(100,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(200,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(500,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(1000,Utils.getLocaleCurrency()));
-			denominations.add(Money.of(2000,Utils.getLocaleCurrency()));
+		if (denominations.isEmpty()) {
+			denominations.add(Money.of(0.50, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(1, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(2, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(5, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(10, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(20, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(50, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(100, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(200, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(500, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(1000, Utils.getLocaleCurrency()));
+			denominations.add(Money.of(2000, Utils.getLocaleCurrency()));
 		}
 		return denominations;
 	}
