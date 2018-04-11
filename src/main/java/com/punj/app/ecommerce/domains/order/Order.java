@@ -48,8 +48,10 @@ public class Order implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "location_id")
+	@IndexedEmbedded
 	private Location location;
 
+	@Field
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -81,15 +83,15 @@ public class Order implements Serializable {
 
 	@Field
 	private String status;
-
+	@Field
 	private String comments;
 
-	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "supplier_id")
+	@IndexedEmbedded
 	private Supplier supplier;
 
-	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER,mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
 	private List<OrderItem> orderItems;
 

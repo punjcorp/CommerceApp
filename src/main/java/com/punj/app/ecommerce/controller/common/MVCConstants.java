@@ -145,8 +145,12 @@ public final class MVCConstants {
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
+	
+	public static final String REPORT_ORDER_PRINT= "P";
+	public static final String REPORT_ORDER_VIEW= "V";
 	public static final String LAST_ORDER_BEAN= "lastOrder";
 	public static final String LAST_ORDER_REPORT= "lastOrderReport";
+	public static final String LAST_ORDER_ID_REPORT= "lastOrderIdReport";
 	public static final String LAST_ORDER_REPORT_JASPER= "lastOrderReportJasper";
 	public static final String LAST_ORDER_REPORT_PDF= "lastOrderReportPDF";
 	public static final String ORDER_BEAN_DTO= "orderBeanDTO";

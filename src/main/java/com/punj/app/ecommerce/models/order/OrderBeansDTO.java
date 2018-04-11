@@ -5,6 +5,8 @@ package com.punj.app.ecommerce.models.order;
 
 import java.util.List;
 
+import com.punj.app.ecommerce.utils.Pager;
+
 /**
  * @author admin
  *
@@ -13,6 +15,7 @@ public class OrderBeansDTO {
 
 	private List<OrderBean> orders;
 	private List<String> orderIds;
+	private Pager pager;
 
 	/**
 	 * @return the orders
@@ -42,6 +45,21 @@ public class OrderBeansDTO {
 	 */
 	public void setOrderIds(List<String> orderIds) {
 		this.orderIds = orderIds;
+	}
+
+	/**
+	 * @return the pager
+	 */
+	public Pager getPager() {
+		return pager;
+	}
+
+	/**
+	 * @param pager
+	 *            the pager to set
+	 */
+	public void setPager(Pager pager) {
+		this.pager = pager;
 	}
 
 }

@@ -18,6 +18,7 @@
  */
 
 var accountDTO = new AccountDTO();
+var orderDTO = new Order();
 var searchBean = new SearchBean();
 var token = $("meta[name='_csrf']").attr("content");
 var targetItemIndex;
@@ -125,38 +126,33 @@ $(function() {
 		validateSupplierAndLocation();
 	});
 
-	
 	$('#btnViewOrderReport').click(function() {
 		viewOrderReport();
-	});			
+	});
 
 	$('#btnPrintReportAndNewOrder').click(function() {
 		printOrderReport();
 	});
-	
+
 	$('#btnEditOrder').click(function() {
 		editOrder();
-	});		
+	});
 
 	$('#btnApproveOrder').click(function() {
 		approveOrder();
-	});		
+	});
 
-	
 	$('#btnReceiveOrder').click(function() {
 		receiveOrder();
-	});		
-	
-	
+	});
+
 	$('#btnNewOrder').click(function() {
 		startNewOrder();
-	});	
+	});
 
-	
-	
 	calculateTotals();
 	calculateActualTotals();
-	
+
 });
 
 /* This section will allow the item listing to be in a specific format */
@@ -265,20 +261,18 @@ function getItemDetails(event, ui) {
 
 function renderOrderItem(orderItem) {
 	$('#order\\.orderItems' + targetItemIndex + '\\.itemDesc').val(orderItem.name);
-	$('#itemSearchHelp').html(orderItem.name +'<br>'+orderItem.longDesc);
+	$('#itemSearchHelp').html(orderItem.name + '<br>' + orderItem.longDesc);
 	$('#order\\.orderItems' + targetItemIndex + '\\.orderedQty').val(orderItem.qty.toFixed(2));
 	$('#order\\.orderItems' + targetItemIndex + '\\.unitCost').val((+orderItem.unitCostAmt).toFixed(2));
 
 	$('#order\\.orderItems' + targetItemIndex + '\\.costAmount').val((+orderItem.priceAmt).toFixed(2));
 	$('#lbl_' + targetItemIndex + '_costAmount').text((+orderItem.priceAmt).toFixed(2));
-	
-	
 
 	if (orderItem.igstTax && orderItem.igstTax.amount) {
 		$('#order\\.orderItems' + targetItemIndex + '\\.taxGroupId').val(orderItem.igstTax.taxGroupId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstRateRuleId').val(orderItem.igstTax.taxRuleRateId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstCode').val(orderItem.igstTax.typeCode);
-		
+
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstTaxAmount').val(orderItem.igstTax.amount.toFixed(2));
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstRate').val(orderItem.igstTax.percentage.toFixed(2));
 
@@ -290,8 +284,7 @@ function renderOrderItem(orderItem) {
 		$('#order\\.orderItems' + targetItemIndex + '\\.cgstRateRuleId').val(orderItem.cgstTax.taxRuleRateId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.sgstCode').val(orderItem.sgstTax.typeCode);
 		$('#order\\.orderItems' + targetItemIndex + '\\.cgstCode').val(orderItem.cgstTax.typeCode);
-		
-		
+
 		$('#order\\.orderItems' + targetItemIndex + '\\.sgstTaxAmount').val(orderItem.sgstTax.amount.toFixed(2));
 		$('#order\\.orderItems' + targetItemIndex + '\\.cgstTaxAmount').val(orderItem.cgstTax.amount.toFixed(2));
 		$('#order\\.orderItems' + targetItemIndex + '\\.sgstRate').val(orderItem.sgstTax.percentage.toFixed(2));
@@ -319,14 +312,12 @@ function saleItemChanged(cntl) {
 
 }
 
-
 function actualDetailsChanged(cntl) {
 
 	var orderItemIdx = cntl.id.replace(/[^0-9]/gi, '');
 	calculateActualAmounts(orderItemIdx, cntl.id);
 
 }
-
 
 function calculateAmounts(orderItemIdx, cntlId) {
 	var orderQty = +$('#order\\.orderItems' + orderItemIdx + '\\.orderedQty').val();
@@ -363,64 +354,61 @@ function calculateAmounts(orderItemIdx, cntlId) {
 
 	// The totals are calculated based on the item action or order action
 	calculateTotals();
-	
+
 }
 
 function calculateTotals() {
 
-	if($("[id^=order\\.orderItems][id$=\\.sgstTaxAmount]").length>0){
-		
-	
-	
-	var totalSGSTAmt = 0.00;
+	if ($("[id^=order\\.orderItems][id$=\\.sgstTaxAmount]").length > 0) {
 
-	$("[id^=order\\.orderItems][id$=\\.sgstTaxAmount]").map(function() {
-		totalSGSTAmt += (+$(this).val());
-	});
+		var totalSGSTAmt = 0.00;
 
-	var totalCGSTAmt = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.sgstTaxAmount]").map(function() {
+			totalSGSTAmt += (+$(this).val());
+		});
 
-	$("[id^=order\\.orderItems][id$=\\.cgstTaxAmount]").map(function() {
-		totalCGSTAmt += (+$(this).val());
-	});
+		var totalCGSTAmt = 0.00;
 
-	var totalIGSTAmt = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.cgstTaxAmount]").map(function() {
+			totalCGSTAmt += (+$(this).val());
+		});
 
-	$("[id^=order\\.orderItems][id$=\\.igstTaxAmount]").map(function() {
-		totalIGSTAmt += (+$(this).val());
-	});
+		var totalIGSTAmt = 0.00;
 
-	var totalTaxAmt = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.igstTaxAmount]").map(function() {
+			totalIGSTAmt += (+$(this).val());
+		});
 
-	$("[id^=order\\.orderItems][id$=\\.taxAmount]").map(function() {
-		totalTaxAmt += (+$(this).val());
-	});
+		var totalTaxAmt = 0.00;
 
-	$('#order\\.taxAmount').val(totalTaxAmt.toFixed(2));
-	$('#order\\.sgstTaxAmount').val(totalSGSTAmt.toFixed(2));
-	$('#order\\.cgstTaxAmount').val(totalCGSTAmt.toFixed(2));
+		$("[id^=order\\.orderItems][id$=\\.taxAmount]").map(function() {
+			totalTaxAmt += (+$(this).val());
+		});
 
-	$('#lbl_taxAmount').text(totalTaxAmt.toFixed(2));
-	$('#lbl_sgstTaxAmount').text(totalSGSTAmt.toFixed(2));
-	$('#lbl_cgstTaxAmount').text(totalCGSTAmt.toFixed(2));
+		$('#order\\.taxAmount').val(totalTaxAmt.toFixed(2));
+		$('#order\\.sgstTaxAmount').val(totalSGSTAmt.toFixed(2));
+		$('#order\\.cgstTaxAmount').val(totalCGSTAmt.toFixed(2));
 
-	var totalCost = 0.00;
-	$("[id^=order\\.orderItems][id$=\\.totalCost]").map(function() {
-		totalCost += (+$(this).val());
-	});
+		$('#lbl_taxAmount').text(totalTaxAmt.toFixed(2));
+		$('#lbl_sgstTaxAmount').text(totalSGSTAmt.toFixed(2));
+		$('#lbl_cgstTaxAmount').text(totalCGSTAmt.toFixed(2));
 
-	var totalCostAmount = 0.00;
-	$("[id^=order\\.orderItems][id$=\\.costAmount]").map(function() {
-		totalCostAmount += (+$(this).val());
-	});
+		var totalCost = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.totalCost]").map(function() {
+			totalCost += (+$(this).val());
+		});
 
-	$('#order\\.estimatedCost').val(totalCostAmount.toFixed(2));
-	$('#order\\.totalAmount').val(totalCost.toFixed(2));
+		var totalCostAmount = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.costAmount]").map(function() {
+			totalCostAmount += (+$(this).val());
+		});
 
-	$('#lbl_estimatedCost').text(totalCostAmount.toFixed(2));
-	$('#lbl_totalAmount').text(totalCost.toFixed(2));
-	
-	
+		$('#order\\.estimatedCost').val(totalCostAmount.toFixed(2));
+		$('#order\\.totalAmount').val(totalCost.toFixed(2));
+
+		$('#lbl_estimatedCost').text(totalCostAmount.toFixed(2));
+		$('#lbl_totalAmount').text(totalCost.toFixed(2));
+
 	}
 }
 
@@ -453,70 +441,66 @@ function calculateActualAmounts(orderItemIdx, cntlId) {
 	$('#order\\.orderItems' + orderItemIdx + '\\.actualTotalCost').val(totalCost.toFixed(2));
 	$('#lbl_' + orderItemIdx + '_actualTotalCost').text(totalCost.toFixed(2));
 	$('#lbl_' + orderItemIdx + '_actualTaxAmount').text(taxAmount.toFixed(2));
-	
+
 	// The totals are calculated based on the item action or order action
 	calculateActualTotals();
-	
+
 }
 
 function calculateActualTotals() {
 
-	if($("[id^=order\\.orderItems][id$=\\.sgstActualTaxAmount]").length>0){
-		
-	
-	
-	var totalSGSTAmt = 0.00;
+	if ($("[id^=order\\.orderItems][id$=\\.sgstActualTaxAmount]").length > 0) {
 
-	$("[id^=order\\.orderItems][id$=\\.sgstActualTaxAmount]").map(function() {
-		totalSGSTAmt += (+$(this).val());
-	});
+		var totalSGSTAmt = 0.00;
 
-	var totalCGSTAmt = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.sgstActualTaxAmount]").map(function() {
+			totalSGSTAmt += (+$(this).val());
+		});
 
-	$("[id^=order\\.orderItems][id$=\\.cgstActualTaxAmount]").map(function() {
-		totalCGSTAmt += (+$(this).val());
-	});
+		var totalCGSTAmt = 0.00;
 
-	var totalIGSTAmt = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.cgstActualTaxAmount]").map(function() {
+			totalCGSTAmt += (+$(this).val());
+		});
 
-	$("[id^=order\\.orderItems][id$=\\.igstActualTaxAmount]").map(function() {
-		totalIGSTAmt += (+$(this).val());
-	});
+		var totalIGSTAmt = 0.00;
 
-	var totalTaxAmt = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.igstActualTaxAmount]").map(function() {
+			totalIGSTAmt += (+$(this).val());
+		});
 
-	$("[id^=order\\.orderItems][id$=\\.actualTaxAmount]").map(function() {
-		totalTaxAmt += (+$(this).val());
-	});
+		var totalTaxAmt = 0.00;
 
-	$('#order\\.actualTaxAmount').val(totalTaxAmt.toFixed(2));
-	$('#order\\.actualSgstTaxAmount').val(totalSGSTAmt.toFixed(2));
-	$('#order\\.actualCgstTaxAmount').val(totalCGSTAmt.toFixed(2));
+		$("[id^=order\\.orderItems][id$=\\.actualTaxAmount]").map(function() {
+			totalTaxAmt += (+$(this).val());
+		});
 
-	$('#lbl_actualTaxAmount').text(totalTaxAmt.toFixed(2));
-	$('#lbl_actualSgstTaxAmount').text(totalSGSTAmt.toFixed(2));
-	$('#lbl_actualCgstTaxAmount').text(totalCGSTAmt.toFixed(2));
+		$('#order\\.actualTaxAmount').val(totalTaxAmt.toFixed(2));
+		$('#order\\.actualSgstTaxAmount').val(totalSGSTAmt.toFixed(2));
+		$('#order\\.actualCgstTaxAmount').val(totalCGSTAmt.toFixed(2));
 
-	var totalCost = 0.00;
-	$("[id^=order\\.orderItems][id$=\\.actualTotalCost]").map(function() {
-		totalCost += (+$(this).val());
-	});
+		$('#lbl_actualTaxAmount').text(totalTaxAmt.toFixed(2));
+		$('#lbl_actualSgstTaxAmount').text(totalSGSTAmt.toFixed(2));
+		$('#lbl_actualCgstTaxAmount').text(totalCGSTAmt.toFixed(2));
 
-	var totalCostAmount = 0.00;
-	$("[id^=order\\.orderItems][id$=\\.actualCostAmount]").map(function() {
-		totalCostAmount += (+$(this).val());
-	});
+		var totalCost = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.actualTotalCost]").map(function() {
+			totalCost += (+$(this).val());
+		});
 
-	$('#order\\.actualSubTotalCost').val(totalCostAmount.toFixed(2));
-	$('#order\\.actualTotalAmount').val(totalCost.toFixed(2));
+		var totalCostAmount = 0.00;
+		$("[id^=order\\.orderItems][id$=\\.actualCostAmount]").map(function() {
+			totalCostAmount += (+$(this).val());
+		});
 
-	$('#lbl_actualSubTotalCost').text(totalCostAmount.toFixed(2));
-	$('#lbl_actualTotalAmount').text(totalCost.toFixed(2));
-	
-	
+		$('#order\\.actualSubTotalCost').val(totalCostAmount.toFixed(2));
+		$('#order\\.actualTotalAmount').val(totalCost.toFixed(2));
+
+		$('#lbl_actualSubTotalCost').text(totalCostAmount.toFixed(2));
+		$('#lbl_actualTotalAmount').text(totalCost.toFixed(2));
+
 	}
 }
-
 
 function validateSupplierAndLocation() {
 	var validationPassed = true;
@@ -552,34 +536,69 @@ function validateSupplierAndLocation() {
 	return validationPassed;
 }
 
-
-
 function deleteItem(deleteItemAction) {
-		$("#addForm").attr("action", deleteItemAction);
-		$('#addForm').submit();
+	$("#addForm").attr("action", deleteItemAction);
+	$('#addForm').submit();
 }
 
+function postOrderSave() {
+	$('#orderReportModal').modal({
+		backdrop : 'static',
+		keyboard : false
+	});
 
-
-
-function postOrderSave(){
-	$('#orderReportModal').modal({backdrop: 'static', keyboard: false});
-	
 }
 
-function viewOrderReport(){
+function viewOrderReport() {
 	$('#progressDiv').removeClass("d-none");
-	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+view_rcpt_url;
-	$('#reportPDFContainer').attr("src",pdfRcptUrl);
+	view_rcpt_url = encodeURIComponent(view_rcpt_url + '=' + txn_orderId);
+	var pdfRcptUrl = view_rcpt_viewer_url + '?file=' + view_rcpt_url;
+	$('#reportPDFContainer').attr("src", pdfRcptUrl);
 	$('#progressDiv').addClass("d-none");
-	
+
 }
 
-function printOrderReport(){
-	
-	//The AJAX call for receipt printing
+function printOrderReportById(orderId) {
+
+	orderDTO.orderId = orderId;
+
 	var token = $("meta[name='_csrf']").attr("content");
-	var formdata = JSON.stringify(accountDTO);
+	var formdata = JSON.stringify(orderDTO);
+	// AJAX call here and refresh the sell item page with receipt printing
+	$.ajax({
+		url : print_rcpt_url,
+		type : 'POST',
+		cache : false,
+		data : formdata,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			$('#manageMsgs').html('The selected order was printed successfully!');
+			$('#manageMsgs').removeClass('d-none');
+		},
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});
+
+}
+
+function printOrderReport() {
+
+	//The AJAX call for receipt printing
+	var supplierId = $('#order\\.supplierId').val();
+	var locationId = $('#order\\.locationId').val();
+
+	orderDTO.orderId = txn_orderId;
+	orderDTO.supplierId = supplierId;
+	orderDTO.locationId = locationId;
+
+	executePrintReport(orderDTO);
+}
+
+function executePrintReport(orderDTO) {
+	var token = $("meta[name='_csrf']").attr("content");
+	var formdata = JSON.stringify(orderDTO);
 	// AJAX call here and refresh the sell item page with receipt printing
 	$.ajax({
 		url : print_rcpt_url,
@@ -594,25 +613,22 @@ function printOrderReport(){
 		beforeSend : function(xhr) {
 			xhr.setRequestHeader('X-CSRF-TOKEN', token)
 		}
-	});	
-	
+	});
+
 }
 
-	
-function editOrder(){
-	window.location.href = editOrderURL+'='+txn_orderId;
+function editOrder() {
+	window.location.href = editOrderURL + '=' + txn_orderId;
 }
 
-function approveOrder(){
-	window.location.href = approveOrderURL+'='+txn_orderId;
+function approveOrder() {
+	window.location.href = approveOrderURL + '=' + txn_orderId;
 }
 
-
-function receiveOrder(){
-	window.location.href = receiveOrderURL+'='+txn_orderId;
+function receiveOrder() {
+	window.location.href = receiveOrderURL + '=' + txn_orderId;
 }
 
-
-function startNewOrder(){
+function startNewOrder() {
 	window.location.href = newOrderURL;
 }

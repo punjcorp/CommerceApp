@@ -57,6 +57,19 @@ $.extend(Supplier.prototype, {
 
 });
 
+var Order= function() {
+	this.orderId;
+	this.supplierId;
+	this.locationId;
+	this.comments;
+}
+
+$.extend(Order.prototype, {
+
+	
+});
+
+
 var OrderItem = function() {
 	this.itemId;
 	this.itemName;

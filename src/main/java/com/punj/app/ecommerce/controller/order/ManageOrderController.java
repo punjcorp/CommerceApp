@@ -15,42 +15,44 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
-import javax.money.MonetaryAmount;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
-import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeansDTO;
 import com.punj.app.ecommerce.models.order.OrderItemBean;
-import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.utils.Pager;
-import com.punj.app.ecommerce.utils.Utils;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -92,260 +94,19 @@ public class ManageOrderController {
 		this.messageSource = messageSource;
 	}
 
-	/**
-	 * This method is used to set bean details in domain object
-	 * 
-	 * @param order
-	 * @param orderBean
-	 * @param userDetails
-	 */
-	private void updateOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails, String status) {
-
-		order.setOrderId(orderBean.getOrderId());
-
-		Supplier supplier = new Supplier();
-		supplier.setSupplierId(orderBean.getSupplierId());
-		order.setSupplier(supplier);
-
-		if (userDetails != null)
-			order.setCreatedBy(userDetails.getUsername());
-		order.setCreatedDate(LocalDateTime.now());
-		order.setStatus(status);
-
-		Location location = new Location();
-		location.setLocationId(orderBean.getLocationId());
-		order.setLocation(location);
-
-		order.setEstimatedCost(orderBean.getEstimatedCost());
-		order.setDiscountAmount(orderBean.getDiscountAmount());
-		order.setTaxAmount(orderBean.getTaxAmount());
-		order.setPaidAmount(orderBean.getPaidAmount());
-		order.setTotalAmount(orderBean.getTotalAmount());
-
-		/**
-		 * Update Order Item details
-		 */
-		List<OrderItemBean> orderItemBeanList = orderBean.getOrderItems();
-		List<OrderItem> orderItems = new ArrayList<>();
-		OrderItem orderItem = null;
-		OrderItemId orderItemId = null;
-
-		for (OrderItemBean orderItemBean : orderItemBeanList) {
-			orderItem = new OrderItem();
-			orderItemId = new OrderItemId();
-
-			// Fucking always remember this in relationships
-			orderItemId.setOrder(order);
-
-			orderItemId.setItemId(orderItemBean.getItemId());
-			orderItem.setOrderItemId(orderItemId);
-
-			orderItem.setOrderedQty(orderItemBean.getOrderedQty());
-			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setTotalCost(orderItemBean.getTotalCost());
-
-			orderItem.setDelieveredQty(orderItemBean.getDelieveredQty());
-			orderItem.setDelieveredDate(LocalDateTime.now());
-
-			orderItem.setActualUnitCost(orderItemBean.getActualUnitCost());
-			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setActualDiscountAmount(orderItemBean.getActualDiscountAmount());
-			orderItem.setTaxAmount(orderItemBean.getTaxAmount());
-			orderItem.setActualTotalCost(orderItemBean.getActualTotalCost());
-
-			orderItems.add(orderItem);
-
-		}
-
-		order.setOrderItems(orderItems);
-
-		logger.info("The purchase order details has been saved in domain");
-
-	}
-
 	@GetMapping(value = ViewPathConstants.MANAGE_ORDER_URL)
-	public String manageOrder(@RequestParam(MVCConstants.ORDER_ID_PARAM) Optional<String> orderId, Model model, HttpSession session, Locale locale) {
-		logger.info("The manage method for purchase orders has been called");
-		try {
-			String searchText = null;
-			if (orderId.isPresent()) {
-				searchText = orderId.get();
-			}
-
-			Pager pager = new Pager();
-			pager.setCurrentPageNo(1);
-
-			OrderBean orderBean = new OrderBean();
-			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
-			OrderDTO ordersDTO = null;
-
-			if (searchText != null) {
-				ordersDTO = orderService.searchOrder(searchText, pager);
-			} else {
-				ordersDTO = orderService.searchAllOrders(pager);
-			}
-
-			OrderBeansDTO orders = new OrderBeansDTO();
-			this.updateOrderBeansDTO(orders, ordersDTO, locale);
-
-			model.addAttribute(MVCConstants.ORDERS_BEAN, orders);
-
-			logger.info("The purchase order details bean has been retrieved");
-		} catch (Exception e) {
-			logger.error("An unknown error has occurred while retrieving purchase orders.", e);
-			return ViewPathConstants.ERROR_PAGE;
-		}
-
+	public String showManageOrder(Model model) {
+		logger.info("The manage supplier method for supplier management has been called.");
+		model.addAttribute("searchBean", new SearchBean());
 		return ViewPathConstants.MANAGE_ORDER_PAGE;
-
 	}
 
-	private void updateOrderBeansDTO(OrderBeansDTO orders, OrderDTO ordersDTO, Locale locale) {
-
-		List<Order> orderList = ordersDTO.getOrders();
-		List<OrderBean> orderBeanList = new ArrayList<>();
-		OrderBean orderBean = null;
-
-		for (Order order : orderList) {
-			orderBean = new OrderBean();
-			this.updateBean(orderBean, order, locale);
-			orderBeanList.add(orderBean);
-		}
-
-		orders.setOrders(orderBeanList);
-		logger.info("The purchase order details has been added to the DTO object");
-	}
-
-	private void updateBean(OrderBean orderBean, Order order, Locale locale) {
-		orderBean.setOrderId(order.getOrderId());
-		orderBean.setSupplierId(order.getSupplier().getSupplierId());
-
-		SupplierBean supplierBean = new SupplierBean();
-		this.updateSupplierBean(supplierBean, order.getSupplier());
-		orderBean.setSupplier(supplierBean);
-
-		orderBean.setLocationId(order.getLocation().getLocationId());
-
-		orderBean.setCreatedBy(order.getCreatedBy());
-		orderBean.setCreatedDate(order.getCreatedDate());
-
-		orderBean.setTotalAmount(order.getTotalAmount());
-
-		orderBean.setPaidAmount(order.getPaidAmount());
-
-		orderBean.setDiscountAmount(order.getDiscountAmount());
-
-		orderBean.setTaxAmount(order.getTaxAmount());
-
-		orderBean.setEstimatedCost(order.getEstimatedCost());
-
-		orderBean.setStatus(order.getStatus());
-		orderBean.setDisplayStatus(Utils.showStatus(order.getStatus()));
-		orderBean.setComments(order.getComments());
-
-		logger.info("The basic details for the order has been updated in Bean object now");
-
-	}
-
-	/**
-	 * This method is used to set the details of retrieved suppliers to Bean object so the details can be displayed on the screen
-	 * 
-	 * @param supplierBean
-	 * @param supplier
-	 */
-	private void updateSupplierBean(SupplierBean supplierBean, Supplier supplier) {
-
-		supplierBean.setSupplierId(supplier.getSupplierId());
-		supplierBean.setName(supplier.getName());
-		supplierBean.setEmail(supplier.getEmail());
-		supplierBean.setPhone1(supplier.getPhone1());
-		supplierBean.setPhone2(supplier.getPhone2());
-
-		List<Address> supplierAddressList = supplier.getAddresses();
-		List<AddressBean> supplierAddresses = new ArrayList<>();
-
-		AddressBean addressBean = null;
-		if (supplierAddressList != null && !supplierAddressList.isEmpty()) {
-			for (Address address : supplierAddressList) {
-
-				addressBean = new AddressBean();
-
-				addressBean.setAddressId(address.getAddressId());
-				addressBean.setPrimary(address.getPrimary());
-				addressBean.setAddress1(address.getAddress1());
-				addressBean.setAddress2(address.getAddress2());
-				addressBean.setCity(address.getCity());
-				addressBean.setState(address.getState());
-				addressBean.setCountry(address.getCountry());
-				addressBean.setPincode(address.getPincode());
-				addressBean.setAddressType(address.getAddressType());
-
-				supplierAddresses.add(addressBean);
-			}
-		}
-		supplierBean.setAddresses(supplierAddresses);
-
-		logger.info("The supplier details has been updated in bean object now");
-
-	}
-
-	private void updateOrderItemsBean(OrderBean orderBean, Order order, Locale locale) {
-		this.updateBean(orderBean, order, locale);
-
-		List<OrderItem> orderItems = order.getOrderItems();
-
-		List<OrderItemBean> orderItemBeanList = new ArrayList<>();
-		OrderItemBean orderItemBean = null;
-
-		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
-		MonetaryAmount monetaryAmt = null;
-
-		for (OrderItem orderItem : orderItems) {
-			orderItemBean = new OrderItemBean();
-			orderItemBean.setOrderId(order.getOrderId());
-			orderItemBean.setItemId(orderItem.getOrderItemId().getItemId());
-			orderItemBean.setOrderedQty(orderItem.getOrderedQty());
-
-			orderItemBean.setCostAmount(orderItem.getCostAmount());
-
-			orderItemBean.setTotalCost(orderItem.getTotalCost());
-
-			orderItemBean.setDelieveredQty(orderItem.getDelieveredQty());
-			orderItemBean.setDelieveredDate(orderItem.getDelieveredDate());
-
-			orderItemBean.setActualCostAmount(orderItem.getActualCostAmount());
-
-			orderItemBean.setActualTotalCost(orderItem.getActualTotalCost());
-
-			orderItemBean.setActualDiscountAmount(orderItem.getActualDiscountAmount());
-
-			orderItemBean.setTaxAmount(orderItem.getTaxAmount());
-
-			orderItemBean.setActualTotalCost(orderItem.getActualTotalCost());
-
-			orderItemBeanList.add(orderItemBean);
-		}
-
-		orderBean.setOrderItems(orderItemBeanList);
-		logger.info("The basic details for the order items has been updated in Bean objects now");
-	}
-
-	private void updateOrderItem(OrderItemBean orderItemBean, OrderItem orderItem, BigInteger orderId) {
-		OrderItemId orderItemId = new OrderItemId();
-		orderItemId.setItemId(orderItemBean.getItemId());
-		Order order = new Order();
-		order.setOrderId(orderId);
-		orderItemId.setOrder(order);
-
-		orderItem.setOrderItemId(orderItemId);
-
-	}
-
-	@PostMapping(ViewPathConstants.SEARCH_ORDER_URL)
-	public String searchOrder(@ModelAttribute OrderBean orderBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
-			HttpSession session, Locale locale) {
+	@PostMapping(ViewPathConstants.MANAGE_ORDER_URL)
+	public String searchOrder(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
+			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session, Locale locale) {
+		if (bindingResult.hasErrors())
+			return ViewPathConstants.MANAGE_ORDER_PAGE;
 		try {
-
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
 				pager.setCurrentPageNo(1);
@@ -353,116 +114,43 @@ public class ManageOrderController {
 				pager.setCurrentPageNo(page.get());
 			}
 
-			OrderDTO ordersDTO = orderService.searchOrder(orderBean.getOrderId().toString(), pager);
+			OrderDTO ordersDTO = this.orderService.searchOrder(searchBean.getSearchText(), pager);
+			if (ordersDTO != null) {
+				OrderBeansDTO orderBeanDTO = OrderTransformer.transformOrderDTO(ordersDTO);
+				this.updateModelBeans(model, orderBeanDTO, searchBean);
+			}
 
-			OrderBeansDTO orders = new OrderBeansDTO();
-			this.updateOrderBeansDTO(orders, ordersDTO, locale);
-
-			Pager tmpPager = ordersDTO.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
-					ViewPathConstants.SEARCH_ORDER_URL);
-
-			model.addAttribute(MVCConstants.ORDERS_BEAN, orders);
-			model.addAttribute(MVCConstants.ORDER_BEAN, orderBean);
-			model.addAttribute(MVCConstants.PAGER, pager);
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.search.result", new Object[] { pager.getResultSize() }, locale));
-
 			logger.info("The purchase order details has been retrieved successfully.");
 		} catch (Exception e) {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.search.result.failure", null, locale));
 			logger.error("There is an error while retrieving purchase orders", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
 		return ViewPathConstants.MANAGE_ORDER_PAGE;
 	}
 
-	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.SAVE_ORDERS_PARAM })
-	public String saveOrders(@ModelAttribute OrderBeansDTO orders, Model model, HttpSession session, Locale locale) {
-		try {
-
-			List<OrderBean> orderBeans = orders.getOrders();
-
-			List<String> orderIds = orders.getOrderIds();
-			Map<BigInteger, Integer> idIndex = new HashMap<>(orderIds.size());
-
-			this.getSelectedIds(orderIds, idIndex);
-
-			List<OrderBean> finalOrderBeans = new ArrayList<>(idIndex.size());
-
-			Set<BigInteger> ids = idIndex.keySet();
-			Integer index = null;
-			OrderBean tmpOrderBean = null;
-			for (BigInteger id : ids) {
-				index = idIndex.get(id);
-				tmpOrderBean = orderBeans.get(index);
-				tmpOrderBean.setOrderId(id);
-				finalOrderBeans.add(tmpOrderBean);
-			}
-			logger.info("The modified list of purchase orders has been updated in beans");
-
-			List<Order> orderList = new ArrayList<>(finalOrderBeans.size());
-			Order order = null;
-			for (OrderBean orderBean : finalOrderBeans) {
-				order = new Order();
-				this.createBulkOrderDomain(order, orderBean, null);
-				orderList.add(order);
-			}
-			logger.info("The purchase order details has been updated in Domain objects");
-
-			orderService.updateOrders(orderList);
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.edit.success", null, locale));
-
-			logger.info("The bulk update operation for purchase order is completed.");
-		} catch (Exception e) {
-			logger.error("There is an error while updating bulk purchase order basic details", e);
-			return ViewPathConstants.ERROR_PAGE;
-		}
-		return ViewPathConstants.MANAGE_ORDER_PAGE;
+	private void updateModelBeans(Model model, OrderBeansDTO orderBeanDTO, SearchBean searchBean) {
+		model.addAttribute(MVCConstants.ORDERS_BEAN, orderBeanDTO);
+		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
+		logger.info("All the needed details has been updated in the model for display.");
 	}
 
 	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.APPROVE_ORDERS_PARAM })
-	public String approveOrders(@ModelAttribute OrderBeansDTO orders, Model model, HttpSession session, Locale locale, Authentication authentication) {
+	public String approveOrders(@ModelAttribute OrderBeansDTO orders, RedirectAttributes redirectAttrs, final HttpServletRequest req, Locale locale,
+			Authentication authentication) {
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-			List<OrderBean> orderBeans = orders.getOrders();
-
-			List<String> orderIds = orders.getOrderIds();
-			Map<BigInteger, Integer> idIndex = new HashMap<>(orderIds.size());
-
-			this.getSelectedIds(orderIds, idIndex);
-
-			List<OrderBean> finalOrderBeans = new ArrayList<>(idIndex.size());
-
-			Set<BigInteger> ids = idIndex.keySet();
-			Integer index = null;
-			OrderBean tmpOrderBean = null;
-			for (BigInteger id : ids) {
-				index = idIndex.get(id);
-				tmpOrderBean = orderBeans.get(index);
-				tmpOrderBean.setOrderId(id);
-				finalOrderBeans.add(tmpOrderBean);
-			}
-			logger.info("The selected list of purchase orders has been marked approved in beans");
-
-			List<Order> orderList = new ArrayList<>(finalOrderBeans.size());
-			Order order = null;
-			for (OrderBean orderBean : finalOrderBeans) {
-				order = new Order();
-				this.createApprovedOrderDomain(order, orderBean, null);
-				orderList.add(order);
-			}
-			logger.info("The purchase order details has been updated in Domain objects");
-
-			orderService.approveOrders(orderList, userDetails.getUsername());
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.approve.success", null, locale));
-
+			List<BigInteger> orderIds = OrderTransformer.retrieveEligibleOrders(orders);
+			this.orderService.approveAllOrders(orderIds, userDetails.getUsername());
+			redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.approve.success", null, locale));
+			req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 			logger.info("The bulk update operation for purchase order is completed.");
 		} catch (Exception e) {
+			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.delete.failure", null, locale));
 			logger.error("There is an error while updating bulk purchase order basic details", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
-		return ViewPathConstants.MANAGE_ORDER_PAGE;
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_ORDER_URL;
 	}
 
 	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.DELETE_ORDERS_PARAM })
@@ -497,186 +185,6 @@ public class ManageOrderController {
 		logger.info("The order ids and list index data has been seperated");
 	}
 
-	private void calculateOrderCost(OrderBean orderBean, Locale locale) {
-		List<OrderItemBean> orderItemList = orderBean.getOrderItems();
-		BigDecimal totalCost = BigDecimal.ZERO;
 
-		for (OrderItemBean orderItem : orderItemList) {
-			totalCost = totalCost.add(orderItem.getTotalCost());
-		}
-		orderBean.setEstimatedCost(totalCost);
-		logger.info("The total cost based on all items cost has been calculated");
-	}
-
-	private void receiveAllOrderItems(Order order, OrderBean orderBean, UserDetails userDetails) {
-		order.setOrderId(orderBean.getOrderId());
-
-		Supplier supplier = new Supplier();
-		supplier.setSupplierId(orderBean.getSupplierId());
-		order.setSupplier(supplier);
-
-		Location location = new Location();
-		location.setLocationId(orderBean.getLocationId());
-		order.setLocation(location);
-
-		if (userDetails != null)
-			order.setCreatedBy(userDetails.getUsername());
-		order.setCreatedDate(LocalDateTime.now());
-		order.setStatus(MVCConstants.STATUS_RECEIVED);
-
-		order.setEstimatedCost(orderBean.getEstimatedCost());
-
-		/**
-		 * Update Order Item details
-		 */
-		List<OrderItemBean> orderItemBeanList = orderBean.getOrderItems();
-		List<OrderItem> orderItems = new ArrayList<>();
-		OrderItem orderItem = null;
-		OrderItemId orderItemId = null;
-
-		BigDecimal totalAmount = new BigDecimal("0.00");
-
-		for (OrderItemBean orderItemBean : orderItemBeanList) {
-			orderItem = new OrderItem();
-			orderItemId = new OrderItemId();
-
-			// Fucking always remember this in relationships
-			orderItemId.setOrder(order);
-
-			orderItemId.setItemId(orderItemBean.getItemId());
-			orderItem.setOrderItemId(orderItemId);
-
-			orderItem.setOrderedQty(orderItemBean.getOrderedQty());
-			orderItem.setCostAmount(orderItemBean.getCostAmount());
-			orderItem.setTotalCost(orderItemBean.getTotalCost());
-
-			orderItem.setDelieveredQty(orderItemBean.getOrderedQty());
-			orderItem.setDelieveredDate(LocalDateTime.now());
-
-			orderItem.setActualUnitCost(orderItemBean.getCostAmount());
-			orderItem.setCostAmount(orderItemBean.getTotalCost());
-			orderItem.setActualDiscountAmount(orderItemBean.getActualDiscountAmount());
-			orderItem.setTaxAmount(orderItemBean.getTaxAmount());
-			orderItem.setActualTotalCost(orderItemBean.getActualTotalCost());
-
-			totalAmount = totalAmount.add(orderItemBean.getTotalCost());
-
-			orderItems.add(orderItem);
-
-		}
-
-		order.setOrderItems(orderItems);
-
-		order.setDiscountAmount(orderBean.getDiscountAmount());
-		order.setTaxAmount(orderBean.getTaxAmount());
-		order.setPaidAmount(totalAmount);
-		order.setTotalAmount(totalAmount);
-
-		logger.info("The purchase order details has been saved in domain");
-
-	}
-
-	private void updateOrderStatusToReceive(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_RECEIVED);
-	}
-
-	private void createApprovedOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_APPROVED);
-	}
-
-	private void createOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_CREATED);
-
-	}
-
-	private void createBulkOrderDomain(Order order, OrderBean orderBean, UserDetails userDetails) {
-		this.updateOrderDomain(order, orderBean, userDetails, MVCConstants.STATUS_CREATED);
-
-	}
-
-	@GetMapping(value = ViewPathConstants.PRINT_ORDERS_URL)
-	public String printOrders(Model model, HttpSession session, Locale locale, Authentication authentication) {
-		try {
-
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-			if (userDetails == null)
-				return ViewPathConstants.ERROR_PAGE;
-
-			OrderDTO ordersDTO = orderService.findAll();
-
-			OrderBeansDTO orders = new OrderBeansDTO();
-
-			this.updateOrderBeanList(orders, ordersDTO, locale);
-
-			InputStream orderReportStream = getClass().getResourceAsStream(MVCConstants.ORDERS_REPORT);
-
-			JasperReport jasperReport = JasperCompileManager.compileReport(orderReportStream);
-
-			JRBeanCollectionDataSource orderDS = new JRBeanCollectionDataSource(orders.getOrders());
-
-			InputStream orderReportStreamChild = getClass().getResourceAsStream(MVCConstants.ORDERS_ITEMS_REPORT);
-			JasperReport jasperReportChild = JasperCompileManager.compileReport(orderReportStreamChild);
-
-			Map<String, Object> paramMap = new HashMap<>();
-
-			paramMap.put(MVCConstants.SUB_REPORT_DIR, jasperReportChild);
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, orderDS);
-
-			// Export PDF report
-			JRPdfExporter exporter = new JRPdfExporter();
-
-			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(MVCConstants.ORDERS_REPORT_NAME));
-
-			SimplePdfReportConfiguration reportConfig = new SimplePdfReportConfiguration();
-			reportConfig.setSizePageToContent(true);
-			reportConfig.setForceLineBreakPolicy(false);
-
-			SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
-			exportConfig.setMetadataAuthor(userDetails.getUsername());
-			exportConfig.setEncrypted(true);
-			exportConfig.setAllowedPermissionsHint(MVCConstants.REPORT_PERMISSION_PRINTING);
-
-			exporter.setConfiguration(reportConfig);
-			exporter.setConfiguration(exportConfig);
-
-			exporter.exportReport();
-
-			logger.info("The purchase order details list has been printed successfully");
-		} catch (Exception e) {
-			logger.error("There is an error while printing order details listing", e);
-			return ViewPathConstants.ERROR_PAGE;
-		}
-		return ViewPathConstants.MANAGE_ORDER_PAGE;
-	}
-
-	private void updateOrderBeanList(OrderBeansDTO orders, OrderDTO ordersDTO, Locale locale) {
-
-		OrderBean orderBean = null;
-		List<OrderBean> orderBeanList = new ArrayList<>();
-		for (Order order : ordersDTO.getOrders()) {
-			orderBean = new OrderBean();
-			this.updateOrderItemsBean(orderBean, order, locale);
-			orderBeanList.add(orderBean);
-		}
-
-		orders.setOrders(orderBeanList);
-
-		logger.info("The Order details has been updated in Order Beans");
-	}
-
-	public List<AddressBean> getSupplierAddress(List<AddressBean> addresses) {
-		List<AddressBean> primaryAddress = new ArrayList<>();
-		for (AddressBean address : addresses) {
-			if (address.getPrimary().equals(MVCConstants.YES)) {
-				primaryAddress.add(address);
-				break;
-			}
-		}
-		return primaryAddress;
-
-	}
 
 }

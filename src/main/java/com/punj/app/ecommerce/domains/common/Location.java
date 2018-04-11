@@ -12,16 +12,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 /**
  * @author admin
  *
  */
+@Indexed
 @Entity
 public class Location implements Serializable {
 
 	private static final long serialVersionUID = 8138910737341574080L;
 
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "location_id", updatable = false, nullable = false)
 	private Integer locationId;
@@ -38,6 +44,7 @@ public class Location implements Serializable {
 	@Column(name = "location_type")
 	private String locationType;
 	private String status;
+	@Field
 	private String name;
 	private String address1;
 	private String address2;

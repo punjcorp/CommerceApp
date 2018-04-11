@@ -9,6 +9,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
@@ -28,6 +33,10 @@ public class OrderSearchRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	@AnalyzerDef(name = "edgeNGram_query", tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class), filters = {
+			@TokenFilterDef(factory = LowerCaseFilterFactory.class) // Lowercase all characters
+	})
+	
 	/**
 	 * A basic search for the entity User. The search is done by exact match per
 	 * keywords on fields name, city and email.
@@ -48,7 +57,7 @@ public class OrderSearchRepository {
 
 		// a very basic query by keywords
 		org.apache.lucene.search.Query query = queryBuilder.keyword()
-				.onFields("orderId", "supplierId", "orderItems.orderItemId").matching(text)
+				.onFields("orderId","comments","createdBy", "orderItems.orderItemId").matching(text)
 				.createQuery();
 
 		// wrap Lucene query in an Hibernate Query object

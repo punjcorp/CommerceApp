@@ -498,14 +498,14 @@
 		var editOrderURL = /*[[@{/admin/edit_order(orderId)}]]*/;
 		var approveOrderURL = /*[[@{/admin/approve_order(orderId)}]]*/;
 		var receiveOrderURL = /*[[@{/admin/receive_order(orderId)}]]*/;
+		var txn_success = /*[[${success}]]*/;
 		
-		
-		var print_rcpt_url= /*[[@{/admin/print_order_report}]]*/;
-		var view_rcpt_url= /*[[@{/admin/view_order_report}]]*/;
+		var print_rcpt_url= /*[[@{/admin/print_order_report(orderId)}]]*/;
+		var view_rcpt_url= /*[[@{/admin/view_order_report(orderId)}]]*/;
 		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
 		
 		
-		if(txn_orderId && txn_orderId!='undefined' && txn_orderId!=''){
+		if(txn_success && txn_success!='undefined' && txn_success!=''){
 			postOrderSave();
 		}
 		

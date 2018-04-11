@@ -33,6 +33,8 @@ public interface OrderService {
 	public List<Order> updateOrders(List<Order> orders);
 
 	public List<Order> approveOrders(List<Order> orders, String username);
+	
+	public List<Order> approveAllOrders(List<BigInteger> orderIds, String username);
 
 	public Order approveOrder(BigInteger orderId);
 

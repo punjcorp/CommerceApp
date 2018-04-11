@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.OrderItemTax;
 import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
@@ -22,9 +25,11 @@ import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
+import com.punj.app.ecommerce.models.order.OrderBeansDTO;
 import com.punj.app.ecommerce.models.order.OrderItemBean;
 import com.punj.app.ecommerce.models.order.OrderReportBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
+import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
@@ -39,15 +44,14 @@ public class OrderTransformer {
 	}
 
 	public static Order transformOrderBeanAsReceivedAll(OrderBean orderBean, String username) {
-		
+
 		orderBean.setActualCgstTaxAmount(orderBean.getCgstTaxAmount());
 		orderBean.setActualIgstTaxAmount(orderBean.getIgstTaxAmount());
 		orderBean.setActualSgstTaxAmount(orderBean.getSgstTaxAmount());
 		orderBean.setActualSubTotalCost(orderBean.getEstimatedCost());
 		orderBean.setActualTaxAmount(orderBean.getTaxAmount());
 		orderBean.setActualTotalAmount(orderBean.getTotalAmount());
-		
-		
+
 		Order order = OrderTransformer.transformOrderBean(orderBean, username, MVCConstants.STATUS_RECEIVED, Boolean.TRUE);
 
 		List<OrderItem> orderItems = order.getOrderItems();
@@ -84,7 +88,7 @@ public class OrderTransformer {
 		OrderBean orderBean = new OrderBean();
 
 		orderBean.setOrderId(order.getOrderId());
-		
+
 		orderBean.setLocationId(order.getLocation().getLocationId());
 		orderBean.setLocationName(order.getLocation().getName());
 		orderBean.setStatus(order.getStatus());
@@ -235,8 +239,30 @@ public class OrderTransformer {
 		return orderItemBean;
 	}
 
-	public static List<OrderBean> transformOrders() {
-		return null;
+	public static OrderBeansDTO transformOrderDTO(OrderDTO orderDTO) {
+		OrderBeansDTO orderBeanDTO = new OrderBeansDTO();
+
+		List<OrderBean> orderBeans = OrderTransformer.transformOrders(orderDTO.getOrders());
+		orderBeanDTO.setOrders(orderBeans);
+		
+		Pager tmpPager = orderDTO.getPager();
+		Pager pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+				ViewPathConstants.MANAGE_ORDER_URL);
+		orderBeanDTO.setPager(pager);
+
+		logger.info("The Order DTO for listing page has been transformed successfully");
+		return orderBeanDTO;
+	}
+
+	public static List<OrderBean> transformOrders(List<Order> orders) {
+		List<OrderBean> orderBeanList = new ArrayList<>(orders.size());
+		OrderBean orderBean;
+		for (Order order : orders) {
+			orderBean = OrderTransformer.transformOrder(order);
+			orderBeanList.add(orderBean);
+		}
+		logger.info("The order list has been transformed to order bean list successfully");
+		return orderBeanList;
 	}
 
 	public static Order transformOrderBean(OrderBean orderBean, String username, String status, Boolean isUpdate) {
@@ -260,22 +286,21 @@ public class OrderTransformer {
 		}
 		order.setStatus(status);
 		order.setComments(orderBean.getComments());
-		
-		Location location=new Location();
+
+		Location location = new Location();
 		location.setLocationId(orderBean.getLocationId());
 		order.setLocation(location);
 
-
 		order.setDiscountAmount(orderBean.getDiscountAmount());
 		order.setPaidAmount(orderBean.getPaidAmount());
-		
-		order.setEstimatedCost(orderBean.getEstimatedCost());		
+
+		order.setEstimatedCost(orderBean.getEstimatedCost());
 		order.setTaxAmount(orderBean.getTaxAmount());
 		order.setTotalAmount(orderBean.getTotalAmount());
-		
-		order.setActualSubTotalCost(orderBean.getActualSubTotalCost());		
+
+		order.setActualSubTotalCost(orderBean.getActualSubTotalCost());
 		order.setActualTaxAmount(orderBean.getActualTaxAmount());
-		order.setActualTotalAmount(orderBean.getActualTotalAmount());		
+		order.setActualTotalAmount(orderBean.getActualTotalAmount());
 
 		List<OrderItem> orderItems = OrderTransformer.transformOrderItemsBean(orderBean.getOrderItems(), order);
 		order.setOrderItems(orderItems);
@@ -316,7 +341,7 @@ public class OrderTransformer {
 
 		if (igstFlag != null && igstFlag) {
 			orderItemTaxId.setTaxRateRuleId(orderItemBean.getIgstRateRuleId());
-			
+
 		} else if (sgstFlag != null && sgstFlag) {
 			orderItemTaxId.setTaxRateRuleId(orderItemBean.getSgstRateRuleId());
 
@@ -338,10 +363,10 @@ public class OrderTransformer {
 			orderItemTax.setTaxRuleAmt(orderItemBean.getIgstTaxAmount());
 			orderItemTax.setTaxRulePercentage(orderItemBean.getIgstRate());
 			orderItemTax.setTaxCode(orderItemBean.getIgstCode());
-			
+
 			orderItemTax.setActualTaxRuleAmt(orderItemBean.getIgstActualTaxAmount());
 			orderItemTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
-			
+
 			logger.info("The IGST taxes has been created successfully");
 		} else if (sgstFlag != null && sgstFlag) {
 			orderItemTax.setTaxRuleAmt(orderItemBean.getSgstTaxAmount());
@@ -357,7 +382,7 @@ public class OrderTransformer {
 			orderCGSTTax.setTaxCode(orderItemBean.getCgstCode());
 			orderCGSTTax.setActualTaxRuleAmt(orderItemBean.getCgstActualTaxAmount());
 			orderCGSTTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
-			
+
 			orderItemTaxes.add(orderCGSTTax);
 			logger.info("The SGST and CGST taxes has been created successfully");
 		}
@@ -450,6 +475,26 @@ public class OrderTransformer {
 		orderReportBean.setUsername(username);
 		logger.info("The order report object has been created successfully");
 		return orderReportBean;
+	}
+
+	public static List<BigInteger> retrieveEligibleOrders(OrderBeansDTO orders) {
+		List<OrderBean> orderList = orders.getOrders();
+		List<BigInteger> finalOrderIds = new ArrayList<>();
+		List<String> selectedIds = orders.getOrderIds();
+		BigInteger orderId = null;
+		Integer orderIndex = null;
+		OrderBean orderBean = null;
+		for (String selectedId : selectedIds) {
+			String[] splittedVals = selectedId.split("_");
+			orderId = new BigInteger(splittedVals[0]);
+			orderIndex = new Integer(splittedVals[1]);
+			orderBean = orderList.get(orderIndex);
+			if (orderBean.getStatus().equals(MVCConstants.STATUS_CREATED)) {
+				finalOrderIds.add(orderId);
+			}
+		}
+		logger.info("The select order ids and index for bulk operations has been transformed successfully");
+		return finalOrderIds;
 	}
 
 }

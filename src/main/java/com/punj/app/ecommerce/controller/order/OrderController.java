@@ -78,6 +78,7 @@ public class OrderController {
 	private OrderService orderService;
 	private MessageSource messageSource;
 	private CommonService commonService;
+	private OrderPrintUtil orderPrintUtil;
 
 	/**
 	 * @param orderService
@@ -96,6 +97,15 @@ public class OrderController {
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
 	}
+	
+	/**
+	 * @param orderPrintUtil
+	 *            the orderPrintUtil to set
+	 */
+	@Autowired
+	public void setOrderPrintUtil(OrderPrintUtil orderPrintUtil) {
+		this.orderPrintUtil = orderPrintUtil;
+	}	
 
 	/**
 	 * @param messageSource
@@ -192,8 +202,9 @@ public class OrderController {
 	private void prepareOrderDetailsForSaving(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale,
 			String status) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String username=userDetails.getUsername();
 		OrderBean orderBean = orderBeanDTO.getOrder();
-		Order order = OrderTransformer.transformOrderBean(orderBean, userDetails.getUsername(), status, Boolean.FALSE);
+		Order order = OrderTransformer.transformOrderBean(orderBean,username , status, Boolean.FALSE);
 		order = this.orderService.createOrder(order);
 		logger.info("The {} order details has been saved successfully", order.getOrderId());
 		orderBean.setOrderId(order.getOrderId());
@@ -204,9 +215,7 @@ public class OrderController {
 		this.updateOrderModelDetails(model, orderBeanDTO);
 
 		// This section is to update order report details
-		OrderReportBean orderReportBean = this.generateOrderReportBean(orderBeanDTO.getOrder(), userDetails.getUsername());
-		session.setAttribute(MVCConstants.LAST_ORDER_REPORT, orderReportBean);
-		this.generateReport(session);
+		this.orderPrintUtil.createOrderReport(orderBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
 		logger.info("The {} order report objects has been updated successfully", order.getOrderId());
 
 		if (status.equals(MVCConstants.STATUS_APPROVED)) {
@@ -251,111 +260,6 @@ public class OrderController {
 		return orderReportBean;
 	}
 
-	private byte[] generateReport(HttpSession session) {
-		byte[] pdfBytes = null;
-		try {
-			OrderReportBean order = (OrderReportBean) session.getAttribute(MVCConstants.LAST_ORDER_REPORT);
-			if (order != null) {
-				List<OrderReportBean> orderCollection = new ArrayList<>();
-				orderCollection.add(order);
-				JRBeanCollectionDataSource orderDS = new JRBeanCollectionDataSource(orderCollection);
-
-				InputStream orderReportStream = getClass().getResourceAsStream(MVCConstants.ORDER_REPORT);
-				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(orderReportStream);
-				logger.debug("The order parent report has been compiled now");
-
-				InputStream orderReportStreamChild = getClass().getResourceAsStream(MVCConstants.ORDER_ITEMS_REPORT);
-				JasperReport jasperReportChild = (JasperReport) JRLoader.loadObject(orderReportStreamChild);
-				logger.debug("The order line item report has been compiled now");
-
-				InputStream orderReportStreamHeader = getClass().getResourceAsStream(MVCConstants.ORDER_HEADER_REPORT);
-				JasperReport jasperReportHeader = (JasperReport) JRLoader.loadObject(orderReportStreamHeader);
-				logger.debug("The order header has been compiled now");
-
-				InputStream supplierReportStream = getClass().getResourceAsStream(MVCConstants.SUPPLIER_REPORT);
-				JasperReport jasperSupplierReport = (JasperReport) JRLoader.loadObject(supplierReportStream);
-				logger.debug("The supplier report has been compiled now");
-
-				InputStream supplierAddressReportStream = getClass().getResourceAsStream(MVCConstants.ADDRESS_REPORT);
-				JasperReport jasperSupplierAddressReport = (JasperReport) JRLoader.loadObject(supplierAddressReportStream);
-				logger.debug("The address report has been compiled now");
-
-				InputStream delieveryReportStream = getClass().getResourceAsStream(MVCConstants.DELIEVERY_LOCATION_REPORT);
-				JasperReport delieveryReport = (JasperReport) JRLoader.loadObject(delieveryReportStream);
-				logger.debug("The delievery report has been compiled now");
-
-				Map<String, Object> paramMap = new HashMap<>();
-				paramMap.put(MVCConstants.ORDER_HEADER_REPORT_PARAM, jasperReportHeader);
-				paramMap.put(MVCConstants.ORDER_ITEMS_REPORT_PARAM, jasperReportChild);
-				paramMap.put(MVCConstants.SUPPLIER_REPORT_PARAM, jasperSupplierReport);
-				paramMap.put(MVCConstants.SUPPLIER_ADDRESS_REPORT_PARAM, jasperSupplierAddressReport);
-				paramMap.put(MVCConstants.DELIVERY_LOCATION_REPORT_PARAM, delieveryReport);
-				logger.debug("The parameter set for setting report data is ready");
-
-				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, orderDS);
-				logger.debug("The order report is ready with data to be used");
-
-				pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-				logger.debug("The order report PDF array bytes has been generated");
-
-				// This is to print the order report
-				session.setAttribute(MVCConstants.LAST_ORDER_REPORT_JASPER + order.getOrderId(), jasperPrint);
-				// This is to show the order report PDF in view screen
-				session.setAttribute(MVCConstants.LAST_ORDER_REPORT_PDF + order.getOrderId(), pdfBytes);
-
-			}
-			logger.info("The order report has been generated successfully");
-		} catch (JRException e) {
-			logger.error("There was an error while generating order report", e);
-		}
-
-		return pdfBytes;
-
-	}
-
-	@GetMapping(value = ViewPathConstants.VIEW_ORDER_URL)
-	private void viewOrderReport(Model model, HttpSession session, Locale locale, HttpServletResponse response) {
-		try {
-
-			OrderReportBean order = (OrderReportBean) session.getAttribute(MVCConstants.LAST_ORDER_REPORT);
-			byte[] pdfBytes = (byte[]) session.getAttribute(MVCConstants.LAST_ORDER_REPORT_PDF + order.getOrderId());
-			if (pdfBytes == null) {
-				pdfBytes = this.generateReport(session);
-			}
-			if (pdfBytes != null) {
-				response.setContentType("application/pdf");
-				response.setHeader("Content-disposition", "attachment; filename=order_" + order.getOrderId() + ".pdf");
-				response.setContentLength(pdfBytes.length);
-				response.getOutputStream().write(pdfBytes);
-				logger.info("The {} order report has been generated successfully", order.getOrderId());
-				response.getOutputStream().flush();
-			}
-		} catch (IOException e) {
-			logger.error("There is an error while generating report for last order", e);
-		}
-	}
-
-	@PostMapping(value = ViewPathConstants.PRINT_ORDER_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseBody
-	public OrderReportBean printOrderReport(@RequestBody AccountDTO accountDTO, Model model, HttpSession session, final HttpServletRequest req,
-			HttpServletResponse response, Locale locale) {
-		OrderReportBean order = null;
-		try {
-			order = (OrderReportBean) session.getAttribute(MVCConstants.LAST_ORDER_REPORT);
-			JasperPrint jasperPrint = (JasperPrint) session.getAttribute(MVCConstants.LAST_ORDER_REPORT_JASPER + order.getOrderId());
-			if (jasperPrint != null) {
-				JasperPrintManager.printReport(jasperPrint, Boolean.FALSE);
-				logger.info("The {} order report has been printed successfully", order.getOrderId());
-			} else {
-				logger.info("The order report object is not found");
-			}
-		} catch (JRException e) {
-			logger.error("There is an error while generating report for last order", e);
-		}
-
-		return order;
-
-	}
 
 	@GetMapping(value = ViewPathConstants.EDIT_ORDER_URL)
 	public String editOrder(Model model, final HttpServletRequest req, Locale locale) {
@@ -441,8 +345,9 @@ public class OrderController {
 	
 	private void prepareOrderDetailsAfterUpdates(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String username=userDetails.getUsername();
 		OrderBean orderBean = orderBeanDTO.getOrder();
-		Order order = OrderTransformer.transformOrderBean(orderBean, userDetails.getUsername(), status, Boolean.TRUE);
+		Order order = OrderTransformer.transformOrderBean(orderBean, username, status, Boolean.TRUE);
 		order = this.orderService.createOrder(order);
 		logger.info("The {} order details has been saved successfully", order.getOrderId());
 		orderBean.setOrderId(order.getOrderId());
@@ -450,9 +355,7 @@ public class OrderController {
 		this.updateOrderModelDetails(model, orderBeanDTO);
 
 		// This section is to update order report details
-		OrderReportBean orderReportBean = this.generateOrderReportBean(orderBeanDTO.getOrder(), userDetails.getUsername());
-		session.setAttribute(MVCConstants.LAST_ORDER_REPORT, orderReportBean);
-		this.generateReport(session);
+		this.orderPrintUtil.createOrderReport(orderBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
 		logger.info("The {} order report objects has been updated successfully", order.getOrderId());
 
 		if (order.getStatus().equals(MVCConstants.STATUS_APPROVED)) {
