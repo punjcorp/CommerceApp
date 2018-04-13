@@ -1,0 +1,57 @@
+CREATE DATABASE  IF NOT EXISTS `commercedb` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `commercedb`;
+-- MySQL dump 10.13  Distrib 5.7.18, for Win64 (x86_64)
+--
+-- Host: localhost    Database: commercedb
+-- ------------------------------------------------------
+-- Server version	5.7.18-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `item_attributes`
+--
+
+DROP TABLE IF EXISTS `item_attributes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `item_attributes` (
+  `item_id` bigint(20) NOT NULL,
+  `attribute_id` bigint(20) NOT NULL,
+  `value` varchar(80) NOT NULL,
+  PRIMARY KEY (`item_id`,`attribute_id`,`value`),
+  KEY `fk_style_attribute_values_attribute_master1_idx` (`attribute_id`),
+  CONSTRAINT `fk_item_attributes_item1` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_style_attribute_values_attribute_master1` FOREIGN KEY (`attribute_id`) REFERENCES `attribute_master` (`attribute_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `item_attributes`
+--
+
+LOCK TABLES `item_attributes` WRITE;
+/*!40000 ALTER TABLE `item_attributes` DISABLE KEYS */;
+INSERT INTO `item_attributes` VALUES (1000000,1,'L'),(1000001,1,'L'),(1000002,1,'L'),(1000003,1,'L'),(1000004,1,'L'),(1000005,1,'L'),(1000006,1,'L'),(1000007,1,'L'),(1000008,1,'L'),(1000009,1,'L'),(1000000,2,'M'),(1000001,2,'M'),(1000002,2,'M'),(1000003,2,'M'),(1000004,2,'M'),(1000005,2,'M'),(1000006,2,'M'),(1000007,2,'M'),(1000008,2,'M'),(1000009,2,'M'),(10000000102,2,'M'),(10000000103,2,'S'),(10000010102,2,'M'),(10000010103,2,'S'),(10000020102,2,'M'),(10000020103,2,'S'),(10000030102,2,'M'),(10000030103,2,'S'),(10000040102,2,'M'),(10000040103,2,'S'),(10000050102,2,'M'),(10000050103,2,'S'),(10000060102,2,'M'),(10000060103,2,'S'),(10000070102,2,'M'),(10000070103,2,'S'),(10000080102,2,'M'),(10000080103,2,'S'),(10000090102,2,'M'),(10000090103,2,'S'),(1000000,3,'S'),(1000001,3,'S'),(1000002,3,'S'),(1000003,3,'S'),(1000004,3,'S'),(1000005,3,'S'),(1000006,3,'S'),(1000007,3,'S'),(1000008,3,'S'),(1000009,3,'S'),(1000000,4,'Red'),(1000001,4,'Red'),(1000002,4,'Red'),(1000003,4,'Red'),(1000004,4,'Red'),(1000005,4,'Red'),(1000006,4,'Red'),(1000007,4,'Red'),(1000008,4,'Red'),(1000009,4,'Red'),(10000000102,4,'Red'),(10000000103,4,'Red'),(10000010102,4,'Red'),(10000010103,4,'Red'),(10000020102,4,'Red'),(10000020103,4,'Red'),(10000030102,4,'Red'),(10000030103,4,'Red'),(10000040102,4,'Red'),(10000040103,4,'Red'),(10000050102,4,'Red'),(10000050103,4,'Red'),(10000060102,4,'Red'),(10000060103,4,'Red'),(10000070102,4,'Red'),(10000070103,4,'Red'),(10000080102,4,'Red'),(10000080103,4,'Red'),(10000090102,4,'Red'),(10000090103,4,'Red'),(1000000,5,'Green'),(1000001,5,'Green'),(1000002,5,'Green'),(1000003,5,'Green'),(1000004,5,'Green'),(1000005,5,'Green'),(1000006,5,'Green'),(1000007,5,'Green'),(1000008,5,'Green'),(1000009,5,'Green');
+/*!40000 ALTER TABLE `item_attributes` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-04-13 13:45:01

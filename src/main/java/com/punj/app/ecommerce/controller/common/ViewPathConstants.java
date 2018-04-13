@@ -189,7 +189,7 @@ public final class ViewPathConstants {
 	 * The sale screen section starts
 	 */
 
-	public static final String POS_URL="/pos";
+	public static final String POS_URL="/pos/sale";
 	public static final String SALES_URL="/pos/sales";
 	public static final String SALES_PAGE="sale/sales";
 	public static final String AUTO_ITEM_PAGE="sale/auto_item";

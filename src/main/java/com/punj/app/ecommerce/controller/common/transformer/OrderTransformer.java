@@ -30,6 +30,7 @@ import com.punj.app.ecommerce.models.order.OrderItemBean;
 import com.punj.app.ecommerce.models.order.OrderReportBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.utils.Pager;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -92,6 +93,7 @@ public class OrderTransformer {
 		orderBean.setLocationId(order.getLocation().getLocationId());
 		orderBean.setLocationName(order.getLocation().getName());
 		orderBean.setStatus(order.getStatus());
+		orderBean.setDisplayStatus(Utils.showStatus(order.getStatus()));
 		orderBean.setComments(order.getComments());
 
 		SupplierBean supplierBean = SupplierTransformer.transformSupplier(order.getSupplier());

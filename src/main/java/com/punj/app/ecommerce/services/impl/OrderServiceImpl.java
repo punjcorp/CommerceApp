@@ -176,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderDTO searchOrder(String text, Pager pager) {
-		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage + 1;
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
 		pager.setPageSize(maxResultPerPage);
 		pager.setStartCount(startCount);
 		pager.setMaxDisplayPage(maxPageBtns);
@@ -438,15 +438,27 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<Order> approveAllOrders(List<BigInteger> orderIds, String username) {
-		List<Order> orderList=this.orderRepository.findAll(orderIds);
-		for(Order order:orderList) {
+		List<Order> orderList = this.orderRepository.findAll(orderIds);
+		for (Order order : orderList) {
 			order.setModifiedBy(username);
 			order.setModifiedDate(LocalDateTime.now());
 			order.setStatus(ServiceConstants.STATUS_APPROVED);
 		}
-		orderList=this.orderRepository.save(orderList);
+		orderList = this.orderRepository.save(orderList);
 		logger.info("All the selected orders has been marked as approved now");
 		return orderList;
+	}
+
+	@Override
+	public void deleteAllOrders(List<BigInteger> orderIds, String username) {
+		List<Order> orderList = this.orderRepository.findAll(orderIds);
+		for (Order order : orderList) {
+			order.setModifiedBy(username);
+			order.setModifiedDate(LocalDateTime.now());
+			order.setStatus(ServiceConstants.STATUS_DELETED);
+		}
+		this.orderRepository.save(orderList);
+		logger.info("All the selected orders has been marked as deleted now");
 	}
 
 }

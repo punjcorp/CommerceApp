@@ -10,32 +10,129 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 USE `commercedb` ;
 
 -- -----------------------------------------------------
--- View Creation `commercedb`.`v_location_tax`
+-- View `commercedb`.`v_item_location_tax`
 -- -----------------------------------------------------
-CREATE OR REPLACE VIEW `commercedb`.`v_location_tax`
-AS
-SELECT 
-    tlm.location_id , tl.code `billing_location`, tg.tax_group_id, tg.name `tax_group_name`, tg.description `tax_group_desc`, tgr.seq_no `tax_group_rate_seq`, tgr.name `tax_group_rate_name`, tgr.description `tax_group_rate_desc`,
-    tgr.compound_flag, tgr.type_code, `trr`.`tax_rate_rule_id` AS `tax_rate_rule_id`, trr.seq_no, trr.effective_Date, trr.expiry_date, trr.percentage, trr.amount
-FROM
-    commercedb.tax_location_mapping tlm,
-    commercedb.tax_location tl,
-    commercedb.tax_group tg,
-    commercedb.tax_group_rule tgr,
-    commercedb.tax_rate_rule trr
-    where tl.tax_location_id=tlm.tax_location_id
-    and tg.tax_group_id=tgr.tax_group_id
-    and tlm.tax_location_id=tgr.tax_location_id
-    and tg.tax_group_id=trr.tax_group_id
-    and tlm.tax_location_id=trr.tax_location_id
-    and tgr.tax_group_id=trr.tax_group_id
-    and tgr.tax_location_id=trr.tax_location_id
-    and tgr.tax_authority_id=trr.tax_authority_id
-    and tgr.seq_no=trr.tax_group_rule_seq order by tg.name, tgr.name, tgr.seq_no, trr.seq_no;    
+DROP VIEW IF EXISTS `commercedb`.`v_item_location_tax` ;
+DROP TABLE IF EXISTS `commercedb`.`v_item_location_tax`;
+USE `commercedb`;
+CREATE OR REPLACE
+VIEW `commercedb`.`v_item_location_tax` AS
+    SELECT 
+        `itm`.`item_id` AS `item_id`,
+        `itm`.`name` AS `name`,
+        `itm`.`long_desc` AS `long_desc`,
+        `itmopt`.`unit_cost` AS `base_unit_cost`,
+        `taxdtl`.`location_id` AS `location_id`,
+        `taxdtl`.`tax_group_id` AS `tax_group_id`,
+        `taxdtl`.`tax_group_name` AS `tax_group_name`,
+        `taxdtl`.`sgst_rate_rule_id` AS `sgst_rate_rule_id`,
+        `taxdtl`.`sgst_rate` AS `sgst_rate`,
+        `taxdtl`.`sgst_amount` AS `sgst_amount`,
+        `taxdtl`.`sgst_code` AS `sgst_code`,
+        `taxdtl`.`cgst_rate_rule_id` AS `cgst_rate_rule_id`,
+        `taxdtl`.`cgst_rate` AS `cgst_rate`,
+        `taxdtl`.`cgst_amount` AS `cgst_amount`,
+        `taxdtl`.`cgst_code` AS `cgst_code`,
+        `taxdtl`.`igst_rate_rule_id` AS `igst_rate_rule_id`,
+        `taxdtl`.`igst_rate` AS `igst_rate`,
+        `taxdtl`.`igst_amount` AS `igst_amount`,
+        `taxdtl`.`igst_code` AS `igst_code`
+    FROM
+        ((`commercedb`.`item` `itm`
+        LEFT JOIN `commercedb`.`item_options` `itmopt` ON ((`itm`.`item_id` = `itmopt`.`item_id`)))
+        LEFT JOIN (SELECT 
+            `vlt`.`location_id` AS `location_id`,
+                `vlt`.`tax_group_id` AS `tax_group_id`,
+                `vlt`.`tax_group_name` AS `tax_group_name`,
+                MAX((CASE
+                    WHEN (`vlt`.`type_code` = 'SGST') THEN `vlt`.`tax_rate_rule_id`
+                END)) AS `sgst_rate_rule_id`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`percentage`
+                END)) AS `sgst_rate`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`amount`
+                END)) AS `sgst_amount`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`type_code`
+                END)) AS `sgst_code`,
+                MAX((CASE
+                    WHEN (`vlt`.`type_code` = 'CGST') THEN `vlt`.`tax_rate_rule_id`
+                END)) AS `cgst_rate_rule_id`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`percentage`
+                END)) AS `cgst_rate`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`amount`
+                END)) AS `cgst_amount`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`type_code`
+                END)) AS `cgst_code`,
+                MAX((CASE
+                    WHEN (`vlt`.`type_code` = 'IGST') THEN `vlt`.`tax_rate_rule_id`
+                END)) AS `igst_rate_rule_id`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`percentage`
+                END)) AS `igst_rate`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`amount`
+                END)) AS `igst_amount`,
+                MAX((CASE
+                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`type_code`
+                END)) AS `igst_code`
+        FROM
+            `commercedb`.`v_location_tax` `vlt`
+        GROUP BY `vlt`.`location_id` , `vlt`.`tax_group_id`) `taxdtl` ON ((`itmopt`.`tax_group_id` = `taxdtl`.`tax_group_id`)));
 
 -- -----------------------------------------------------
--- View Creation `commercedb`.`v_receipt_li_item`
+-- View `commercedb`.`v_location_tax`
 -- -----------------------------------------------------
+DROP VIEW IF EXISTS `commercedb`.`v_location_tax` ;
+DROP TABLE IF EXISTS `commercedb`.`v_location_tax`;
+USE `commercedb`;
+CREATE  OR REPLACE
+VIEW `commercedb`.`v_location_tax` AS
+    SELECT 
+        `tlm`.`location_id` AS `location_id`,
+        `tl`.`code` AS `billing_location`,
+        `tg`.`tax_group_id` AS `tax_group_id`,
+        `tg`.`name` AS `tax_group_name`,
+        `tg`.`description` AS `tax_group_desc`,
+        `tgr`.`seq_no` AS `tax_group_rate_seq`,
+        `tgr`.`name` AS `tax_group_rate_name`,
+        `tgr`.`description` AS `tax_group_rate_desc`,
+        `tgr`.`compound_flag` AS `compound_flag`,
+        `tgr`.`type_code` AS `type_code`,
+        `trr`.`tax_rate_rule_id` AS `tax_rate_rule_id`,
+        `trr`.`seq_no` AS `seq_no`,
+        `trr`.`effective_date` AS `effective_Date`,
+        `trr`.`expiry_date` AS `expiry_date`,
+        `trr`.`percentage` AS `percentage`,
+        `trr`.`amount` AS `amount`
+    FROM
+        ((((`tax_location_mapping` `tlm`
+        JOIN `tax_location` `tl`)
+        JOIN `tax_group` `tg`)
+        JOIN `tax_group_rule` `tgr`)
+        JOIN `tax_rate_rule` `trr`)
+    WHERE
+        ((`tl`.`tax_location_id` = `tlm`.`tax_location_id`)
+            AND (`tg`.`tax_group_id` = `tgr`.`tax_group_id`)
+            AND (`tlm`.`tax_location_id` = `tgr`.`tax_location_id`)
+            AND (`tg`.`tax_group_id` = `trr`.`tax_group_id`)
+            AND (`tlm`.`tax_location_id` = `trr`.`tax_location_id`)
+            AND (`tgr`.`tax_group_id` = `trr`.`tax_group_id`)
+            AND (`tgr`.`tax_location_id` = `trr`.`tax_location_id`)
+            AND (`tgr`.`tax_authority_id` = `trr`.`tax_authority_id`)
+            AND (`tgr`.`seq_no` = `trr`.`tax_group_rule_seq`))
+    ORDER BY `tg`.`name` , `tgr`.`name` , `tgr`.`seq_no` , `trr`.`seq_no`;
+
+-- -----------------------------------------------------
+-- View `commercedb`.`v_receipt_li_item`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `commercedb`.`v_receipt_li_item` ;
+DROP TABLE IF EXISTS `commercedb`.`v_receipt_li_item`;
+USE `commercedb`;
 CREATE OR REPLACE
 VIEW `commercedb`.`v_receipt_li_item` AS
     SELECT 
@@ -125,78 +222,6 @@ VIEW `commercedb`.`v_receipt_li_item` AS
             AND (`li_itm`.`business_date` = `tax_dtl`.`business_date`)
             AND (`li_itm`.`txn_no` = `tax_dtl`.`txn_no`)
             AND (`li_itm`.`item_id` = `tax_dtl`.`item_id`));
-    
--- -----------------------------------------------------
--- View Creation `commercedb`.`v_item_location_tax`
--- -----------------------------------------------------    
-CREATE OR REPLACE VIEW `commercedb`.`v_item_location_tax` AS
-    SELECT 
-        `itm`.`item_id` AS `item_id`,
-        `itm`.`name` AS `name`,
-        `itm`.`long_desc` AS `long_desc`,
-        `itmopt`.`unit_cost` AS `base_unit_cost`,
-        `taxdtl`.`location_id` AS `location_id`,
-        `taxdtl`.`tax_group_id` AS `tax_group_id`,
-        `taxdtl`.`tax_group_name` AS `tax_group_name`,
-        `taxdtl`.`sgst_rate_rule_id` AS `sgst_rate_rule_id`,
-        `taxdtl`.`sgst_rate` AS `sgst_rate`,
-        `taxdtl`.`sgst_amount` AS `sgst_amount`,
-        `taxdtl`.`sgst_code` AS `sgst_code`,
-        `taxdtl`.`cgst_rate_rule_id` AS `cgst_rate_rule_id`,
-        `taxdtl`.`cgst_rate` AS `cgst_rate`,
-        `taxdtl`.`cgst_amount` AS `cgst_amount`,
-        `taxdtl`.`cgst_code` AS `cgst_code`,
-        `taxdtl`.`igst_rate_rule_id` AS `igst_rate_rule_id`,
-        `taxdtl`.`igst_rate` AS `igst_rate`,
-        `taxdtl`.`igst_amount` AS `igst_amount`,
-        `taxdtl`.`igst_code` AS `igst_code`
-    FROM
-        (((`commercedb`.`item` `itm`
-        LEFT JOIN `commercedb`.`item_options` `itmopt` ON ((`itm`.`item_id` = `itmopt`.`item_id`)))
-        LEFT JOIN (SELECT 
-            `vlt`.`location_id` AS `location_id`,
-                `vlt`.`tax_group_id` AS `tax_group_id`,
-                `vlt`.`tax_group_name` AS `tax_group_name`,
-                 MAX((CASE
-                    WHEN (`vlt`.`type_code` = 'SGST') THEN `vlt`.`tax_rate_rule_id`
-                END)) AS `sgst_rate_rule_id`, 
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`percentage`
-                END)) AS `sgst_rate`,
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`amount`
-                END)) AS `sgst_amount`,
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'SGST') THEN `vlt`.`type_code`
-                END)) AS `sgst_code`,
-                 MAX((CASE
-                    WHEN (`vlt`.`type_code` = 'CGST') THEN `vlt`.`tax_rate_rule_id`
-                END)) AS `cgst_rate_rule_id`, 
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`percentage`
-                END)) AS `cgst_rate`,
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`amount`
-                END)) AS `cgst_amount`,
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'CGST') THEN `vlt`.`type_code`
-                END)) AS `cgst_code`,
-                 MAX((CASE
-                    WHEN (`vlt`.`type_code` = 'IGST') THEN `vlt`.`tax_rate_rule_id`
-                END)) AS `igst_rate_rule_id`, 
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`percentage`
-                END)) AS `igst_rate`,
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`amount`
-                END)) AS `igst_amount`,
-                MAX((CASE
-                    WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`type_code`
-                END)) AS `igst_code`
-        FROM
-            `commercedb`.`v_location_tax` `vlt`
-        GROUP BY `vlt`.`location_id` , `vlt`.`tax_group_id`) `taxdtl` ON ((`itmopt`.`tax_group_id` = `taxdtl`.`tax_group_id`)))
-        );
     
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

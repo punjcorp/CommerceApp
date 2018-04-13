@@ -258,7 +258,7 @@
 		var txn_businessDate = /*[[${{saleHeaderBean.businessDate}}]]*/;
 		var tndr_change_id=$('#hc_changeTenderId').val();
 		var receipt_file_prefix= /*[[@{/output/receipts/}]]*/;
-		var new_txn_prefix= /*[[@{/pos(registerId)}]]*/;
+		var new_txn_prefix= /*[[@{/pos/sale(registerId)}]]*/;
 		
 		var print_rcpt_url= /*[[@{/pos/receipt_print}]]*/;
 		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
@@ -280,14 +280,14 @@
 				</div>
 				<div class="modal-body text-center">
 					<div id="receiptActions" class="col-12 text-center">
-						<button type="button" class="btn btn-info p-3 m-5" id="btnViewTxnReceipt">
-							<i class="fas fa-file-alt fa-9x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewTxnReceipt">
+							<i class="fas fa-file-alt fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-5" id="btnPrintReceiptAndNewTxn">
-							<i class="fas fa-print fa-9x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewTxn">
+							<i class="fas fa-print fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-5" id="btnNewTxn">
-							<i class="far fa-plus-square fa-9x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewTxn">
+							<i class="far fa-plus-square fa-5x"></i>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">

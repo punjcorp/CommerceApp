@@ -55,6 +55,7 @@ public final class ServiceConstants {
 
 	public static final String STATUS_CREATED = "C";
 	public static final String STATUS_APPROVED = "A";
+	public static final String STATUS_DELETED = "D";
 
 	public static final String STOCK_FROM_BUCKET_IND = "F";
 	public static final String STOCK_TO_BUCKET_IND = "T";

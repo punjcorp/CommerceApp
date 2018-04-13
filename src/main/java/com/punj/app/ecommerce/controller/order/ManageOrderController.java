@@ -104,9 +104,10 @@ public class ManageOrderController {
 	@PostMapping(ViewPathConstants.MANAGE_ORDER_URL)
 	public String searchOrder(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
 			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session, Locale locale) {
-		if (bindingResult.hasErrors())
+		if (bindingResult.hasErrors() && !model.containsAttribute(MVCConstants.SUCCESS))
 			return ViewPathConstants.MANAGE_ORDER_PAGE;
 		try {
+			if (!model.containsAttribute(MVCConstants.SUCCESS)) {
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
 				pager.setCurrentPageNo(1);
@@ -123,6 +124,9 @@ public class ManageOrderController {
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.search.result", new Object[] { pager.getResultSize() }, locale));
 			logger.info("The purchase order details has been retrieved successfully.");
+			}else {
+				model.addAttribute("org.springframework.validation.BindingResult.searchBean", null);
+			}
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.search.result.failure", null, locale));
 			logger.error("There is an error while retrieving purchase orders", e);
@@ -142,10 +146,16 @@ public class ManageOrderController {
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			List<BigInteger> orderIds = OrderTransformer.retrieveEligibleOrders(orders);
-			this.orderService.approveAllOrders(orderIds, userDetails.getUsername());
-			redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.approve.success", null, locale));
-			req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-			logger.info("The bulk update operation for purchase order is completed.");
+			if(orderIds!=null && !orderIds.isEmpty()) {
+				this.orderService.approveAllOrders(orderIds, userDetails.getUsername());
+				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.approve.success", null, locale));
+				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				logger.info("The bulk update operation for purchase order is completed.");
+			}else {
+				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.approve.no.records", null, locale));
+				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				logger.info("The bulk update operation for purchase order is completed.");				
+			}
 		} catch (Exception e) {
 			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.delete.failure", null, locale));
 			logger.error("There is an error while updating bulk purchase order basic details", e);
@@ -154,25 +164,29 @@ public class ManageOrderController {
 	}
 
 	@PostMapping(value = ViewPathConstants.BULK_ORDER_URL, params = { MVCConstants.DELETE_ORDERS_PARAM })
-	public String deleteOrders(@ModelAttribute OrderBeansDTO orders, Model model, HttpSession session, Locale locale) {
+	public String deleteOrders(@ModelAttribute OrderBeansDTO orders, RedirectAttributes redirectAttrs, final HttpServletRequest req, Locale locale, Authentication authentication) {
 		try {
-			List<String> orderIds = orders.getOrderIds();
-
-			Map<BigInteger, Integer> idIndexMap = new HashMap<>(orderIds.size());
-
-			this.getSelectedIds(orderIds, idIndexMap);
-
-			Set<BigInteger> ids = idIndexMap.keySet();
-
-			orderService.deleteOrders(ids);
-			model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.delete.success", null, locale));
-
-			logger.info("The bulk delete operation for purchase order is completed.");
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			List<BigInteger> orderIds = OrderTransformer.retrieveEligibleOrders(orders);
+			if(orderIds!=null && !orderIds.isEmpty()) {
+				this.orderService.deleteAllOrders(orderIds, userDetails.getUsername());
+				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.delete.success", null, locale));
+				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				logger.info("The bulk delete operation for purchase order is completed.");
+			}else {
+				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.order.delete.no.records", null, locale));
+				logger.info("The bulk delete operation for purchase order is completed.");				
+			}
+			
+			
+			
+				
 		} catch (Exception e) {
+			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.supplier.delete.failure", null, locale));
 			logger.error("There is an error while deleting bulk purchase orders", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
-		return ViewPathConstants.MANAGE_ORDER_PAGE;
+		req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_ORDER_URL;
 	}
 
 	private void getSelectedIds(List<String> orderIds, Map<BigInteger, Integer> idIndex) {

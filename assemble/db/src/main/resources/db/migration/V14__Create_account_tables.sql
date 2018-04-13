@@ -18,14 +18,19 @@ DROP TABLE IF EXISTS `commercedb`.`account_head` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`account_head` (
   `account_id` INT NOT NULL AUTO_INCREMENT,
+  `location_id` INT(4) NOT NULL,
   `entity_type` VARCHAR(50) NOT NULL,
   `entity_id` BIGINT NOT NULL,
   `advance_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `due_amount` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
   PRIMARY KEY (`account_id`))
 ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX `account_head_unique_idx` ON `commercedb`.`account_head` (`location_id` ASC, `entity_type` ASC, `entity_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -42,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
+  `comments` VARCHAR(150) NULL,
   PRIMARY KEY (`journal_id`),
   CONSTRAINT `fk_account_journal_account_head1`
     FOREIGN KEY (`account_id`)
@@ -49,7 +55,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `commercedb`.`account_journal_tender`

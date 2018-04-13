@@ -36,10 +36,9 @@ public class OrderSearchRepository {
 	@AnalyzerDef(name = "edgeNGram_query", tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class), filters = {
 			@TokenFilterDef(factory = LowerCaseFilterFactory.class) // Lowercase all characters
 	})
-	
+
 	/**
-	 * A basic search for the entity User. The search is done by exact match per
-	 * keywords on fields name, city and email.
+	 * A basic search for the entity User. The search is done by exact match per keywords on fields name, city and email.
 	 * 
 	 * @param text
 	 *            The query text.
@@ -48,17 +47,14 @@ public class OrderSearchRepository {
 
 		OrderDTO orderDTO = new OrderDTO();
 		// get the full text entity manager
-		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search
-				.getFullTextEntityManager(entityManager);
+		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
 
 		// create the query using Hibernate Search query DSL
-		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Order.class)
-				.get();
+		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Order.class).get();
 
 		// a very basic query by keywords
 		org.apache.lucene.search.Query query = queryBuilder.keyword()
-				.onFields("orderId","comments","createdBy", "orderItems.orderItemId").matching(text)
-				.createQuery();
+				.onFields("orderId", "comments", "createdBy").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
 		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Order.class);

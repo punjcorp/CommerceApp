@@ -97,7 +97,7 @@ $(function() {
           },
           pa: {
               translation: {
-            	  common_currency_sign_inr: 'ਪੈਸਾ'
+            	  common_currency_sign_inr: 'ਰੁ.'
               }
             }          
       }

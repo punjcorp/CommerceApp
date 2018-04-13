@@ -12,7 +12,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,10 +20,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
@@ -33,6 +40,7 @@ import com.punj.app.ecommerce.domains.supplier.Supplier;
  * @author admin
  *
  */
+
 @Indexed
 @Entity
 @Table(name = "purchase_order")
@@ -46,7 +54,7 @@ public class Order implements Serializable {
 	@Column(name = "order_id", updatable = false, nullable = false)
 	private BigInteger orderId;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "location_id")
 	@IndexedEmbedded
 	private Location location;
@@ -86,12 +94,12 @@ public class Order implements Serializable {
 	@Field
 	private String comments;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "supplier_id")
-	@IndexedEmbedded
+	@IndexedEmbedded(depth = 1)
 	private Supplier supplier;
 
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
 	private List<OrderItem> orderItems;
 

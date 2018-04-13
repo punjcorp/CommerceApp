@@ -28,6 +28,8 @@ public interface OrderService {
 
 	public void deleteOrder(BigInteger orderId);
 
+	public void deleteAllOrders(List<BigInteger> orderIds, String username);
+	
 	public void deleteOrders(Set<BigInteger> orderIds);
 
 	public List<Order> updateOrders(List<Order> orders);
