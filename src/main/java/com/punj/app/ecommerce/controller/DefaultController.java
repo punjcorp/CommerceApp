@@ -73,14 +73,16 @@ public class DefaultController {
 		logger.info("WELCOME TO THE STORE OPEN PAGE");
 		logger.info("========================");
 		return "dailydeed/store_open";
-	}	
-	
-	
-	
-	
+	}
+
+	@GetMapping(ViewPathConstants.BASE_URL)
+	public String redirectBaseUrl(Model model) {
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.HOME_URL;
+	}
+
 	@GetMapping(ViewPathConstants.HOME_URL)
-	public String login(@ModelAttribute SearchBean searchBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page,
-			Model model, Principal principal) {
+	public String login(@ModelAttribute SearchBean searchBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
+			Principal principal) {
 		logger.info("========================");
 		logger.info("WELCOME TO THE HOME PAGE");
 		logger.info("========================");
@@ -103,15 +105,15 @@ public class DefaultController {
 			} else {
 				itemList = itemService.listItems(new Item(), pager);
 			}
-			
+
 			itemsList = itemList.getItems();
 			items = new ItemBeanDTO();
 			this.setItemList(itemsList, items);
-			
+
 			Pager tmpPager = itemList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(),ViewPathConstants.HOME_URL);
-			
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.HOME_URL);
+
 			model.addAttribute("items", items);
 			model.addAttribute("searchBean", searchBean);
 			model.addAttribute(MVCConstants.PAGER, pager);
@@ -137,8 +139,7 @@ public class DefaultController {
 	}
 
 	@GetMapping(ViewPathConstants.LOGOUT_URL)
-	public String accessError(Model model, HttpServletRequest request, HttpServletResponse response,
-			Authentication auth, Locale locale) {
+	public String accessError(Model model, HttpServletRequest request, HttpServletResponse response, Authentication auth, Locale locale) {
 
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
@@ -147,10 +148,9 @@ public class DefaultController {
 		return ViewPathConstants.LOGOUT_REDIRECT_LOGIN_PAGE;
 	}
 
-	
 	/**
-	 * This method is use to convert the item details from 
-	 * Domain object to Bean objects
+	 * This method is use to convert the item details from Domain object to Bean objects
+	 * 
 	 * @param itemsList
 	 * @param items
 	 */

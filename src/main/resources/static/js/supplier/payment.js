@@ -42,6 +42,7 @@ $(function() {
 				contentType : "application/json; charset=utf-8",
 				dataType : "json",
 				success : function(suppliers) {
+					console.log(JSON.stringify(suppliers));
 					response($.map(suppliers, function(supplier) {
 						var dataVal = "" + supplier.name + "-( Ph- " + supplier.phone1 + " )";
 						var descVal = "<small>" + supplier.email + "</small>";
@@ -103,8 +104,40 @@ $(function() {
 			payment.savePayment();
 		}
 	});
+	
+	$('#btnNewPayment').click(function() {
+		startNewPayment();
+	});
+
+	$('#btnViewPaymentReceipt').click(function() {
+		viewPaymentReceipt();
+	});
+
+	$('#btnPrintReceiptAndNewPayment').click(function() {
+		printPaymentReceipt();
+	});
 
 });
+
+function startNewPayment() {
+	window.location.href = newPaymentURL;
+}
+
+
+function viewPaymentReceipt() {
+	$('#progressDiv').removeClass("d-none");
+	view_rcpt_url = encodeURIComponent(view_rcpt_url + '=' + txn_paymentId);
+	var pdfRcptUrl = view_rcpt_viewer_url + '?file=' + view_rcpt_url;
+	$('#reportPDFContainer').attr("src", pdfRcptUrl);
+	$('#progressDiv').addClass("d-none");
+
+}
+
+
+function printPaymentReceipt() {
+	window.location.href = newOrderURL;
+}
+
 
 /* This section will allow the item listing to be in a specific format */
 $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
@@ -436,6 +469,7 @@ function validatePaymentDetails(){
 		var paymentAmt=+$('#paymentAmt').val();
 		var dueAmt=+$('#dueAmt').val();
 		if(paymentAmt!=dueAmt){
+			validationPassed = false;
 			$('#paymentAmtMsg').addClass('invalid-feedback');
 			$('#paymentAmtMsg').html('<h6>The Payment Amount should be equal to Due Amount for Full Payment, please make the needed adjustments in tenders!</h6>');
 			$('#paymentAmtMsg').show();		
@@ -448,13 +482,13 @@ function validatePaymentDetails(){
 		if(paymentAmt<=dueAmt){
 			$('#paymentAmtMsg').hide();
 		}else{
+			validationPassed = false;
 			$('#paymentAmtMsg').addClass('invalid-feedback');
 			$('#paymentAmtMsg').html('<h6>The Payment Amount should be less than Due Amount for Part Payment, please make the needed adjustments in tenders!</h6>');
 			$('#paymentAmtMsg').show();		
 
 		}
 	}
-	
 	
 	return validationPassed;	
 	
@@ -470,11 +504,13 @@ function readPaymentDetails() {
 	var paymentAmt = +$('#paymentAmt').val();
 	var remarks = $('#remarks').val();
 
-
 	payment.setPaymentDetails(entityId, entityType, paymentAmt, remarks, txnStartTime, txnEndTime);
 
 }
 
 function postPaymentSave(){
-	alert('Process the data after processing for report printing');
+	$('#paymentReceiptModal').modal({
+		backdrop : 'static',
+		keyboard : false
+	});
 }

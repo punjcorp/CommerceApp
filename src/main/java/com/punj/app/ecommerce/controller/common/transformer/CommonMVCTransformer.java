@@ -12,10 +12,13 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
@@ -180,7 +183,88 @@ public class CommonMVCTransformer {
 				registerBean.setEligibleForRegisterOpen(Boolean.TRUE);
 			}
 		}
+		logger.info("The register open transaction details has been updated");
 		return registerBean;
 	}
+
+	public static AddressBean transformAddress(Address address) {
+		AddressBean addressBean = new AddressBean();
+
+		addressBean.setAddressId(address.getAddressId());
+		addressBean.setPrimary(address.getPrimary());
+		addressBean.setAddress1(address.getAddress1());
+		addressBean.setAddress2(address.getAddress2());
+		addressBean.setCity(address.getCity());
+		addressBean.setState(address.getState());
+		addressBean.setCountry(address.getCountry());
+		addressBean.setPincode(address.getPincode());
+		addressBean.setAddressType(address.getAddressType());		
+		
+		logger.info("The address has been transformed into address bean successfully");
+		return addressBean;
+	}
+
+	public static Address transformAddress(AddressBean addressBean) {
+		Address address = new Address();
+
+		address.setPrimary(addressBean.getPrimary());
+		address.setAddressId(addressBean.getAddressId());
+		address.setAddress1(addressBean.getAddress1());
+		address.setAddress2(addressBean.getAddress2());
+		address.setCity(addressBean.getCity());
+		address.setState(addressBean.getState());
+		address.setCountry(addressBean.getCountry());
+		address.setPincode(addressBean.getPincode());
+		address.setAddressType(addressBean.getAddressType());
+
+		logger.info("The address bean has been transformed into address object successfully");
+		return address;
+	}
+	
+	public static List<Address> transformAddressList(List<AddressBean> addressBeanList) {
+		List<Address> addressList=new ArrayList<>(addressBeanList.size());
+		Address address;
+		for(AddressBean addressBean: addressBeanList) {
+			address=CommonMVCTransformer.transformAddress(addressBean);
+			addressList.add(address);
+		}
+		
+		logger.info("The address beans list has been transformed into address list successfully");
+		return addressList;
+	}
+	
+	public static List<AddressBean> transformAddresses(List<Address> addressList) {
+		List<AddressBean> addressBeanList=new ArrayList<>(addressList.size());
+		AddressBean addressBean;
+		for(Address address: addressList) {
+			addressBean=CommonMVCTransformer.transformAddress(address);
+			addressBeanList.add(addressBean);
+		}
+		
+		logger.info("The address list has been transformed into address bean list successfully");
+		return addressBeanList;
+	}
+	
+	public static int getPrimaryAddressIndex(List<AddressBean> addressBeanList) {
+		int result=-1;
+		for (int i = 0; i < addressBeanList.size(); i++) {
+		    if ("Y".equals(addressBeanList.get(i).getPrimary())) {
+		    	result=i;
+		    }
+		}
+		return result;
+
+	}
+	
+	public static AddressBean getPrimaryAddress(List<Address> addressList) {
+		AddressBean addressBean=null;
+		for (Address address:addressList) {
+		    if ("Y".equals(address.getPrimary())) {
+		    	addressBean=CommonMVCTransformer.transformAddress(address);
+		    }
+		}
+		return addressBean;
+
+	}	
 
 }

@@ -64,6 +64,8 @@ public class OrderBean implements Serializable {
 
 	private Pager pager;
 
+	private OrderBillBean orderBill;
+
 	public OrderBean() {
 		this.orderItems = new ArrayList<>();
 		this.orderItems.add(new OrderItemBean());
@@ -488,7 +490,8 @@ public class OrderBean implements Serializable {
 	}
 
 	/**
-	 * @param supplierName the supplierName to set
+	 * @param supplierName
+	 *            the supplierName to set
 	 */
 	public void setSupplierName(String supplierName) {
 		this.supplierName = supplierName;
@@ -502,10 +505,26 @@ public class OrderBean implements Serializable {
 	}
 
 	/**
-	 * @param displayStatus the displayStatus to set
+	 * @param displayStatus
+	 *            the displayStatus to set
 	 */
 	public void setDisplayStatus(String displayStatus) {
 		this.displayStatus = displayStatus;
+	}
+
+	/**
+	 * @return the orderBill
+	 */
+	public OrderBillBean getOrderBill() {
+		return orderBill;
+	}
+
+	/**
+	 * @param orderBill
+	 *            the orderBill to set
+	 */
+	public void setOrderBill(OrderBillBean orderBill) {
+		this.orderBill = orderBill;
 	}
 
 }

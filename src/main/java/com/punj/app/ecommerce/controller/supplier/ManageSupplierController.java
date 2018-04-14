@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.supplier;
  * 
  */
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +36,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.SupplierTransformer;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.user.Address;
@@ -104,17 +108,20 @@ public class ManageSupplierController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIER_PARAM })
-	public String saveSupplier(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult, Model model, HttpSession session, Locale locale) {
+	public String saveSupplier(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult, Model model, HttpSession session, Locale locale,
+			Authentication authentication) {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.ADD_SUPPLIER_PAGE;
 		try {
-			Supplier supplier = new Supplier();
-			this.updateDomain(supplierBean, supplier);
 
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Supplier supplier = SupplierTransformer.transformSupplierBean(supplierBean);
+			this.updateSupplierStatus(supplier, MVCConstants.ACTION_NEW, userDetails.getUsername());
 			supplier = this.supplierService.createSupplier(supplier);
+
 			supplierBean.setSupplierId(supplier.getSupplierId());
 			model.addAttribute(MVCConstants.SUCCESS,
-					messageSource.getMessage("commerce.screen.supplier.add.success", new Object[] { supplier.getSupplierId() }, locale));
+					messageSource.getMessage("commerce.screen.supplier.add.success", new Object[] { supplier.getSupplierId(), supplier.getName() }, locale));
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The supplier details has been created successfully.");
 		} catch (Exception e) {
@@ -125,43 +132,24 @@ public class ManageSupplierController {
 	}
 
 	/**
-	 * This method is used to set the Domain objects so that the data can be persisted to the database
+	 * This method is used to set the status and other fields of Supplier based on operation performed
 	 * 
-	 * @param supplierBean
 	 * @param supplier
 	 */
-	private void updateDomain(SupplierBean supplierBean, Supplier supplier) {
+	private Supplier updateSupplierStatus(Supplier supplier, String operation, String username) {
 
-		supplier.setSupplierId(supplierBean.getSupplierId());
-		supplier.setName(supplierBean.getName());
-		supplier.setEmail(supplierBean.getEmail());
-		supplier.setPhone1(supplierBean.getPhone1());
-		supplier.setPhone2(supplierBean.getPhone2());
+		if (operation.equals(MVCConstants.ACTION_NEW)) {
+			supplier.setCreatedBy(username);
+			supplier.setCreatedDate(LocalDateTime.now());
 
-		List<AddressBean> addresses = supplierBean.getAddresses();
+		} else if (operation.equals(MVCConstants.ACTION_EDIT)) {
 
-		List<Address> supplierAddressList = new ArrayList<>();
-		Address address = null;
-		for (AddressBean addressBean : addresses) {
-
-			address = new Address();
-
-			address.setPrimary(MVCConstants.YES);
-			address.setAddressId(addressBean.getAddressId());
-			address.setAddress1(addressBean.getAddress1());
-			address.setAddress2(addressBean.getAddress2());
-			address.setCity(addressBean.getCity());
-			address.setState(addressBean.getState());
-			address.setCountry(addressBean.getCountry());
-			address.setPincode(addressBean.getPincode());
-			address.setAddressType(addressBean.getAddressType());
-
-			supplierAddressList.add(address);
+			supplier.setModifiedBy(username);
+			supplier.setModifiedDate(LocalDateTime.now());
 		}
-		supplier.setAddresses(supplierAddressList);
 
 		logger.info("The supplier details has been updated in domain object now");
-
+		return supplier;
 	}
 
 	@GetMapping(value = ViewPathConstants.MANAGE_SUPPLIER_URL)
@@ -175,10 +163,9 @@ public class ManageSupplierController {
 	private void setSupplierList(List<Supplier> supplierList, SupplierBeanDTO suppliers) {
 
 		List<SupplierBean> supplierBeanList = new ArrayList<>();
-
+		SupplierBean supplierBean;
 		for (Supplier supplier : supplierList) {
-			SupplierBean supplierBean = new SupplierBean();
-			this.updateBean(supplierBean, supplier);
+			supplierBean = SupplierTransformer.transformSupplier(supplier);
 			supplierBeanList.add(supplierBean);
 		}
 		suppliers.setSuppliers(supplierBeanList);
@@ -227,62 +214,18 @@ public class ManageSupplierController {
 		return ViewPathConstants.MANAGE_SUPPLIER_PAGE;
 	}
 
-	/**
-	 * This method is used to set the details of retrieved suppliers to Bean object so the details can be displayed on the screen
-	 * 
-	 * @param supplierBean
-	 * @param supplier
-	 */
-	private void updateBean(SupplierBean supplierBean, Supplier supplier) {
-
-		supplierBean.setSupplierId(supplier.getSupplierId());
-		supplierBean.setName(supplier.getName());
-		supplierBean.setEmail(supplier.getEmail());
-		supplierBean.setPhone1(supplier.getPhone1());
-		supplierBean.setPhone2(supplier.getPhone2());
-
-		List<Address> supplierAddressList = supplier.getAddresses();
-		List<AddressBean> supplierAddresses = new ArrayList<>();
-
-		AddressBean addressBean = null;
-		if (supplierAddressList != null && !supplierAddressList.isEmpty()) {
-			for (Address address : supplierAddressList) {
-
-				addressBean = new AddressBean();
-
-				addressBean.setAddressId(address.getAddressId());
-				addressBean.setPrimary(address.getPrimary());
-				addressBean.setAddress1(address.getAddress1());
-				addressBean.setAddress2(address.getAddress2());
-				addressBean.setCity(address.getCity());
-				addressBean.setState(address.getState());
-				addressBean.setCountry(address.getCountry());
-				addressBean.setPincode(address.getPincode());
-				addressBean.setAddressType(address.getAddressType());
-
-				supplierAddresses.add(addressBean);
-			}
-		}
-		supplierBean.setAddresses(supplierAddresses);
-
-		logger.info("The supplier details has been updated in bean object now");
-
-	}
-
 	@GetMapping(ViewPathConstants.EDIT_SUPPLIER_URL)
 	public String editSupplier(Model model, HttpSession session, final HttpServletRequest req) {
 		try {
 			Integer supplierId = Integer.valueOf(req.getParameter(MVCConstants.SUPPLIER_ID_PARAM));
 
-			SupplierBean supplierBean = new SupplierBean();
 			Supplier supplier = new Supplier();
 			supplier.setSupplierId(supplierId);
 
 			supplier = this.supplierService.searchSupplier(supplier);
 			logger.info("The requested supplier details retrieved successfully");
 
-			this.updateBean(supplierBean, supplier);
-
+			SupplierBean supplierBean = SupplierTransformer.transformSupplier(supplier);
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
 			logger.info("The requested supplier for updation has been set in bean object for display");
 		} catch (Exception e) {
@@ -327,14 +270,16 @@ public class ManageSupplierController {
 
 	@PostMapping(value = ViewPathConstants.EDIT_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIER_PARAM })
 	public String saveSupplierAfterEdit(@ModelAttribute @Valid SupplierBean supplierBean, BindingResult bindingResult, Model model, HttpSession session,
-			Locale locale) {
+			Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors())
 			return ViewPathConstants.EDIT_SUPPLIER_PAGE;
 		try {
-			Supplier supplier = new Supplier();
-			this.updateDomain(supplierBean, supplier);
 
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Supplier supplier = SupplierTransformer.transformSupplierBean(supplierBean);
+			this.updateSupplierStatus(supplier, MVCConstants.ACTION_EDIT, userDetails.getUsername());
 			supplier = this.supplierService.createSupplier(supplier);
+
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.supplier.add.success", new Object[] { supplier.getSupplierId(), supplier.getName() }, locale));
 			model.addAttribute(MVCConstants.SUPPLIER_BEAN, supplierBean);
@@ -367,9 +312,10 @@ public class ManageSupplierController {
 
 	@PostMapping(value = ViewPathConstants.BULK_SUPPLIER_URL, params = { MVCConstants.SAVE_SUPPLIERS_PARAM })
 	public String saveSuppliers(@ModelAttribute SupplierBeanDTO suppliers, RedirectAttributes redirectAttrs, final HttpServletRequest req, Model model,
-			Locale locale) {
+			Locale locale, Authentication authentication) {
 		try {
 			if (suppliers != null) {
+				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 				List<SupplierBean> supplierBeans = suppliers.getSuppliers();
 				List<String> supplierIds = suppliers.getSupplierIds();
 				Map<Integer, Integer> idIndex = new HashMap<>(supplierIds.size());
@@ -389,8 +335,8 @@ public class ManageSupplierController {
 				List<Supplier> supplierList = new ArrayList<>(finalSupplierBeans.size());
 				Supplier supplier = null;
 				for (SupplierBean supplierBean : finalSupplierBeans) {
-					supplier = new Supplier();
-					this.updateDomain(supplierBean, supplier);
+					supplier = SupplierTransformer.transformSupplierBean(supplierBean);
+					supplier = this.updateSupplierStatus(supplier, MVCConstants.ACTION_EDIT, userDetails.getUsername());
 					supplierList.add(supplier);
 				}
 				logger.info("The supplier details has been updated in Domain objects");

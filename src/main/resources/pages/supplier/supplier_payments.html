@@ -41,9 +41,8 @@
 													<div class="input-group-prepend">
 														<span class="input-group-text"><i class="fas fa-users fa-2x"></i> </span>
 													</div>
-													<input type="text" th:field="*{entityType}" class="form-control input-sm"></input>
-													<input type="hidden" th:field="*{entityId}"></input>
-													<input type="hidden" id="h_entityType" th:value="SUPPLIER"></input>
+													<input type="text" th:field="*{entityType}" class="form-control input-sm"></input> <input type="hidden" th:field="*{entityId}"></input> <input
+														type="hidden" id="h_entityType" th:value="SUPPLIER"></input>
 													<div id="entityTypeMsg"></div>
 												</div>
 											</div>
@@ -80,10 +79,10 @@
 															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_paymentAmt"> 0.00</span> <input type="hidden"
 																th:field="*{paymentAmt}"></input>
 														</h3></label>
-												</div>		
-												<div id="paymentAmtMsg"></div>									
+												</div>
+												<div id="paymentAmtMsg"></div>
 											</div>
-										</div>										
+										</div>
 									</div>
 									<div class="row">
 										<div class="col-6">
@@ -98,7 +97,6 @@
 												</div>
 											</div>
 										</div>
-
 									</div>
 									<div class="row">
 										<div class="col-6">
@@ -239,10 +237,56 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
+	<!-- Order Report Lookup Modal-->
+	<div class="modal fade " id="paymentReceiptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.supplier.payment.report.print}"> Supplier Payment Receipt</span>
+					</h5>
+				</div>
+				<div class="modal-body text-center">
+					<div id="receiptActions" class="col-12 text-center">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewPaymentReceipt">
+							<div class="fa-5x">
+								<i class="fas fa-file-alt"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewPayment">
+							<div class="fa-5x">
+								<i class="fas fa-print"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewPayment">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="far fa-money-bill-alt"
+									data-fa-transform="shrink-11 right-11 up-4 rotate--45"></i>
+								</span>
+							</div>
+						</button>
+					</div>
+					<div class="col-12 d-none text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-5x"></i>
+						<div>
+							<span th:text="#{commerce.screen.supplier.payment.receipt.generate}"></span>
+						</div>
+					</div>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="90%" frameBorder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 
+		var txn_paymentId = -1;
 		var logo_paytm= /*[[@{/images/paytm_sm.png}]]*/;
+		var newPaymentURL = /*[[@{/admin/supplier/payment}]]*/;
+		
+		var print_rcpt_url= /*[[@{/admin/print_payment_receipt(paymentId)}]]*/;
+		var view_rcpt_url= /*[[@{/admin/view_payment_receipt(paymentId)}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
 		
 		/*]]>*/
 	</script>

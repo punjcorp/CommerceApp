@@ -22,6 +22,7 @@ public final class ViewPathConstants {
 	public static final String LIST_ITEM_URL = "/list_item";
 	public static final String DISPLAY_PAGE = "common/display";
 
+	public static final String BASE_URL = "/";
 	public static final String HOME_URL = "/home";
 	public static final String HOME_PAGE = "home";
 	public static final String ERROR_PAGE = "error";

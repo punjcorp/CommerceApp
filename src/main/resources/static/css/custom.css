@@ -400,6 +400,11 @@ a[id="sales"]::before {
 	font-size: 48px;
 }
 
+a[href*="#finance"]::before {
+	content: "monetization_on" !important;
+	font-size: 48px;
+}
+
 a[href*="#account"]::before {
 	content: "account_circle" !important;
 	font-size: 48px;

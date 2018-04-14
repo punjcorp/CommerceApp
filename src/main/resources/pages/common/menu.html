@@ -51,60 +51,6 @@
 						</div></li>
 					<li><a id="pos" th:href="@{/pos/open_store}"><span th:text="#{commerce.home.menu.pos}">Point Of Sale</span></a></li>
 
-					<li class="dropdown"  sec:authorize="isAuthenticated()"><a href="#account" id="accountmenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.account}">Account</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageaccount" th:href="@{/manage_user}"><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a></li>
-							<li><a id="changepassword" th:href="@{/manage_password}"><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a></li>
-							<li><a id="manageaddress" th:href="@{/manage_address}"><span th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a></li>
-							<li><a id="managecard" th:href="@{/manage_card}"><span th:text="#{commerce.home.menu.manage.card}">Manage Cards</span></a></li>
-						</ul></li>
-
-					<li class="dropdown"  sec:authorize="isAuthenticated()"><a href="#lookup" id="lookupmenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.lookup}">Lookups</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="lookupitem" th:href="@{/item_lookup}"><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a></li>
-						</ul></li>
-
-					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#price"  id="pricemenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.price}">Price Events</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageinventory" th:href="@{/manage_price}"><span th:text="#{commerce.home.menu.search.price}">Search Price Events</span></a></li>
-							<li><a id="addinventory" th:href="@{/add_price}"><span th:text="#{commerce.home.menu.add.price}">New Price Event</span></a></li>
-						</ul></li>
-
-
-					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#inventory"  id="inventorymenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.inventory}">Inventory Adjustment</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageinventory" th:href="@{/manage_inv_adjust}"><span th:text="#{commerce.home.menu.search.inventory}">Search Inventory Adjustment</span></a></li>
-							<li><a id="addinventory" th:href="@{/add_inv_adjust}"><span th:text="#{commerce.home.menu.add.inventory}">Create Inventory Adjustment</span></a></li>
-						</ul></li>
-
-					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#supplier"  id="suppliermenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.supplier}">Supplier</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="managesupplier" th:href="@{/admin/manage_supplier}"><span th:text="#{commerce.home.menu.manage.supplier}">Manage Supplier</span></a></li>
-							<li><a id="addsupplier" th:href="@{/admin/add_supplier}"><span th:text="#{commerce.home.menu.add.supplier}">Add New Supplier</span></a></li>
-							<li><a id="supplierpayment" th:href="@{/admin/supplier/payment}"><span th:text="#{commerce.home.menu.payment.supplier}">Supplier Payment</span></a></li>
-						</ul></li>
-					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#style"  id="stylemenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.style}">Style</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-						<li><a id="manageitem" th:href="@{/search_item}"><span th:text="#{commerce.home.menu.search.item}">Search Items</span></a></li>
-							<li><a id="addstyle" th:href="@{/add_style}"><span th:text="#{commerce.home.menu.add.style}">Add New Style</span></a></li>
-							<li><a id="addhierarchy" th:href="@{/add_hierachy}"><span th:text="#{commerce.home.menu.add.hierarchy}">Add Hierarchy</span></a></li>
-						</ul></li>
-
-					<li class="dropdown"  sec:authorize="hasAuthority('ADMIN')"><a href="#order"  id="ordermenu"
-						class="dropdown-toggle offcanvas" data-toggle="dropdown"><span th:text="#{commerce.home.menu.order}">Purchase Order</span></a>
-						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-						<li><a id="manageorder" th:href="@{/admin/manage_order}"><span th:text="#{commerce.home.menu.search.order}">Search Purchase Order</span></a></li>
-							<li><a id="addorder" th:href="@{/admin/add_order}"><span th:text="#{commerce.home.menu.add.order}">Create Purchase Order</span></a></li>
-						</ul></li>
-
-
-					<li><a id="contact" th:href="@{/contactus}"><span th:text="#{commerce.home.menu.contact}">Contact</span></a></li>
 				</ul>
 			</nav>
 			<!-- /#sidebar-wrapper -->

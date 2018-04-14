@@ -110,6 +110,9 @@ function getExpenseDetails(event, ui) {
 	outputHtml += '<h3><span>' + ui.item.value + '</span></h3>';
 	outputHtml += '<input type="hidden" id="h_expenseType" value="' + ui.item.type + '"></input>';
 	outputHtml += '</div>';
+	outputHtml += '<div class="input-group text-left">';
+	outputHtml += '<span>' + ui.item.desc + '</span>';
+	outputHtml += '</div>';	
 	outputHtml += '</div>';
 	outputHtml += '</div>';
 	outputHtml += '</div>';

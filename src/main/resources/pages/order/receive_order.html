@@ -240,6 +240,38 @@
 										</th:block>
 									</div>
 									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.order.bill.no}">Bill No</span></small></label>
+												<div class="input-group">
+													<input type="text" class="form-control input-sm" th:field="*{orderBeanDTO.orderBill.billNo}"></input>
+												</div>
+												<div th:if="${#fields.hasErrors('orderBill.billNo')}"
+													th:errors="${orderBeanDTO.orderBill.billNo}" class="text-danger">Order Bill No Error</div>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.order.bill.date}">Bill Date</span></small></label>
+												<div class="input-group">
+													<input type="text" class="form-control input-sm" th:field="*{orderBeanDTO.orderBill.billDate}"></input>
+												</div>
+												<div th:if="${#fields.hasErrors('orderBill.billDate')}"
+													th:errors="${orderBeanDTO.orderBill.billDate}" class="text-danger">Order Bill Date Error</div>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.order.bill.file.url}">Bill File URL</span></small></label>
+												<div class="input-group">
+													<input type="file" class="form-control input-sm" th:field="*{orderBeanDTO.orderBill.billFile}"></input>
+												</div>
+												<div th:if="${#fields.hasErrors('orderBill.billFile')}"
+													th:errors="${orderBeanDTO.orderBill.billFile}" class="text-danger">Order Bill File Error</div>
+											</div>
+										</div>										
+									</div>
+									<div class="row">
 										<div class="col-xs-12 col-sm-12  col-md-12">
 											<div class="form-group">
 												<label></label>

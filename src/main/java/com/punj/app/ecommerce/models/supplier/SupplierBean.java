@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.models.supplier;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +37,20 @@ public class SupplierBean {
 	private String email;
 	@Valid
 	private List<AddressBean> addresses;
-	
+
 	private AddressBean primaryAddress;
 
 	private List<SupplierItemBean> items;
 
 	private Pager pager;
+
+	@NotNull(message = "{commerce.error.select.empty}")
+	private Integer primaryAddressIndex;
+	
+	private String createdBy;
+	private LocalDateTime createdDate;
+	private String modifiedBy;
+	private LocalDateTime modifiedDate;
 
 	public SupplierBean() {
 		addresses = new ArrayList<AddressBean>();
@@ -173,17 +182,92 @@ public class SupplierBean {
 	 * @return the primaryAddress
 	 */
 	public AddressBean getPrimaryAddress() {
-		if(this.addresses!=null && !this.addresses.isEmpty()) {
+		if (this.addresses != null && !this.addresses.isEmpty()) {
 			return this.addresses.get(0);
 		}
 		return this.primaryAddress;
 	}
 
 	/**
-	 * @param primaryAddress the primaryAddress to set
+	 * @param primaryAddress
+	 *            the primaryAddress to set
 	 */
 	public void setPrimaryAddress(AddressBean primaryAddress) {
 		this.primaryAddress = primaryAddress;
+	}
+
+	/**
+	 * @return the createdBy
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy
+	 *            the createdBy to set
+	 */
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	/**
+	 * @return the createdDate
+	 */
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	/**
+	 * @param createdDate
+	 *            the createdDate to set
+	 */
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the modifiedBy
+	 */
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	/**
+	 * @param modifiedBy
+	 *            the modifiedBy to set
+	 */
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	/**
+	 * @return the modifiedDate
+	 */
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	/**
+	 * @param modifiedDate
+	 *            the modifiedDate to set
+	 */
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the primaryAddressIndex
+	 */
+	public Integer getPrimaryAddressIndex() {
+		return primaryAddressIndex;
+	}
+
+	/**
+	 * @param primaryAddressIndex the primaryAddressIndex to set
+	 */
+	public void setPrimaryAddressIndex(Integer primaryAddressIndex) {
+		this.primaryAddressIndex = primaryAddressIndex;
 	}
 
 }

@@ -17,7 +17,7 @@ public class AddressBean {
 	private BigInteger addressId;
 	@NotNull
 	private String addressType;
-	private String primary;
+	private String primary="N";
 	@NotNull
 	@Size(min = 5, max = 150, message = "{commerce.error.string.size}")	
 	private String address1;
