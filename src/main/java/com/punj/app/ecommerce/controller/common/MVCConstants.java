@@ -73,8 +73,11 @@ public final class MVCConstants {
 	
 	public static final String EXPENSE_PARAM= "expenseBean";
 	
+	public static final String ORDER_BILL_PARAM= "billId";
 	public static final String ADD_ORDER_ITEM_PARAM= "addOrderItem";
 	public static final String REMOVE_ORDER_ITEM_PARAM= "removeOrderItem";
+	public static final String ADD_ORDER_BILL_PARAM= "addOrderBill";
+	public static final String REMOVE_ORDER_BILL_PARAM= "removeOrderBill";	
 	public static final String SAVE_ORDER_PARAM= "saveOrder";
 	public static final String APPROVE_ORDER_PARAM= "approveOrder";
 	public static final String SAVE_ORDERS_PARAM= "saveOrders";

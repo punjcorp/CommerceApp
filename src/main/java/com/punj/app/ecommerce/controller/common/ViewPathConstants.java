@@ -74,6 +74,7 @@ public final class ViewPathConstants {
 	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
 	
 	public static final String BULK_ORDER_URL = "/admin/bulk_order_action";
+	public static final String VIEW_ORDER_BILL_URL = "/admin/view_order_bill";
 	public static final String RECEIVE_ORDER_URL = "/admin/receive_order";
 	public static final String RECEIVE_ORDER_PAGE ="order/receive_order";
 	

@@ -3,16 +3,20 @@ package com.punj.app.ecommerce.controller.order;
  * 
  */
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
@@ -33,11 +37,13 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeanDTO;
+import com.punj.app.ecommerce.models.order.OrderBillBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -172,11 +178,82 @@ public class OrderPhaseController {
 			}
 
 		} catch (Exception e) {
-			this.emptyOrderBeanDTO(model);			
+			this.emptyOrderBeanDTO(model);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while retrieving purchase order for receival", e);
 		}
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.ADD_ORDER_BILL_PARAM })
+	public String addRowEdit(@ModelAttribute OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, Locale locale) {
+		List<OrderBillBean> orderBillList = orderBeanDTO.getOrder().getOrderBills();
+		if (orderBillList == null) {
+			orderBillList = new ArrayList<>();
+		}
+		orderBillList.add(new OrderBillBean());
+		orderBeanDTO.getOrder().setOrderBills(orderBillList);
+		this.updateOrderModelDetails(model, orderBeanDTO);
+		logger.info("A new empty order bill has been added to the RECEIVE order screen");
+		return ViewPathConstants.RECEIVE_ORDER_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.REMOVE_ORDER_BILL_PARAM })
+	public String removeRowEdit(@ModelAttribute OrderBeanDTO orderBeanDTO, Model model, Locale locale, final HttpServletRequest req) {
+		try {
+
+			final Integer rowId = Integer.valueOf(req.getParameter(MVCConstants.REMOVE_ORDER_BILL_PARAM));
+
+			OrderBillBean orderBillBean = orderBeanDTO.getOrder().getOrderBills().get(rowId.intValue());
+
+			if (orderBillBean.getOrderId() != null) {
+				orderBillBean.setOrderId(orderBeanDTO.getOrder().getOrderId());
+				Order order = new Order();
+				order.setOrderId(orderBeanDTO.getOrder().getOrderId());
+				OrderBill orderBill = OrderTransformer.tranformOrderBillBean(order, orderBillBean);
+				this.orderService.deleteBill(orderBill);
+			}
+			orderBeanDTO.getOrder().getOrderBills().remove(rowId.intValue());
+			logger.info("The selected purchase order bill has been deleted now");
+			this.updateOrderModelDetails(model, orderBeanDTO);
+		} catch (Exception e) {
+			logger.error("There is an error while deleting purchase order selected item", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.RECEIVE_ORDER_PAGE;
+		}
+		return ViewPathConstants.RECEIVE_ORDER_PAGE;
+	}
+
+	@GetMapping(value = ViewPathConstants.VIEW_ORDER_BILL_URL)
+	public void viewOrderBill(Model model, Locale locale, final HttpServletRequest req, HttpServletResponse response) {
+		try {
+
+			final BigInteger billId = new BigInteger(req.getParameter(MVCConstants.ORDER_BILL_PARAM));
+
+			if (billId != null) {
+				OrderBill orderBill = this.orderService.retrieveOrderBillDoc(billId);
+				if (orderBill != null) {
+					OrderBillBean orderBillBean = OrderTransformer.tranformOrderBill(orderBill);
+					this.displayOrderBill(orderBillBean, response);
+					logger.info("The selected purchase order bill has been written to response successfully");
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error("There is an error while showing the order bill", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+		}
+	}
+
+	private void displayOrderBill(OrderBillBean orderBillBean, HttpServletResponse response) {
+		try {
+			response.setContentType(orderBillBean.getBillFileType());
+			IOUtils.copy(orderBillBean.getBillFile().getInputStream(), response.getOutputStream());
+		} catch (IOException e) {
+			logger.error("There is an error while writing the order bill to response", e);
+		}
+		logger.info("The selected purchase order bill is being displayed");
 	}
 
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
@@ -191,10 +268,12 @@ public class OrderPhaseController {
 
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.save.success", new Object[] { order.getOrderId() }, locale));
+			this.updateOrderModelDetails(model, orderBeanDTO);
 			logger.info("The purchase order details has been saved after receiving successfully");
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while saving order details during receive", e);
+			this.updateOrderModelDetails(model, orderBeanDTO);
 
 		}
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
@@ -206,43 +285,44 @@ public class OrderPhaseController {
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			Order order = OrderTransformer.transformOrderBean(orderBeanDTO.getOrder(), userDetails.getUsername(), MVCConstants.STATUS_RECEIVED,
-					Boolean.TRUE);
+			Order order = OrderTransformer.transformOrderBean(orderBeanDTO.getOrder(), userDetails.getUsername(), MVCConstants.STATUS_RECEIVED, Boolean.TRUE);
 
 			order = this.orderService.createOrder(order);
 
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.receive.success", new Object[] { order.getOrderId() }, locale));
+			this.updateOrderModelDetails(model, orderBeanDTO);
 			logger.info("The purchase order details has been marked as Received successfully");
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while saving order details during receipt", e);
+			this.updateOrderModelDetails(model, orderBeanDTO);
 		}
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
 	}
-	
-	
+
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ALL_ORDERS_PARAM })
-	public String receiveAllOrder(@ModelAttribute OrderBeanDTO orderBeanDTO, Model model, HttpSession session,
-			Locale locale, Authentication authentication) {
+	public String receiveAllOrder(@ModelAttribute OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-			Order order=OrderTransformer.transformOrderBeanAsReceivedAll(orderBeanDTO.getOrder(), userDetails.getUsername());
-			order=this.orderService.createOrder(order);
+			Order order = OrderTransformer.transformOrderBeanAsReceivedAll(orderBeanDTO.getOrder(), userDetails.getUsername());
+			order = this.orderService.createOrder(order);
 
 			logger.info("All the purchase order items has been marked as received successfully");
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.all.success", new Object[] { order.getOrderId() }, locale));
-
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while receiving bulk orders", e);
+			this.updateOrderModelDetails(model, orderBeanDTO);
 		}
 		return ViewPathConstants.RECEIVE_ORDER_PAGE;
-	}	
-	
+	}
+
 	private void emptyOrderBeanDTO(Model model) {
 		OrderBeanDTO orderBeanDTO = new OrderBeanDTO();
 

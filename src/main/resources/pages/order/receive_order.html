@@ -7,6 +7,8 @@
 <title th:text="#{commerce.screen.order.receive.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
+<link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
+<script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
 <script src="../../js/parsley.min.js" th:src="@{/js/parsley.min.js}"></script>
 <script src="../../js/moment.js" th:src="@{/js/moment.js}"></script>
@@ -22,7 +24,8 @@
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<form class="form" id="addForm" action="#" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" method="post">
+			<form class="form" id="addForm" action="#" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data"
+				method="post">
 				<div class="row m-3">
 					<div class="col">
 						<div class="card">
@@ -239,39 +242,67 @@
 											</div>
 										</th:block>
 									</div>
-									<div class="row">
-										<div class="col-4">
-											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.order.bill.no}">Bill No</span></small></label>
-												<div class="input-group">
-													<input type="text" class="form-control input-sm" th:field="*{orderBeanDTO.orderBill.billNo}"></input>
+									<div class="orderitem" th:if="${orderBeanDTO.order.orderBills!=null and #lists.size(orderBeanDTO.order.orderBills)>0}">
+										<div class="form-group" th:each="orderBill,itrStat:${orderBeanDTO.order.orderBills}">
+											<div class="row">
+												<div class="col">
+													<div class="form-group">
+														<label><small><span th:text="#{commerce.screen.order.bill.no}">Bill No</span></small></label>
+														<div class="input-group">
+															<input type="text" class="form-control input-sm" th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billNo}"
+																th:placeholder="#{commerce.screen.order.bill.no.text}"></input>
+														</div>
+														<div th:if="${#fields.hasErrors('order.orderBills[__${itrStat.index}__].billNo')}"
+															th:errors="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billNo}" class="text-danger">Order Bill No Error</div>
+													</div>
 												</div>
-												<div th:if="${#fields.hasErrors('orderBill.billNo')}"
-													th:errors="${orderBeanDTO.orderBill.billNo}" class="text-danger">Order Bill No Error</div>
+												<div class="col">
+													<div class="form-group">
+														<label><small><span th:text="#{commerce.screen.order.bill.date}">Bill Date</span></small></label>
+														<div class="input-group">
+															<input type="text" class="form-control input-sm" th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billDate}"
+																th:placeholder="#{commerce.screen.order.bill.date.text}"></input>
+														</div>
+														<div th:if="${#fields.hasErrors('order.orderBills[__${itrStat.index}__].billDate')}"
+															th:errors="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billDate}" class="text-danger">Order Bill Date Error</div>
+													</div>
+												</div>
+												<div class="col-4">
+													<div class="form-group">
+														<label><small><span th:text="#{commerce.screen.order.bill.file.url}">Bill File URL</span></small></label>
+														<div class="input-group">
+															<input type="file" class="form-control input-sm" th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFile}"></input>
+														</div>
+														<div th:if="${#fields.hasErrors('order.orderBills[__${itrStat.index}__].billFile')}"
+															th:errors="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFile}" class="text-danger">Order Bill File Error</div>
+														<input type="hidden" th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].hiddenBill}"></input>
+														<input type="hidden" th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].orderId}"></input> <input type="hidden"
+															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFileType}"></input> <input type="hidden"
+															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFileURL}"></input> <input type="hidden"
+															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].orderBillId}"></input> <a target="_blank"
+															th:if="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFileURL!=null}"
+															th:href="@{/admin/view_order_bill(billId=${orderBeanDTO.order.orderBills[__${itrStat.index}__].orderBillId})}"><span
+															th:text="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFileURL}"></span></a>
+													</div>
+												</div>
+												<div class="col">
+													<div class="form-group">
+														<label></label>
+														<div class="input-group">
+															<button type="submit" name="addOrderBill" class="btn btn-info mx-2">
+																<i class="fas fa-plus fa-2x"></i>
+															</button>
+															<button type="submit" name="removeOrderBill" class="btn btn-info" th:value="${itrStat.index}"
+																th:if="${#lists.size(orderBeanDTO.order.orderBills)>1}">
+																<i class="fas fa-minus fa-2x"></i>
+															</button>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
-										<div class="col-4">
-											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.order.bill.date}">Bill Date</span></small></label>
-												<div class="input-group">
-													<input type="text" class="form-control input-sm" th:field="*{orderBeanDTO.orderBill.billDate}"></input>
-												</div>
-												<div th:if="${#fields.hasErrors('orderBill.billDate')}"
-													th:errors="${orderBeanDTO.orderBill.billDate}" class="text-danger">Order Bill Date Error</div>
-											</div>
-										</div>
-										<div class="col-4">
-											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.order.bill.file.url}">Bill File URL</span></small></label>
-												<div class="input-group">
-													<input type="file" class="form-control input-sm" th:field="*{orderBeanDTO.orderBill.billFile}"></input>
-												</div>
-												<div th:if="${#fields.hasErrors('orderBill.billFile')}"
-													th:errors="${orderBeanDTO.orderBill.billFile}" class="text-danger">Order Bill File Error</div>
-											</div>
-										</div>										
 									</div>
-									<div class="row">
+									<div class="row" th:if="${ alert==null}">
 										<div class="col-xs-12 col-sm-12  col-md-12">
 											<div class="form-group">
 												<label></label>
@@ -287,6 +318,10 @@
 																class="fas fa-arrow-left" data-fa-transform="shrink-8 down-4"></i>
 														</span>
 														</span> <span th:text="#{commerce.screen.btn.submit.receive.all}"></span>
+													</button>
+													<button type="submit" name="addOrderBill" class="btn btn-info mx-2"
+														th:if="${orderBeanDTO.order.orderBills==null or #lists.size(orderBeanDTO.order.orderBills)&lt;1}">
+														<i class="fas fa-plus fa-2x mx-2"></i>
 													</button>
 												</div>
 											</div>
@@ -622,6 +657,15 @@
 		if(txn_success && txn_success!='undefined' && txn_success!=''){
 			postOrderSave();
 		}
+
+		$(function() {
+			$('[id^=order\\.orderBills][id$=\\.billDate]').map(function() {
+				$(this).flatpickr({
+					dateFormat : 'd-M-y',
+				});
+			});
+		});
+		
 		
 		
 		/*]]>*/

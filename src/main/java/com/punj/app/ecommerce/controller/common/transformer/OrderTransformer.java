@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -11,11 +12,13 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.OrderItemTax;
@@ -23,9 +26,11 @@ import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
 import com.punj.app.ecommerce.domains.order.ids.OrderItemTaxId;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeansDTO;
+import com.punj.app.ecommerce.models.order.OrderBillBean;
 import com.punj.app.ecommerce.models.order.OrderItemBean;
 import com.punj.app.ecommerce.models.order.OrderReportBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
@@ -44,7 +49,7 @@ public class OrderTransformer {
 		throw new IllegalStateException("OrderTransformer class");
 	}
 
-	public static Order transformOrderBeanAsReceivedAll(OrderBean orderBean, String username) {
+	public static Order transformOrderBeanAsReceivedAll(OrderBean orderBean, String username) throws IOException {
 
 		orderBean.setActualCgstTaxAmount(orderBean.getCgstTaxAmount());
 		orderBean.setActualIgstTaxAmount(orderBean.getIgstTaxAmount());
@@ -123,6 +128,9 @@ public class OrderTransformer {
 		List<OrderItemBean> orderItemBeans = OrderTransformer.transformOrderItems(order.getOrderItems(), orderBean);
 		orderBean.setOrderItems(orderItemBeans);
 
+		List<OrderBillBean> orderBillBeanList = OrderTransformer.tranformOrderBills(order.getOrderBills());
+		orderBean.setOrderBills(orderBillBeanList);
+
 		logger.info("The order details has been transformed successfully");
 
 		return orderBean;
@@ -181,12 +189,96 @@ public class OrderTransformer {
 
 			orderItemBeans.add(orderItemBean);
 		}
+
 		orderBean.setCgstTaxAmount(cgstTaxAmt);
 		orderBean.setSgstTaxAmount(sgstTaxAmt);
 		orderBean.setIgstTaxAmount(igstTaxAmt);
 
 		logger.info("The order item details list has been transformed successfully");
 		return orderItemBeans;
+	}
+
+	public static List<OrderBillBean> tranformOrderBills(List<OrderBill> orderBillList) {
+		List<OrderBillBean> orderBillBeanList = new ArrayList<>(orderBillList.size());
+		OrderBillBean orderBillBean;
+		if (orderBillList.isEmpty()) {
+			orderBillBean = OrderTransformer.tranformOrderBill(new OrderBill());
+			orderBillBeanList.add(orderBillBean);
+		} else {
+			for (OrderBill orderBill : orderBillList) {
+				orderBillBean = OrderTransformer.tranformOrderBill(orderBill);
+				orderBillBeanList.add(orderBillBean);
+			}
+		}
+
+		logger.info("The order bill list from database has been transformed successfully");
+		return orderBillBeanList;
+
+	}
+
+	public static OrderBillBean tranformOrderBill(OrderBill orderBill) {
+		OrderBillBean orderBillBean = new OrderBillBean();
+		orderBillBean.setBillDate(orderBill.getBillDate());
+		orderBillBean.setOrderBillId(orderBill.getOrderBillId());
+		orderBillBean.setBillNo(orderBill.getBillNo());
+
+		orderBillBean.setBillFileURL(orderBill.getBillFileName());
+		orderBillBean.setBillFileType(orderBill.getBillFileType());
+
+		MultipartFile multipartFile = new CommerceMultipartFile(orderBill.getBillData(), orderBill.getBillFileName(),orderBill.getBillFileType());
+
+		orderBillBean.setBillFile(multipartFile);
+		orderBillBean.setHiddenBill(multipartFile);
+		
+		if (orderBill.getOrder() != null)
+			orderBillBean.setOrderId(orderBill.getOrder().getOrderId());
+
+		logger.info("The order bill from database has been transformed successfully");
+		return orderBillBean;
+	}
+
+	public static List<OrderBill> tranformOrderBillBeanList(Order order, List<OrderBillBean> orderBillBeanList) throws IOException {
+		List<OrderBill> orderBills = new ArrayList<>();
+		OrderBill orderBill;
+
+		for (OrderBillBean orderBillBean : orderBillBeanList) {
+			orderBill = OrderTransformer.tranformOrderBillBean(order, orderBillBean);
+			orderBills.add(orderBill);
+		}
+
+		logger.info("The order bill list has been transformed successfully");
+		return orderBills;
+
+	}
+
+	public static OrderBill tranformOrderBillBean(Order order, OrderBillBean orderBillBean) throws IOException {
+
+		OrderBill orderBill = null;
+		if (orderBillBean != null) {
+
+			orderBill = new OrderBill();
+
+			orderBill.setOrderBillId(orderBillBean.getOrderBillId());
+			orderBill.setOrder(order);
+			orderBill.setBillNo(orderBillBean.getBillNo());
+			orderBill.setBillDate(orderBillBean.getBillDate());
+
+			MultipartFile billFile = orderBillBean.getBillFile();
+			MultipartFile hiddenBill = orderBillBean.getBillFile();
+			if (billFile != null ) {
+				orderBill.setBillData(billFile.getBytes());
+			}else {
+				if(hiddenBill!=null) {
+					orderBill.setBillData(hiddenBill.getBytes());
+				}
+			}
+			orderBill.setBillFileName(billFile.getOriginalFilename());
+			orderBill.setBillFileType(billFile.getContentType());
+
+		}
+
+		logger.info("The order item details list has been transformed successfully");
+		return orderBill;
 	}
 
 	public static OrderItemBean transformOrderItem(OrderItem orderItem) {
@@ -246,7 +338,7 @@ public class OrderTransformer {
 
 		List<OrderBean> orderBeans = OrderTransformer.transformOrders(orderDTO.getOrders());
 		orderBeanDTO.setOrders(orderBeans);
-		
+
 		Pager tmpPager = orderDTO.getPager();
 		Pager pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
 				ViewPathConstants.MANAGE_ORDER_URL);
@@ -267,7 +359,7 @@ public class OrderTransformer {
 		return orderBeanList;
 	}
 
-	public static Order transformOrderBean(OrderBean orderBean, String username, String status, Boolean isUpdate) {
+	public static Order transformOrderBean(OrderBean orderBean, String username, String status, Boolean isUpdate) throws IOException {
 		Order order = new Order();
 		order.setOrderId(orderBean.getOrderId());
 
@@ -306,6 +398,9 @@ public class OrderTransformer {
 
 		List<OrderItem> orderItems = OrderTransformer.transformOrderItemsBean(orderBean.getOrderItems(), order);
 		order.setOrderItems(orderItems);
+
+		List<OrderBill> orderBillList = OrderTransformer.tranformOrderBillBeanList(order, orderBean.getOrderBills());
+		order.setOrderBills(orderBillList);
 
 		logger.info("All the order details has been transformed successfully");
 		return order;

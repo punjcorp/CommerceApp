@@ -64,7 +64,7 @@ public class OrderBean implements Serializable {
 
 	private Pager pager;
 
-	private OrderBillBean orderBill;
+	private List<OrderBillBean> orderBills;
 
 	public OrderBean() {
 		this.orderItems = new ArrayList<>();
@@ -513,18 +513,18 @@ public class OrderBean implements Serializable {
 	}
 
 	/**
-	 * @return the orderBill
+	 * @return the orderBills
 	 */
-	public OrderBillBean getOrderBill() {
-		return orderBill;
+	public List<OrderBillBean> getOrderBills() {
+		return orderBills;
 	}
 
 	/**
-	 * @param orderBill
-	 *            the orderBill to set
+	 * @param orderBills
+	 *            the orderBills to set
 	 */
-	public void setOrderBill(OrderBillBean orderBill) {
-		this.orderBill = orderBill;
+	public void setOrderBills(List<OrderBillBean> orderBills) {
+		this.orderBills = orderBills;
 	}
 
 }

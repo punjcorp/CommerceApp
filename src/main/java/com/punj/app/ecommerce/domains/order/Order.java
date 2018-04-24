@@ -20,18 +20,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
-import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
-import org.hibernate.search.annotations.AnalyzerDef;
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Parameter;
-import org.hibernate.search.annotations.TokenFilterDef;
-import org.hibernate.search.annotations.TokenizerDef;
 
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
@@ -102,6 +94,9 @@ public class Order implements Serializable {
 	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
 	private List<OrderItem> orderItems;
+
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private List<OrderBill> orderBills;
 
 	/**
 	 * @return the orderId
@@ -371,6 +366,21 @@ public class Order implements Serializable {
 	 */
 	public void setActualTotalAmount(BigDecimal actualTotalAmount) {
 		this.actualTotalAmount = actualTotalAmount;
+	}
+
+	/**
+	 * @return the orderBills
+	 */
+	public List<OrderBill> getOrderBills() {
+		return orderBills;
+	}
+
+	/**
+	 * @param orderBills
+	 *            the orderBills to set
+	 */
+	public void setOrderBills(List<OrderBill> orderBills) {
+		this.orderBills = orderBills;
 	}
 
 }

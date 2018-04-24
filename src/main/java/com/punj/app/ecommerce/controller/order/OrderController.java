@@ -200,7 +200,7 @@ public class OrderController {
 	}
 
 	private void prepareOrderDetailsForSaving(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale,
-			String status) {
+			String status) throws IOException {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String username=userDetails.getUsername();
 		OrderBean orderBean = orderBeanDTO.getOrder();
@@ -343,7 +343,7 @@ public class OrderController {
 		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
 	
-	private void prepareOrderDetailsAfterUpdates(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status) {
+	private void prepareOrderDetailsAfterUpdates(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status) throws IOException {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String username=userDetails.getUsername();
 		OrderBean orderBean = orderBeanDTO.getOrder();

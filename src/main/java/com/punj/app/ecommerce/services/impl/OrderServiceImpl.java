@@ -21,11 +21,13 @@ import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
+import com.punj.app.ecommerce.repositories.order.OrderBillRepository;
 import com.punj.app.ecommerce.repositories.order.OrderItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderItemTaxRepository;
 import com.punj.app.ecommerce.repositories.order.OrderRepository;
@@ -47,6 +49,7 @@ public class OrderServiceImpl implements OrderService {
 	private static final Logger logger = LogManager.getLogger();
 	private OrderRepository orderRepository;
 	private OrderItemRepository orderItemRepository;
+	private OrderBillRepository orderBillRepository;
 	private SupplierRepository supplierRepository;
 	private ItemRepository itemRepository;
 	private OrderSearchRepository orderSearchRepository;
@@ -136,6 +139,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	/**
+	 * @param orderBillRepository
+	 *            the orderBillRepository to set
+	 */
+	@Autowired
+	public void setOrderBillRepository(OrderBillRepository orderBillRepository) {
+		this.orderBillRepository = orderBillRepository;
+	}
+
+	/**
 	 * @return the itemRepository
 	 */
 	public ItemRepository getItemRepository() {
@@ -189,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Order createOrder(Order order) {
 
-		order = orderRepository.save(order);
+		order = this.orderRepository.save(order);
 		logger.info("The new purchase order {} has been created with provided details", order.getOrderId());
 		return order;
 	}
@@ -459,6 +471,24 @@ public class OrderServiceImpl implements OrderService {
 		}
 		this.orderRepository.save(orderList);
 		logger.info("All the selected orders has been marked as deleted now");
+	}
+
+	@Override
+	public void deleteBill(OrderBill orderBill) {
+		this.orderBillRepository.delete(orderBill.getOrderBillId());
+
+		logger.info("The selected bill {} has been deleted from order {} successfully", orderBill.getBillNo(), orderBill.getOrder().getOrderId());
+	}
+
+	@Override
+	public OrderBill retrieveOrderBillDoc(BigInteger orderBillId) {
+		OrderBill orderBill = this.orderBillRepository.findOne(orderBillId);
+		if (orderBill != null)
+			logger.info("The selected bill for id {} of type {} has been retrieved successfully", orderBillId, orderBill.getBillFileType());
+		else
+			logger.info("The selected bill for id {} was not found", orderBillId);
+		
+		return orderBill;
 	}
 
 }
