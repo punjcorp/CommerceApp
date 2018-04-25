@@ -130,6 +130,33 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`reason_codes` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`uom_master`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`uom_master` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
+  `uom_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `code` VARCHAR(15) NOT NULL,
+  `description` VARCHAR(100) NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `parent_uom_id` INT NOT NULL,
+  `formula_to_parent_uom` VARCHAR(45) NULL,
+  `is_primary` TINYINT NOT NULL DEFAULT 0,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`uom_id`),
+  INDEX `fk_uom_master_uom_master1_idx` (`parent_uom_id` ASC),
+  CONSTRAINT `fk_uom_master_uom_master1`
+    FOREIGN KEY (`parent_uom_id`)
+    REFERENCES `commercedb`.`uom_master` (`uom_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

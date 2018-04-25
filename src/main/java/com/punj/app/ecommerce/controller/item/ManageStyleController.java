@@ -37,9 +37,11 @@ import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.ids.AttributeId;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.item.ids.ItemImageId;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.services.common.CommonService;
 
 /**
  * @author admin
@@ -50,6 +52,7 @@ import com.punj.app.ecommerce.services.ItemService;
 public class ManageStyleController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
+	private CommonService commonService;
 
 	/**
 	 * @param userService
@@ -58,6 +61,15 @@ public class ManageStyleController {
 	@Autowired
 	public void setItemService(ItemService itemService) {
 		this.itemService = itemService;
+	}
+
+	/**
+	 * @param commonService
+	 *            the commonService to set
+	 */
+	@Autowired
+	public void setCommonService(CommonService commonService) {
+		this.commonService = commonService;
 	}
 
 	@GetMapping(ViewPathConstants.ADD_STYLE_URL)
@@ -76,6 +88,8 @@ public class ManageStyleController {
 		List<AttributeBean> colorList = new ArrayList<>();
 		List<AttributeBean> sizeList = new ArrayList<>();
 		this.getDefaultAttributes(colorList, sizeList);
+		List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
+		model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
 
 		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
 		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
@@ -84,8 +98,8 @@ public class ManageStyleController {
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
-	
-	private void getDefaultAttributes(List<AttributeBean> colorList,List<AttributeBean> sizeList) {
+
+	private void getDefaultAttributes(List<AttributeBean> colorList, List<AttributeBean> sizeList) {
 		List<Attribute> attributeList = itemService.getNewStyleAttribute();
 		logger.info("The attribute list has been retrieved to select for the style");
 		this.updateAttributeBean(attributeList, colorList, sizeList);
@@ -97,12 +111,12 @@ public class ManageStyleController {
 		if (bindingResult.hasErrors()) {
 			List<AttributeBean> colorList = new ArrayList<>();
 			List<AttributeBean> sizeList = new ArrayList<>();
-			this.getDefaultAttributes(colorList, sizeList);			
+			this.getDefaultAttributes(colorList, sizeList);
 			model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
 			model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
 			return ViewPathConstants.ADD_STYLE_PAGE;
 		}
-		
+
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		Item item = new Item();
 		ItemOptions itemOptions = new ItemOptions();
@@ -126,17 +140,19 @@ public class ManageStyleController {
 
 		this.updateAttributeBean(attributeList, colorList, sizeList);
 
+		List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
+
 		itemBean.setItemId(styleNumber);
 		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
 		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
+		model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
 		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
 		model.addAttribute(MVCConstants.SUCCESS, "The new style " + styleNumber + " has been created.");
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
 
-	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions,
-			List<ItemAttribute> itemAttributes, String username) {
+	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, List<ItemAttribute> itemAttributes, String username) {
 
 		/**
 		 * Setting the basic information about the style
@@ -272,8 +288,7 @@ public class ManageStyleController {
 
 	}
 
-	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList,
-			List<AttributeBean> sizeList) {
+	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList, List<AttributeBean> sizeList) {
 
 		for (Attribute attribute : attributeList) {
 
@@ -299,6 +314,5 @@ public class ManageStyleController {
 		logger.info("All the attributes related to Color and Size has been sorted successfully");
 
 	}
-
 
 }

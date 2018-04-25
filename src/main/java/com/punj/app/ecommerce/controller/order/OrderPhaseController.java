@@ -259,10 +259,18 @@ public class OrderPhaseController {
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
 	public String saveOrderForReceival(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, HttpSession session,
 			Locale locale, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.RECEIVE_ORDER_PAGE;
+		}
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			Order order = OrderTransformer.transformOrderBean(orderBeanDTO.getOrder(), userDetails.getUsername(), orderBeanDTO.getOrder().getStatus(),
 					Boolean.TRUE);
+
+			Order actualDBOrder = this.orderService.searchOrder(orderBeanDTO.getOrder().getOrderId());
+
+			order = OrderTransformer.updateOrderBillsFiles(actualDBOrder, order);
 
 			order = this.orderService.createOrder(order);
 
@@ -282,6 +290,10 @@ public class OrderPhaseController {
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ORDER_PARAM })
 	public String receiveOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, HttpSession session,
 			Locale locale, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.RECEIVE_ORDER_PAGE;
+		}		
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -302,7 +314,11 @@ public class OrderPhaseController {
 	}
 
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ALL_ORDERS_PARAM })
-	public String receiveAllOrder(@ModelAttribute OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Locale locale, Authentication authentication) {
+	public String receiveAllOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, HttpSession session, Locale locale, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderModelDetails(model, orderBeanDTO);
+			return ViewPathConstants.RECEIVE_ORDER_PAGE;
+		}		
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -314,7 +330,7 @@ public class OrderPhaseController {
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.all.success", new Object[] { order.getOrderId() }, locale));
 			this.updateOrderModelDetails(model, orderBeanDTO);
-			
+
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while receiving bulk orders", e);

@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_hierarchy` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   `hierarchy_id` INT NOT NULL AUTO_INCREMENT,
   `level_code` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(80) NOT NULL,
   `description` VARCHAR(250) NULL,
   `sort_order` INT NOT NULL DEFAULT 1,
   `hidden_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
@@ -24,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   `created_by` VARCHAR(50) NOT NULL,
   `parent_id` INT NULL,
   PRIMARY KEY (`hierarchy_id`),
+  INDEX `fk_item_hierarchy_item_hierarchy1_idx` (`parent_id` ASC),
   CONSTRAINT `fk_item_hierarchy_item_hierarchy1`
     FOREIGN KEY (`parent_id`)
     REFERENCES `commercedb`.`item_hierarchy` (`hierarchy_id`)

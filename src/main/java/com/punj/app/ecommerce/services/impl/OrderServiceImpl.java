@@ -337,7 +337,10 @@ public class OrderServiceImpl implements OrderService {
 	public Order searchOrder(BigInteger orderId) {
 
 		Order order = this.orderRepository.findOne(orderId);
-		logger.info("The selected purchase order {} has been retrieved", order.getOrderId());
+		if(order!=null)
+			logger.info("The selected purchase order {} has been retrieved", order.getOrderId());
+		else
+			logger.info("The selected purchase order {} was not found!", orderId);
 
 		return order;
 	}

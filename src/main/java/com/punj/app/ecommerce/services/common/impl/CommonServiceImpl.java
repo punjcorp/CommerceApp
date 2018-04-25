@@ -23,18 +23,24 @@ import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
+import com.punj.app.ecommerce.domains.item.Hierarchy;
+import com.punj.app.ecommerce.domains.item.HierarchyDTO;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
 import com.punj.app.ecommerce.domains.item.ids.ItemLocationTaxId;
 import com.punj.app.ecommerce.domains.supplier.SupplierItem;
 import com.punj.app.ecommerce.domains.supplier.ids.SupplierItemId;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
 import com.punj.app.ecommerce.repositories.common.RegisterRepository;
+import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
+import com.punj.app.ecommerce.repositories.item.HierarchySearchRepository;
 import com.punj.app.ecommerce.repositories.item.ItemLocTaxRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierItemRepository;
+import com.punj.app.ecommerce.repositories.tax.TaxGroupRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -53,12 +59,15 @@ public class CommonServiceImpl implements CommonService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private LocationRepository locationRepository;
+	private HierarchyRepository hierarchyRepository;
+	private HierarchySearchRepository hierarchySearchRepository;
 	private RegisterRepository registerRepository;
 	private IdGeneratorRepository idGenRepository;
 	private TenderRepository tenderRepository;
 	private ReasonSearchRepository reasonRepository;
 	private ItemLocTaxRepository itemLocTaxRepository;
 	private SupplierItemRepository supItemRepository;
+	private TaxGroupRepository taxGroupRepository;
 	private TransactionService txnService;
 
 	@Value("${commerce.list.max.perpage}")
@@ -68,12 +77,39 @@ public class CommonServiceImpl implements CommonService {
 	private Integer maxPageBtns;
 
 	/**
+	 * @param hierarchySearchRepository
+	 *            the hierarchySearchRepository to set
+	 */
+	@Autowired
+	public void setHierarchySearchRepository(HierarchySearchRepository hierarchySearchRepository) {
+		this.hierarchySearchRepository = hierarchySearchRepository;
+	}
+
+	/**
 	 * @param supItemRepository
 	 *            the supItemRepository to set
 	 */
 	@Autowired
 	public void setSupplierItemRepository(SupplierItemRepository supItemRepository) {
 		this.supItemRepository = supItemRepository;
+	}
+
+	/**
+	 * @param hierarchyRepository
+	 *            the hierarchyRepository to set
+	 */
+	@Autowired
+	public void setHierarchyRepository(HierarchyRepository hierarchyRepository) {
+		this.hierarchyRepository = hierarchyRepository;
+	}
+
+	/**
+	 * @param taxGroupRepository
+	 *            the taxGroupRepository to set
+	 */
+	@Autowired
+	public void setTaxGroupRepository(TaxGroupRepository taxGroupRepository) {
+		this.taxGroupRepository = taxGroupRepository;
 	}
 
 	/**
@@ -301,8 +337,8 @@ public class CommonServiceImpl implements CommonService {
 			supplierItemId.setSupplierId(supplierId);
 
 			SupplierItem supplierItem = this.supItemRepository.findOne(supplierItemId);
-			if(supplierItem!=null) {
-				if(supplierItem.getUnitCost()!=null && supplierItem.getUnitCost().compareTo(BigDecimal.ZERO)==1) {
+			if (supplierItem != null) {
+				if (supplierItem.getUnitCost() != null && supplierItem.getUnitCost().compareTo(BigDecimal.ZERO) == 1) {
 					itemLocTax.setBaseUnitCost(supplierItem.getUnitCost());
 					logger.info("The supplier unit cost was set for this item");
 				}
@@ -312,6 +348,46 @@ public class CommonServiceImpl implements CommonService {
 			logger.info("There was some error while retrieving the item details");
 		}
 		return itemLocTax;
+	}
+
+	@Override
+	public List<TaxGroup> retrieveAllTaxGroups() {
+		List<TaxGroup> taxGroupList = this.taxGroupRepository.findAll();
+
+		if (taxGroupList != null && !taxGroupList.isEmpty()) {
+			logger.info("The {} no of tax groups has been retrieved successfully", taxGroupList.size());
+		} else {
+			logger.info("There was no tax group found!!");
+		}
+		return taxGroupList;
+	}
+
+	@Override
+	public Hierarchy retrieveHierarchy(Integer hierarchyId) {
+		Hierarchy hierarchy = this.hierarchyRepository.findOne(hierarchyId);
+		if (hierarchy != null) {
+			logger.info("The {} item hierarchy has been retrieved successfully", hierarchyId);
+		} else {
+			logger.info("The item hierarchy {} was not found!!", hierarchyId);
+		}
+
+		return hierarchy;
+	}
+
+	@Override
+	public HierarchyDTO retrieveHierarchyByText(String searchText, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(this.maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(this.maxPageBtns);
+
+		
+		HierarchyDTO hierarchyDTO= this.hierarchySearchRepository.search(searchText, pager);
+		if (hierarchyDTO != null && hierarchyDTO.getHierarchies()!=null && !hierarchyDTO.getHierarchies().isEmpty())
+			logger.info("The item hierarchy has been retrieved based on searched keyword");
+		else
+			logger.info("There was no item hierarchy found based on searched keyword");
+		return hierarchyDTO;
 	}
 
 }

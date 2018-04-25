@@ -15,22 +15,32 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 @Entity
+@Indexed
 @Table(name = "item_hierarchy")
 public class Hierarchy implements Serializable {
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "hierarchy_id", updatable = false, nullable = false)
 	private Integer hierarchyId;
+	@Field
 	@Column(name = "level_code")
 	private String code;
+	@Field
+	private String name;
+	@Field
 	@Column(name = "description")
 	private String description;
 	@Column(name = "sort_order")
 	private Integer sortOrder;
 	@Column(name = "hidden_flag")
 	private String hiddenFlag;
-
+	@Field
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -46,8 +56,7 @@ public class Hierarchy implements Serializable {
 	public Hierarchy() {
 	}
 
-	public Hierarchy(String code, String description, Integer sortOrder, String hiddenFlag, String createdBy,
-			LocalDateTime createdDate) {
+	public Hierarchy(String code, String description, Integer sortOrder, String hiddenFlag, String createdBy, LocalDateTime createdDate) {
 		this.code = code;
 		this.description = description;
 		this.sortOrder = sortOrder;
@@ -191,7 +200,54 @@ public class Hierarchy implements Serializable {
 		this.parentHierarchy = parentHierarchy;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the childHierarchyList
+	 */
+	public List<Hierarchy> getChildHierarchyList() {
+		return childHierarchyList;
+	}
+
+	/**
+	 * @param childHierarchyList
+	 *            the childHierarchyList to set
+	 */
+	public void setChildHierarchyList(List<Hierarchy> childHierarchyList) {
+		this.childHierarchyList = childHierarchyList;
+	}
+
+	/**
+	 * @return the parentHierarchy
+	 */
+	public Hierarchy getParentHierarchy() {
+		return parentHierarchy;
+	}
+
+	/**
+	 * @param parentHierarchy
+	 *            the parentHierarchy to set
+	 */
+	public void setParentHierarchy(Hierarchy parentHierarchy) {
+		this.parentHierarchy = parentHierarchy;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -203,7 +259,9 @@ public class Hierarchy implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -235,6 +293,4 @@ public class Hierarchy implements Serializable {
 		return true;
 	}
 
-	
-	
 }

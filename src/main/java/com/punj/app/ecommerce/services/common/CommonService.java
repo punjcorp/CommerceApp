@@ -7,7 +7,10 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.item.Hierarchy;
+import com.punj.app.ecommerce.domains.item.HierarchyDTO;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.common.dtos.ReasonDTO;
@@ -41,5 +44,11 @@ public interface CommonService {
 	public ReasonDTO retrieveReasonCodes(String searchText, Pager pager);
 
 	public ItemLocationTax retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId);
+
+	public List<TaxGroup> retrieveAllTaxGroups();
+
+	public Hierarchy retrieveHierarchy(Integer hierarchyId);
+
+	public HierarchyDTO retrieveHierarchyByText(String searchText, Pager pager);
 
 }

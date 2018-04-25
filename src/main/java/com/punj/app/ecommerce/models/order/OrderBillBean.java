@@ -6,6 +6,9 @@ package com.punj.app.ecommerce.models.order;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -13,15 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
  *
  */
 public class OrderBillBean {
-
 	private BigInteger orderBillId;
 	private BigInteger orderId;
+	@NotNull(message = "{commerce.error.string.empty}")
+	@Size(min = 1, max = 50, message = "{commerce.error.string.size}")
 	private String billNo;
+	@NotNull(message = "{commerce.error.date.empty}")
 	private LocalDateTime billDate;
 	private String billFileURL;
 	private String billFileType;
 	private MultipartFile billFile;
-	private MultipartFile hiddenBill;
 
 	/**
 	 * @return the billNo
@@ -125,20 +129,6 @@ public class OrderBillBean {
 	 */
 	public void setBillFileType(String billFileType) {
 		this.billFileType = billFileType;
-	}
-
-	/**
-	 * @return the hiddenBill
-	 */
-	public MultipartFile getHiddenBill() {
-		return hiddenBill;
-	}
-
-	/**
-	 * @param hiddenBill the hiddenBill to set
-	 */
-	public void setHiddenBill(MultipartFile hiddenBill) {
-		this.hiddenBill = hiddenBill;
 	}
 
 }

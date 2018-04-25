@@ -100,12 +100,12 @@ INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_dig
 INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Within State', 'I', 'This tax location is for all sales within state', 'admin', now());
 INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Outside State', 'O','This tax location is for all sales outside state', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST0', 'This tax group is applied when no GST is applicable', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST5', 'This group is applied for 5 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST10', 'This group is applied for 10 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST12', 'This group is applied for 12 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST18', 'This group is applied for 18 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST28', 'This group is applied for 28 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 10', 'This group is applied for 10 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 12', 'This group is applied for 12 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 18', 'This group is applied for 18 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 28', 'This group is applied for 28 percent tax rate of GST', 'admin', now());
 
 
 INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());

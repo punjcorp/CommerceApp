@@ -168,6 +168,7 @@ public final class MVCConstants {
 	public static final String SEARCH_BEAN= "searchBean";
 	public static final String COLOR_LIST_BEAN="colorList";
 	public static final String SIZE_LIST_BEAN="sizeList";
+	public static final String TAX_GROUP_LIST_BEAN="taxGroups";
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	

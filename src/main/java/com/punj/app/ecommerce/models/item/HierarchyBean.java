@@ -13,6 +13,7 @@ public class HierarchyBean {
 
 	private Integer hierarchyId;
 	private String name;
+	private String description;
 	private String code;
 	private Integer sortOrder;
 	private String hiddenFlag;
@@ -122,6 +123,20 @@ public class HierarchyBean {
 	 */
 	public void setChildHierarchies(List<HierarchyBean> childHierarchies) {
 		this.childHierarchies = childHierarchies;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

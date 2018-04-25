@@ -48,6 +48,10 @@ public final class ViewPathConstants {
 	public static final String ADD_STYLE_URL = "/add_style";
 	public static final String ADD_STYLE_PAGE = "item/add_style";
 	
+	
+	public static final String GET_HIERARCHY_URL = "/admin/search_hierarchy";
+	public static final String SEARCH_HIERARCHIES_URL = "/admin/search_hierarchy";
+	
 	/**
 	 * The item pages section ends
 	 */

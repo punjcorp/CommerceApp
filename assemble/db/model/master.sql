@@ -279,6 +279,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_hierarchy` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   `hierarchy_id` INT NOT NULL AUTO_INCREMENT,
   `level_code` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(80) NOT NULL,
   `description` VARCHAR(250) NULL,
   `sort_order` INT NOT NULL DEFAULT 1,
   `hidden_flag` VARCHAR(1) NOT NULL DEFAULT 'N',
@@ -1798,6 +1799,55 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items_tax` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`purchase_order_bills`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`purchase_order_bills` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_bills` (
+  `order_bill_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `order_id` BIGINT NOT NULL,
+  `bill_no` VARCHAR(50) NOT NULL,
+  `bill_date` DATETIME NOT NULL,
+  `bill_data` MEDIUMBLOB NULL,
+  `bill_file` VARCHAR(300) NULL,
+  `bill_file_type` VARCHAR(50) NULL,
+  PRIMARY KEY (`order_bill_id`),
+  CONSTRAINT `fk_table1_purchase_order1`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `commercedb`.`purchase_order` (`order_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`uom_master`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`uom_master` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
+  `uom_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `code` VARCHAR(15) NOT NULL,
+  `description` VARCHAR(100) NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `parent_uom_id` INT NOT NULL,
+  `formula_to_parent_uom` VARCHAR(45) NULL,
+  `is_primary` TINYINT NOT NULL DEFAULT 0,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`uom_id`),
+  CONSTRAINT `fk_uom_master_uom_master1`
+    FOREIGN KEY (`parent_uom_id`)
+    REFERENCES `commercedb`.`uom_master` (`uom_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_uom_master_uom_master1_idx` ON `commercedb`.`uom_master` (`parent_uom_id` ASC);
 
 USE `commercedb` ;
 

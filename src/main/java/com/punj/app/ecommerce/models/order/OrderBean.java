@@ -63,7 +63,8 @@ public class OrderBean implements Serializable {
 	private String comments;
 
 	private Pager pager;
-
+	
+	@Valid
 	private List<OrderBillBean> orderBills;
 
 	public OrderBean() {

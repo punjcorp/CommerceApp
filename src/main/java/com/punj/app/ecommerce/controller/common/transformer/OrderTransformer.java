@@ -201,14 +201,9 @@ public class OrderTransformer {
 	public static List<OrderBillBean> tranformOrderBills(List<OrderBill> orderBillList) {
 		List<OrderBillBean> orderBillBeanList = new ArrayList<>(orderBillList.size());
 		OrderBillBean orderBillBean;
-		if (orderBillList.isEmpty()) {
-			orderBillBean = OrderTransformer.tranformOrderBill(new OrderBill());
+		for (OrderBill orderBill : orderBillList) {
+			orderBillBean = OrderTransformer.tranformOrderBill(orderBill);
 			orderBillBeanList.add(orderBillBean);
-		} else {
-			for (OrderBill orderBill : orderBillList) {
-				orderBillBean = OrderTransformer.tranformOrderBill(orderBill);
-				orderBillBeanList.add(orderBillBean);
-			}
 		}
 
 		logger.info("The order bill list from database has been transformed successfully");
@@ -225,11 +220,10 @@ public class OrderTransformer {
 		orderBillBean.setBillFileURL(orderBill.getBillFileName());
 		orderBillBean.setBillFileType(orderBill.getBillFileType());
 
-		MultipartFile multipartFile = new CommerceMultipartFile(orderBill.getBillData(), orderBill.getBillFileName(),orderBill.getBillFileType());
+		MultipartFile multipartFile = new CommerceMultipartFile(orderBill.getBillData(), orderBill.getBillFileName(), orderBill.getBillFileType());
 
 		orderBillBean.setBillFile(multipartFile);
-		orderBillBean.setHiddenBill(multipartFile);
-		
+
 		if (orderBill.getOrder() != null)
 			orderBillBean.setOrderId(orderBill.getOrder().getOrderId());
 
@@ -264,21 +258,43 @@ public class OrderTransformer {
 			orderBill.setBillDate(orderBillBean.getBillDate());
 
 			MultipartFile billFile = orderBillBean.getBillFile();
-			MultipartFile hiddenBill = orderBillBean.getBillFile();
-			if (billFile != null ) {
+			if (billFile != null) {
 				orderBill.setBillData(billFile.getBytes());
-			}else {
-				if(hiddenBill!=null) {
-					orderBill.setBillData(hiddenBill.getBytes());
-				}
+				orderBill.setBillFileName(billFile.getOriginalFilename());
+				orderBill.setBillFileType(billFile.getContentType());
 			}
-			orderBill.setBillFileName(billFile.getOriginalFilename());
-			orderBill.setBillFileType(billFile.getContentType());
 
 		}
 
 		logger.info("The order item details list has been transformed successfully");
 		return orderBill;
+	}
+
+	public static Order updateOrderBillsFiles(Order actualOrder, Order updatedOrder) {
+
+		List<OrderBill> orderBills = updatedOrder.getOrderBills();
+		List<OrderBill> actualOrderBills = actualOrder.getOrderBills();
+		List<OrderBill> finalOrderBills = new ArrayList<>(orderBills.size());
+
+		for (int index = 0; index < orderBills.size(); index++) {
+			OrderBill updatedOrderBill = orderBills.get(index);
+
+			if (updatedOrderBill.getOrderBillId() == null && updatedOrderBill.getBillDate() != null && updatedOrderBill.getBillNo() != null) {
+				finalOrderBills.add(updatedOrderBill);
+			} else {
+
+				for (OrderBill actualOrderBill : actualOrderBills) {
+					if (updatedOrderBill.getOrderBillId() != null && updatedOrderBill.getOrderBillId().equals(actualOrderBill.getOrderBillId())) {
+						finalOrderBills.add(actualOrderBill);
+					}
+				}
+			}
+		}
+
+		updatedOrder.setOrderBills(finalOrderBills);
+		logger.info("The order bill files has been updated successfully");
+		return updatedOrder;
+
 	}
 
 	public static OrderItemBean transformOrderItem(OrderItem orderItem) {
