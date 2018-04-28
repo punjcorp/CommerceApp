@@ -11,23 +11,23 @@ import com.punj.app.ecommerce.utils.Pager;
  * @author admin
  *
  */
-public class HierarchyDTO {
-	private List<Hierarchy> hierarchies;
+public class AttributeDTO {
+	private List<Attribute> attributes;
 	private Pager pager;
 
 	/**
-	 * @return the hierarchies
+	 * @return the attributes
 	 */
-	public List<Hierarchy> getHierarchies() {
-		return hierarchies;
+	public List<Attribute> getAttributes() {
+		return attributes;
 	}
 
 	/**
-	 * @param hierarchies
-	 *            the hierarchies to set
+	 * @param attributes
+	 *            the attributes to set
 	 */
-	public void setHierarchies(List<Hierarchy> hierarchies) {
-		this.hierarchies = hierarchies;
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
 	}
 
 	/**

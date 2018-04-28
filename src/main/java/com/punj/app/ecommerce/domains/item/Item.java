@@ -64,7 +64,7 @@ public class Item implements Serializable, Cloneable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
-	@OneToMany(mappedBy = "itemImageId.itemId", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "itemId", cascade = CascadeType.ALL)
 	private List<ItemImage> images;
 
 	// @IndexedEmbedded

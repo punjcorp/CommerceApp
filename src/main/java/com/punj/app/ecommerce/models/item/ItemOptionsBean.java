@@ -42,6 +42,8 @@ public class ItemOptionsBean {
 	@NotNull(message = "{commerce.error.amount.empty}")
 	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
 	private MonetaryAmount currentPrice;
+	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
+	private MonetaryAmount maxRetailPrice;
 	private MonetaryAmount restockingFee;
 
 	private String packSize = "1";
@@ -88,7 +90,8 @@ public class ItemOptionsBean {
 	}
 
 	/**
-	 * @param unitCost the unitCost to set
+	 * @param unitCost
+	 *            the unitCost to set
 	 */
 	public void setUnitCost(MonetaryAmount unitCost) {
 		this.unitCost = unitCost;
@@ -377,6 +380,21 @@ public class ItemOptionsBean {
 	 */
 	public void setCustomerPromptFlag(Boolean customerPromptFlag) {
 		this.customerPromptFlag = customerPromptFlag;
+	}
+
+	/**
+	 * @return the maxRetailPrice
+	 */
+	public MonetaryAmount getMaxRetailPrice() {
+		return maxRetailPrice;
+	}
+
+	/**
+	 * @param maxRetailPrice
+	 *            the maxRetailPrice to set
+	 */
+	public void setMaxRetailPrice(MonetaryAmount maxRetailPrice) {
+		this.maxRetailPrice = maxRetailPrice;
 	}
 
 }

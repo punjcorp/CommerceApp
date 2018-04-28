@@ -35,6 +35,17 @@ INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `
 commit;
 
 -- -----------------------------------------------------
+-- Seed data for uom_master
+-- -----------------------------------------------------
+truncate `commercedb`.`uom_master`;
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Each', 'EA', 'This is UOM for measuring a single item qty', 'Qty', '1', 'admin', now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Dozen', 'DZ', 'This is UOM for measuring 12 item qty', 'Qty', '0', 'admin', now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Grams', 'gms', 'This is UOM for measuring item weigth', 'Weight', '1', 'admin', now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Kilogram', 'kgs', 'This is UOM for measuring 1000 gm item weight', 'Weight', '0', 'admin', now());
+commit;
+
+
+-- -----------------------------------------------------
 -- Seed data for tender_master table
 -- -----------------------------------------------------
 truncate `commercedb`.`tender_master`;
@@ -243,14 +254,23 @@ commit;
 -- Seed data for attribute_master
 -- -----------------------------------------------------
 truncate `commercedb`.`attribute_master`;
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (1,'L','S','Large Size','Size for an item',1);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (2,'M','S','Medium Size','Medium Size',2);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (3,'S','S','Small Size',NULL,3);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (4,'Red','C','Red Color','Red Color',1);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (5,'Green','C','Green',NULL,2);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (6,'4.5','D','Length',NULL,1);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (7,'6','D','Breadth',NULL,2);
-INSERT INTO `commercedb`.`attribute_master` (`attribute_id`,`value`,`code`,`name`,`description`,`seq_no`) VALUES (8,'8','D','Height',NULL,3);
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'L', 'Large', 'This is Large SIZE', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'M', 'Medium', 'This is Medium SIZE', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'S', 'Small', 'This is Small SIZE', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'RED', 'Red', 'This is RED Color', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'GREEN', 'Green', 'This is GREEN Color', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'BLUE', 'Blue', 'This is BLUE Color', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'L', 'Length', 'This is Length of the Dimension', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'B', 'Breadth', 'This is Breadth of the Dimension', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'W', 'Width', 'This is Width of the Dimension', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '100', '100 gms', 'This is the Weight of 100 gms', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '200', '200 gms', 'This is the Weight of 200 gms', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '250', '250 gms', 'This is the Weight of 250 gms', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '500', '500 gms', 'This is the Weight of 500 gms', '4');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '1', '1 Kg', 'This is the Weight of 1 Kg', '5');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '2', '2 Kgs', 'This is the Weight of 2 Kgs', '6');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '5', '5 Kgs', 'This is the Weight of 5  Kgs', '7');
+
 
 commit;
 

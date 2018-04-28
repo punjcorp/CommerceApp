@@ -3,13 +3,14 @@ package com.punj.app.ecommerce.controller.item;
  * 
  */
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -28,18 +29,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
+import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
-import com.punj.app.ecommerce.domains.item.ids.AttributeId;
-import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
-import com.punj.app.ecommerce.domains.item.ids.ItemImageId;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
+import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.common.CommonService;
 
@@ -77,19 +78,15 @@ public class ManageStyleController {
 
 		ItemBean newItemBean = new ItemBean();
 
-		Map<String, String> featureMap = newItemBean.getItemImages();
-		featureMap.put("Listing", "");
-		featureMap.put("Detail", "");
-		featureMap.put("Search", "");
-		featureMap.put("Cart", "");
-
-		newItemBean.setItemImages(featureMap);
-
 		List<AttributeBean> colorList = new ArrayList<>();
 		List<AttributeBean> sizeList = new ArrayList<>();
 		this.getDefaultAttributes(colorList, sizeList);
+
 		List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
 		model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
+
+		List<UOM> UOMs = this.commonService.retrieveAllUOMs();
+		model.addAttribute(MVCConstants.UOM_LIST_BEAN, UOMs);
 
 		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
 		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
@@ -105,7 +102,32 @@ public class ManageStyleController {
 		this.updateAttributeBean(attributeList, colorList, sizeList);
 	}
 
-	@PostMapping(ViewPathConstants.ADD_STYLE_URL)
+	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.ADD_ITEM_IMAGE_PARAM })
+	public String addItemImage(@ModelAttribute ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
+			Authentication authentication) {
+		List<ItemImageBean> itemImages = itemBean.getItemImages();
+		if (itemImages == null)
+			itemImages = new ArrayList<>();
+
+		itemImages.add(new ItemImageBean());
+		itemBean.setItemImages(itemImages);
+		logger.info("An empty item image object has been created successfully");
+		return ViewPathConstants.ADD_STYLE_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.REMOVE_ITEM_IMAGE_PARAM })
+	public String removeItemImage(@ModelAttribute ItemBean itemBean, BindingResult bindingResult, Model model, final HttpServletRequest req) {
+
+		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.REMOVE_ITEM_IMAGE_PARAM));
+
+		List<ItemImageBean> itemImages = itemBean.getItemImages();
+		itemImages.remove(rowId.intValue());
+
+		logger.info("The selected item image has been deleted from the item");
+		return ViewPathConstants.ADD_STYLE_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.SAVE_ITEM_PARAM })
 	public String addStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
 			Authentication authentication) {
 		if (bindingResult.hasErrors()) {
@@ -116,43 +138,47 @@ public class ManageStyleController {
 			model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
 			return ViewPathConstants.ADD_STYLE_PAGE;
 		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Item item = new Item();
+			ItemOptions itemOptions = new ItemOptions();
+			List<ItemAttribute> itemAttributes = new ArrayList<>();
 
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		Item item = new Item();
-		ItemOptions itemOptions = new ItemOptions();
-		List<ItemAttribute> itemAttributes = new ArrayList<>();
+			BigInteger styleNumber = itemService.generateNewStyle();
+			itemBean.setItemId(styleNumber);
+			logger.info("The new generated style number has been assigned to the item bean object");
 
-		BigInteger styleNumber = itemService.generateNewStyle();
-		itemBean.setItemId(styleNumber);
-		logger.info("The new generated style number has been assigned to the item bean object");
+			this.updateBeanInDomain(itemBean, item, itemOptions, itemAttributes, userDetails.getUsername());
+			logger.info("The style details has been updated in domains object from the bean objects");
 
-		this.updateBeanInDomain(itemBean, item, itemOptions, itemAttributes, userDetails.getUsername());
-		logger.info("The style details has been updated in domains object from the bean objects");
+			itemService.saveItem(item, itemOptions, itemAttributes);
+			logger.info("The style details has been saved successfully");
 
-		itemService.saveItem(item, itemOptions, itemAttributes);
-		logger.info("The style details has been saved successfully");
+			List<Attribute> attributeList = itemService.getNewStyleAttribute();
+			logger.info("The attribute list has been retrieved to select for the style");
 
-		List<Attribute> attributeList = itemService.getNewStyleAttribute();
-		logger.info("The attribute list has been retrieved to select for the style");
+			List<AttributeBean> colorList = new ArrayList<>();
+			List<AttributeBean> sizeList = new ArrayList<>();
 
-		List<AttributeBean> colorList = new ArrayList<>();
-		List<AttributeBean> sizeList = new ArrayList<>();
+			this.updateAttributeBean(attributeList, colorList, sizeList);
 
-		this.updateAttributeBean(attributeList, colorList, sizeList);
+			List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
 
-		List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
-
-		itemBean.setItemId(styleNumber);
-		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
-		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
-		model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
-		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
-		model.addAttribute(MVCConstants.SUCCESS, "The new style " + styleNumber + " has been created.");
+			itemBean.setItemId(styleNumber);
+			model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
+			model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
+			model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
+			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
+			model.addAttribute(MVCConstants.SUCCESS, "The new style " + styleNumber + " has been created.");
+		} catch (IOException e) {
+			logger.error("There was some error while handling the item images related tasks", e);
+		}
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
 
-	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, List<ItemAttribute> itemAttributes, String username) {
+	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, List<ItemAttribute> itemAttributes, String username)
+			throws IOException {
 
 		/**
 		 * Setting the basic information about the style
@@ -175,23 +201,8 @@ public class ManageStyleController {
 		/**
 		 * Setting the images for the style
 		 */
-		Map<String, String> images = itemBean.getItemImages();
-		List<ItemImage> itemImages = new ArrayList<>();
 
-		for (String featureName : itemBean.getFeatureList()) {
-			ItemImage itemImage = new ItemImage();
-			ItemImageId itemImageId = new ItemImageId();
-			itemImageId.setFeatureName(featureName);
-			itemImageId.setItemId(itemBean.getItemId());
-
-			itemImage.setItemImageId(itemImageId);
-			itemImage.setCreatedDate(LocalDateTime.now());
-			itemImage.setCreatedBy(username);
-			itemImage.setImageURL(images.get(featureName));
-			itemImage.setName(itemBean.getName());
-
-			itemImages.add(itemImage);
-		}
+		List<ItemImage> itemImages = ItemTransformer.tranformItemImageBeans(itemBean.getItemImages());
 		item.setImages(itemImages);
 
 		logger.info("The item images has been set in domain object successfully");
@@ -231,58 +242,6 @@ public class ManageStyleController {
 		/**
 		 * Setting the item attributes
 		 */
-		String[] colors = itemBean.getItemColorSelected();
-		String[] sizes = itemBean.getItemSizeSelected();
-
-		String[] splittedData;
-		for (String color : colors) {
-
-			splittedData = color.split("_");
-			if (splittedData.length > 1) {
-				AttributeId attributeId = new AttributeId();
-
-				attributeId.setAttributeId(new BigInteger(splittedData[0]));
-				attributeId.setValue(splittedData[1]);
-
-				Attribute attribute = new Attribute();
-				attribute.setAttributeId(attributeId);
-
-				ItemAttributeId itemAttributeId = new ItemAttributeId();
-				itemAttributeId.setAttribute(attribute);
-				itemAttributeId.setItem(item);
-
-				ItemAttribute itemAttribute = new ItemAttribute();
-				itemAttribute.setItemAttributeId(itemAttributeId);
-
-				itemAttributes.add(itemAttribute);
-
-			}
-
-		}
-
-		for (String size : sizes) {
-			splittedData = size.split("_");
-			if (splittedData.length > 1) {
-				AttributeId attributeId = new AttributeId();
-
-				attributeId.setAttributeId(new BigInteger(splittedData[0]));
-				attributeId.setValue(splittedData[1]);
-
-				Attribute attribute = new Attribute();
-				attribute.setAttributeId(attributeId);
-
-				ItemAttributeId itemAttributeId = new ItemAttributeId();
-				itemAttributeId.setAttribute(attribute);
-				itemAttributeId.setItem(item);
-
-				ItemAttribute itemAttribute = new ItemAttribute();
-				itemAttribute.setItemAttributeId(itemAttributeId);
-
-				itemAttributes.add(itemAttribute);
-
-			}
-
-		}
 
 		logger.info("The item attributes has been set in domain object successfully");
 
@@ -290,27 +249,6 @@ public class ManageStyleController {
 
 	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList, List<AttributeBean> sizeList) {
 
-		for (Attribute attribute : attributeList) {
-
-			AttributeBean attrBean = new AttributeBean();
-			attrBean.setAttributeId(attribute.getAttributeId().getAttributeId());
-			attrBean.setCode(attribute.getCode());
-			attrBean.setName(attribute.getName());
-			attrBean.setDescription(attribute.getDescription());
-			attrBean.setValue(attribute.getAttributeId().getValue());
-
-			switch ((attribute.getCode().toCharArray())[0]) {
-			case 'C':
-				colorList.add(attrBean);
-				break;
-			case 'S':
-				sizeList.add(attrBean);
-				break;
-			default:
-				logger.warn("Unknown attribute found!!");
-			}
-
-		}
 		logger.info("All the attributes related to Color and Size has been sorted successfully");
 
 	}

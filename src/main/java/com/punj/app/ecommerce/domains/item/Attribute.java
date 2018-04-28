@@ -1,30 +1,62 @@
 package com.punj.app.ecommerce.domains.item;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.punj.app.ecommerce.domains.item.ids.AttributeId;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 
 @Entity
+@Indexed
 @Table(name = "attribute_master")
 public class Attribute implements Serializable {
-	@EmbeddedId
-	private AttributeId attributeId;
+	private static final long serialVersionUID = -171529527192692470L;
 
+	@Id
+	@DocumentId
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "attribute_id", updatable = false, nullable = false)
+	private BigInteger attributeId;
+
+	@Field
+	@Column(name = "attr_code")
 	private String code;
+
+	@Field
+	@Column(name = "attr_name")
 	private String name;
+
+	@Field
+	@Column(name = "attr_description")
 	private String description;
-	@Column(name = "seq_no")
-	private Integer seqNo;
+
+	@Field
+	@Column(name = "value_code")
+	private String valCode;
+
+	@Field
+	@Column(name = "value_name")
+	private String valName;
+
+	@Field
+	@Column(name = "value_description")
+	private String valDesc;
+
+	@Column(name = "value_seq_no")
+	private Integer valSeqNo;
 
 	/**
 	 * @return the attributeId
 	 */
-	public AttributeId getAttributeId() {
+	public BigInteger getAttributeId() {
 		return attributeId;
 	}
 
@@ -32,7 +64,7 @@ public class Attribute implements Serializable {
 	 * @param attributeId
 	 *            the attributeId to set
 	 */
-	public void setAttributeId(AttributeId attributeId) {
+	public void setAttributeId(BigInteger attributeId) {
 		this.attributeId = attributeId;
 	}
 
@@ -82,58 +114,63 @@ public class Attribute implements Serializable {
 	}
 
 	/**
-	 * @return the seqNo
+	 * @return the valCode
 	 */
-	public Integer getSeqNo() {
-		return seqNo;
+	public String getValCode() {
+		return valCode;
 	}
 
 	/**
-	 * @param seqNo
-	 *            the seqNo to set
+	 * @param valCode
+	 *            the valCode to set
 	 */
-	public void setSeqNo(Integer seqNo) {
-		this.seqNo = seqNo;
+	public void setValCode(String valCode) {
+		this.valCode = valCode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * @return the valName
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((attributeId == null) ? 0 : attributeId.hashCode());
-		return result;
+	public String getValName() {
+		return valName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @param valName
+	 *            the valName to set
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Attribute other = (Attribute) obj;
-		if (attributeId == null) {
-			if (other.attributeId != null) {
-				return false;
-			}
-		} else if (!attributeId.equals(other.attributeId)) {
-			return false;
-		}
-		return true;
+	public void setValName(String valName) {
+		this.valName = valName;
+	}
+
+	/**
+	 * @return the valDesc
+	 */
+	public String getValDesc() {
+		return valDesc;
+	}
+
+	/**
+	 * @param valDesc
+	 *            the valDesc to set
+	 */
+	public void setValDesc(String valDesc) {
+		this.valDesc = valDesc;
+	}
+
+	/**
+	 * @return the valSeqNo
+	 */
+	public Integer getValSeqNo() {
+		return valSeqNo;
+	}
+
+	/**
+	 * @param valSeqNo
+	 *            the valSeqNo to set
+	 */
+	public void setValSeqNo(Integer valSeqNo) {
+		this.valSeqNo = valSeqNo;
 	}
 
 }

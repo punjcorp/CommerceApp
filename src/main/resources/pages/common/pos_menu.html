@@ -60,7 +60,7 @@
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
 							<li><a id="lookupitem" th:href="@{/item_lookup}"><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a></li>
 						</ul></li>
-					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#price" id="pricemenu" class="dropdown-toggle offcanvas"
+					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#pricemenu" id="pricemenu" class="dropdown-toggle offcanvas"
 						data-toggle="dropdown"><span th:text="#{commerce.home.menu.price}">Price Events</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
 							<li><a id="manageinventory" th:href="@{/manage_price}"><span th:text="#{commerce.home.menu.search.price}">Search Price Events</span></a></li>

@@ -18,7 +18,7 @@ public class AttributeComparator implements Comparator<Attribute> {
 
 		// all comparison
 		int code = attribute1.getCode().compareTo(attribute2.getCode());
-		int seqNo = attribute1.getSeqNo().compareTo(attribute2.getSeqNo());
+		int seqNo = attribute1.getValSeqNo().compareTo(attribute2.getValSeqNo());
 
 		if (code == 0) {
 			return seqNo;

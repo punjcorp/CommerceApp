@@ -435,7 +435,7 @@ a[id="lookupitem"]::before {
 	content: "queue" !important;
 }
 
-a[href*="#price"]::before {
+a[href*="#pricemenu"]::before {
 	content: "monetization_on" !important;
 	font-size: 48px;
 }
@@ -663,7 +663,6 @@ a[id="contact"]::before {
 .col-width-sm{
 	max-width: 20px;
 }
-
 .padding-sm{
 	padding-right: 2px;
 	padding-left: 2px;
@@ -686,4 +685,17 @@ a[id="contact"]::before {
 
 .color-blue{
 	color:#05386B;
+}
+
+
+.preview-thumbnail{
+	height:120px;
+	max-width: 120px;
+	max-height: 120px !important;
+}
+
+.preview-thumbnail >  img {
+	height:120px;
+	max-width: 120px;
+	max-height: 120px !important;
 }

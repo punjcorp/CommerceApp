@@ -15,7 +15,10 @@ public class AttributeBean {
 	private String code;
 	private String name;
 	private String description;
-	private String value;
+	private String valCode;
+	private String valName;
+	private String valDescription;
+	private Integer valSeqNo;
 
 	/**
 	 * @return the attributeId
@@ -78,18 +81,63 @@ public class AttributeBean {
 	}
 
 	/**
-	 * @return the value
+	 * @return the valCode
 	 */
-	public String getValue() {
-		return value;
+	public String getValCode() {
+		return valCode;
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * @param valCode
+	 *            the valCode to set
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public void setValCode(String valCode) {
+		this.valCode = valCode;
+	}
+
+	/**
+	 * @return the valName
+	 */
+	public String getValName() {
+		return valName;
+	}
+
+	/**
+	 * @param valName
+	 *            the valName to set
+	 */
+	public void setValName(String valName) {
+		this.valName = valName;
+	}
+
+	/**
+	 * @return the valDescription
+	 */
+	public String getValDescription() {
+		return valDescription;
+	}
+
+	/**
+	 * @param valDescription
+	 *            the valDescription to set
+	 */
+	public void setValDescription(String valDescription) {
+		this.valDescription = valDescription;
+	}
+
+	/**
+	 * @return the valSeqNo
+	 */
+	public Integer getValSeqNo() {
+		return valSeqNo;
+	}
+
+	/**
+	 * @param valSeqNo
+	 *            the valSeqNo to set
+	 */
+	public void setValSeqNo(Integer valSeqNo) {
+		this.valSeqNo = valSeqNo;
 	}
 
 }

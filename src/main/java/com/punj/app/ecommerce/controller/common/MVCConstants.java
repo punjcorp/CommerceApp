@@ -73,6 +73,11 @@ public final class MVCConstants {
 	
 	public static final String EXPENSE_PARAM= "expenseBean";
 	
+	public static final String ADD_ITEM_IMAGE_PARAM= "addItemImage";
+	public static final String REMOVE_ITEM_IMAGE_PARAM= "removeItemImage";
+	public static final String SAVE_ITEM_PARAM= "saveItem";
+	
+	
 	public static final String ORDER_BILL_PARAM= "billId";
 	public static final String ADD_ORDER_ITEM_PARAM= "addOrderItem";
 	public static final String REMOVE_ORDER_ITEM_PARAM= "removeOrderItem";
@@ -169,6 +174,7 @@ public final class MVCConstants {
 	public static final String COLOR_LIST_BEAN="colorList";
 	public static final String SIZE_LIST_BEAN="sizeList";
 	public static final String TAX_GROUP_LIST_BEAN="taxGroups";
+	public static final String UOM_LIST_BEAN="UOMs";
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	

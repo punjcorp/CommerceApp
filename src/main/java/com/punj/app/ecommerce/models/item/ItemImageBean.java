@@ -1,46 +1,28 @@
-package com.punj.app.ecommerce.domains.item;
+/**
+ * 
+ */
+package com.punj.app.ecommerce.models.item;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import org.springframework.web.multipart.MultipartFile;
 
-@Entity
-@Table(name = "item_images")
-public class ItemImage implements Serializable {
+/**
+ * @author admin
+ *
+ */
+public class ItemImageBean {
 
-	private static final long serialVersionUID = -7778361721415271457L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "item_image_id", updatable = false, nullable = false)
 	private Integer itemImageId;
-
-	@Column(name = "item_id")
 	private BigInteger itemId;
 
 	private String name;
-
-	@Column(name = "image_url")
 	private String imageURL;
-
-	@Column(name = "image_type")
 	private String imageType;
+	private MultipartFile imageData;
 
-	@Lob
-	@Column(name = "image_data")
-	private byte[] imageData;
-
-	@Column(name = "created_by")
 	private String createdBy;
-	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
 	/**
@@ -121,7 +103,7 @@ public class ItemImage implements Serializable {
 	/**
 	 * @return the imageData
 	 */
-	public byte[] getImageData() {
+	public MultipartFile getImageData() {
 		return imageData;
 	}
 
@@ -129,7 +111,7 @@ public class ItemImage implements Serializable {
 	 * @param imageData
 	 *            the imageData to set
 	 */
-	public void setImageData(byte[] imageData) {
+	public void setImageData(MultipartFile imageData) {
 		this.imageData = imageData;
 	}
 

@@ -5,9 +5,8 @@ package com.punj.app.ecommerce.models.item;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -41,19 +40,17 @@ public class ItemBean {
 	@Valid
 	private ItemOptionsBean itemOptions;
 
-	private Map<String, String> itemImages;
-
 	private String[] itemSizeSelected;
 	private String[] itemColorSelected;
 
-	// @NotBlank(message = "{commerce.error.string.empty}")
-	private List<String> imageUrlList;
-	private List<String> featureList;
+	private List<ItemImageBean> itemImages;
+	private List<AttributeBean> attributes;
 
 	private Pager pager;
 
 	public ItemBean() {
-		itemImages = new HashMap<>();
+		attributes=new ArrayList<>();
+		attributes.add(new AttributeBean());
 		itemOptions = new ItemOptionsBean();
 		hierarchy = new HierarchyBean();
 	}
@@ -239,21 +236,6 @@ public class ItemBean {
 	}
 
 	/**
-	 * @return the itemImages
-	 */
-	public Map<String, String> getItemImages() {
-		return itemImages;
-	}
-
-	/**
-	 * @param itemImages
-	 *            the itemImages to set
-	 */
-	public void setItemImages(Map<String, String> itemImages) {
-		this.itemImages = itemImages;
-	}
-
-	/**
 	 * @return the itemSizeSelected
 	 */
 	public String[] getItemSizeSelected() {
@@ -284,36 +266,6 @@ public class ItemBean {
 	}
 
 	/**
-	 * @return the imageUrlList
-	 */
-	public List<String> getImageUrlList() {
-		return imageUrlList;
-	}
-
-	/**
-	 * @param imageUrlList
-	 *            the imageUrlList to set
-	 */
-	public void setImageUrlList(List<String> imageUrlList) {
-		this.imageUrlList = imageUrlList;
-	}
-
-	/**
-	 * @return the featureList
-	 */
-	public List<String> getFeatureList() {
-		return featureList;
-	}
-
-	/**
-	 * @param featureList
-	 *            the featureList to set
-	 */
-	public void setFeatureList(List<String> featureList) {
-		this.featureList = featureList;
-	}
-
-	/**
 	 * @return the pager
 	 */
 	public Pager getPager() {
@@ -328,5 +280,34 @@ public class ItemBean {
 		this.pager = pager;
 	}
 
+	/**
+	 * @return the itemImages
+	 */
+	public List<ItemImageBean> getItemImages() {
+		return itemImages;
+	}
+
+	/**
+	 * @param itemImages
+	 *            the itemImages to set
+	 */
+	public void setItemImages(List<ItemImageBean> itemImages) {
+		this.itemImages = itemImages;
+	}
+
+	/**
+	 * @return the attributes
+	 */
+	public List<AttributeBean> getAttributes() {
+		return attributes;
+	}
+
+	/**
+	 * @param attributes
+	 *            the attributes to set
+	 */
+	public void setAttributes(List<AttributeBean> attributes) {
+		this.attributes = attributes;
+	}
 
 }

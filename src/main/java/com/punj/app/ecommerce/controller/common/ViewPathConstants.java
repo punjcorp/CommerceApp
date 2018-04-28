@@ -52,6 +52,9 @@ public final class ViewPathConstants {
 	public static final String GET_HIERARCHY_URL = "/admin/search_hierarchy";
 	public static final String SEARCH_HIERARCHIES_URL = "/admin/search_hierarchy";
 	
+	public static final String SEARCH_ATTRIBUTES_URL = "/admin/search_attributes";
+	public static final String SEARCH_ATTRIBUTE_VALUES_URL = "/admin/search_attribute_values";
+	
 	/**
 	 * The item pages section ends
 	 */

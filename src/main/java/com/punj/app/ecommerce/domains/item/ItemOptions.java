@@ -18,15 +18,17 @@ public class ItemOptions implements Serializable {
 	private BigInteger itemId;
 
 	@Column(name = "unit_cost")
-	private BigDecimal unitCost= new BigDecimal(0);
+	private BigDecimal unitCost = new BigDecimal(0);
 	@Column(name = "suggested_price")
-	private BigDecimal suggestedPrice= new BigDecimal(0);
+	private BigDecimal suggestedPrice = new BigDecimal(0);
 	@Column(name = "compare_at_price")
-	private BigDecimal compareAtPrice= new BigDecimal(0);
+	private BigDecimal compareAtPrice = new BigDecimal(0);
 	@Column(name = "current_price")
-	private BigDecimal currentPrice= new BigDecimal(0);
+	private BigDecimal currentPrice = new BigDecimal(0);
+	@Column(name = "max_retail_price")
+	private BigDecimal maxRetailPrice = new BigDecimal(0);
 	@Column(name = "restocking_fee")
-	private BigDecimal restockingFee= new BigDecimal(0);
+	private BigDecimal restockingFee = new BigDecimal(0);
 
 	@Column(name = "discount_flag")
 	private Boolean discountFlag;
@@ -389,6 +391,21 @@ public class ItemOptions implements Serializable {
 	 */
 	public void setUom(String uom) {
 		this.uom = uom;
+	}
+
+	/**
+	 * @return the maxRetailPrice
+	 */
+	public BigDecimal getMaxRetailPrice() {
+		return maxRetailPrice;
+	}
+
+	/**
+	 * @param maxRetailPrice
+	 *            the maxRetailPrice to set
+	 */
+	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
+		this.maxRetailPrice = maxRetailPrice;
 	}
 
 	/*

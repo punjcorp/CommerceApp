@@ -341,7 +341,8 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `unit_cost` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   `suggested_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   `current_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
-  `compare_at_price` DECIMAL(12,2) NOT NULL,
+  `compare_at_price` DECIMAL(12,2) NULL,
+  `max_retail_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   `return_flag` TINYINT NOT NULL DEFAULT 1,
   `desc_flag` TINYINT NOT NULL DEFAULT 0,
   `related_item_flag` TINYINT NOT NULL DEFAULT 0,
@@ -372,15 +373,17 @@ DROP TABLE IF EXISTS `commercedb`.`attribute_master` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`attribute_master` (
   `attribute_id` BIGINT NOT NULL AUTO_INCREMENT,
-  `value` VARCHAR(80) NOT NULL,
-  `code` VARCHAR(5) NOT NULL,
-  `name` VARCHAR(80) NOT NULL,
-  `description` VARCHAR(150) NULL,
-  `seq_no` INT(2) NOT NULL,
-  PRIMARY KEY (`attribute_id`, `value`))
+  `attr_code` VARCHAR(5) NOT NULL,
+  `attr_name` VARCHAR(80) NOT NULL,
+  `attr_description` VARCHAR(150) NULL,
+  `value_code` VARCHAR(50) NOT NULL,
+  `value_name` VARCHAR(80) NOT NULL,
+  `value_description` VARCHAR(150) NULL,
+  `value_seq_no` INT(2) NOT NULL,
+  PRIMARY KEY (`attribute_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `index2` ON `commercedb`.`attribute_master` (`code` ASC, `seq_no` ASC);
+CREATE UNIQUE INDEX `index2` ON `commercedb`.`attribute_master` (`attr_code` ASC, `value_code` ASC, `value_seq_no` ASC);
 
 
 -- -----------------------------------------------------

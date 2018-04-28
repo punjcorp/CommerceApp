@@ -7,12 +7,12 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.item.Attribute;
+import com.punj.app.ecommerce.domains.item.AttributeDTO;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
-import com.punj.app.ecommerce.domains.item.ids.AttributeId;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -36,7 +36,7 @@ public interface ItemService {
 
 	public Item getItem(BigInteger itemNumber);
 
-	public List<Item> createSKUs(Item item, ItemOptions itemOptions, List<AttributeId> attributeIds);
+	public List<Item> createSKUs(Item item, ItemOptions itemOptions);
 
 	public ItemDTO searchItem(String text, Pager pager);
 
@@ -45,5 +45,9 @@ public interface ItemService {
 	public ItemDTO listItems(Item itemCriteria, Pager pager);
 
 	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId, Boolean outOfStateFlag);
+
+	public AttributeDTO searchAttributes(String text, Pager pager);
+
+	public List<Attribute> retrieveAttributeValues(String attributeCode);
 
 }

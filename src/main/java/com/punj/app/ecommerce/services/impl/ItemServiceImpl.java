@@ -22,21 +22,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.item.Attribute;
+import com.punj.app.ecommerce.domains.item.AttributeDTO;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
-import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.SKUCounter;
 import com.punj.app.ecommerce.domains.item.StyleCounter;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
-import com.punj.app.ecommerce.domains.item.ids.AttributeId;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
-import com.punj.app.ecommerce.domains.item.ids.ItemImageId;
 import com.punj.app.ecommerce.domains.item.ids.SKUCounterId;
 import com.punj.app.ecommerce.repositories.item.AttributeRepository;
+import com.punj.app.ecommerce.repositories.item.AttributeSearchRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
 import com.punj.app.ecommerce.repositories.item.ItemAttributeRepository;
 import com.punj.app.ecommerce.repositories.item.ItemOptionsRepository;
@@ -66,6 +65,7 @@ public class ItemServiceImpl implements ItemService {
 	private HierarchyRepository hierarchyRepository;
 	private StyleCounterRepository styleRepository;
 	private SKUCounterRepository skuRepository;
+	private AttributeSearchRepository attributeSearchRepository;
 	private CommonService commonService;
 
 	@Value("${commerce.list.max.perpage}")
@@ -73,6 +73,22 @@ public class ItemServiceImpl implements ItemService {
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @return the attributeSearchRepository
+	 */
+	public AttributeSearchRepository getAttributeSearchRepository() {
+		return attributeSearchRepository;
+	}
+
+	/**
+	 * @param attributeSearchRepository
+	 *            the attributeSearchRepository to set
+	 */
+	@Autowired
+	public void setAttributeSearchRepository(AttributeSearchRepository attributeSearchRepository) {
+		this.attributeSearchRepository = attributeSearchRepository;
+	}
 
 	/**
 	 * @return the itemRepository
@@ -295,11 +311,11 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	@Transactional
-	public List<Item> createSKUs(Item item, ItemOptions itemOptionsOrg, List<AttributeId> attributeIds) {
+	public List<Item> createSKUs(Item item, ItemOptions itemOptionsOrg) {
 
 		List<BigInteger> skuItemIds = new ArrayList<>();
 
-		List<Attribute> attributeList = attributeRepository.findAll(attributeIds);
+		List<Attribute> attributeList = null;
 		Collections.sort(attributeList, new AttributeComparator());
 
 		List<Attribute> colorList = new ArrayList<>();
@@ -323,8 +339,8 @@ public class ItemServiceImpl implements ItemService {
 				skuStyleCounter.setStyleId(skuItem.getParentItemId());
 
 				SKUCounterId skuCounterId = new SKUCounterId();
-				skuCounterId.setColor(colorAttribute.getSeqNo());
-				skuCounterId.setSize(sizeAttribute.getSeqNo());
+				skuCounterId.setColor(colorAttribute.getValSeqNo());
+				skuCounterId.setSize(sizeAttribute.getValSeqNo());
 				skuCounterId.setStyleCounter(skuStyleCounter);
 
 				skuCounter.setSkuCounterId(skuCounterId);
@@ -340,16 +356,8 @@ public class ItemServiceImpl implements ItemService {
 				/**
 				 * Setting the item images
 				 */
-				List<ItemImage> itemImages = skuItem.getImages();
-				List<ItemImage> updatedItemImages = new ArrayList<>();
-				ItemImageId itemImageId = null;
-				for (ItemImage itemImage : itemImages) {
-					itemImageId = itemImage.getItemImageId();
-					itemImageId.setItemId(skuItem.getItemId());
-					itemImage.setItemImageId(itemImageId);
-					updatedItemImages.add(itemImage);
-				}
-				skuItem.setImages(updatedItemImages);
+
+				// Check what is needed
 
 				skuItem = itemRepository.save(skuItem);
 				logger.info("The requested item object has been saved successfully");
@@ -485,15 +493,15 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	
+
 	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId, Boolean outOfStateFlag) {
 
 		ItemLocationTax itemLocTax = this.commonService.retrieveItemDetails(locationId, supplierId, itemId);
-		SaleItem saleItem =null;
-		if(itemLocTax!=null) {
+		SaleItem saleItem = null;
+		if (itemLocTax != null) {
 			saleItem = this.transformItemDetails(itemLocTax, outOfStateFlag);
 			logger.info("The item object has been retrieved successfully for item");
-		}else {
+		} else {
 			logger.info("There was no record found for the search criteria");
 		}
 
@@ -510,7 +518,6 @@ public class ItemServiceImpl implements ItemService {
 		saleItem.setImagePath(itemLocTax.getName());
 		saleItem.setQty(1.0);
 		saleItem.setUnitCostAmt(itemLocTax.getBaseUnitCost());
-
 
 		saleItem.setPriceAmt(saleItem.getUnitCostAmt().multiply(BigDecimal.valueOf(saleItem.getQty())));
 
@@ -558,6 +565,35 @@ public class ItemServiceImpl implements ItemService {
 		logger.info("The item details from database has been transformed to Sale Item");
 
 		return saleItem;
+	}
+
+	@Override
+	public AttributeDTO searchAttributes(String searchText, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(this.maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(this.maxPageBtns);
+
+		AttributeDTO attributeDTO = this.attributeSearchRepository.searchAttribute(searchText, pager);
+		if (attributeDTO != null && attributeDTO.getAttributes() != null && !attributeDTO.getAttributes().isEmpty())
+			logger.info("The item hierarchy has been retrieved based on searched keyword");
+		else
+			logger.info("There was no item hierarchy found based on searched keyword");
+		return attributeDTO;
+	}
+
+	@Override
+	public List<Attribute> retrieveAttributeValues(String attributeCode) {
+		Attribute attribute = new Attribute();
+		attribute.setCode(attributeCode);
+		List<Attribute> attributeValueList = this.attributeRepository.findAll(Example.of(attribute));
+
+		if (attributeValueList != null && !attributeValueList.isEmpty())
+			logger.info("The {} values for attribute {} has been retrieved successfully", attributeValueList.size(), attributeCode);
+		else
+			logger.info("There was no attribute values found for {} attribute", attributeCode);
+
+		return attributeValueList;
 	}
 
 }

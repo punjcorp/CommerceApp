@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
+import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.HierarchyDTO;
@@ -36,6 +37,7 @@ import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
 import com.punj.app.ecommerce.repositories.common.RegisterRepository;
+import com.punj.app.ecommerce.repositories.common.UOMRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchySearchRepository;
 import com.punj.app.ecommerce.repositories.item.ItemLocTaxRepository;
@@ -68,6 +70,7 @@ public class CommonServiceImpl implements CommonService {
 	private ItemLocTaxRepository itemLocTaxRepository;
 	private SupplierItemRepository supItemRepository;
 	private TaxGroupRepository taxGroupRepository;
+	private UOMRepository uomRepository;
 	private TransactionService txnService;
 
 	@Value("${commerce.list.max.perpage}")
@@ -76,6 +79,16 @@ public class CommonServiceImpl implements CommonService {
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
 
+	
+	/**
+	 * @param uomRepository
+	 *            the uomRepository to set
+	 */
+	@Autowired
+	public void setUOMRepository(UOMRepository uomRepository) {
+		this.uomRepository = uomRepository;
+	}	
+	
 	/**
 	 * @param hierarchySearchRepository
 	 *            the hierarchySearchRepository to set
@@ -381,13 +394,22 @@ public class CommonServiceImpl implements CommonService {
 		pager.setStartCount(startCount);
 		pager.setMaxDisplayPage(this.maxPageBtns);
 
-		
-		HierarchyDTO hierarchyDTO= this.hierarchySearchRepository.search(searchText, pager);
-		if (hierarchyDTO != null && hierarchyDTO.getHierarchies()!=null && !hierarchyDTO.getHierarchies().isEmpty())
+		HierarchyDTO hierarchyDTO = this.hierarchySearchRepository.search(searchText, pager);
+		if (hierarchyDTO != null && hierarchyDTO.getHierarchies() != null && !hierarchyDTO.getHierarchies().isEmpty())
 			logger.info("The item hierarchy has been retrieved based on searched keyword");
 		else
 			logger.info("There was no item hierarchy found based on searched keyword");
 		return hierarchyDTO;
+	}
+
+	@Override
+	public List<UOM> retrieveAllUOMs() {
+		List<UOM> uomList=this.uomRepository.findAll();
+		if (uomList != null && !uomList.isEmpty())
+			logger.info("The {} no of UOMs has been retrieved", uomList.size());
+		else
+			logger.info("There was no UOM found");
+		return uomList;
 	}
 
 }

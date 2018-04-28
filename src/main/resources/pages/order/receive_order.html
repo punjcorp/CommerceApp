@@ -24,7 +24,7 @@
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<form class="form" id="addForm" action="#" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data"
+			<form class="form" id="addForm" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data"
 				method="post">
 				<div class="row m-3">
 					<div class="col">

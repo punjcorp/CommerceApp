@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.money.CurrencyUnit;
@@ -31,18 +30,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
-import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
+import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.models.item.ItemOptionsBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.utils.Pager;
@@ -67,8 +67,7 @@ public class SearchItemController {
 	}
 
 	@GetMapping(ViewPathConstants.LIST_ITEM_URL)
-	public String listItems(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
-			HttpSession session) {
+	public String listItems(@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
 		try {
 			Pager pager = new Pager();
 			if (!page.isPresent()) {
@@ -87,13 +86,12 @@ public class SearchItemController {
 			this.setItemList(itemsList, items);
 
 			Pager tmpPager = itemList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(), ViewPathConstants.LIST_ITEM_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.LIST_ITEM_URL);
 
 			model.addAttribute("items", items);
 			model.addAttribute(MVCConstants.PAGER, pager);
-			model.addAttribute(MVCConstants.SUCCESS,
-					"The {" + pager.getResultSize() + "} items record has been retrieved");
+			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} items record has been retrieved");
 			logger.info("All the items has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while listing the items", e);
@@ -131,14 +129,13 @@ public class SearchItemController {
 			this.setItemList(itemsList, items);
 
 			Pager tmpPager = itemList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(),
-					tmpPager.getMaxDisplayPage(), ViewPathConstants.SEARCH_ITEM_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.SEARCH_ITEM_URL);
 
 			model.addAttribute("items", items);
 			model.addAttribute("searchBean", searchBean);
 			model.addAttribute(MVCConstants.PAGER, pager);
-			model.addAttribute(MVCConstants.SUCCESS,
-					"The {" + pager.getResultSize() + "} items record has been retrieved");
+			model.addAttribute(MVCConstants.SUCCESS, "The {" + pager.getResultSize() + "} items record has been retrieved");
 			logger.info("The searched item details has been retrieved successfully.");
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving items", e);
@@ -177,8 +174,7 @@ public class SearchItemController {
 	}
 
 	@GetMapping(ViewPathConstants.ITEM_DETAIL_URL)
-	public String getItemDetails(@RequestParam("itemNumber") Optional<BigInteger> itemNumber, Model model,
-			HttpSession session, Locale locale) {
+	public String getItemDetails(@RequestParam("itemNumber") Optional<BigInteger> itemNumber, Model model, HttpSession session, Locale locale) {
 		try {
 			if (itemNumber.isPresent()) {
 
@@ -204,18 +200,8 @@ public class SearchItemController {
 		return ViewPathConstants.ITEM_DETAIL_PAGE;
 	}
 
-	private ItemBean updateBean(Item style, List<AttributeBean> colorList, List<AttributeBean> sizeList,
-			Locale locale) {
+	private ItemBean updateBean(Item style, List<AttributeBean> colorList, List<AttributeBean> sizeList, Locale locale) {
 		ItemBean itemBean = new ItemBean();
-
-		/**
-		 * Setting the image feature list
-		 */
-		Map<String, String> featureMap = itemBean.getItemImages();
-		featureMap.put("Listing", "");
-		featureMap.put("Detail", "");
-		featureMap.put("Search", "");
-		featureMap.put("Cart", "");
 
 		/**
 		 * Setting the basic information about the style
@@ -237,22 +223,8 @@ public class SearchItemController {
 		/**
 		 * Setting the images for the item
 		 */
-		List<String> featureList = new ArrayList<>();
-		List<String> imageUrlList = new ArrayList<>();
-		List<ItemImage> images = style.getImages();
-		int count = 0;
-		for (ItemImage image : images) {
-			featureList.add(image.getItemImageId().getFeatureName());
-			featureMap.put(image.getItemImageId().getFeatureName(), image.getImageURL());
-
-			imageUrlList.add(count, image.getImageURL());
-
-			count++;
-		}
-		itemBean.setItemImages(featureMap);
-
-		itemBean.setImageUrlList(imageUrlList);
-		itemBean.setFeatureList(featureList);
+		List<ItemImageBean> itemImageBeans = ItemTransformer.tranformItemImages(style.getImages());
+		itemBean.setItemImages(itemImageBeans);
 
 		logger.info("The item images has been set in bean object successfully");
 
@@ -263,17 +235,15 @@ public class SearchItemController {
 		ItemOptionsBean itemOptionsBean = new ItemOptionsBean();
 
 		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
-		MonetaryAmount unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-				.setNumber(style.getItemOptions().getUnitCost()).create();
+		MonetaryAmount unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getUnitCost()).create();
 
-		MonetaryAmount suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-				.setNumber(style.getItemOptions().getSuggestedPrice()).create();
-		MonetaryAmount compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-				.setNumber(style.getItemOptions().getCompareAtPrice()).create();
-		MonetaryAmount currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-				.setNumber(style.getItemOptions().getCurrentPrice()).create();
-		MonetaryAmount restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-				.setNumber(style.getItemOptions().getRestockingFee()).create();
+		MonetaryAmount suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getSuggestedPrice())
+				.create();
+		MonetaryAmount compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCompareAtPrice())
+				.create();
+		MonetaryAmount currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCurrentPrice()).create();
+		MonetaryAmount restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getRestockingFee())
+				.create();
 
 		itemOptionsBean.setUnitCost(unitCostAmount);
 		itemOptionsBean.setSuggestedPrice(suggestedAmount);
@@ -318,17 +288,16 @@ public class SearchItemController {
 
 	}
 
-	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList,
-			List<AttributeBean> sizeList) {
+	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList, List<AttributeBean> sizeList) {
 
 		for (Attribute attribute : attributeList) {
 
 			AttributeBean attrBean = new AttributeBean();
-			attrBean.setAttributeId(attribute.getAttributeId().getAttributeId());
+			attrBean.setAttributeId(attribute.getAttributeId());
 			attrBean.setCode(attribute.getCode());
 			attrBean.setName(attribute.getName());
 			attrBean.setDescription(attribute.getDescription());
-			attrBean.setValue(attribute.getAttributeId().getValue());
+			attrBean.setValCode(attribute.getValCode());
 
 			switch ((attribute.getCode().toCharArray())[0]) {
 			case 'C':

@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.item;
  * 
  */
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
@@ -38,11 +39,10 @@ import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
-import com.punj.app.ecommerce.domains.item.ids.AttributeId;
-import com.punj.app.ecommerce.domains.item.ids.ItemImageId;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
+import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.models.item.ItemOptionsBean;
 import com.punj.app.ecommerce.services.ItemService;
 
@@ -66,8 +66,7 @@ public class ManageItemController {
 	}
 
 	@GetMapping("/add_item")
-	public String showItem(@RequestParam("styleNumber") String styleNo, Model model, HttpSession session,
-			Locale locale) {
+	public String showItem(@RequestParam("styleNumber") String styleNo, Model model, HttpSession session, Locale locale) {
 
 		BigInteger styleNumber = new BigInteger(styleNo);
 
@@ -87,32 +86,32 @@ public class ManageItemController {
 	}
 
 	@PostMapping("/add_item")
-	public String addItem(@ModelAttribute ItemBean itemBean, Model model, HttpSession session,
-			Authentication authentication, Locale locale) {
+	public String addItem(@ModelAttribute ItemBean itemBean, Model model, HttpSession session, Authentication authentication, Locale locale) {
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Item item = new Item();
+			ItemOptions itemOptions = new ItemOptions();
 
-		Item item = new Item();
-		ItemOptions itemOptions = new ItemOptions();
-		List<AttributeId> attributeIds = new ArrayList<>();
+			this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername());
 
-		this.updateBeanInDomain(itemBean, item, itemOptions, userDetails.getUsername());
-		logger.info("The item details has been updated in domains object from the bean objects");
+			logger.info("The item details has been updated in domains object from the bean objects");
 
-		this.updateItemAttributes(itemBean, attributeIds);
-		logger.info("The item attribute list has been updated in Domain objects");
+			logger.info("The item attribute list has been updated in Domain objects");
 
-		List<Item> finalSKUs = itemService.createSKUs(item, itemOptions, attributeIds);
-		logger.info("The item SKUs  has been saved successfully");
+			List<Item> finalSKUs = itemService.createSKUs(item, itemOptions);
+			logger.info("The item SKUs  has been saved successfully");
 
-		model.addAttribute("SKUs", finalSKUs);
-		model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
-		model.addAttribute(MVCConstants.SUCCESS, "The new SKU(s) has been created successfully.");
-
+			model.addAttribute("SKUs", finalSKUs);
+			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
+			model.addAttribute(MVCConstants.SUCCESS, "The new SKU(s) has been created successfully.");
+		} catch (IOException e) {
+			logger.error("There was some error while handling the item images related tasks", e);
+		}
 		return "item/add_item";
 	}
 
-	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, String username) {
+	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, String username) throws IOException {
 
 		/**
 		 * Setting the basic information about the style
@@ -135,22 +134,7 @@ public class ManageItemController {
 		/**
 		 * Setting the images for the style
 		 */
-		Map<String, String> images = itemBean.getItemImages();
-		List<ItemImage> itemImages = new ArrayList<>();
-		for (String featureName : itemBean.getFeatureList()) {
-			ItemImage itemImage = new ItemImage();
-			ItemImageId itemImageId = new ItemImageId();
-			itemImageId.setFeatureName(featureName);
-			itemImageId.setItemId(itemBean.getItemId());
-
-			itemImage.setItemImageId(itemImageId);
-			itemImage.setCreatedDate(LocalDateTime.now());
-			itemImage.setCreatedBy(username);
-			itemImage.setImageURL(images.get(featureName));
-			itemImage.setName(itemBean.getName());
-
-			itemImages.add(itemImage);
-		}
+		List<ItemImage> itemImages = ItemTransformer.tranformItemImageBeans(itemBean.getItemImages());
 		item.setImages(itemImages);
 
 		logger.info("The item images has been set in domain object successfully");
@@ -160,13 +144,10 @@ public class ManageItemController {
 		 */
 
 		itemOptions.setUnitCost(new BigDecimal(itemBean.getItemOptions().getUnitCost().getNumber().toString()));
-		itemOptions.setSuggestedPrice(
-				new BigDecimal(itemBean.getItemOptions().getSuggestedPrice().getNumber().toString()));
-		itemOptions.setCompareAtPrice(
-				new BigDecimal(itemBean.getItemOptions().getCompareAtPrice().getNumber().toString()));
+		itemOptions.setSuggestedPrice(new BigDecimal(itemBean.getItemOptions().getSuggestedPrice().getNumber().toString()));
+		itemOptions.setCompareAtPrice(new BigDecimal(itemBean.getItemOptions().getCompareAtPrice().getNumber().toString()));
 		itemOptions.setCurrentPrice(new BigDecimal(itemBean.getItemOptions().getCurrentPrice().getNumber().toString()));
-		itemOptions
-				.setRestockingFee(new BigDecimal(itemBean.getItemOptions().getRestockingFee().getNumber().toString()));
+		itemOptions.setRestockingFee(new BigDecimal(itemBean.getItemOptions().getRestockingFee().getNumber().toString()));
 
 		itemOptions.setDiscountFlag(itemBean.getItemOptions().getDiscountFlag());
 		itemOptions.setTaxFlag(itemBean.getItemOptions().getTaxFlag());
@@ -190,17 +171,16 @@ public class ManageItemController {
 
 	}
 
-	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList,
-			List<AttributeBean> sizeList) {
+	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList, List<AttributeBean> sizeList) {
 
 		for (Attribute attribute : attributeList) {
 
 			AttributeBean attrBean = new AttributeBean();
-			attrBean.setAttributeId(attribute.getAttributeId().getAttributeId());
+			attrBean.setAttributeId(attribute.getAttributeId());
 			attrBean.setCode(attribute.getCode());
 			attrBean.setName(attribute.getName());
 			attrBean.setDescription(attribute.getDescription());
-			attrBean.setValue(attribute.getAttributeId().getValue());
+			attrBean.setValCode(attribute.getValCode());
 
 			switch ((attribute.getCode().toCharArray())[0]) {
 			case 'C':
@@ -218,18 +198,12 @@ public class ManageItemController {
 
 	}
 
-	private ItemBean updateBean(Item style, List<AttributeBean> colorList, List<AttributeBean> sizeList,
-			Locale locale) {
+	private ItemBean updateBean(Item style, List<AttributeBean> colorList, List<AttributeBean> sizeList, Locale locale) {
 		ItemBean itemBean = new ItemBean();
 
 		/**
 		 * Setting the image feature list
 		 */
-		Map<String, String> featureMap = itemBean.getItemImages();
-		featureMap.put("Listing", "");
-		featureMap.put("Detail", "");
-		featureMap.put("Search", "");
-		featureMap.put("Cart", "");
 
 		/**
 		 * Setting the basic information about the style
@@ -251,23 +225,8 @@ public class ManageItemController {
 		/**
 		 * Setting the images for the item
 		 */
-		List<String> featureList = new ArrayList<>();
-		List<String> imageUrlList = new ArrayList<>();
-		List<ItemImage> images = style.getImages();
-		int count = 0;
-		for (ItemImage image : images) {
-			featureList.add(image.getItemImageId().getFeatureName());
-			featureMap.put(image.getItemImageId().getFeatureName(), image.getImageURL());
-
-			imageUrlList.add(count, image.getImageURL());
-
-			count++;
-		}
-		itemBean.setItemImages(featureMap);
-
-		itemBean.setImageUrlList(imageUrlList);
-		itemBean.setFeatureList(featureList);
-
+		List<ItemImageBean> itemImageBeans = ItemTransformer.tranformItemImages(style.getImages());
+		itemBean.setItemImages(itemImageBeans);
 		logger.info("The item images has been set in bean object successfully");
 
 		/**
@@ -284,20 +243,15 @@ public class ManageItemController {
 		MonetaryAmount restockingAmount = null;
 
 		if (style.getItemOptions().getUnitCost() != null)
-			unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-					.setNumber(style.getItemOptions().getUnitCost()).create();
+			unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getUnitCost()).create();
 		if (style.getItemOptions().getSuggestedPrice() != null)
-			suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-					.setNumber(style.getItemOptions().getSuggestedPrice()).create();
+			suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getSuggestedPrice()).create();
 		if (style.getItemOptions().getCompareAtPrice() != null)
-			compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-					.setNumber(style.getItemOptions().getCompareAtPrice()).create();
+			compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCompareAtPrice()).create();
 		if (style.getItemOptions().getCurrentPrice() != null)
-			currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-					.setNumber(style.getItemOptions().getCurrentPrice()).create();
+			currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCurrentPrice()).create();
 		if (style.getItemOptions().getRestockingFee() != null)
-			restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit)
-					.setNumber(style.getItemOptions().getRestockingFee()).create();
+			restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getRestockingFee()).create();
 
 		itemOptionsBean.setUnitCost(unitCostAmount);
 		itemOptionsBean.setSuggestedPrice(suggestedAmount);
@@ -342,35 +296,4 @@ public class ManageItemController {
 
 	}
 
-	private void updateItemAttributes(ItemBean itemBean, List<AttributeId> itemAttributes) {
-		/**
-		 * Setting the item attributes
-		 */
-		String[] colors = itemBean.getItemColorSelected();
-		String[] sizes = itemBean.getItemSizeSelected();
-
-		AttributeId attributeId = null;
-		String[] splittedData = null;
-		for (String color : colors) {
-			splittedData = color.split("_");
-			if (splittedData.length > 1) {
-				attributeId = new AttributeId();
-				attributeId.setAttributeId(new BigInteger(splittedData[0]));
-				attributeId.setValue(splittedData[1]);
-				itemAttributes.add(attributeId);
-			}
-		}
-
-		for (String size : sizes) {
-			splittedData = size.split("_");
-			if (splittedData.length > 1) {
-				attributeId = new AttributeId();
-				attributeId.setAttributeId(new BigInteger(splittedData[0]));
-				attributeId.setValue(splittedData[1]);
-				itemAttributes.add(attributeId);
-			}
-		}
-
-		logger.info("The item attributes has been set in ATTRIBUTE domain object successfully");
-	}
 }

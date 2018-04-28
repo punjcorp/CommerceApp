@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.HierarchyDTO;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
@@ -50,5 +51,7 @@ public interface CommonService {
 	public Hierarchy retrieveHierarchy(Integer hierarchyId);
 
 	public HierarchyDTO retrieveHierarchyByText(String searchText, Pager pager);
+
+	public List<UOM> retrieveAllUOMs();
 
 }

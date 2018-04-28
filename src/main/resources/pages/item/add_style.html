@@ -28,7 +28,7 @@
 					<div class="card-text">
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-						<form class="form" action="#" th:action="@{/add_style}" th:object="${itemBean}" method="post">
+						<form class="form" id="addItem" th:action="@{/add_style}" th:object="${itemBean}" enctype="multipart/form-data" method="post">
 							<div class="form-group">
 								<label><small><span th:text="#{commerce.screen.item.name}">Item Name</span></small></label>
 								<div class="input-group">
@@ -71,6 +71,33 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.item.tax.group}">Tax Group</span></small></label>
+										<div class="input-group">
+											<select th:field="*{itemOptions.taxGroupId}" class="form-control input-sm">
+												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.tax.group}">Select Tax
+													Group</option>
+												<option th:each="taxGroup: ${taxGroups}" th:value="${taxGroup.taxGroupId}" th:text="${taxGroup.name} + ' - ' +${taxGroup.description}"></option>
+											</select>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.taxGroupId')}" th:errors="*{itemOptions.taxGroupId}" class="text-danger">Tax Group Error</div>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.item.uom}">Unit of Measure</span></small></label>
+										<div class="input-group">
+											<select th:field="*{itemOptions.uom}" class="form-control input-sm">
+												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.uom}">Select UOM</option>
+												<option th:each="uom: ${UOMs}" th:value="${uom.uomId}" th:text="${uom.name} + ' - ' +${uom.description}"></option>
+											</select>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.uom')}" th:errors="*{itemOptions.uom}" class="text-danger">UOM Error</div>
+									</div>
+								</div>
+							</div>
 							<!-- Default Settings -->
 							<div class="row">
 								<div class="col-xs-12 col-sm-12 col-md-12">
@@ -79,8 +106,7 @@
 											<div class="row">
 												<div class="col-11 text-left">Default Options</div>
 												<div class="col-1 text-right">
-													<a data-toggle="collapse" href="#defaultOptions" aria-expanded="false" aria-controls="defaultOptions"><i
-														class="material-icons md-dark">keyboard_arrow_down</i></a>
+													<a data-toggle="collapse" href="#defaultOptions" aria-expanded="false" aria-controls="defaultOptions"><i class="fas fa-angle-down"></i></a>
 												</div>
 											</div>
 										</div>
@@ -89,29 +115,12 @@
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.item.tax.group}">Tax Group</span></small></label>
+															<label><small><span th:text="#{commerce.screen.item.pack.size}">Pack Size</span></small></label>
 															<div class="input-group">
-																<select th:field="*{itemOptions.taxGroupId}" class="form-control input-sm">
-																	<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.tax.group}">Select
-																		Tax Group</option>
-																	<option th:each="taxGroup: ${taxGroups}" th:value="${taxGroup.taxGroupId}"
-																		th:text="${taxGroup.name} + ' - ' +${taxGroup.description}"></option>
-																</select>
+																<input type="text" th:field="*{itemOptions.packSize}" class="form-control input-sm"
+																	th:placeholder="#{commerce.screen.item.pack.size.placeholder}"></input>
 															</div>
-															<div th:if="${#fields.hasErrors('itemOptions.taxGroupId')}" th:errors="*{itemOptions.taxGroupId}" class="text-danger">Tax Group
-																Error</div>
-														</div>
-													</div>
-													<div class="col-xs-6 col-sm-6 col-md-6">
-														<div class="form-group">
-															<input type="text" th:field="*{itemOptions.packSize}" class="form-control input-sm" placeholder="Pack Size"></input>
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-xs-6 col-sm-6 col-md-6">
-														<div class="form-group">
-															<input type="text" th:field="*{itemOptions.uom}" class="form-control input-sm" placeholder="Enter Unit of Measure"></input>
+															<div th:if="${#fields.hasErrors('itemOptions.packSize')}" th:errors="*{itemOptions.packSize}" class="text-danger">Pack Size Error</div>
 														</div>
 													</div>
 												</div>
@@ -207,7 +216,7 @@
 											<div class="row">
 												<div class="col-11 text-left">Prices</div>
 												<div class="col-1 text-right">
-													<a data-toggle="collapse" href="#prices" aria-expanded="false" aria-controls="prices"><i class="material-icons md-dark">keyboard_arrow_down</i></a>
+													<a data-toggle="collapse" href="#prices" aria-expanded="false" aria-controls="prices"><i class="fas fa-angle-down"></i></a>
 												</div>
 											</div>
 										</div>
@@ -216,13 +225,21 @@
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control input-sm" placeholder="Unit Cost" th:field="*{itemOptions.unitCost}"></input>
+															<label><small><span th:text="#{commerce.screen.item.unit.cost}">Unit Cost Amount</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:placeholder="#{commerce.screen.item.unit.cost.placeholder}"
+																	th:field="*{itemOptions.unitCost}"></input>
+															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.unitCost')}" th:errors="*{itemOptions.unitCost}" class="text-danger">Unit Cost Error</div>
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control input-sm" placeholder="Suggested Price" th:field="*{itemOptions.suggestedPrice}"></input>
+															<label><small><span th:text="#{commerce.screen.item.suggested.price}">Suggested Price</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:placeholder="#{commerce.screen.item.suggested.price.placeholder}"
+																	th:field="*{itemOptions.suggestedPrice}"></input>
+															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.suggestedPrice')}" th:errors="*{itemOptions.suggestedPrice}" class="text-danger">Suggested
 																Price Error</div>
 														</div>
@@ -231,14 +248,22 @@
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control input-sm" placeholder="Compare at Price" th:field="*{itemOptions.compareAtPrice}"></input>
+															<label><small><span th:text="#{commerce.screen.item.compareat.price}">Compare At Price</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:placeholder="#{commerce.screen.item.compareat.price.placeholder}"
+																	th:field="*{itemOptions.compareAtPrice}"></input>
+															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.compareAtPrice')}" th:errors="*{itemOptions.compareAtPrice}" class="text-danger">Compare
 																At Price Error</div>
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control input-sm" placeholder="Current Price" th:field="*{itemOptions.currentPrice}"></input>
+															<label><small><span th:text="#{commerce.screen.item.current.price}">Current Selling Price</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:placeholder="#{commerce.screen.item.current.price.placeholder}"
+																	th:field="*{itemOptions.currentPrice}"></input>
+															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.currentPrice')}" th:errors="*{itemOptions.currentPrice}" class="text-danger">Current
 																Price Error</div>
 														</div>
@@ -247,7 +272,23 @@
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control input-sm" placeholder="Restocking Fee" th:field="*{itemOptions.restockingFee}"></input>
+															<label><small><span th:text="#{commerce.screen.item.mrp}">MRP</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:placeholder="#{commerce.screen.item.mrp.placeholder}"
+																	th:field="*{itemOptions.maxRetailPrice}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.maxRetailPrice')}" th:errors="${itemOptions.maxRetailPrice}" class="text-danger">MRP
+																Error</div>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label><small><span th:text="#{commerce.screen.item.restocking.fee}">Restocking Fee</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" placeholder="Restocking Fee" th:field="*{itemOptions.restockingFee}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.restockingFee')}" th:errors="${itemOptions.restockingFee}" class="text-danger">Restocking
+																Fee Error</div>
 														</div>
 													</div>
 												</div>
@@ -264,25 +305,54 @@
 											<div class="row">
 												<div class="col-11 text-left">Images</div>
 												<div class="col-1 text-right">
-													<a data-toggle="collapse" href="#images" aria-expanded="false" aria-controls="images"><i class="material-icons md-dark">keyboard_arrow_down</i></a>
+													<a data-toggle="collapse" href="#images" aria-expanded="false" aria-controls="images"><i class="fas fa-angle-down"></i></a>
 												</div>
 											</div>
 										</div>
 										<div id="images" class="collapse show">
 											<div class="card-body">
-												<div class="row">
-													<div class="col">
-														<th:block th:each="itemImage,itrStat:${itemBean.itemImages}">
-															<div class="form-group">
-																<div class="input-group">
-																	<span class="input-group-addon"> <input type="checkbox" th:field="*{featureList}" th:value="${itemImage.key}" /> <span
-																		class="input-group-addon" th:text="${itemImage.key}"></span>
-																	</span> <input type="text" class="form-control input-sm" th:placeholder="'Image File Name for '+${itemImage.key}" th:id="${itemImage.key}"
-																		th:field="*{itemImages[__${itemImage.key}__]}" th:value="${itemImage.value}" />
+												<div th:if="${itemBean.itemImages!=null and #lists.size(itemBean.itemImages)>0}">
+													<div class="form-group" th:each="itemImage,itrStat:${itemBean.itemImages}">
+														<div class="row">
+															<div class="col">
+																<div class="form-group">
+																	<label><small><span th:text="#{commerce.screen.item.image.name}">Item Image Name</span> <span
+																			th:text="${itrStat.index+1}"> </span></small></label>
+																	<div class="input-group">
+																		<input type="text" class="form-control input-sm" th:field="${itemBean.itemImages[__${itrStat.index}__].name}"
+																			th:placeholder="#{commerce.screen.item.image.name.placeholder}"></input>
+																	</div>
+																	<div th:if="${#fields.hasErrors('itemImages[__${itrStat.index}__].name')}"
+																		th:errors="${itemBean.itemImages[__${itrStat.index}__].name}" class="text-danger">Item Image Name Error</div>
 																</div>
 															</div>
-														</th:block>
+															<div class="col">
+																<div class="form-group">
+																	<label><small><span th:text="#{commerce.screen.item.image}"> </span> <span th:text="${itrStat.index+1}"> </span></small></label>
+																	<div class="input-group">
+																		<input type="file" class="form-control input-sm" th:placeholder="#{commerce.screen.item.image.placeholder}"
+																			th:field="*{itemImages[__${itrStat.index}__].imageData}" accept="image/*" multiple="multiple"/>
+																	</div>
+																</div>
+															</div>
+															<div class="col">
+																<div th:id="'preview'+${itrStat.index}" class="preview-thumbnail"></div>
+															</div>
+															<div class="col-2">
+																<button type="submit" name="addItemImage" class="btn btn-secondary mx-2">
+																	<i class="fas fa-plus fa-2x"></i>
+																</button>
+																<button type="submit" name="removeItemImage" class="btn btn-secondary mx-2" th:value="${itrStat.index}">
+																	<i class="fas fa-minus fa-2x"></i>
+																</button>
+															</div>
+														</div>
 													</div>
+												</div>
+												<div th:if="${itemBean.itemImages==null or #lists.size(itemBean.itemImages)&lt;1}">
+													<button type="submit" name="addItemImage" class="btn btn-info mx-2">
+														<i class="fas fa-plus fa-2x"></i>
+													</button>
 												</div>
 											</div>
 										</div>
@@ -297,29 +367,35 @@
 											<div class="row">
 												<div class="col-11 text-left">Item Attributes</div>
 												<div class="col-1 text-right">
-													<a data-toggle="collapse" href="#itemAttributes" aria-expanded="false" aria-controls="itemAttributes"><i
-														class="material-icons md-dark">keyboard_arrow_down</i></a>
+													<a data-toggle="collapse" href="#itemAttributes" aria-expanded="false" aria-controls="itemAttributes"><i class="fas fa-angle-down"></i></a>
 												</div>
 											</div>
 										</div>
 										<div id="itemAttributes" class="collapse show">
 											<div class="card-body">
-												<div class="row">
-													<div class="col-xs-6 col-sm-6 col-md-6">
-														<div class="form-group">
-															<label class="form-select-label">Select Colors for the Style </label> <select id="color-select" class="form-control input-sm"
-																placeholder="Select Colors for the item" th:field="*{itemColorSelected}" multiple="multiple">
-																<option th:each="colorBean: ${colorList}" th:value="${colorBean.attributeId}+'_'+${colorBean.value}" th:text="${colorBean.value}"></option>
-															</select>
+												<div th:if="${itemBean.attributes!=null and #lists.size(itemBean.attributes)>0}">
+													<div class="form-group" th:each="attribute,itrStat:${itemBean.attributes}">
+														<div class="row">
+															<div class="col-xs-6 col-sm-6 col-md-6">
+																<div class="form-group">
+																	<label><small><span th:text="#{commerce.screen.item.attribute}">Select Item Attribute</span></small></label>
+																	<div class="input-group">
+																		<input type="text" class="form-control input-sm" th:field="${itemBean.attributes[__${itrStat.index}__].name}"
+																			th:placeholder="#{commerce.screen.item.attribute.placeholder}"></input>
+																	</div>
+																</div>
+															</div>
+															<div class="col-xs-6 col-sm-6 col-md-6">
+																<div class="col-12 d-none text-center" id="progressDiv">
+																	<i class="fas fa-cog fa-spin fa-5x"></i>
+																	<div>
+																		<span th:text="#{commerce.screen.item.attribute.values.progress}"></span>
+																	</div>
+																</div>
+																<div id="attrValContent"></div>
+															</div>
 														</div>
-													</div>
-													<div class="col-xs-6 col-sm-6 col-md-6">
-														<div class="form-group">
-															<label class="form-select-label"> Select Sizes for the Style </label> <select id="size-select" class="form-control input-sm"
-																placeholder="Select Size for the item" th:field="*{itemSizeSelected}" multiple="multiple">
-																<option th:each="sizeBean: ${sizeList}" th:value="${sizeBean.attributeId}+'_'+${sizeBean.value}" th:text="${sizeBean.value}"></option>
-															</select>
-														</div>
+														<div id="attributesDiv"></div>
 													</div>
 												</div>
 											</div>
@@ -327,7 +403,9 @@
 									</div>
 								</div>
 							</div>
-							<input type="submit" value="Save" class="btn btn-info btn-block"></input>
+							<button type="submit" name="saveItem" class="btn btn-info mx-2">
+								<span th:text="#{commerce.screen.btn.submit.save}"></span>
+							</button>
 						</form>
 					</div>
 				</div>
@@ -337,54 +415,6 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
-	<!-- Hierarchy Modal -->
-	<div class="modal fade " id="hierarchyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Select Item Hierarchy</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body"></div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" id="addressbtn" class="btn btn-primary">Choose Hierarchy</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Tax Modal -->
-	<div class="modal fade " id="taxModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Choose Tax Group</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body"></div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" id="addressbtn" class="btn btn-primary">Choose Tax Group</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<script>
-		$("#hierarchybtn").click(function() {
 
-			$('#hierarchyModal').modal('toggle');
-
-		});
-
-		$("#taxbtn").click(function() {
-
-			$('#taxModal').modal('toggle');
-
-		});
-	</script>
 </body>
 </html>
