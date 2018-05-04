@@ -13,6 +13,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "item_options")
 public class ItemOptions implements Serializable {
+
+	private static final long serialVersionUID = 3685438029545786496L;
+
 	@Id
 	@Column(name = "item_id")
 	private BigInteger itemId;
@@ -62,6 +65,8 @@ public class ItemOptions implements Serializable {
 	private BigDecimal shippingWeight;
 	@Column(name = "pack_size")
 	private String packSize;
+	@Column(name = "hsn_no")
+	private String hsnNo;
 
 	/**
 	 * @return the itemId
@@ -408,44 +413,19 @@ public class ItemOptions implements Serializable {
 		this.maxRetailPrice = maxRetailPrice;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * @return the hsnNo
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
-		return result;
+	public String getHsnNo() {
+		return hsnNo;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		ItemOptions other = (ItemOptions) obj;
-		if (itemId == null) {
-			if (other.itemId != null) {
-				return false;
-			}
-		} else if (!itemId.equals(other.itemId)) {
-			return false;
-		}
-		return true;
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 }

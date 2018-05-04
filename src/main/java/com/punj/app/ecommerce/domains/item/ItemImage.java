@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,10 +23,11 @@ public class ItemImage implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "item_image_id", updatable = false, nullable = false)
-	private Integer itemImageId;
+	private BigInteger itemImageId;
 
-	@Column(name = "item_id")
-	private BigInteger itemId;
+	@ManyToOne
+	@JoinColumn(name = "item_id")
+	private Item item;
 
 	private String name;
 
@@ -46,7 +49,7 @@ public class ItemImage implements Serializable {
 	/**
 	 * @return the itemImageId
 	 */
-	public Integer getItemImageId() {
+	public BigInteger getItemImageId() {
 		return itemImageId;
 	}
 
@@ -54,23 +57,23 @@ public class ItemImage implements Serializable {
 	 * @param itemImageId
 	 *            the itemImageId to set
 	 */
-	public void setItemImageId(Integer itemImageId) {
+	public void setItemImageId(BigInteger itemImageId) {
 		this.itemImageId = itemImageId;
 	}
 
 	/**
-	 * @return the itemId
+	 * @return the item
 	 */
-	public BigInteger getItemId() {
-		return itemId;
+	public Item getItem() {
+		return item;
 	}
 
 	/**
-	 * @param itemId
-	 *            the itemId to set
+	 * @param item
+	 *            the item to set
 	 */
-	public void setItemId(BigInteger itemId) {
-		this.itemId = itemId;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 
 	/**

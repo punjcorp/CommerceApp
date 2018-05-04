@@ -33,12 +33,28 @@ public final class MVCConstants {
 	
 	public static final String TXN_SALE_PARAM="SALE";
 
-
+	public static final Integer STYLE_LEVEL=1;
+	public static final Integer ITEM_LEVEL=2;
+	public static final Integer UPC_LEVEL=3;
+	
+	public static final String FUNCTIONALITY_NEW_STYLE_PARAM="NSTYLE";
+	public static final String FUNCTIONALITY_APPROVE_STYLE_PARAM="ASTYLE";
+	public static final String FUNCTIONALITY_NEW_ITEM_PARAM="NITEM";
+	public static final String FUNCTIONALITY_APPROVE_ITEM_PARAM="AITEM";
+	public static final String FUNCTIONALITY_UPC_PARAM="UPC";
+	
+	
+	public static final String SAVE_STYLE_PARAM="saveStyle";
+	public static final String APPROVE_STYLE_PARAM="approveStyle";
+	public static final String SAVE_APPROVE_STYLE_PARAM="saveApproveStyle";
+	public static final String SAVE_SKU_PARAM="saveSKU";
+	public static final String SAVE_APPROVE_SKU_PARAM="saveApproveSKU";
 	
 	
 	public static final String ID_PARAM="id";
 	public static final String TENDER_ID_PARAM="tenderId";
 	public static final String PAGE_PARAM="page";
+	public static final String STYLE_ID_PARAM="styleId";
 	public static final String ITEM_ID_PARAM="itemId";
 	public static final String LOCATION_ID_PARAM="locationId";
 	public static final String LOC_NAME_PARAM="locName";

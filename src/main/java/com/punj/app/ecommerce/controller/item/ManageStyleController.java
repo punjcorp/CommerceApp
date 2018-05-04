@@ -6,9 +6,9 @@ package com.punj.app.ecommerce.controller.item;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -26,21 +27,27 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.punj.app.ecommerce.controller.common.ItemDefaultConfig;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.HierarchyTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.common.UOM;
-import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
-import com.punj.app.ecommerce.domains.item.ItemAttribute;
-import com.punj.app.ecommerce.domains.item.ItemImage;
-import com.punj.app.ecommerce.domains.item.ItemOptions;
+import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
-import com.punj.app.ecommerce.models.item.AttributeBean;
+import com.punj.app.ecommerce.models.common.SearchBean;
+import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemImageBean;
+import com.punj.app.ecommerce.models.item.ItemOptionsBean;
+import com.punj.app.ecommerce.models.order.OrderBean;
+import com.punj.app.ecommerce.models.order.OrderBeanDTO;
+import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.common.CommonService;
 
@@ -54,6 +61,9 @@ public class ManageStyleController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
 	private CommonService commonService;
+	private MessageSource messageSource;
+
+	private ItemDefaultConfig itemConfig;
 
 	/**
 	 * @param userService
@@ -62,6 +72,24 @@ public class ManageStyleController {
 	@Autowired
 	public void setItemService(ItemService itemService) {
 		this.itemService = itemService;
+	}
+
+	/**
+	 * @param messageSource
+	 *            the messageSource to set
+	 */
+	@Autowired
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @param userService
+	 *            the userService to set
+	 */
+	@Autowired
+	public void setItemDefaultConfig(ItemDefaultConfig itemConfig) {
+		this.itemConfig = itemConfig;
 	}
 
 	/**
@@ -74,183 +102,325 @@ public class ManageStyleController {
 	}
 
 	@GetMapping(ViewPathConstants.ADD_STYLE_URL)
-	public String showStyle(Model model, HttpSession session) {
+	public String showStyle(Model model, HttpSession session, Locale locale) {
 
-		ItemBean newItemBean = new ItemBean();
+		ItemBean itemBean = new ItemBean();
 
-		List<AttributeBean> colorList = new ArrayList<>();
-		List<AttributeBean> sizeList = new ArrayList<>();
-		this.getDefaultAttributes(colorList, sizeList);
+		List<ItemImageBean> itemImages = new ArrayList<>();
+		itemImages.add(new ItemImageBean());
+		itemImages.add(new ItemImageBean());
+		itemImages.add(new ItemImageBean());
+		itemImages.add(new ItemImageBean());
+		itemBean.setItemImages(itemImages);
 
-		List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
-		model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
+		this.updateItemDefaultConfs(itemBean);
 
-		List<UOM> UOMs = this.commonService.retrieveAllUOMs();
-		model.addAttribute(MVCConstants.UOM_LIST_BEAN, UOMs);
+		this.updateModelWithEssentialScreenData(itemBean, model, locale);
 
-		model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
-		model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
-		model.addAttribute(MVCConstants.ITEM_BEAN, newItemBean);
 		logger.info("The default style object has been added to display on the screen");
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
 
-	private void getDefaultAttributes(List<AttributeBean> colorList, List<AttributeBean> sizeList) {
-		List<Attribute> attributeList = itemService.getNewStyleAttribute();
-		logger.info("The attribute list has been retrieved to select for the style");
-		this.updateAttributeBean(attributeList, colorList, sizeList);
+	public void updateModelWithEssentialScreenData(ItemBean itemBean, Model model, Locale locale) {
+
+		try {
+			this.prepareImagesForDisplay(itemBean.getItemImages());
+
+			List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
+			model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
+			logger.info("The tax group information has been updated in the bean");
+
+			List<UOM> UOMs = this.commonService.retrieveAllUOMs();
+			model.addAttribute(MVCConstants.UOM_LIST_BEAN, UOMs);
+			logger.info("The UOM information has been updated in the bean");
+
+			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
+		} catch (IOException e) {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the item creation related tasks", e);
+		}
 	}
 
-	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.ADD_ITEM_IMAGE_PARAM })
-	public String addItemImage(@ModelAttribute ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
-			Authentication authentication) {
-		List<ItemImageBean> itemImages = itemBean.getItemImages();
-		if (itemImages == null)
-			itemImages = new ArrayList<>();
-
-		itemImages.add(new ItemImageBean());
-		itemBean.setItemImages(itemImages);
-		logger.info("An empty item image object has been created successfully");
-		return ViewPathConstants.ADD_STYLE_PAGE;
+	public List<ItemImageBean> prepareImagesForDisplay(List<ItemImageBean> itemImages) throws IOException {
+		if (itemImages != null && !itemImages.isEmpty()) {
+			MultipartFile imageFile = null;
+			for (ItemImageBean itemImageBean : itemImages) {
+				imageFile = itemImageBean.getImageData();
+				if (imageFile != null) {
+					ItemTransformer.setItemImageForDisplay(itemImageBean);
+					itemImageBean.setImageType(imageFile.getContentType());
+					itemImageBean.setImageURL(imageFile.getOriginalFilename());
+				}
+			}
+		}
+		logger.info("The item images data has been set for display on the Page");
+		return itemImages;
 	}
 
-	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.REMOVE_ITEM_IMAGE_PARAM })
-	public String removeItemImage(@ModelAttribute ItemBean itemBean, BindingResult bindingResult, Model model, final HttpServletRequest req) {
+	/**
+	 * This method is used to update the default configurations for the item
+	 * 
+	 * @param model
+	 * @param itemBean
+	 */
+	public ItemBean updateItemDefaultConfs(ItemBean itemBean) {
 
-		final Integer rowId = Integer.parseInt(req.getParameter(MVCConstants.REMOVE_ITEM_IMAGE_PARAM));
+		ItemOptionsBean itemOptionsBean = itemBean.getItemOptions();
 
-		List<ItemImageBean> itemImages = itemBean.getItemImages();
-		itemImages.remove(rowId.intValue());
+		String defaultHierarchyName = this.itemConfig.defaultHierarchy;
+		Hierarchy hierarchy = this.commonService.retrieveHierarchy(defaultHierarchyName);
+		if (hierarchy != null) {
+			HierarchyBean hierarchyBean = HierarchyTransformer.transformHierarchy(hierarchy);
+			itemBean.setHierarchy(hierarchyBean);
+			logger.info("The default item hierarchy has been set successfully");
+		} else {
+			logger.info("The default item configuration for Item hierarchy was not retrieved");
+		}
 
-		logger.info("The selected item image has been deleted from the item");
-		return ViewPathConstants.ADD_STYLE_PAGE;
+		String defaultItemType = this.itemConfig.defaultItemType;
+		itemBean.setItemType(defaultItemType);
+		logger.info("The default item type has been set successfully");
+
+		String defaultUOMCode = this.itemConfig.defaultUOM;
+		UOM uom = this.commonService.retrieveUOM(defaultUOMCode);
+		if (uom != null) {
+			itemOptionsBean.setUom(uom.getCode());
+			logger.info("The default UOM has been set successfully");
+		} else {
+			logger.info("The default item configuration for Item UOM was not retrieved");
+		}
+
+		Integer defaultPackSize = this.itemConfig.defaultPackSize;
+		itemOptionsBean.setPackSize(defaultPackSize.toString());
+		logger.info("The default pack size has been set successfully");
+
+		/**
+		 * All the price configuration starts here
+		 */
+
+		BigDecimal defaultUnitCost = this.itemConfig.defaultUnitCost;
+		itemOptionsBean.setUnitCost(defaultUnitCost);
+		logger.info("The default unit cost has been set successfully");
+
+		BigDecimal defaultSuggestedPrice = this.itemConfig.defaultSuggestedPrice;
+		itemOptionsBean.setSuggestedPrice(defaultSuggestedPrice);
+		logger.info("The default suggested Price has been set successfully");
+
+		BigDecimal defaultRestockingFee = this.itemConfig.defaultRestockingFee;
+		itemOptionsBean.setRestockingFee(defaultRestockingFee);
+		logger.info("The default restocking fee has been set successfully");
+
+		BigDecimal defaultCompareAtPrice = this.itemConfig.defaultCompareAtPrice;
+		itemOptionsBean.setCompareAtPrice(defaultCompareAtPrice);
+		logger.info("The default compare at price has been set successfully");
+
+		BigDecimal defaultMRP = this.itemConfig.defaultMRP;
+		itemOptionsBean.setMaxRetailPrice(defaultMRP);
+		logger.info("The default MRP has been set successfully");
+
+		BigDecimal defaultCurrentPrice = this.itemConfig.defaultCurrentPrice;
+		itemOptionsBean.setCurrentPrice(defaultCurrentPrice);
+		logger.info("The default current price has been set successfully");
+
+		/**
+		 * All the flag configurations starts here
+		 */
+
+		Boolean defaultDiscountFlag = this.itemConfig.defaultDiscountFlag;
+		itemOptionsBean.setDiscountFlag(defaultDiscountFlag);
+
+		Boolean defaultAskQtyFlag = this.itemConfig.defaultAskQtyFlag;
+		itemOptionsBean.setAskQtyFlag(defaultAskQtyFlag);
+
+		Boolean defaultPriceChangeFlag = this.itemConfig.defaultPriceChangeFlag;
+		itemOptionsBean.setPriceChangeFlag(defaultPriceChangeFlag);
+
+		Boolean defaultReturnFlag = this.itemConfig.defaultReturnFlag;
+		itemOptionsBean.setReturnFlag(defaultReturnFlag);
+
+		Boolean defaultDefaultTaxFlag = this.itemConfig.defaultTaxFlag;
+		itemOptionsBean.setTaxFlag(defaultDefaultTaxFlag);
+
+		logger.info("The default flags for item has been set successfully");
+
+		logger.info("The default configurations has been applied to item successfully");
+		return itemBean;
+
 	}
 
-	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.SAVE_ITEM_PARAM })
+	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.SAVE_STYLE_PARAM })
 	public String addStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
-			Authentication authentication) {
+			Authentication authentication, Locale locale) {
 		if (bindingResult.hasErrors()) {
-			List<AttributeBean> colorList = new ArrayList<>();
-			List<AttributeBean> sizeList = new ArrayList<>();
-			this.getDefaultAttributes(colorList, sizeList);
-			model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
-			model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 			return ViewPathConstants.ADD_STYLE_PAGE;
 		}
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			Item item = new Item();
-			ItemOptions itemOptions = new ItemOptions();
-			List<ItemAttribute> itemAttributes = new ArrayList<>();
 
-			BigInteger styleNumber = itemService.generateNewStyle();
-			itemBean.setItemId(styleNumber);
-			logger.info("The new generated style number has been assigned to the item bean object");
+			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW, MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM);
 
-			this.updateBeanInDomain(itemBean, item, itemOptions, itemAttributes, userDetails.getUsername());
-			logger.info("The style details has been updated in domains object from the bean objects");
-
-			itemService.saveItem(item, itemOptions, itemAttributes);
+			item = this.itemService.saveNewItem(item);
 			logger.info("The style details has been saved successfully");
 
-			List<Attribute> attributeList = itemService.getNewStyleAttribute();
-			logger.info("The attribute list has been retrieved to select for the style");
+			if (item != null) {
+				itemBean=ItemTransformer.transformItem(item);
 
-			List<AttributeBean> colorList = new ArrayList<>();
-			List<AttributeBean> sizeList = new ArrayList<>();
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.add.success", new Object[] { item.getItemId().toString() }, locale));
 
-			this.updateAttributeBean(attributeList, colorList, sizeList);
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.item.add.failure", null, locale));
+			}
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 
-			List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
-
-			itemBean.setItemId(styleNumber);
-			model.addAttribute(MVCConstants.COLOR_LIST_BEAN, colorList);
-			model.addAttribute(MVCConstants.SIZE_LIST_BEAN, sizeList);
-			model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
-			model.addAttribute(MVCConstants.ITEM_BEAN, itemBean);
-			model.addAttribute(MVCConstants.SUCCESS, "The new style " + styleNumber + " has been created.");
 		} catch (IOException e) {
-			logger.error("There was some error while handling the item images related tasks", e);
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the item creation related tasks", e);
 		}
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
+	
+	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.SAVE_APPROVE_STYLE_PARAM })
+	public String saveApproveStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
+			Authentication authentication, Locale locale) {
+		
+		if (bindingResult.hasErrors()) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			return ViewPathConstants.ADD_STYLE_PAGE;
+		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			List<ItemImageBean> itemImagesBeans=itemBean.getItemImages();
+			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_EDIT, MVCConstants.FUNCTIONALITY_APPROVE_STYLE_PARAM);
 
-	private void updateBeanInDomain(ItemBean itemBean, Item item, ItemOptions itemOptions, List<ItemAttribute> itemAttributes, String username)
-			throws IOException {
+			item = this.itemService.approveItem(item);
+			logger.info("The style details has been saved and approved successfully");
 
-		/**
-		 * Setting the basic information about the style
-		 */
-		item.setItemId(itemBean.getItemId());
-		item.setName(itemBean.getName());
-		item.setDescription(itemBean.getLongDesc());
+			if (item != null) {
+				item=this.itemService.getItem(item.getItemId());
+				itemBean=ItemTransformer.transformItem(item);
+				itemBean.setItemImages(itemImagesBeans);
+				
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.approve.success", new Object[] {  item.getItemId().toString()}, locale));
 
-		Hierarchy hierarchy = new Hierarchy();
-		hierarchy.setHierarchyId(itemBean.getHierarchy().getHierarchyId());
-		item.setHierarchy(hierarchy);
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.item.approve.failure", null, locale));
+			}
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 
-		item.setItemType(itemBean.getItemType());
-		item.setCreatedDate(LocalDateTime.now());
-		item.setCreatedBy(username);
-		item.setItemLevel(1);
+		} catch (IOException e) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the item save and approval related tasks", e);
+		}
 
-		logger.info("The item basic details has been set in domain object successfully");
+		return ViewPathConstants.ADD_STYLE_PAGE;
+	}
+	
 
-		/**
-		 * Setting the images for the style
-		 */
+	@GetMapping(value = ViewPathConstants.EDIT_STYLE_URL)
+	public String editStyle(Model model, final HttpServletRequest req, Locale locale) {
+		logger.info("The edit method for item has been called");
+		ItemBean itemBean=null;
+		try {
+			BigInteger styleNumber = new BigInteger(req.getParameter(MVCConstants.STYLE_ID_PARAM));
 
-		List<ItemImage> itemImages = ItemTransformer.tranformItemImageBeans(itemBean.getItemImages());
-		item.setImages(itemImages);
+			Item item= this.itemService.getItem(styleNumber);
+			
+			if (item != null) {
+				item=this.itemService.getItem(item.getItemId());
+				itemBean=ItemTransformer.transformItem(item);
+				logger.info("The selected item has been updated successfully");
+			} else {
+				logger.info("There was some issue while retrieving Item details");
+			}
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 
-		logger.info("The item images has been set in domain object successfully");
-
-		/**
-		 * Setting the options information about the style
-		 */
-
-		itemOptions.setItemId(itemBean.getItemId());
-
-		itemOptions.setUnitCost(new BigDecimal(itemBean.getItemOptions().getUnitCost().getNumber().toString()));
-		itemOptions.setSuggestedPrice(new BigDecimal(itemBean.getItemOptions().getSuggestedPrice().getNumber().toString()));
-		itemOptions.setCompareAtPrice(new BigDecimal(itemBean.getItemOptions().getCompareAtPrice().getNumber().toString()));
-		itemOptions.setCurrentPrice(new BigDecimal(itemBean.getItemOptions().getCurrentPrice().getNumber().toString()));
-		itemOptions.setRestockingFee(new BigDecimal(itemBean.getItemOptions().getRestockingFee().getNumber().toString()));
-
-		itemOptions.setDiscountFlag(itemBean.getItemOptions().getDiscountFlag());
-		itemOptions.setTaxFlag(itemBean.getItemOptions().getTaxFlag());
-		itemOptions.setAskQtyFlag(itemBean.getItemOptions().getAskQtyFlag());
-		itemOptions.setAskPriceFlag(itemBean.getItemOptions().getAskPriceFlag());
-		itemOptions.setReturnFlag(itemBean.getItemOptions().getReturnFlag());
-		itemOptions.setDescFlag(itemBean.getItemOptions().getDescFlag());
-		itemOptions.setRelatedItemFlag(itemBean.getItemOptions().getRelatedItemFlag());
-		itemOptions.setPriceChangeFlag(itemBean.getItemOptions().getPriceChangeFlag());
-		itemOptions.setNonMerchFlag(itemBean.getItemOptions().getNonMerchFlag());
-		itemOptions.setMinAgeFlag(itemBean.getItemOptions().getMinAgeFlag());
-		itemOptions.setCustomerPrompt(itemBean.getItemOptions().getCustomerPromptFlag());
-
-		itemOptions.setUom(itemBean.getItemOptions().getUom());
-		itemOptions.setTaxGroupId(itemBean.getItemOptions().getTaxGroupId());
-		itemOptions.setStockStatus(itemBean.getItemOptions().getStockStatus());
-		itemOptions.setShippingWeight(itemBean.getItemOptions().getShippingWeight());
-		itemOptions.setPackSize(itemBean.getItemOptions().getPackSize());
-
-		logger.info("The item options has been set in domain object successfully");
-
-		/**
-		 * Setting the item attributes
-		 */
-
-		logger.info("The item attributes has been set in domain object successfully");
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving item for updation", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			return ViewPathConstants.EDIT_STYLE_PAGE;
+		}
+		return ViewPathConstants.EDIT_STYLE_PAGE;
 
 	}
+	
+	@PostMapping(value = ViewPathConstants.EDIT_STYLE_URL, params = { MVCConstants.SAVE_STYLE_PARAM })
+	public String addStyleAfterEdit(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
+			Authentication authentication, Locale locale) {
+		if (bindingResult.hasErrors()) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			return ViewPathConstants.EDIT_STYLE_PAGE;
+		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			List<ItemImageBean> itemImagesBeans=itemBean.getItemImages();
+			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_EDIT, MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM);
 
-	private void updateAttributeBean(List<Attribute> attributeList, List<AttributeBean> colorList, List<AttributeBean> sizeList) {
+			item = this.itemService.saveItem(item);
+			logger.info("The style details has been saved successfully");
 
-		logger.info("All the attributes related to Color and Size has been sorted successfully");
+			if (item != null) {
+				item=this.itemService.getItem(item.getItemId());
+				itemBean=ItemTransformer.transformItem(item);
+				itemBean.setItemImages(itemImagesBeans);
 
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.edit.success", new Object[] { item.getItemId().toString() }, locale));
+
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.item.edit.failure", null, locale));
+			}
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+
+		} catch (IOException e) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the item creation related tasks", e);
+		}
+
+		return ViewPathConstants.EDIT_STYLE_PAGE;
 	}
+	
+	@PostMapping(value = ViewPathConstants.EDIT_STYLE_URL, params = { MVCConstants.SAVE_APPROVE_STYLE_PARAM })
+	public String saveApproveStyleAfterEdit(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
+			Authentication authentication, Locale locale) {
+		
+		if (bindingResult.hasErrors()) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			return ViewPathConstants.EDIT_STYLE_PAGE;
+		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			List<ItemImageBean> itemImagesBeans=itemBean.getItemImages();
+			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_EDIT, MVCConstants.FUNCTIONALITY_APPROVE_STYLE_PARAM);
 
+			item = this.itemService.approveItem(item);
+			logger.info("The style details has been saved and approved successfully");
+
+			if (item != null) {
+				item=this.itemService.getItem(item.getItemId());
+				itemBean=ItemTransformer.transformItem(item);
+				itemBean.setItemImages(itemImagesBeans);
+				
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.approve.success", new Object[] {  item.getItemId().toString()}, locale));
+
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.item.approve.failure", null, locale));
+			}
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+
+		} catch (IOException e) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the item save and approval related tasks", e);
+		}
+
+		return ViewPathConstants.EDIT_STYLE_PAGE;
+	}
+	
+	
 }

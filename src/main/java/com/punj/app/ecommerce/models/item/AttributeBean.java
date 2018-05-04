@@ -3,13 +3,15 @@
  */
 package com.punj.app.ecommerce.models.item;
 
+import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * @author admin
  *
  */
-public class AttributeBean {
+public class AttributeBean implements Serializable {
 
 	private BigInteger attributeId;
 	private String code;
@@ -19,6 +21,8 @@ public class AttributeBean {
 	private String valName;
 	private String valDescription;
 	private Integer valSeqNo;
+
+	private List<String> attrValues;
 
 	/**
 	 * @return the attributeId
@@ -138,6 +142,21 @@ public class AttributeBean {
 	 */
 	public void setValSeqNo(Integer valSeqNo) {
 		this.valSeqNo = valSeqNo;
+	}
+
+	/**
+	 * @return the attrValues
+	 */
+	public List<String> getAttrValues() {
+		return attrValues;
+	}
+
+	/**
+	 * @param attrValues
+	 *            the attrValues to set
+	 */
+	public void setAttrValues(List<String> attrValues) {
+		this.attrValues = attrValues;
 	}
 
 }

@@ -5,6 +5,8 @@ package com.punj.app.ecommerce.models.item;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -14,6 +16,10 @@ import com.punj.app.ecommerce.utils.Pager;
 public class ItemBeanDTO {
 
 	private List<ItemBean> items;
+	@Valid
+	private List<ItemBean> skus;
+	@Valid
+	private ItemBean style;
 	private List<String> itemIds;
 
 	private Pager pager;
@@ -61,6 +67,36 @@ public class ItemBeanDTO {
 	 */
 	public void setPager(Pager pager) {
 		this.pager = pager;
+	}
+
+	/**
+	 * @return the skus
+	 */
+	public List<ItemBean> getSkus() {
+		return skus;
+	}
+
+	/**
+	 * @param skus
+	 *            the skus to set
+	 */
+	public void setSkus(List<ItemBean> skus) {
+		this.skus = skus;
+	}
+
+	/**
+	 * @return the style
+	 */
+	public ItemBean getStyle() {
+		return style;
+	}
+
+	/**
+	 * @param style
+	 *            the style to set
+	 */
+	public void setStyle(ItemBean style) {
+		this.style = style;
 	}
 
 }

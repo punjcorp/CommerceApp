@@ -3,53 +3,65 @@
  */
 package com.punj.app.ecommerce.models.item;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import javax.money.MonetaryAmount;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 
 /**
  * @author admin
  *
  */
-public class ItemOptionsBean {
+public class ItemOptionsBean implements Serializable {
 
 	private BigInteger itemId;
+	@NotBlank(message = "{commerce.error.string.empty}")
+	@Size(min = 2, max = 15, message = "{commerce.error.string.size}")
+	private String hsnNo;
+	@NotBlank(message = "{commerce.error.option.empty}")
 	private String uom;
-	private Boolean discountFlag = true;
-	private Boolean taxFlag = true;
-	private Boolean askQtyFlag = true;
-	private Boolean askPriceFlag = false;
-	private Boolean returnFlag = true;
-	private Boolean descFlag = false;
-	private Boolean relatedItemFlag = false;
-	private Boolean priceChangeFlag = true;
-	private Boolean nonMerchFlag = false;
-	private Boolean minAgeFlag = false;
-	private Boolean customerPromptFlag = false;
+	private Boolean discountFlag;
+	private Boolean taxFlag;
+	private Boolean askQtyFlag;
+	private Boolean askPriceFlag;
+	private Boolean returnFlag;
+	private Boolean descFlag;
+	private Boolean relatedItemFlag;
+	private Boolean priceChangeFlag;
+	private Boolean nonMerchFlag;
+	private Boolean minAgeFlag;
+	private Boolean customerPromptFlag;
 
-	@NotNull(message = "{commerce.error.amount.empty}")
-	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
-	private MonetaryAmount unitCost;
-	@NotNull(message = "{commerce.error.amount.empty}")
-	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
-	private MonetaryAmount suggestedPrice;
-	@NotNull(message = "{commerce.error.amount.empty}")
-	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
-	private MonetaryAmount compareAtPrice;
-	@NotNull(message = "{commerce.error.amount.empty}")
-	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
-	private MonetaryAmount currentPrice;
-	@DecimalMin(value = "0.01", message = "{commerce.error.amount.empty}")
-	private MonetaryAmount maxRetailPrice;
-	private MonetaryAmount restockingFee;
+	@NotNull(message = "{commerce.error.amount.not.null}")
+	private BigDecimal unitCost;
+	@NotNull(message = "{commerce.error.amount.not.null}")
+	private BigDecimal suggestedPrice;
+	@NotNull(message = "{commerce.error.amount.not.null}")
+	private BigDecimal compareAtPrice;
 
-	private String packSize = "1";
+	@NotNull(message = "{commerce.error.amount.empty}", groups = {ValidationGroup.ValidationGroupStyle.class,ValidationGroup.ValidationGroupSKU.class})
+	@DecimalMin(value = "0.00", message = "{commerce.error.amount.empty}", groups = {ValidationGroup.ValidationGroupStyle.class,ValidationGroup.ValidationGroupSKU.class})
+	private BigDecimal currentPrice;
+
+	@NotNull(message = "{commerce.error.amount.not.null}")
+	private BigDecimal maxRetailPrice;
+	@NotNull(message = "{commerce.error.amount.not.null}")
+	private BigDecimal restockingFee;
+
+	@NotNull(message = "{commerce.error.string.empty}")
+	@Size(min = 1, max = 10, message = "{commerce.error.string.size}")
+	private String packSize;
 	private String stockStatus = "NIL";
 	private BigDecimal shippingWeight;
 
+	@NotNull(message = "{commerce.error.option.empty}")
 	private Integer taxGroupId;
 
 	/**
@@ -80,141 +92,6 @@ public class ItemOptionsBean {
 	 */
 	public void setUom(String uom) {
 		this.uom = uom;
-	}
-
-	/**
-	 * @return the unitCost
-	 */
-	public MonetaryAmount getUnitCost() {
-		return unitCost;
-	}
-
-	/**
-	 * @param unitCost
-	 *            the unitCost to set
-	 */
-	public void setUnitCost(MonetaryAmount unitCost) {
-		this.unitCost = unitCost;
-	}
-
-	/**
-	 * @return the suggestedPrice
-	 */
-	public MonetaryAmount getSuggestedPrice() {
-		return suggestedPrice;
-	}
-
-	/**
-	 * @param suggestedPrice
-	 *            the suggestedPrice to set
-	 */
-	public void setSuggestedPrice(MonetaryAmount suggestedPrice) {
-		this.suggestedPrice = suggestedPrice;
-	}
-
-	/**
-	 * @return the compareAtPrice
-	 */
-	public MonetaryAmount getCompareAtPrice() {
-		return compareAtPrice;
-	}
-
-	/**
-	 * @param compareAtPrice
-	 *            the compareAtPrice to set
-	 */
-	public void setCompareAtPrice(MonetaryAmount compareAtPrice) {
-		this.compareAtPrice = compareAtPrice;
-	}
-
-	/**
-	 * @return the currentPrice
-	 */
-	public MonetaryAmount getCurrentPrice() {
-		return currentPrice;
-	}
-
-	/**
-	 * @param currentPrice
-	 *            the currentPrice to set
-	 */
-	public void setCurrentPrice(MonetaryAmount currentPrice) {
-		this.currentPrice = currentPrice;
-	}
-
-	/**
-	 * @return the restockingFee
-	 */
-	public MonetaryAmount getRestockingFee() {
-		return restockingFee;
-	}
-
-	/**
-	 * @param restockingFee
-	 *            the restockingFee to set
-	 */
-	public void setRestockingFee(MonetaryAmount restockingFee) {
-		this.restockingFee = restockingFee;
-	}
-
-	/**
-	 * @return the packSize
-	 */
-	public String getPackSize() {
-		return packSize;
-	}
-
-	/**
-	 * @param packSize
-	 *            the packSize to set
-	 */
-	public void setPackSize(String packSize) {
-		this.packSize = packSize;
-	}
-
-	/**
-	 * @return the stockStatus
-	 */
-	public String getStockStatus() {
-		return stockStatus;
-	}
-
-	/**
-	 * @param stockStatus
-	 *            the stockStatus to set
-	 */
-	public void setStockStatus(String stockStatus) {
-		this.stockStatus = stockStatus;
-	}
-
-	/**
-	 * @return the shippingWeight
-	 */
-	public BigDecimal getShippingWeight() {
-		return shippingWeight;
-	}
-
-	/**
-	 * @param shippingWeight
-	 *            the shippingWeight to set
-	 */
-	public void setShippingWeight(BigDecimal shippingWeight) {
-		this.shippingWeight = shippingWeight;
-	}
-
-	/**
-	 * @return the taxGroupId
-	 */
-	public Integer getTaxGroupId() {
-		return taxGroupId;
-	}
-
-	/**
-	 * @param taxGroupId
-	 *            the taxGroupId to set
-	 */
-	public void setTaxGroupId(Integer taxGroupId) {
-		this.taxGroupId = taxGroupId;
 	}
 
 	/**
@@ -383,9 +260,69 @@ public class ItemOptionsBean {
 	}
 
 	/**
+	 * @return the unitCost
+	 */
+	public BigDecimal getUnitCost() {
+		return unitCost;
+	}
+
+	/**
+	 * @param unitCost
+	 *            the unitCost to set
+	 */
+	public void setUnitCost(BigDecimal unitCost) {
+		this.unitCost = unitCost;
+	}
+
+	/**
+	 * @return the suggestedPrice
+	 */
+	public BigDecimal getSuggestedPrice() {
+		return suggestedPrice;
+	}
+
+	/**
+	 * @param suggestedPrice
+	 *            the suggestedPrice to set
+	 */
+	public void setSuggestedPrice(BigDecimal suggestedPrice) {
+		this.suggestedPrice = suggestedPrice;
+	}
+
+	/**
+	 * @return the compareAtPrice
+	 */
+	public BigDecimal getCompareAtPrice() {
+		return compareAtPrice;
+	}
+
+	/**
+	 * @param compareAtPrice
+	 *            the compareAtPrice to set
+	 */
+	public void setCompareAtPrice(BigDecimal compareAtPrice) {
+		this.compareAtPrice = compareAtPrice;
+	}
+
+	/**
+	 * @return the currentPrice
+	 */
+	public BigDecimal getCurrentPrice() {
+		return currentPrice;
+	}
+
+	/**
+	 * @param currentPrice
+	 *            the currentPrice to set
+	 */
+	public void setCurrentPrice(BigDecimal currentPrice) {
+		this.currentPrice = currentPrice;
+	}
+
+	/**
 	 * @return the maxRetailPrice
 	 */
-	public MonetaryAmount getMaxRetailPrice() {
+	public BigDecimal getMaxRetailPrice() {
 		return maxRetailPrice;
 	}
 
@@ -393,8 +330,98 @@ public class ItemOptionsBean {
 	 * @param maxRetailPrice
 	 *            the maxRetailPrice to set
 	 */
-	public void setMaxRetailPrice(MonetaryAmount maxRetailPrice) {
+	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
 		this.maxRetailPrice = maxRetailPrice;
+	}
+
+	/**
+	 * @return the restockingFee
+	 */
+	public BigDecimal getRestockingFee() {
+		return restockingFee;
+	}
+
+	/**
+	 * @param restockingFee
+	 *            the restockingFee to set
+	 */
+	public void setRestockingFee(BigDecimal restockingFee) {
+		this.restockingFee = restockingFee;
+	}
+
+	/**
+	 * @return the packSize
+	 */
+	public String getPackSize() {
+		return packSize;
+	}
+
+	/**
+	 * @param packSize
+	 *            the packSize to set
+	 */
+	public void setPackSize(String packSize) {
+		this.packSize = packSize;
+	}
+
+	/**
+	 * @return the stockStatus
+	 */
+	public String getStockStatus() {
+		return stockStatus;
+	}
+
+	/**
+	 * @param stockStatus
+	 *            the stockStatus to set
+	 */
+	public void setStockStatus(String stockStatus) {
+		this.stockStatus = stockStatus;
+	}
+
+	/**
+	 * @return the shippingWeight
+	 */
+	public BigDecimal getShippingWeight() {
+		return shippingWeight;
+	}
+
+	/**
+	 * @param shippingWeight
+	 *            the shippingWeight to set
+	 */
+	public void setShippingWeight(BigDecimal shippingWeight) {
+		this.shippingWeight = shippingWeight;
+	}
+
+	/**
+	 * @return the taxGroupId
+	 */
+	public Integer getTaxGroupId() {
+		return taxGroupId;
+	}
+
+	/**
+	 * @param taxGroupId
+	 *            the taxGroupId to set
+	 */
+	public void setTaxGroupId(Integer taxGroupId) {
+		this.taxGroupId = taxGroupId;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 }

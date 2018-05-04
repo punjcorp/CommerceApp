@@ -3,33 +3,38 @@
  */
 package com.punj.app.ecommerce.models.item;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
  * @author admin
  *
  */
-public class ItemBean {
+public class ItemBean implements Serializable {
 
 	private BigInteger itemId;
 
-	@NotBlank(message = "{commerce.error.string.empty}")
+	@NotBlank(message = "{commerce.error.string.empty}", groups = {ValidationGroup.ValidationGroupStyle.class,ValidationGroup.ValidationGroupSKU.class})
+	@Size(min = 5, max = 150, message = "{commerce.error.string.size}", groups = {ValidationGroup.ValidationGroupStyle.class,ValidationGroup.ValidationGroupSKU.class})
 	private String name;
+	@Size(max = 300, message = "{commerce.error.string.max.size}")
 	private String longDesc;
 	private Integer itemLevel;
 	private BigInteger parentItemId;
 	@NotBlank(message = "{commerce.error.option.empty}")
 	private String itemType;
 
+	private String status;
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
@@ -40,17 +45,14 @@ public class ItemBean {
 	@Valid
 	private ItemOptionsBean itemOptions;
 
-	private String[] itemSizeSelected;
-	private String[] itemColorSelected;
-
 	private List<ItemImageBean> itemImages;
-	private List<AttributeBean> attributes;
+
+	private String attrName;
+	private List<AttributeBean> selectedAttributes;
 
 	private Pager pager;
 
 	public ItemBean() {
-		attributes=new ArrayList<>();
-		attributes.add(new AttributeBean());
 		itemOptions = new ItemOptionsBean();
 		hierarchy = new HierarchyBean();
 	}
@@ -161,21 +163,6 @@ public class ItemBean {
 	}
 
 	/**
-	 * @return the hierarchy
-	 */
-	public HierarchyBean getHierarchy() {
-		return hierarchy;
-	}
-
-	/**
-	 * @param hierarchy
-	 *            the hierarchy to set
-	 */
-	public void setHierarchy(HierarchyBean hierarchy) {
-		this.hierarchy = hierarchy;
-	}
-
-	/**
 	 * @return the createdDate
 	 */
 	public LocalDateTime getCreatedDate() {
@@ -221,6 +208,21 @@ public class ItemBean {
 	}
 
 	/**
+	 * @return the hierarchy
+	 */
+	public HierarchyBean getHierarchy() {
+		return hierarchy;
+	}
+
+	/**
+	 * @param hierarchy
+	 *            the hierarchy to set
+	 */
+	public void setHierarchy(HierarchyBean hierarchy) {
+		this.hierarchy = hierarchy;
+	}
+
+	/**
 	 * @return the itemOptions
 	 */
 	public ItemOptionsBean getItemOptions() {
@@ -233,51 +235,6 @@ public class ItemBean {
 	 */
 	public void setItemOptions(ItemOptionsBean itemOptions) {
 		this.itemOptions = itemOptions;
-	}
-
-	/**
-	 * @return the itemSizeSelected
-	 */
-	public String[] getItemSizeSelected() {
-		return itemSizeSelected;
-	}
-
-	/**
-	 * @param itemSizeSelected
-	 *            the itemSizeSelected to set
-	 */
-	public void setItemSizeSelected(String[] itemSizeSelected) {
-		this.itemSizeSelected = itemSizeSelected;
-	}
-
-	/**
-	 * @return the itemColorSelected
-	 */
-	public String[] getItemColorSelected() {
-		return itemColorSelected;
-	}
-
-	/**
-	 * @param itemColorSelected
-	 *            the itemColorSelected to set
-	 */
-	public void setItemColorSelected(String[] itemColorSelected) {
-		this.itemColorSelected = itemColorSelected;
-	}
-
-	/**
-	 * @return the pager
-	 */
-	public Pager getPager() {
-		return pager;
-	}
-
-	/**
-	 * @param pager
-	 *            the pager to set
-	 */
-	public void setPager(Pager pager) {
-		this.pager = pager;
 	}
 
 	/**
@@ -296,18 +253,63 @@ public class ItemBean {
 	}
 
 	/**
-	 * @return the attributes
+	 * @return the selectedAttributes
 	 */
-	public List<AttributeBean> getAttributes() {
-		return attributes;
+	public List<AttributeBean> getSelectedAttributes() {
+		return selectedAttributes;
 	}
 
 	/**
-	 * @param attributes
-	 *            the attributes to set
+	 * @param selectedAttributes
+	 *            the selectedAttributes to set
 	 */
-	public void setAttributes(List<AttributeBean> attributes) {
-		this.attributes = attributes;
+	public void setSelectedAttributes(List<AttributeBean> selectedAttributes) {
+		this.selectedAttributes = selectedAttributes;
+	}
+
+	/**
+	 * @return the pager
+	 */
+	public Pager getPager() {
+		return pager;
+	}
+
+	/**
+	 * @param pager
+	 *            the pager to set
+	 */
+	public void setPager(Pager pager) {
+		this.pager = pager;
+	}
+
+	/**
+	 * @return the attrName
+	 */
+	public String getAttrName() {
+		return attrName;
+	}
+
+	/**
+	 * @param attrName
+	 *            the attrName to set
+	 */
+	public void setAttrName(String attrName) {
+		this.attrName = attrName;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

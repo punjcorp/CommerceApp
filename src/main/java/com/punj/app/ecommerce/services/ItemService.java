@@ -22,11 +22,23 @@ import com.punj.app.ecommerce.utils.Pager;
  */
 public interface ItemService {
 
+	public BigInteger generateNewStyle();
+	
+	public Item saveNewItem(Item item);
+	
+	public Item saveItem(Item item);
+	
+	public Item approveItem(Item item);
+	
+	public List<Item> createSKUs(List<Item> skuList);
+	
+	
+	
+	
 	public Item saveItem(Item item, ItemOptions itemOptions, List<ItemAttribute> itemAttributes);
-
+	
 	public List<Hierarchy> retrieveAllDepts();
 
-	public BigInteger generateNewStyle();
 
 	public List<Attribute> getNewStyleAttribute();
 

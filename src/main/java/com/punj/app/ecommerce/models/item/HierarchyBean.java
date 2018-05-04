@@ -3,13 +3,14 @@
  */
 package com.punj.app.ecommerce.models.item;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author admin
  *
  */
-public class HierarchyBean {
+public class HierarchyBean implements Serializable {
 
 	private Integer hierarchyId;
 	private String name;
@@ -133,7 +134,8 @@ public class HierarchyBean {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;

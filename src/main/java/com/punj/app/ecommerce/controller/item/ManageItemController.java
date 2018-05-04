@@ -134,7 +134,7 @@ public class ManageItemController {
 		/**
 		 * Setting the images for the style
 		 */
-		List<ItemImage> itemImages = ItemTransformer.tranformItemImageBeans(itemBean.getItemImages());
+		List<ItemImage> itemImages = ItemTransformer.transformItemImageBeans(itemBean.getItemImages(),username, item);
 		item.setImages(itemImages);
 
 		logger.info("The item images has been set in domain object successfully");
@@ -143,11 +143,11 @@ public class ManageItemController {
 		 * Setting the options information about the style
 		 */
 
-		itemOptions.setUnitCost(new BigDecimal(itemBean.getItemOptions().getUnitCost().getNumber().toString()));
-		itemOptions.setSuggestedPrice(new BigDecimal(itemBean.getItemOptions().getSuggestedPrice().getNumber().toString()));
-		itemOptions.setCompareAtPrice(new BigDecimal(itemBean.getItemOptions().getCompareAtPrice().getNumber().toString()));
-		itemOptions.setCurrentPrice(new BigDecimal(itemBean.getItemOptions().getCurrentPrice().getNumber().toString()));
-		itemOptions.setRestockingFee(new BigDecimal(itemBean.getItemOptions().getRestockingFee().getNumber().toString()));
+		itemOptions.setUnitCost(itemBean.getItemOptions().getUnitCost());
+		itemOptions.setSuggestedPrice(itemBean.getItemOptions().getSuggestedPrice());
+		itemOptions.setCompareAtPrice(itemBean.getItemOptions().getCompareAtPrice());
+		itemOptions.setCurrentPrice(itemBean.getItemOptions().getCurrentPrice());
+		itemOptions.setRestockingFee(itemBean.getItemOptions().getRestockingFee());
 
 		itemOptions.setDiscountFlag(itemBean.getItemOptions().getDiscountFlag());
 		itemOptions.setTaxFlag(itemBean.getItemOptions().getTaxFlag());
@@ -225,7 +225,13 @@ public class ManageItemController {
 		/**
 		 * Setting the images for the item
 		 */
-		List<ItemImageBean> itemImageBeans = ItemTransformer.tranformItemImages(style.getImages());
+		List<ItemImageBean> itemImageBeans=null;
+		try {
+			itemImageBeans = ItemTransformer.tranformItemImages(style.getImages());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		itemBean.setItemImages(itemImageBeans);
 		logger.info("The item images has been set in bean object successfully");
 
@@ -242,22 +248,11 @@ public class ManageItemController {
 		MonetaryAmount currentAmount = null;
 		MonetaryAmount restockingAmount = null;
 
-		if (style.getItemOptions().getUnitCost() != null)
-			unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getUnitCost()).create();
-		if (style.getItemOptions().getSuggestedPrice() != null)
-			suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getSuggestedPrice()).create();
-		if (style.getItemOptions().getCompareAtPrice() != null)
-			compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCompareAtPrice()).create();
-		if (style.getItemOptions().getCurrentPrice() != null)
-			currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCurrentPrice()).create();
-		if (style.getItemOptions().getRestockingFee() != null)
-			restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getRestockingFee()).create();
-
-		itemOptionsBean.setUnitCost(unitCostAmount);
-		itemOptionsBean.setSuggestedPrice(suggestedAmount);
-		itemOptionsBean.setCompareAtPrice(compareAtAmount);
-		itemOptionsBean.setCurrentPrice(currentAmount);
-		itemOptionsBean.setRestockingFee(restockingAmount);
+		itemOptionsBean.setUnitCost(style.getItemOptions().getUnitCost());
+		itemOptionsBean.setSuggestedPrice(style.getItemOptions().getSuggestedPrice());
+		itemOptionsBean.setCompareAtPrice(style.getItemOptions().getCompareAtPrice());
+		itemOptionsBean.setCurrentPrice(style.getItemOptions().getCurrentPrice());
+		itemOptionsBean.setRestockingFee(style.getItemOptions().getRestockingFee());
 
 		itemOptionsBean.setDiscountFlag(style.getItemOptions().getDiscountFlag());
 		itemOptionsBean.setTaxFlag(style.getItemOptions().getTaxFlag());

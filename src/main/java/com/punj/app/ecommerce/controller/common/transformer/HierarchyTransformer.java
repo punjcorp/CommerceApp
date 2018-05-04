@@ -80,5 +80,22 @@ public class HierarchyTransformer {
 		logger.info("The hierarchy data has been transformed to bean successfully");
 		return hierarchyBean;
 	}
+	
+	public static Hierarchy transformHierarchyBean(HierarchyBean hierarchyBean) {
+
+		Hierarchy hierarchy = new Hierarchy();
+
+		hierarchy.setHierarchyId(hierarchyBean.getHierarchyId());
+		hierarchy.setSortOrder(hierarchyBean.getSortOrder());
+		hierarchy.setCode(hierarchyBean.getCode());
+		hierarchy.setCreatedBy(hierarchyBean.getCreatedBy());
+		hierarchy.setName(hierarchyBean.getName());
+		hierarchy.setDescription(hierarchyBean.getDescription());
+		hierarchy.setHiddenFlag(hierarchyBean.getHiddenFlag());
+
+		logger.info("The hierarchy bean data has been transformed to domain object successfully");
+		return hierarchy;
+	}	
+	
 
 }

@@ -412,4 +412,28 @@ public class CommonServiceImpl implements CommonService {
 		return uomList;
 	}
 
+	@Override
+	public Hierarchy retrieveHierarchy(String defaultHierarchyName) {
+		Hierarchy hierarchy=new Hierarchy();
+		hierarchy.setName(defaultHierarchyName);
+		hierarchy=this.hierarchyRepository.findOne(Example.of(hierarchy));
+		if (hierarchy != null)
+			logger.info("The {} hierarchy has been retrieved successfully", defaultHierarchyName);
+		else
+			logger.info("There was no hierarchy found for {} code", defaultHierarchyName);
+		return hierarchy;
+	}
+
+	@Override
+	public UOM retrieveUOM(String uomCode) {
+		UOM uom=new UOM();
+		uom.setCode(uomCode);
+		uom=this.uomRepository.findOne(Example.of(uom));
+		if (uom != null)
+			logger.info("The {} uom has been retrieved successfully", uomCode);
+		else
+			logger.info("There was no uom found for {} code", uomCode);
+		return uom;
+	}
+
 }

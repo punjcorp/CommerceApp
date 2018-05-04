@@ -24,6 +24,7 @@ var AttributeBean= function() {
 	this.valName;
 	this.valDescription;
 	this.valSeqNo;
+	this.attrValList;
 }
 
 $.extend(AttributeBean.prototype, {
@@ -37,7 +38,7 @@ $.extend(AttributeBean.prototype, {
 		this.valName=valName;
 		this.valDescription=valDescription;
 		this.valSeqNo=valSeqNo;		
-		
+		this.attrValList=new Array();
 	}
 	
 });

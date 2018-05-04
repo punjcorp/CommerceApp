@@ -45,9 +45,17 @@ public final class ViewPathConstants {
 	public static final String ITEM_DETAIL_URL = "/item_detail";
 	public static final String ITEM_DETAIL_PAGE = "item/item_detail";
 	
-	public static final String ADD_STYLE_URL = "/add_style";
+	public static final String ADD_STYLE_URL = "/admin/add_style";
 	public static final String ADD_STYLE_PAGE = "item/add_style";
+		
+	public static final String EDIT_STYLE_URL = "/admin/edit_style";
+	public static final String EDIT_STYLE_PAGE = "item/edit_style";
 	
+	public static final String ADD_SKU_URL = "/admin/add_sku";
+	public static final String ADD_SKU_PAGE = "item/add_sku";
+		
+	public static final String EDIT_SKU_URL = "/admin/edit_sku";
+	public static final String EDIT_SKU_PAGE = "item/edit_sku";	
 	
 	public static final String GET_HIERARCHY_URL = "/admin/search_hierarchy";
 	public static final String SEARCH_HIERARCHIES_URL = "/admin/search_hierarchy";

@@ -22,6 +22,22 @@ function resetAllMenus() {
 	pricemenuStatus = 0;
 }
 
+$(function() {
+
+
+	
+	$('input[type=number]').change(function(){
+		var nbrValue=+$(this).val();
+		if(nbrValue=='undefined' || $.trim(nbrValue)==''){
+			$(this).val('0.00');
+		}else if(nbrValue>=0){
+			$(this).val(nbrValue.toFixed(2));
+		}
+	});
+});
+
+
+
 $(document).ready(
 		function() {
 

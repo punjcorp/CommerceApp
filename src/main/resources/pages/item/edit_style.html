@@ -4,7 +4,7 @@
 <meta th:name="_csrf" th:content="${_csrf.token}" />
 <meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.item.add.style.title}"></title>
+<title th:text="#{commerce.screen.item.edit.style.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
 <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
@@ -23,7 +23,7 @@
 			<div class="card content-container">
 				<div class="card-header">
 					<h3>
-						<span th:text="#{commerce.screen.item.add.style.caption}"></span>
+						<span th:text="#{commerce.screen.item.edit.style.caption}"></span>
 					</h3>
 				</div>
 				<div class="card-body">
@@ -31,13 +31,8 @@
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 						<div id="styleActions" class="col-12 p-4" th:if="${ alert!=null}">
-							<a th:href="@{/admin/edit_style(styleId=${itemBean.itemId})}" class="btn btn-sm btn-info" th:if="${itemBean.status=='C'}"><span
-								class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
-										class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
-								</span>
-							</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_style}" class="btn btn-sm btn-success"><span
-								class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
-										class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+							<a th:href="@{/admin/add_style}" class="btn btn-sm btn-success"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+										class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 								</span>
 							</span> <span th:text="#{commerce.home.menu.add.style}"></span></a> <a th:href="@{/admin/manage_style}" class="btn btn-sm btn-success"> <span
 								class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
@@ -46,7 +41,7 @@
 							</span> <span th:text="#{commerce.home.menu.search.item}"></span>
 							</a>
 						</div>
-						<form class="form" id="addItem" th:action="@{/admin/add_style}" th:object="${itemBean}" enctype="multipart/form-data" method="post">
+						<form class="form" id="addItem" th:action="@{/admin/edit_style}" th:object="${itemBean}" enctype="multipart/form-data" method="post">
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
@@ -430,13 +425,9 @@
 												</span>
 												</span><span th:text="#{commerce.screen.btn.submit.save.approve}"></span>
 											</button>
-											<a th:href="@{/admin/edit_style(styleId=${itemBean.itemId})}" class="btn btn-info  mx-2" th:if="${itemBean.status=='C'}"><span
-												class="fa-2x mx-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
-														class="fas fa-check" data-fa-transform="shrink-10 right-10 up-4"></i>
-												</span>
-											</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_sku(styleId=${itemBean.itemId})}"
-												class="btn btn-success mx-2" th:if="${itemBean.status=='A'}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
-														class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+											<a th:href="@{/admin/add_sku(styleId=${itemBean.itemId})}" class="btn btn-success mx-2" th:if="${itemBean.status=='A'}"><span
+												class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
+														class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
 											</span> <span th:text="#{commerce.home.menu.add.sku}"></span></a> <a th:href="@{/admin/add_style}" class="btn btn-success  mx-2"><span
 												class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
@@ -455,6 +446,7 @@
 						</form>
 					</div>
 				</div>
+				<div class="card-footer text-muted"></div>
 			</div>
 		</div>
 		<!-- /#page-content-wrapper -->

@@ -18,9 +18,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.AttributeDTO;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
@@ -34,6 +36,7 @@ import com.punj.app.ecommerce.domains.item.StyleCounter;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.item.ids.SKUCounterId;
+import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.repositories.item.AttributeRepository;
 import com.punj.app.ecommerce.repositories.item.AttributeSearchRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
@@ -44,7 +47,10 @@ import com.punj.app.ecommerce.repositories.item.ItemSearchRepository;
 import com.punj.app.ecommerce.repositories.item.SKUCounterRepository;
 import com.punj.app.ecommerce.repositories.item.StyleCounterRepository;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.converter.AttributeConverter;
+import com.punj.app.ecommerce.services.converter.ItemConverter;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.services.dtos.SaleItemTax;
 import com.punj.app.ecommerce.utils.Pager;
@@ -67,6 +73,7 @@ public class ItemServiceImpl implements ItemService {
 	private SKUCounterRepository skuRepository;
 	private AttributeSearchRepository attributeSearchRepository;
 	private CommonService commonService;
+	private PriceService priceService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -79,6 +86,15 @@ public class ItemServiceImpl implements ItemService {
 	 */
 	public AttributeSearchRepository getAttributeSearchRepository() {
 		return attributeSearchRepository;
+	}
+
+	/**
+	 * @param priceService
+	 *            the priceService to set
+	 */
+	@Autowired
+	public void setPriceService(PriceService priceService) {
+		this.priceService = priceService;
 	}
 
 	/**
@@ -262,11 +278,13 @@ public class ItemServiceImpl implements ItemService {
 		StyleCounter style = new StyleCounter();
 		style.setStatus("N");
 
-		style = styleRepository.save(style);
+		style = this.styleRepository.save(style);
 
-		logger.info("A new style number {} has been generated successfully", style.getStyleId());
+		String stylePrefix = style.getStyleId().toString();
+		stylePrefix = stylePrefix + "0000";
+		logger.info("A new style number {} has been generated successfully", stylePrefix);
 
-		return style.getStyleId();
+		return new BigInteger(stylePrefix);
 	}
 
 	@Override
@@ -575,10 +593,13 @@ public class ItemServiceImpl implements ItemService {
 		pager.setMaxDisplayPage(this.maxPageBtns);
 
 		AttributeDTO attributeDTO = this.attributeSearchRepository.searchAttribute(searchText, pager);
-		if (attributeDTO != null && attributeDTO.getAttributes() != null && !attributeDTO.getAttributes().isEmpty())
+		if (attributeDTO != null && attributeDTO.getAttributes() != null && !attributeDTO.getAttributes().isEmpty()) {
+			List<Attribute> distinctAttributes = AttributeConverter.convertDistinctAttributes(attributeDTO.getAttributes());
+			attributeDTO.setAttributes(distinctAttributes);
 			logger.info("The item hierarchy has been retrieved based on searched keyword");
-		else
+		} else {
 			logger.info("There was no item hierarchy found based on searched keyword");
+		}
 		return attributeDTO;
 	}
 
@@ -586,7 +607,10 @@ public class ItemServiceImpl implements ItemService {
 	public List<Attribute> retrieveAttributeValues(String attributeCode) {
 		Attribute attribute = new Attribute();
 		attribute.setCode(attributeCode);
-		List<Attribute> attributeValueList = this.attributeRepository.findAll(Example.of(attribute));
+
+		Sort sort = new Sort(Sort.Direction.ASC, "valSeqNo");
+
+		List<Attribute> attributeValueList = this.attributeRepository.findAll(Example.of(attribute), sort);
 
 		if (attributeValueList != null && !attributeValueList.isEmpty())
 			logger.info("The {} values for attribute {} has been retrieved successfully", attributeValueList.size(), attributeCode);
@@ -594,6 +618,89 @@ public class ItemServiceImpl implements ItemService {
 			logger.info("There was no attribute values found for {} attribute", attributeCode);
 
 		return attributeValueList;
+	}
+
+	private void updateStyle(BigInteger styleNumber) {
+		StyleCounter styleCounter = new StyleCounter();
+
+		if (styleNumber.longValue() > 9999999) {
+			String styleValue = styleNumber.toString();
+			styleValue = styleValue.substring(0, 7);
+			styleNumber = new BigInteger(styleValue);
+		}
+
+		styleCounter.setStyleId(styleNumber);
+		styleCounter.setStatus("Y");
+
+		this.styleRepository.save(styleCounter);
+		logger.info("The new generated style was updated as used");
+	}
+
+	@Override
+	@Transactional
+	public Item saveItem(Item item) {
+
+		item = this.itemRepository.save(item);
+		if (item != null) {
+			logger.info("The item details has been updated successfully");
+		} else {
+			logger.info("The item details were not saved due to some issue");
+		}
+		return item;
+	}
+
+	@Override
+	@Transactional
+	public Item saveNewItem(Item item) {
+		BigInteger styleNumber = this.generateNewStyle();
+		item.setItemId(styleNumber);
+		item.getItemOptions().setItemId(item.getItemId());
+		logger.info("The new generated style number has been assigned to the item object");
+
+		item = this.itemRepository.save(item);
+		if (item != null) {
+			this.updateStyle(styleNumber);
+			logger.info("The item details has been saved successfully");
+		} else {
+			logger.info("The item details were not saved due to some issue");
+		}
+
+		return item;
+	}
+
+	@Override
+	@Transactional
+	public Item approveItem(Item item) {
+
+		item = this.saveItem(item);
+		logger.info("The price information will be updated in price records now.");
+
+		List<Location> locations = this.commonService.retrieveAllLocations();
+		List<ItemPrice> itemPriceList = ItemConverter.convertToItemPriceForAll(item, item.getModifiedBy(), locations);
+		itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
+		if (itemPriceList != null && !itemPriceList.isEmpty())
+			logger.info("The item price records were created successfully");
+		else
+			logger.info("There was some issue while creating the item prices");
+		return item;
+
+	}
+
+	@Override
+	@Transactional
+	public List<Item> createSKUs(List<Item> skuList) {
+		
+		List<Item> finalSKUs=new ArrayList<>(skuList.size());
+		
+		for(Item sku:skuList) {
+			sku=this.saveNewItem(sku);
+			finalSKUs.add(sku);
+		}
+		if (finalSKUs != null && !finalSKUs.isEmpty())
+			logger.info("The skus were created successfully");
+		else
+			logger.info("There was some issue while creating the skus");
+		return finalSKUs;
 	}
 
 }

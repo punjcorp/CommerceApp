@@ -66,4 +66,9 @@ public final class ServiceConstants {
 	
 	public static final String ACCOUNT_TYPE_SUPPLIER= "SUPPLIER";
 	
+	
+	public static final String PRICE_TYPE_PERMANENT= "1";
+	public static final String PRICE_TYPE_PROMOTION= "2";
+	public static final String PRICE_TYPE_CLEARANCE= "3";
+	
 }

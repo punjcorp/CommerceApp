@@ -64,7 +64,7 @@ public class Item implements Serializable, Cloneable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
-	@OneToMany(mappedBy = "itemId", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
 	private List<ItemImage> images;
 
 	// @IndexedEmbedded
@@ -72,11 +72,11 @@ public class Item implements Serializable, Cloneable {
 	@JoinColumn(name = "hierarchy_id")
 	private Hierarchy hierarchy;
 
-	@OneToMany(mappedBy = "itemAttributeId.item")
+	@OneToMany(mappedBy = "itemAttributeId.item", cascade = CascadeType.ALL)
 	private List<ItemAttribute> itemAttributes;
 
-	@OneToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "item_id")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="item_id")
 	private ItemOptions itemOptions;
 
 	public Item() {

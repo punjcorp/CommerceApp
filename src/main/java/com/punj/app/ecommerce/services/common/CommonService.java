@@ -50,8 +50,12 @@ public interface CommonService {
 
 	public Hierarchy retrieveHierarchy(Integer hierarchyId);
 
+	public Hierarchy retrieveHierarchy(String hierarchyName);
+
 	public HierarchyDTO retrieveHierarchyByText(String searchText, Pager pager);
 
 	public List<UOM> retrieveAllUOMs();
+
+	public UOM retrieveUOM(String uomCode);
 
 }

@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.models.item;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
@@ -12,15 +13,16 @@ import org.springframework.web.multipart.MultipartFile;
  * @author admin
  *
  */
-public class ItemImageBean {
+public class ItemImageBean implements Serializable {
 
-	private Integer itemImageId;
+	private BigInteger itemImageId;
 	private BigInteger itemId;
 
 	private String name;
 	private String imageURL;
 	private String imageType;
 	private MultipartFile imageData;
+	private String baseEncodedImage;
 
 	private String createdBy;
 	private LocalDateTime createdDate;
@@ -28,7 +30,7 @@ public class ItemImageBean {
 	/**
 	 * @return the itemImageId
 	 */
-	public Integer getItemImageId() {
+	public BigInteger getItemImageId() {
 		return itemImageId;
 	}
 
@@ -36,7 +38,7 @@ public class ItemImageBean {
 	 * @param itemImageId
 	 *            the itemImageId to set
 	 */
-	public void setItemImageId(Integer itemImageId) {
+	public void setItemImageId(BigInteger itemImageId) {
 		this.itemImageId = itemImageId;
 	}
 
@@ -143,6 +145,21 @@ public class ItemImageBean {
 	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the baseEncodedImage
+	 */
+	public String getBaseEncodedImage() {
+		return baseEncodedImage;
+	}
+
+	/**
+	 * @param baseEncodedImage
+	 *            the baseEncodedImage to set
+	 */
+	public void setBaseEncodedImage(String baseEncodedImage) {
+		this.baseEncodedImage = baseEncodedImage;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.item;
  * 
  */
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -223,7 +224,13 @@ public class SearchItemController {
 		/**
 		 * Setting the images for the item
 		 */
-		List<ItemImageBean> itemImageBeans = ItemTransformer.tranformItemImages(style.getImages());
+		List<ItemImageBean> itemImageBeans=null;
+		try {
+			itemImageBeans = ItemTransformer.tranformItemImages(style.getImages());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		itemBean.setItemImages(itemImageBeans);
 
 		logger.info("The item images has been set in bean object successfully");
@@ -234,22 +241,11 @@ public class SearchItemController {
 
 		ItemOptionsBean itemOptionsBean = new ItemOptionsBean();
 
-		CurrencyUnit currenyUnit = Monetary.getCurrency(locale);
-		MonetaryAmount unitCostAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getUnitCost()).create();
-
-		MonetaryAmount suggestedAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getSuggestedPrice())
-				.create();
-		MonetaryAmount compareAtAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCompareAtPrice())
-				.create();
-		MonetaryAmount currentAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getCurrentPrice()).create();
-		MonetaryAmount restockingAmount = Monetary.getDefaultAmountFactory().setCurrency(currenyUnit).setNumber(style.getItemOptions().getRestockingFee())
-				.create();
-
-		itemOptionsBean.setUnitCost(unitCostAmount);
-		itemOptionsBean.setSuggestedPrice(suggestedAmount);
-		itemOptionsBean.setCompareAtPrice(compareAtAmount);
-		itemOptionsBean.setCurrentPrice(currentAmount);
-		itemOptionsBean.setRestockingFee(restockingAmount);
+		itemOptionsBean.setUnitCost(style.getItemOptions().getUnitCost());
+		itemOptionsBean.setSuggestedPrice(style.getItemOptions().getSuggestedPrice());
+		itemOptionsBean.setCompareAtPrice(style.getItemOptions().getCompareAtPrice());
+		itemOptionsBean.setCurrentPrice(style.getItemOptions().getCurrentPrice());
+		itemOptionsBean.setRestockingFee(style.getItemOptions().getRestockingFee());
 
 		itemOptionsBean.setDiscountFlag(style.getItemOptions().getDiscountFlag());
 		itemOptionsBean.setTaxFlag(style.getItemOptions().getTaxFlag());

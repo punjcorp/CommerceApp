@@ -370,7 +370,6 @@ body {
 /*Material Icons*/
 .nav.sidebar-nav li a::before {
 	font-family: 'Material Icons';
-	content: "dashboard";
 	vertical-align: baseline;
 	display: inline-block;
 	padding-right: 5px;
@@ -472,11 +471,6 @@ a[id="managesupplier"]::before {
 
 a[id="addsupplier"]::before {
 	content: "person_add" !important;
-}
-
-a[href*="#style"]::before {
-	content: "library_books" !important;
-	font-size: 48px;
 }
 
 a[id="manageitem"]::before {
@@ -689,13 +683,26 @@ a[id="contact"]::before {
 
 
 .preview-thumbnail{
-	height:120px;
-	max-width: 120px;
-	max-height: 120px !important;
+	height:240px;
+	max-width: 100%;
+	max-height: 240px !important;
 }
 
 .preview-thumbnail >  img {
+	height:240px;
+	max-width: 100%;
+	max-height: 240px !important;
+}
+
+
+preview-thumbnail-sku{
 	height:120px;
-	max-width: 120px;
+	max-width: 100%;
+	max-height: 120px !important;
+}
+
+.preview-thumbnail-sku >  img {
+	height:120px;
+	max-width: 100%;
 	max-height: 120px !important;
 }

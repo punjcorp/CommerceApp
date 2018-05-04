@@ -21,7 +21,7 @@ var token = $("meta[name='_csrf']").attr("content");
 var searchBean = new SearchBean();
 var selectedAttributes = new Array();
 var selectedAttrValues = new Array();
-
+var attrCount=-1;
 $(function() {
 
 	// The auto complete for item hierarchy starts
@@ -69,7 +69,7 @@ $(function() {
 	// The auto complete for item hierarchy ends
 
 	// The auto complete for item attributes starts
-	$('[type=text][id^=attributes][id$=\\.name]').autocomplete({
+	$('#attrName').autocomplete({
 		minLength : 3,
 		source : function(request, response) {
 			var searchText = this.element[0].value;
@@ -139,6 +139,9 @@ $(function() {
 		            }
 		            image_holder.show();
 		            reader.readAsDataURL($(this)[0].files[0]);
+		            
+		            $("#itemImages"+imageIndex+"\\.name").val($(this)[0].files[0].name);
+		            
 	        	}
 	        	
 
@@ -199,6 +202,7 @@ function isDuplicateAttribute(attrCode) {
 
 function addSelectedAttribute(attribute) {
 	if(!isDuplicateAttribute(attribute.code)){
+		attrCount++;
 		var attributeBean = new AttributeBean();
 		attributeBean.initialize(attribute.attributeId, attribute.name, attribute.code, attribute.description, attribute.valCode, attribute.valName,
 				attribute.valDescription, attribute.valSeqNo);
@@ -251,6 +255,7 @@ function displayAttributeValues(data) {
 	outputColLeftHtml += '<div class="form-group">';
 	outputColLeftHtml += '<label><small><span>Selected Item Attribute</span></small></label>';
 	outputColLeftHtml += '<div>' + data[0].name + '</div>';
+	outputColLeftHtml += '<input type="hidden" id="selectedAttributes'+attrCount+'.code" name="selectedAttributes['+attrCount+'].code" value="'+data[0].code+'"></input>';
 	outputColLeftHtml += '</div>';
 	outputColLeftHtml += '</div>';
 
@@ -263,10 +268,10 @@ function displayAttributeValues(data) {
 
 	$.map(data, function(attribute, index) {
 
-		outputColRightHtml += '<a class="list-group-item list-group-item-action" id="attrValItem'+attribute.code + index + '" onClick="selectAttrValue(this, ' + index + ')">';
+		outputColRightHtml += '<a class="list-group-item list-group-item-action" id="attrValItem'+attrCount + '" onClick="selectAttrValue(this, ' + index + ')">';
 		outputColRightHtml += '<div class="form-check float-left">';
-		outputColRightHtml += '<input type="checkbox" class="form-check-input" id="attrValCB'+attribute.code + index + '" name="attrValCB" value="' + attribute.valCode
-				+ '"></input> ';
+		outputColRightHtml += '<input type="checkbox" class="form-check-input" id="selectedAttributes'+attrCount + index+'.attrValues"';
+		outputColRightHtml += 'name="selectedAttributes['+attrCount+'].attrValues" value="' + attribute.valCode + '"></input> ';
 		outputColRightHtml += '</div>';
 		outputColRightHtml += '<span class="mx-4">' + attribute.valName + '</span></a>';
 	});
@@ -289,6 +294,7 @@ function displayAttributeValues(data) {
 
 function selectAttrValue(customInput, index) {
 	var cntrlId=customInput.id;
-	var cbCntrl=cntrlId.replace('attrValItem','attrValCB');
+	var cbCntrl=cntrlId.replace('attrValItem','selectedAttributes');
+	cbCntrl+=index+'\\.attrValues';
 	$('#'+cbCntrl).attr("checked", !$('#'+cbCntrl).attr("checked"));
 }
