@@ -30,15 +30,14 @@
 					<div class="card-text">
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-						<form class="form" id="addItem" th:action="@{/admin/add_sku}" th:object="${itemBean}" enctype="multipart/form-data" method="post"
-							th:if="${itemBean!=null}">
+						<form class="form" id="addItem" th:action="@{/admin/add_sku}" th:object="${itemBean}" enctype="multipart/form-data" method="post" th:if="${itemBean!=null}">
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
 										<label><small><span th:text="#{commerce.screen.item.name}">Item Name</span></small></label>
 										<div class="input-group">
 											<input type="text" th:field="*{style.name}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.name.placeholder}"></input>
-											<input type="hidden" th:field="*{style.itemId}"></input> <input type="hidden" th:field="*{style.itemOptions.nextLevelCreated}"></input> <input type="hidden" th:field="*{style.status}"></input> <input type="hidden"
+											<input type="hidden" th:field="*{style.itemId}"></input> <input type="hidden" th:field="*{style.status}"></input> <input type="hidden"
 												th:field="*{style.parentItemId}"></input> <input type="hidden" th:field="*{style.itemLevel}"></input> <input type="hidden"
 												th:field="*{style.createdBy}"></input> <input type="hidden" th:field="*{style.createdDate}"></input> <input type="hidden"
 												th:field="*{style.itemOptions.itemId}"></input>
@@ -83,6 +82,7 @@
 									</div>
 								</div>
 							</div>
+							
 							<!-- Style Attributes -->
 							<div class="row">
 								<div class="col-xs-12 col-sm-12 col-md-12">
@@ -116,37 +116,7 @@
 																<span th:text="#{commerce.screen.item.attribute.values.progress}"></span>
 															</div>
 														</div>
-														<div class="col-12" id="selectedAttributes">
-															<div class="row">
-																<div class="col-xs-12 col-sm-12 col-md-12"
-																	th:if="${itemBean.style.selectedAttributes!=null and #lists.size(itemBean.style.selectedAttributes)>0}">
-																	<div class="form-group">
-																		<label><small><span th:text="#{commerce.screen.item.selected.attribute}">Selected Item Attributes</span></small></label>
-																		<div class="input-group">
-																			<div class="list-group col-12">
-																				<div class="row" th:each="sku,itrStat:${itemBean.style.selectedAttributes}">
-																					<div class="col">
-																						<a class="list-group-item list-group-item-action" th:id="'attrItem'+${itrStat.index}"
-																							th:onClick="'selectAttr(this, '+${itrStat.index}+')'">
-																							<div class="form-check float-left">
-																								<input type="hidden" th:field="${itemBean.style.selectedAttributes[__${itrStat.index}__].attributeId}"></input>
-																							</div> <span class="mx-4" th:text="${itemBean.style.selectedAttributes[__${itrStat.index}__].name}"></span>
-																						</a>
-																					</div>
-																					<div class="col-1">
-																						<button type="button" id="btnDeleteAttr"
-																							th:onClick="'deleteAttr(\''+${itemBean.style.selectedAttributes[__${itrStat.index}__].code}+'\')'"
-																							class="btn btn-danger btn-sm mx-1">
-																							<i class="far fa-trash-alt fa-2x"></i>
-																						</button>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
+														<div class="col-12" id="selectedAttributes"></div>
 													</div>
 												</div>
 												<div id="attributesDiv"></div>
@@ -156,7 +126,7 @@
 								</div>
 							</div>
 							<!-- SKU Details-->
-							<div th:class="${itemBean.skus!=null and #lists.size(itemBean.skus)>0}?'row':'row d-none'" id="skuDetails">
+							<div class="row d-none" id="skuDetails">
 								<div class="col-xs-12 col-sm-12 col-md-12">
 									<div class="card form-group">
 										<div class="card-header">
@@ -169,76 +139,7 @@
 										</div>
 										<div id="images" class="collapse show">
 											<div class="card-body">
-												<div id="skuDataList">
-													<div th:if="${itemBean.skus!=null and #lists.size(itemBean.skus)>0}">
-														<div class="row" th:each="sku,itrStat:${itemBean.skus}">
-															<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemId}"></input>
-															<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].status}"></input>
-															<div class="col-2">
-																<div class="card-text preview-thumbnail-sku text-center">
-																	<img th:src="@{/images/item_image_default_200.png}" class="img-thumbnail"
-																		th:if="${itemBean.skus[__${itrStat.index}__].itemImages==null or itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL==null or itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL==''}" />
-																	<img
-																		th:src="'data:'+${itemBean.skus[__${itrStat.index}__].itemImages[0].imageType}+';base64,'+${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}"
-																		class="img-thumbnail"
-																		th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null and #lists.size(itemBean.skus[__${itrStat.index}__].itemImages)>0 and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=''}" />
-																	<br /> <label><small><span th:text="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}"
-																			th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=''}"></span></small></label>
-																	<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL}"></input> <input type="hidden"
-																		th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}"></input> <input type="hidden"
-																		th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}"></input> <input type="hidden"
-																		th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageType}"></input>
-																</div>
-															</div>
-															<div class="col">
-																<div class="form-group">
-																	<label><small><span th:text="#{commerce.screen.sku.name}"></span></small></label>
-																	<div class="input-group">
-																		<input type="text" class="form-control input-sm" th:field="${itemBean.skus[__${itrStat.index}__].name}"
-																			th:placeholder="#{commerce.screen.sku.name.placeholder}"></input>
-																	</div>
-																</div>
-																<div class="form-group">
-																	<label><small><span th:text="#{commerce.screen.sku.current.price}"></span></small></label>
-																	<div class="input-group">
-																		<input type="number" step="0.01" class="form-control input-sm"
-																			th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.currentPrice}"
-																			th:placeholder="#{commerce.screen.sku.current.price.placeholder}"></input>
-																	</div>
-																</div>
-															</div>
-															<div class="col">
-																<div class="form-group">
-																	<label><small><span th:text="#{commerce.screen.sku.initial.stock}"></span></small></label>
-																	<div class="input-group">
-																		<input type="number" class="form-control input-sm" th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.stockStatus}"
-																			th:placeholder="#{commerce.screen.sku.initial.stock.placeholder}"></input>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-12">
-																		<label><small><span th:text="#{commerce.screen.sku.selected.attribute.value}"></span></small></label>
-																	</div>
-																</div>
-																<div class="row"
-																	th:if="${itemBean.skus[__${itrStat.index}__].selectedAttributes!=null and #lists.size(itemBean.skus[__${itrStat.index}__].selectedAttributes)>0}"
-																	th:each="attribute,itrAttr:${itemBean.skus[__${itrStat.index}__].selectedAttributes}">
-																	<div class="col">
-																		<b><span th:text="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].name}"></span><span
-																			th:text="'  :  '"></span></b>
-																	</div>
-																	<div class="col">
-																		<span th:text="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valName}"></span> <input type="hidden"
-																			th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].attributeId}"></input> <input
-																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valCode}"></input> <input
-																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].name}"></input> <input
-																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valName}"></input>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
+												<div id="skuDataList"></div>
 											</div>
 										</div>
 									</div>
@@ -283,38 +184,26 @@
 		/*<![CDATA[*/
 
 		var style_price = /*[[${itemBean.style.itemOptions.currentPrice}]]*/;
-		var style_name = /*[[${itemBean.style.name}]]*/;
-		/*]]>*/
-	</script>
-	<script type="text/javascript" th:inline="javascript"
-		th:if="${itemBean!=null and itemBean.style!=null and itemBean.style.itemImages!=null and itemBean.style.itemImages[0].name!=null and itemBean.style.itemImages[0].name!=''}">		
-		/*<![CDATA[*/
-
-			var style_image_name = /*[[${itemBean.style.itemImages[0].name}]]*/;
-			var style_image_url = /*[['data:'+${itemBean.style.itemImages[0].imageType}+';base64,'+${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
-			
-			var style_image_url_actual = /*[[${itemBean.style.itemImages[0].imageURL}]]*/;
-			var style_image_type = /*[[${itemBean.style.itemImages[0].imageType}]]*/;
-			var style_encoded_image = /*[[${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
 		
 		/*]]>*/
-	</script>
-	<script type="text/javascript" th:inline="javascript"
-		th:if="${itemBean!=null and itemBean.style!=null and itemBean.style.itemImages!=null and (itemBean.style.itemImages[0].name==null or itemBean.style.itemImages[0].name=='')}">
+		</script>		
+		
+		<script type="text/javascript" th:inline="javascript" th:if="${itemBean!=null and itemBean.style.itemImages[0].name!=null and itemBean.style.itemImages[0].name!=''}">		
+		/*<![CDATA[*/
+			
+			var style_image_name = /*[[${itemBean.style.itemImages[0].name}]]*/;
+			var style_image_url = /*[['data:'+${itemBean.style.itemImages[0].imageType}+';base64,'+${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
+		
+		/*]]>*/
+		</script>
+		
+		<script type="text/javascript" th:inline="javascript" th:if="${itemBean!=null and (itemBean.style.itemImages[0].name==null or itemBean.style.itemImages[0].name=='')}">
 		/*<![CDATA[*/
 			
 			var style_image_name = 'Default Image';
 			var style_image_url = /*[[@{/images/item_image_default_200.png}]]*/;		
 		
 		/*]]>*/
-	</script>
-	<script type="text/javascript" th:inline="javascript" th:if="${itemBean!=null and itemBean.skus!=null and (itemBean.skus[0].status=='C' or itemBean.skus[0].status=='A')}">
-		/*<![CDATA[*/
-
-		var item_bean_dto = /*[[${itemBean}]]*/;
-		initializeSKUsAfterCreation();
-		
-		/*]]>*/
-	</script>
+		</script>
 </body>
 </html>

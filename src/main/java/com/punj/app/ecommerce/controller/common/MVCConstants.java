@@ -21,6 +21,11 @@ public final class MVCConstants {
 	public static final String ALERT = "alert";
 	public static final String PAGER= "pager";
 	public static final String YES="Y";
+	public static final String NO="N";
+	
+	public static final String NEXT_LEVEL_CREATED= "C";
+	public static final String NEXT_LEVEL_APPROVED= "A";	
+	public static final String NEXT_LEVEL_NOT_CREATED= "N";	
 
 	public static final String LAST_TXN_NO="LAST_TXN_NO";
 	public static final String RCPT_PARAM="_RCPT";

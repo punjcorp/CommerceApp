@@ -182,10 +182,21 @@ function selectAttr(customInput, index) {
 
 function deleteAttr(attrCode) {
 	// Remove the Attribute
-	selectedAttributes = $.grep(this.selectedAttributes, function(attribute) {
+	selectedAttributes = $.grep(selectedAttributes, function(attribute) {
 		return attribute.code != attrCode;
 	});
 	attrAction.renderSelectedAttribute(selectedAttributes);
 	var finalSKUCombinationList=attrAction.generateSKUCombinations(selectedAttributes);
 	attrAction.renderSKUs(selectedAttributes,finalSKUCombinationList);	
+}
+
+
+
+function initializeSKUsAfterCreation(){
+	selectedAttributes=item_bean_dto.style.selectedAttributes;
+	if(selectedAttributes && selectedAttributes.length>0){
+		var finalSKUCombinationList=attrAction.generateSKUCombinations(selectedAttributes);
+		attrAction.renderSKUs(selectedAttributes,finalSKUCombinationList);
+	}
+	
 }

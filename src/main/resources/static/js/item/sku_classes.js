@@ -59,6 +59,10 @@ $
 								outputColRightHtml += '<div class="form-check float-left">';
 								outputColRightHtml += '<input type="hidden" id="style.selectedAttributes' + index + '.attributeId"';
 								outputColRightHtml += 'name="style.selectedAttributes[' + index + '].attributeId" value="' + attribute.attributeId+ '"></input> ';
+								outputColRightHtml += '<input type="hidden" id="style.selectedAttributes' + index + '.name"';
+								outputColRightHtml += 'name="style.selectedAttributes[' + index + '].name" value="' + attribute.name+ '"></input> ';
+								outputColRightHtml += '<input type="hidden" id="style.selectedAttributes' + index + '.code"';
+								outputColRightHtml += 'name="style.selectedAttributes[' + index + '].code" value="' + attribute.code+ '"></input> ';
 								outputColRightHtml += '</div>';
 								outputColRightHtml += '<span class="mx-4">' + attribute.name + '</span></a>';
 								outputColRightHtml += '</div>';
@@ -88,11 +92,14 @@ $
 					renderSKUs : function(selectedAttributes, finalSKUAttrVals) {
 						if (selectedAttributes && selectedAttributes.length > 0) {
 							var outerStructureHtml = '';
+							var skuName='';
 							$
 									.each(
 											finalSKUAttrVals,
 											function(index, skuCombination) {
 
+												skuName=style_name;
+												
 												var priceHtml = '<div class="form-group">';
 												priceHtml += '<label><small><span>SKU Price</span></small></label>';
 												priceHtml += '<div class="input-group">';
@@ -115,11 +122,25 @@ $
 												imageHtml += '<img src="' + style_image_url + '" class="img-thumbnail"/><br/>';
 												imageHtml += '<label><small><span>' + style_image_name + '</span></small></label>';
 												imageHtml += '</div>';
+												
+												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.name"';
+												imageHtml += 'name="skus['+index+'].itemImages[0].name"';
+												imageHtml += 'value="'+style_image_name+'"></input>';
+												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.imageURL"';
+												imageHtml += 'name="skus['+index+'].itemImages[0].imageURL"';
+												imageHtml += 'value="'+style_image_url_actual+'"></input>';
+												
+												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.imageType"';
+												imageHtml += 'name="skus['+index+'].itemImages[0].imageType"';
+												imageHtml += 'value="'+style_image_type+'"></input>';
+												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.baseEncodedImage"';
+												imageHtml += 'name="skus['+index+'].itemImages[0].baseEncodedImage"';
+												imageHtml += 'value="'+style_encoded_image+'"></input>';
 
 												var attributesHtml = '';
 												attributesHtml += '<div class="row">';
 												attributesHtml += '<div class="col-12">';
-												attributesHtml += '<label><small><span>Selected Item Attributes</span></small></label>';
+												attributesHtml += '<label><small><span>Selected SKU Attributes and Values</span></small></label>';
 												attributesHtml += '</div>';
 												attributesHtml += '</div>';
 
@@ -134,27 +155,51 @@ $
 													attributesHtml += 'name="skus['+index+'].selectedAttributes['+attrIndex+'].attributeId"';
 													attributesHtml += 'value="'+attrVal.attributeId+'"></input>';
 													
+													skuName+=' '+attrVal.valCode;
+													
 													attributesHtml += '<input type="hidden" id="skus'+index+'.selectedAttributes'+attrIndex+'.valCode"';
 													attributesHtml += 'name="skus['+index+'].selectedAttributes['+attrIndex+'].valCode"';
 													attributesHtml += 'value="'+attrVal.valCode+'"></input>';													
+													
+													
+													attributesHtml += '<input type="hidden" id="skus'+index+'.selectedAttributes'+attrIndex+'.name"';
+													attributesHtml += 'name="skus['+index+'].selectedAttributes['+attrIndex+'].name"';
+													attributesHtml += 'value="'+attrVal.name+'"></input>';
+													
+													attributesHtml += '<input type="hidden" id="skus'+index+'.selectedAttributes'+attrIndex+'.valName"';
+													attributesHtml += 'name="skus['+index+'].selectedAttributes['+attrIndex+'].valName"';
+													attributesHtml += 'value="'+attrVal.valName+'"></input>';													
+													
 													
 													attributesHtml += '</div>';
 													attributesHtml += '</div>';
 												});
 
+												
+												
+												var skuNameHtml = '<div class="form-group">';
+												skuNameHtml += '<label><small><span>SKU Name</span></small></label>';
+												skuNameHtml += '<div class="input-group">';
+												skuNameHtml += '<input type="text" class="form-control input-sm"';
+												skuNameHtml += 'id="skus'+index+'.name" name="skus['+index+'].name"';
+												skuNameHtml += 'placeholder="Enter SKU Name" value="'+ skuName + '"></input>';
+												skuNameHtml += '</div>';
+												skuNameHtml += '</div>';
+												
 												outerStructureHtml += '<div class="row">';
 												outerStructureHtml += '<div class="col-2">';
 												outerStructureHtml += imageHtml;
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '<div class="col">';
 												outerStructureHtml += '<div class="col-12">';
-												outerStructureHtml += priceHtml;
+												outerStructureHtml += skuNameHtml;
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '<div class="col-12">';
-												outerStructureHtml += inventoryHtml;
+												outerStructureHtml += priceHtml;
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '<div class="col">';
+												outerStructureHtml += inventoryHtml;
 												outerStructureHtml += attributesHtml;
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '</div>';

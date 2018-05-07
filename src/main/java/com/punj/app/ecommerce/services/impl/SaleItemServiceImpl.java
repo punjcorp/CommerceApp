@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -10,12 +11,14 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.item.Item;
+import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.domains.tax.LocationTax;
 import com.punj.app.ecommerce.domains.tax.ids.LocationTaxId;
@@ -78,12 +81,13 @@ public class SaleItemServiceImpl implements SaleItemService {
 	}
 
 	@Override
-	public SaleItem getItem(BigInteger itemId, Integer locationId) {
+	public SaleItem getItem(BigInteger itemId, Integer locationId) throws UnsupportedEncodingException {
 		SaleItem saleItem = null;
 		// Step 1 - Is Item Valid
 		// Step 2 - Is Item Valid at the provided location
 		Item item = this.itemService.getItem(itemId);
 		if (item != null) {
+			
 			logger.info("Searching for Item Stock and Prices");
 			// Step 3 - does the location have inventory
 			ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
@@ -95,6 +99,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 				List<LocationTax> taxList = this.retrieveTax(locationId, item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_WITHIN_STATE);
 
 				saleItem = this.transformItemDetails(item, itemStock, itemPrice, taxList);
+				this.updateItemImage(item, saleItem);
 			}
 
 		}
@@ -195,5 +200,17 @@ public class SaleItemServiceImpl implements SaleItemService {
 		return saleItemTax; 
 	}
 	
+	private void updateItemImage(Item item, SaleItem saleItem ) throws UnsupportedEncodingException {
+
+		if (item.getImages() != null && !item.getImages().isEmpty()) {
+			ItemImage itemImage = item.getImages().get(0);
+			byte[] imageData = itemImage.getImageData();
+			byte[] encodeBase64 = Base64.encodeBase64(imageData);
+			String base64Encoded = new String(encodeBase64, "UTF-8");
+			saleItem.setImageData(base64Encoded);
+			saleItem.setImageType(itemImage.getImageType());
+		}
+		logger.info("The item image data has been updated successfully");
+	}
 	
 }

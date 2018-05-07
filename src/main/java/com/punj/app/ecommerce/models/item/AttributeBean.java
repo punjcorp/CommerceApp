@@ -23,6 +23,7 @@ public class AttributeBean implements Serializable {
 	private Integer valSeqNo;
 
 	private List<String> attrValues;
+	private List<AttributeBean> attrValList;
 
 	/**
 	 * @return the attributeId
@@ -158,5 +159,21 @@ public class AttributeBean implements Serializable {
 	public void setAttrValues(List<String> attrValues) {
 		this.attrValues = attrValues;
 	}
+
+	/**
+	 * @return the attrValList
+	 */
+	public List<AttributeBean> getAttrValList() {
+		return attrValList;
+	}
+
+	/**
+	 * @param attrValList the attrValList to set
+	 */
+	public void setAttrValList(List<AttributeBean> attrValList) {
+		this.attrValList = attrValList;
+	}
+
+	
 
 }

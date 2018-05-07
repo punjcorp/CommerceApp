@@ -61,9 +61,7 @@ public class SKUCounter implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return new StringBuffer().append(skuCounterId.getStyleCounter().getStyleId())
-				.append(String.format("%02d", skuCounterId.getColor()))
-				.append(String.format("%02d", skuCounterId.getSize())).toString();
+		return new StringBuffer().append(this.skuCounterId.getStyleId().add(this.skuCounterId.getSkuId())).toString();
 	}
 
 }

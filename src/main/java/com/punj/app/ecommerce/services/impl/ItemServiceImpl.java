@@ -5,9 +5,12 @@ package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.AttributeDTO;
@@ -49,6 +53,7 @@ import com.punj.app.ecommerce.repositories.item.StyleCounterRepository;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.converter.AttributeConverter;
 import com.punj.app.ecommerce.services.converter.ItemConverter;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
@@ -274,6 +279,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
+	@Transactional
 	public BigInteger generateNewStyle() {
 		StyleCounter style = new StyleCounter();
 		style.setStatus("N");
@@ -285,6 +291,26 @@ public class ItemServiceImpl implements ItemService {
 		logger.info("A new style number {} has been generated successfully", stylePrefix);
 
 		return new BigInteger(stylePrefix);
+	}
+
+	@Override
+	@Transactional
+	public BigInteger generateNewSKU(BigInteger styleNo, BigInteger skuNo) {
+		SKUCounter skuCounter = new SKUCounter();
+		SKUCounterId skuCounterId = new SKUCounterId();
+		skuCounterId.setStyleId(styleNo);
+		skuCounterId.setSkuId(skuNo);
+		skuCounter.setStatus(ServiceConstants.NO_PARAM);
+		skuCounter.setSkuCounterId(skuCounterId);
+		skuCounter = this.skuRepository.save(skuCounter);
+		if (skuCounter != null && skuCounter.getSkuCounterId().getSkuId() != null) {
+			skuNo = skuCounter.getSkuCounterId().getStyleId().add(skuCounter.getSkuCounterId().getSkuId());
+			logger.info("A new sku number {} has been generated successfully", skuNo);
+		} else {
+			logger.info("There was some error while creating SKU", skuNo);
+		}
+
+		return skuNo;
 	}
 
 	@Override
@@ -357,9 +383,6 @@ public class ItemServiceImpl implements ItemService {
 				skuStyleCounter.setStyleId(skuItem.getParentItemId());
 
 				SKUCounterId skuCounterId = new SKUCounterId();
-				skuCounterId.setColor(colorAttribute.getValSeqNo());
-				skuCounterId.setSize(sizeAttribute.getValSeqNo());
-				skuCounterId.setStyleCounter(skuStyleCounter);
 
 				skuCounter.setSkuCounterId(skuCounterId);
 				skuCounter.setStatus("N");
@@ -620,6 +643,7 @@ public class ItemServiceImpl implements ItemService {
 		return attributeValueList;
 	}
 
+	@Transactional
 	private void updateStyle(BigInteger styleNumber) {
 		StyleCounter styleCounter = new StyleCounter();
 
@@ -688,19 +712,121 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	@Transactional
-	public List<Item> createSKUs(List<Item> skuList) {
-		
-		List<Item> finalSKUs=new ArrayList<>(skuList.size());
-		
-		for(Item sku:skuList) {
-			sku=this.saveNewItem(sku);
-			finalSKUs.add(sku);
+	public Item saveNewSKU(Item item, BigInteger skuNo) {
+
+		BigInteger skuNumber = this.generateNewSKU(item.getParentItemId(), skuNo);
+		item.setItemId(skuNumber);
+		item.getItemOptions().setItemId(item.getItemId());
+		logger.info("The new generated sku number has been assigned to the item object");
+
+		item = this.itemRepository.save(item);
+		if (item != null) {
+			this.updateSKUId(skuNumber);
+			logger.info("The sku details has been saved successfully");
+		} else {
+			logger.error("The sku details were not saved due to some issue");
 		}
-		if (finalSKUs != null && !finalSKUs.isEmpty())
-			logger.info("The skus were created successfully");
-		else
-			logger.info("There was some issue while creating the skus");
+
+		return item;
+	}
+
+	@Transactional
+	private void updateSKUId(BigInteger skuNumber) {
+		SKUCounter skuCounter = new SKUCounter();
+		SKUCounterId skuCounterId = new SKUCounterId();
+
+		String skuNoStr = skuNumber.toString();
+		String skuIdStr = skuNoStr.substring(skuNoStr.length() - 4, skuNoStr.length());
+
+		skuCounterId.setSkuId(new BigInteger(skuIdStr));
+		skuCounterId.setStyleId(skuNumber.subtract(skuCounterId.getSkuId()));
+
+		skuCounter.setSkuCounterId(skuCounterId);
+		skuCounter.setStatus("Y");
+
+		this.skuRepository.save(skuCounter);
+		logger.info("The new generated sku counter was updated as used");
+	}
+
+	@Override
+	@Transactional
+	public List<Item> createSKUs(List<Item> skuList, String username, Boolean isSKUExisting) {
+		List<Item> finalSKUs = null;
+		if (skuList != null && !skuList.isEmpty()) {
+
+			finalSKUs = new ArrayList<>(skuList.size());
+
+			BigInteger styleNo = skuList.get(0).getParentItemId();
+
+			if (isSKUExisting) {
+				this.deleteSKUs(styleNo);
+			}
+
+			Item style = this.getStyle(styleNo);
+			style.setModifiedBy(username);
+			style.setModifiedDate(LocalDateTime.now());
+			if (skuList.get(0).getStatus().equals(ServiceConstants.STATUS_APPROVED))
+				style.getItemOptions().setNextLevelCreated(ServiceConstants.NEXT_LEVEL_APPROVED);
+			else if (skuList.get(0).getStatus().equals(ServiceConstants.STATUS_CREATED))
+				style.getItemOptions().setNextLevelCreated(ServiceConstants.NEXT_LEVEL_CREATED);
+			this.saveItem(style);
+			logger.info("The Style has been updated with SKU creation indicator successfully");
+
+			BigInteger skuCounter = BigInteger.ZERO;
+			BigInteger skuNo = null;
+			for (Item sku : skuList) {
+				skuCounter = skuCounter.add(BigInteger.ONE);
+				skuNo = new BigInteger(skuCounter.toString());
+
+				sku = this.saveNewSKU(sku, skuNo);
+				finalSKUs.add(sku);
+			}
+			if (!finalSKUs.isEmpty())
+				logger.info("The skus were created successfully");
+			else
+				logger.error("There was some issue while creating the skus");
+		}
+
 		return finalSKUs;
+	}
+
+	@Override
+	public Map<String, List<Attribute>> retrieveAttrListValues(List<String> attrCodeList) {
+		Map<String, List<Attribute>> attrValMap = new HashMap<>();
+
+		for (String attrCode : attrCodeList) {
+			List<Attribute> attrValues = this.retrieveAttributeValues(attrCode);
+			attrValMap.put(attrCode, attrValues);
+		}
+
+		logger.info("The attribute values list has been successfully retrieved and updated in a Map");
+		return attrValMap;
+	}
+
+	@Override
+	@Transactional
+	public void deleteSKUs(BigInteger styleNo) {
+		Item item = new Item();
+		item.setParentItemId(styleNo);
+		item.setItemLevel(ServiceConstants.ITEM_LEVEL);
+		List<Item> skus = this.itemRepository.findAll(Example.of(item));
+		if (skus != null)
+			this.itemRepository.delete(skus);
+		logger.info("All the sku details for style {} has been deleted successfully", styleNo);
+
+		SKUCounter skuCounter = new SKUCounter();
+		SKUCounterId skuCounterId = new SKUCounterId();
+		skuCounterId.setStyleId(styleNo);
+		skuCounter.setSkuCounterId(skuCounterId);
+
+		List<SKUCounter> skuCounterList = this.skuRepository.findAll(Example.of(skuCounter));
+		if (skuCounterList != null) {
+			this.skuRepository.delete(skuCounterList);
+			logger.info("All the sku counters for style {} has been reset successfully", styleNo);
+		}
+
+		logger.info("The skus has been deleted successfully");
+
 	}
 
 }

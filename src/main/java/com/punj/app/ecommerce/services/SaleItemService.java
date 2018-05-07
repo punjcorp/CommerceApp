@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
 import com.punj.app.ecommerce.services.dtos.SaleItem;
@@ -13,6 +14,6 @@ import com.punj.app.ecommerce.services.dtos.SaleItem;
  */
 public interface SaleItemService {
 
-	public SaleItem getItem(BigInteger itemId, Integer locationId);
+	public SaleItem getItem(BigInteger itemId, Integer locationId)  throws UnsupportedEncodingException;
 
 }

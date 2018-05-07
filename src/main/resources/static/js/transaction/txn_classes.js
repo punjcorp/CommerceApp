@@ -56,7 +56,7 @@ $.extend(TransactionHeader.prototype, {
 /**
  * Class definition for Sale Line Item Starts
  */
-var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal) {
+var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal,itemImage) {
 	if (arguments.length > 0) {
 		this.itemId = itemId;
 		this.itemName = itemName;
@@ -71,6 +71,7 @@ var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cg
 		this.sgstTaxRate = sgstTaxRate;
 		this.igstTaxRate = igstTaxRate;
 		this.itemTotal = itemTotal;
+		this.itemImage = itemImage;
 	} else {
 		this.itemId;
 		this.itemName;
@@ -85,6 +86,7 @@ var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cg
 		this.sgstTaxRate;
 		this.igstTaxRate;
 		this.itemTotal;
+		this.itemImage;
 	}
 	this.seqNo;
 	this.taxLineItems = new Array();
@@ -191,7 +193,7 @@ $.extend(SaleLineItem.prototype, {
 	renderSaleLineItem : function(saleLineItem) {
 
 		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
-		saleLineItemHtml += '<img src="/images/default_image.png" class="img-fluid" alt="Image for item '+saleLineItem.itemId+'"/>';
+		saleLineItemHtml += '<img src="'+saleLineItem.itemImage+'" class="img-fluid" alt="Image for item '+saleLineItem.itemId+'"/>';
 		saleLineItemHtml += '</div>';
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
 		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
@@ -257,6 +259,7 @@ $.extend(SaleLineItem.prototype, {
 		var qty = data.qty;
 		var price = data.priceAmt;
 		var discount = data.discountAmt;
+		var itemImage = 'data:'+data.imageType+';base64,'+data.imageData;
 
 		var cgstTax;
 		var sgstTax;
@@ -288,7 +291,7 @@ $.extend(SaleLineItem.prototype, {
 		//calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
 		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate,
-				itemTotal);
+				itemTotal,itemImage);
 		
 		/**
 		 * Update the tax line items in the sale item

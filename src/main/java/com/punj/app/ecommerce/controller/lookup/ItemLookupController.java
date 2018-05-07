@@ -3,7 +3,7 @@ package com.punj.app.ecommerce.controller.lookup;
  * 
  */
 
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
@@ -29,14 +30,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
-import com.punj.app.ecommerce.domains.supplier.SupplierItem;
+import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
+import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.SaleItemService;
 import com.punj.app.ecommerce.services.SupplierService;
@@ -124,30 +127,43 @@ public class ItemLookupController {
 
 	private void setItemList(List<Item> itemsList, ItemBeanDTO items) {
 		List<ItemBean> itemBeanList = new ArrayList<>();
-		ItemBean itemBean = null;
-		HierarchyBean hierarchyBean = null;
-		for (Item item : itemsList) {
-			itemBean = new ItemBean();
-			/**
-			 * Setting the basic information about the style
-			 */
-			itemBean.setName(item.getName());
-			itemBean.setLongDesc(item.getDescription());
-			itemBean.setItemId(item.getItemId());
-			itemBean.setParentItemId(item.getParentItemId());
+		try {
+			ItemBean itemBean = null;
+			HierarchyBean hierarchyBean = null;
+			for (Item item : itemsList) {
+				itemBean = new ItemBean();
+				/**
+				 * Setting the basic information about the style
+				 */
+				itemBean.setName(item.getName());
+				itemBean.setLongDesc(item.getDescription());
+				itemBean.setItemId(item.getItemId());
+				itemBean.setParentItemId(item.getParentItemId());
 
-			// Setting the hierarchy information
-			Hierarchy hierarchy = item.getHierarchy();
-			hierarchyBean = new HierarchyBean();
-			hierarchyBean.setHierarchyId(hierarchy.getHierarchyId());
-			itemBean.setHierarchy(hierarchyBean);
-			itemBean.setItemType(item.getItemType());
+				// Setting the hierarchy information
+				Hierarchy hierarchy = item.getHierarchy();
+				hierarchyBean = new HierarchyBean();
+				hierarchyBean.setHierarchyId(hierarchy.getHierarchyId());
+				itemBean.setHierarchy(hierarchyBean);
+				itemBean.setItemType(item.getItemType());
 
-			itemBeanList.add(itemBean);
+				if (item.getImages() != null && !item.getImages().isEmpty()) {
+					ItemImage itemImage = item.getImages().get(0);
+					byte[] imageData = itemImage.getImageData();
+					byte[] encodeBase64 = Base64.encodeBase64(imageData);
+					String base64Encoded = new String(encodeBase64, "UTF-8");
+					itemBean.setBaseEncodedImage(base64Encoded);
+					itemBean.setImageType(itemImage.getImageType());
+				}
 
+				itemBeanList.add(itemBean);
+
+			}
+			items.setItems(itemBeanList);
+			logger.info("The item basic details has been set in bean List successfully");
+		} catch (IOException e) {
+			logger.error("There was an error while transforming item images", e);
 		}
-		items.setItems(itemBeanList);
-		logger.info("The item basic details has been set in bean List successfully");
 	}
 
 	@PostMapping(value = ViewPathConstants.SKU_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })

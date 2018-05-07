@@ -5,9 +5,9 @@ package com.punj.app.ecommerce.controller.item;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,9 +32,11 @@ import com.punj.app.ecommerce.controller.common.ItemDefaultConfig;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
+import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
+import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.models.item.ItemImageBean;
@@ -111,10 +113,6 @@ public class ManageSKUController {
 					itemDTO = new ItemBeanDTO();
 					itemDTO.setStyle(itemBean);
 
-					List<ItemBean> itemBeans = new ArrayList<>();
-					itemBeans.add(new ItemBean());
-					itemDTO.setSkus(itemBeans);
-
 					logger.info("The selected style details has been retrieved successfully for sku creation");
 				} else {
 
@@ -125,12 +123,12 @@ public class ManageSKUController {
 			} else {
 				logger.info("There was some issue while retrieving style details for sku creation");
 			}
-			this.updateModelWithEssentialScreenData(itemDTO, model, locale);
+			this.updateModelWithEssentialScreenData(itemDTO, model, locale, Boolean.FALSE);
 
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving item for updation", e);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
-			this.updateModelWithEssentialScreenData(itemDTO, model, locale);
+			this.updateModelWithEssentialScreenData(itemDTO, model, locale, Boolean.FALSE);
 			return ViewPathConstants.ADD_SKU_PAGE;
 		}
 		return ViewPathConstants.ADD_SKU_PAGE;
@@ -150,11 +148,30 @@ public class ManageSKUController {
 
 	}
 
-	public void updateModelWithEssentialScreenData(ItemBeanDTO itemBeanDTO, Model model, Locale locale) {
+	public void updateModelWithEssentialScreenData(ItemBeanDTO itemBeanDTO, Model model, Locale locale, Boolean skipStyleImage) {
 
 		try {
 			if (itemBeanDTO != null) {
-				this.prepareImagesForDisplay(itemBeanDTO.getStyle().getItemImages());
+
+				BigInteger styleNo = itemBeanDTO.getStyle().getItemId();
+				if (styleNo != null) {
+					Item style = this.itemService.getStyle(styleNo);
+					ItemBean styleBean = ItemTransformer.transformItem(style);
+					styleBean.setSelectedAttributes(itemBeanDTO.getStyle().getSelectedAttributes());
+					itemBeanDTO.setStyle(styleBean);
+				}
+
+				if (!skipStyleImage)
+					this.prepareImagesForDisplay(itemBeanDTO.getStyle().getItemImages());
+
+				List<AttributeBean> attrList = itemBeanDTO.getStyle().getSelectedAttributes();
+				if (attrList != null && !attrList.isEmpty()) {
+					List<String> attrCodes = ItemTransformer.getAttrCodes(attrList);
+					Map<String, List<Attribute>> attrValueMap = this.itemService.retrieveAttrListValues(attrCodes);
+					if (attrValueMap != null && attrValueMap.size() > 0)
+						ItemTransformer.updateAttrValues(attrList, attrValueMap);
+					logger.info("The attribute value list has been successfully retrieved");
+				}
 
 				List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
 				model.addAttribute(MVCConstants.TAX_GROUP_LIST_BEAN, taxGroups);
@@ -196,10 +213,16 @@ public class ManageSKUController {
 			Item style = this.itemService.getStyle(itemBean.getStyle().getItemId());
 			if (style != null) {
 
-				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername());
+				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW);
 
-				skuList = this.itemService.createSKUs(skuList);
+				Boolean nextLevelCreated = Boolean.FALSE;
+				if (style.getItemOptions().getNextLevelCreated() != null && MVCConstants.YES.equals(style.getItemOptions().getNextLevelCreated()))
+					nextLevelCreated = Boolean.TRUE;
+				skuList = this.itemService.createSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
 				if (skuList != null && !skuList.isEmpty()) {
+
+					List<ItemBean> skuBeanList = ItemTransformer.transformItems(skuList);
+					itemBean.setSkus(skuBeanList);
 
 					model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.sku.add.success", null, locale));
 
@@ -208,15 +231,59 @@ public class ManageSKUController {
 					model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sku.add.failure", null, locale));
 					logger.info("The new skus creation has failed due to some issues");
 				}
-				this.updateModelWithEssentialScreenData(itemBean, model, locale);
+				this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
 			} else {
 				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sku.add.failure", null, locale));
 				logger.info("The new skus creation has failed due to some issues");
 			}
 		} catch (Exception e) {
-			this.updateModelWithEssentialScreenData(itemBean, model, locale);
+			this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There was some error while handling the sku creation related tasks", e);
+		}
+
+		return ViewPathConstants.ADD_SKU_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.ADD_SKU_URL, params = { MVCConstants.SAVE_APPROVE_SKU_PARAM })
+	public String approveSKUs(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult,
+			Model model, HttpSession session, Authentication authentication, Locale locale) {
+
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+			Item style = this.itemService.getStyle(itemBean.getStyle().getItemId());
+			if (style != null) {
+
+				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW_APPROVE);
+
+				Boolean nextLevelCreated = Boolean.FALSE;
+				if (style.getItemOptions().getNextLevelCreated() != null
+						&& (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
+								|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
+					nextLevelCreated = Boolean.TRUE;
+				skuList = this.itemService.createSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
+				if (skuList != null && !skuList.isEmpty()) {
+
+					List<ItemBean> skuBeanList = ItemTransformer.transformItems(skuList);
+					itemBean.setSkus(skuBeanList);
+
+					model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.sku.approve.success", null, locale));
+
+					logger.info("The new skus has been save and approved successfully");
+				} else {
+					model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sku.approve.failure", null, locale));
+					logger.info("The new skus save and approval has failed due to some issues");
+				}
+				this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sku.approve.failure", null, locale));
+				logger.info("The new skus save and approval has failed due to some issues");
+			}
+		} catch (Exception e) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the sku save and approval related tasks", e);
 		}
 
 		return ViewPathConstants.ADD_SKU_PAGE;

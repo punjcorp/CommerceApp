@@ -706,3 +706,18 @@ preview-thumbnail-sku{
 	max-width: 100%;
 	max-height: 120px !important;
 }
+
+preview-thumbnail-cart{
+	height:72px;
+	max-width: 100%;
+	max-height: 72px !important;
+}
+
+.preview-thumbnail-cart >  img {
+	height:72px;
+	max-width: 100%;
+	max-height: 72px !important;
+}
+
+
+

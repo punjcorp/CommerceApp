@@ -17,8 +17,19 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
+	public static final Integer STYLE_LEVEL=1;
+	public static final Integer ITEM_LEVEL=2;
+	public static final Integer UPC_LEVEL=3;	
+	
 	public static final String TXN_SEQ = "TX_SEQ";
+	
+	public static final String YES_PARAM = "Y";
+	public static final String NO_PARAM = "N";
 
+	public static final String NEXT_LEVEL_CREATED= "C";
+	public static final String NEXT_LEVEL_APPROVED= "A";	
+	public static final String NEXT_LEVEL_NOT_CREATED= "N";
+	
 	public static final String TXN_STATUS_STARTED = "STARTED";
 	public static final String TXN_STATUS_COMPLETED = "COMPLETED";
 	public static final String TXN_STATUS_SUSPEND = "SUSPENDED";

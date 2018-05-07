@@ -64,6 +64,8 @@ public class ItemOptionsBean implements Serializable {
 	@NotNull(message = "{commerce.error.option.empty}")
 	private Integer taxGroupId;
 
+	private String nextLevelCreated;
+	
 	/**
 	 * @return the itemId
 	 */
@@ -422,6 +424,20 @@ public class ItemOptionsBean implements Serializable {
 	 */
 	public void setHsnNo(String hsnNo) {
 		this.hsnNo = hsnNo;
+	}
+
+	/**
+	 * @return the nextLevelCreated
+	 */
+	public String getNextLevelCreated() {
+		return nextLevelCreated;
+	}
+
+	/**
+	 * @param nextLevelCreated the nextLevelCreated to set
+	 */
+	public void setNextLevelCreated(String nextLevelCreated) {
+		this.nextLevelCreated = nextLevelCreated;
 	}
 
 }

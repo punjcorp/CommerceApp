@@ -46,6 +46,8 @@ public class ItemBean implements Serializable {
 	private ItemOptionsBean itemOptions;
 
 	private List<ItemImageBean> itemImages;
+	private String baseEncodedImage;
+	private String imageType;
 
 	private String attrName;
 	private List<AttributeBean> selectedAttributes;
@@ -310,6 +312,34 @@ public class ItemBean implements Serializable {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the baseEncodedImage
+	 */
+	public String getBaseEncodedImage() {
+		return baseEncodedImage;
+	}
+
+	/**
+	 * @param baseEncodedImage the baseEncodedImage to set
+	 */
+	public void setBaseEncodedImage(String baseEncodedImage) {
+		this.baseEncodedImage = baseEncodedImage;
+	}
+
+	/**
+	 * @return the imageType
+	 */
+	public String getImageType() {
+		return imageType;
+	}
+
+	/**
+	 * @param imageType the imageType to set
+	 */
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
 	}
 
 }

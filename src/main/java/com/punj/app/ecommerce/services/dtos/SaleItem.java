@@ -30,6 +30,9 @@ public class SaleItem implements Serializable {
 	private SaleItemTax sgstTax;
 	private SaleItemTax cgstTax;
 	private SaleItemTax igstTax;
+	
+	private String imageData;
+	private String imageType;
 
 	
 	/**
@@ -224,6 +227,34 @@ public class SaleItem implements Serializable {
 	 */
 	public void setUnitCostAmt(BigDecimal unitCostAmt) {
 		this.unitCostAmt = unitCostAmt;
+	}
+
+	/**
+	 * @return the imageData
+	 */
+	public String getImageData() {
+		return imageData;
+	}
+
+	/**
+	 * @param imageData the imageData to set
+	 */
+	public void setImageData(String imageData) {
+		this.imageData = imageData;
+	}
+
+	/**
+	 * @return the imageType
+	 */
+	public String getImageType() {
+		return imageType;
+	}
+
+	/**
+	 * @param imageType the imageType to set
+	 */
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
 	}
 
 }

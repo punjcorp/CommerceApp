@@ -67,6 +67,8 @@ public class ItemOptions implements Serializable {
 	private String packSize;
 	@Column(name = "hsn_no")
 	private String hsnNo;
+	@Column(name = "next_level_created")
+	private String nextLevelCreated;
 
 	/**
 	 * @return the itemId
@@ -426,6 +428,20 @@ public class ItemOptions implements Serializable {
 	 */
 	public void setHsnNo(String hsnNo) {
 		this.hsnNo = hsnNo;
+	}
+
+	/**
+	 * @return the nextLevelCreated
+	 */
+	public String getNextLevelCreated() {
+		return nextLevelCreated;
+	}
+
+	/**
+	 * @param nextLevelCreated the nextLevelCreated to set
+	 */
+	public void setNextLevelCreated(String nextLevelCreated) {
+		this.nextLevelCreated = nextLevelCreated;
 	}
 
 }

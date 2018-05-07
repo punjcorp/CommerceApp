@@ -31,12 +31,14 @@ $(function() {
 					response($.map(data, function(item) {
 						var dataVal = "<small>" + item.itemId + "-" + item.name + "</small>";
 						var descVal = item.name;
+						var finalItemPic='data:'+item.skuImageType+';base64,'+item.baseEncodedImage;
 						return {
 							label : dataVal,
 							value : item.itemId,
 							desc : descVal,
 							longDesc : item.longDesc,
 							pic : '/images/default_image.png',
+							skuImage: finalItemPic
 						}
 					}));
 				}
@@ -141,13 +143,18 @@ $(function() {
 
 /* This section will allow the item listing to be in a specific format */
 $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
+	
+
 	return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
 		'class' : 'row'
 	}).append($('<div/>', {
 		'class' : 'col-4'
+	}).append($('<div/>', {
+		'class' : 'preview-thumbnail-cart'
 	}).append($('<img/>', {
-		src : item.pic
-	}))).append($('<div/>', {
+		src : item.skuImage,
+		class: 'img-thumbnail'
+	})))).append($('<div/>', {
 		'class' : 'col-6'
 	}).append($('<span/>', {
 		html : "<b>" + item.value + "</b><br/>" + item.desc

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -41,6 +42,18 @@ public class ItemTransformer {
 
 	private ItemTransformer() {
 		throw new IllegalStateException("ItemTransformer class");
+	}
+	
+	public static  List<ItemBean> transformItems(List<Item> items) throws IOException{
+		List<ItemBean> itemBeans=new ArrayList<>(items.size());
+		ItemBean itemBean=null;
+		for(Item item:items) {
+			itemBean=ItemTransformer.transformItem(item);
+			itemBeans.add(itemBean);
+		}
+		
+		logger.info("The item list has been transformed to item beans successfully.");
+		return itemBeans;
 	}
 
 	public static ItemBean transformItem(Item item) throws IOException {
@@ -89,16 +102,22 @@ public class ItemTransformer {
 		item.setParentItemId(itemBean.getParentItemId());
 		if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM) && action.equals(MVCConstants.ACTION_NEW)) {
 			item.setItemLevel(MVCConstants.STYLE_LEVEL);
+			item.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM) && action.equals(MVCConstants.ACTION_EDIT)) {
 			item.setItemLevel(itemBean.getItemLevel());
+			item.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_STYLE_PARAM)) {
 			item.setItemLevel(itemBean.getItemLevel());
+			item.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_ITEM_PARAM) && action.equals(MVCConstants.ACTION_NEW)) {
 			item.setItemLevel(MVCConstants.ITEM_LEVEL);
+			item.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_ITEM_PARAM) && action.equals(MVCConstants.ACTION_EDIT)) {
 			item.setItemLevel(itemBean.getItemLevel());
+			item.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_ITEM_PARAM)) {
 			item.setItemLevel(itemBean.getItemLevel());
+			item.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_UPC_PARAM)) {
 			item.setItemLevel(MVCConstants.UPC_LEVEL);
 		}
@@ -175,6 +194,8 @@ public class ItemTransformer {
 		itemOptionsBean.setTaxFlag(itemOptions.getTaxFlag());
 		itemOptionsBean.setShippingWeight(itemOptions.getShippingWeight());
 		itemOptionsBean.setStockStatus(itemOptions.getStockStatus());
+		
+		itemOptionsBean.setNextLevelCreated(itemOptions.getNextLevelCreated());
 
 		logger.info("The item options details has been transformed to bean successfully");
 		return itemOptionsBean;
@@ -347,7 +368,7 @@ public class ItemTransformer {
 
 	public static String updateSKUAttributes(List<AttributeBean> attributeBeans, Item sku) {
 
-		StringBuilder attrValCodes=new StringBuilder();
+		StringBuilder attrValCodes = new StringBuilder();
 		List<ItemAttribute> itemAttributes = new ArrayList<>(attributeBeans.size());
 		ItemAttribute attribute;
 		for (AttributeBean attributeBean : attributeBeans) {
@@ -358,10 +379,36 @@ public class ItemTransformer {
 		sku.setItemAttributes(itemAttributes);
 		logger.info("The item attribute beans has been transformed to item attribute successfully");
 
-		return attrValCodes.toString(); 
+		return attrValCodes.toString();
 	}
 
-	public static Attribute transformItemAttribute(AttributeBean attributeBean) {
+	public static List<AttributeBean> transformAttributes(List<Attribute> attributes){
+		List<AttributeBean> itemAttributes = new ArrayList<>(attributes.size());
+		AttributeBean attributeBean;
+		for (Attribute attribute: attributes) {
+			attributeBean = ItemTransformer.transformItemAttribute(attribute);
+			itemAttributes.add(attributeBean);
+		}
+		logger.info("The item attribute has been transformed to item attribute beans successfully");
+		return itemAttributes;
+	}
+	
+	public static AttributeBean transformItemAttribute(Attribute attribute) {
+		AttributeBean attributeBean = new AttributeBean();
+
+		attributeBean.setAttributeId(attribute.getAttributeId());
+		attributeBean.setCode(attribute.getCode());
+		attributeBean.setDescription(attribute.getDescription());
+		attributeBean.setName(attribute.getName());
+		attributeBean.setValCode(attribute.getValCode());
+		attributeBean.setValDescription(attribute.getValDesc());
+		attributeBean.setValName(attribute.getValName());
+		attributeBean.setValSeqNo(attribute.getValSeqNo());
+		logger.info("The item attribute has been transformed to item attribute bean successfully");
+		return attributeBean;
+	}	
+	
+	public static Attribute transformItemAttributeBean(AttributeBean attributeBean) {
 		Attribute attribute = new Attribute();
 
 		attribute.setAttributeId(attributeBean.getAttributeId());
@@ -380,7 +427,7 @@ public class ItemTransformer {
 		ItemAttribute itemAttribute = new ItemAttribute();
 		ItemAttributeId itemAttributeId = new ItemAttributeId();
 
-		Attribute attribute = ItemTransformer.transformItemAttribute(attributeBean);
+		Attribute attribute = ItemTransformer.transformItemAttributeBean(attributeBean);
 		itemAttributeId.setAttribute(attribute);
 
 		itemAttributeId.setItem(item);
@@ -390,17 +437,17 @@ public class ItemTransformer {
 		return itemAttribute;
 	}
 
-	public static List<Item> createSKUs(Item style,ItemBeanDTO itemDTO, String username) throws IOException {
+	public static List<Item> createSKUs(Item style, ItemBeanDTO itemDTO, String username, String action) {
 
-		List<ItemImage> itemImages=style.getImages();
-		ItemImage itemImage=null;
-		if(itemImages!=null && itemImages.size()>0) {
-			itemImage=itemImages.get(0);
+		List<ItemImage> itemImages = style.getImages();
+		ItemImage itemImage = null;
+		if (itemImages != null && !itemImages.isEmpty()) {
+			itemImage = itemImages.get(0);
 		}
-		
+
 		List<ItemBean> skuList = itemDTO.getSkus();
 		List<Item> finalSkuList = new ArrayList<>(skuList.size());
-		Item sku= null;
+		Item sku = null;
 
 		for (ItemBean skuDetails : skuList) {
 			sku = SerializationUtils.clone(style);
@@ -408,37 +455,41 @@ public class ItemTransformer {
 			ItemTransformer.resetItemId(sku);
 			logger.info("The SKU bean has been transformed to sku item entity successfully");
 
-			sku=ItemTransformer.updateSKUValues(sku, skuDetails,username,style);
+			ItemTransformer.updateSKUValues(sku, skuDetails, username, style, action);
 			logger.info("The SKU specific details has been updated successfully");
-			
+
 			finalSkuList.add(sku);
 		}
 
 		return finalSkuList;
 	}
+
+	public static Item updateSKUValues(Item sku, ItemBean skuBean, String username, Item style, String action) {
 	
-	public static Item updateSKUValues(Item sku, ItemBean skuBean, String username,Item style) {
-		StringBuilder updatedName=new StringBuilder();
-		updatedName.append(sku.getName()).append(" ");
-		
-		//Update SKU item level details
+		// Update SKU item level details
+		sku.setName(skuBean.getName());
 		sku.setItemLevel(MVCConstants.ITEM_LEVEL);
-		sku.setStatus(MVCConstants.STATUS_CREATED);
+		if(action!=null && action.equals(MVCConstants.ACTION_NEW))
+			sku.setStatus(MVCConstants.STATUS_CREATED);
+		else if(action!=null && action.equals(MVCConstants.ACTION_NEW_APPROVE))
+			sku.setStatus(MVCConstants.STATUS_APPROVED);
 		sku.setParentItemId(style.getItemId());
 		sku.setCreatedBy(username);
 		sku.setCreatedDate(LocalDateTime.now());
-		logger.info("The SKU basic information has been updated successfully");
 		
-		//Update SKU option details
+		logger.info("The SKU basic information has been updated successfully");
+
+		// Update SKU option details
 		sku.getItemOptions().setItemId(sku.getItemId());
 		sku.getItemOptions().setCurrentPrice(skuBean.getItemOptions().getCurrentPrice());
 		sku.getItemOptions().setStockStatus(skuBean.getItemOptions().getStockStatus());
+		sku.getItemOptions().setNextLevelCreated(MVCConstants.NO);
 		logger.info("The SKU options has been updated successfully");
-	
-		//sku image updates		
+
+		// sku image updates
 		List<ItemImage> skuImages = sku.getImages();
-		if (skuImages != null && skuImages.size() > 0) {
-			for(ItemImage skuImage: skuImages) {
+		if (skuImages != null && !skuImages.isEmpty()) {
+			for (ItemImage skuImage : skuImages) {
 				skuImage.setItemImageId(null);
 				skuImage.setItem(sku);
 				skuImage.setCreatedBy(username);
@@ -446,29 +497,28 @@ public class ItemTransformer {
 			}
 		}
 		logger.info("The SKU images has been updated successfully");
-		
-		//sku attribute updates
-		String skuAttrs=ItemTransformer.updateSKUAttributes(skuBean.getSelectedAttributes(), sku);
-		logger.info("The SKU attributes has been updated successfully");
-		updatedName.append(skuAttrs);
-		
-		sku.setName(updatedName.toString());
+
+		// sku attribute updates
+		if(skuBean.getSelectedAttributes()!=null && !skuBean.getSelectedAttributes().isEmpty()) {
+			String skuAttrs = ItemTransformer.updateSKUAttributes(skuBean.getSelectedAttributes(), sku);
+			logger.info("The SKU attributes has been updated successfully");
+		}
 		
 		return sku;
 	}
 
 	public static void resetItemId(Item item) {
-		//Resetting the item fields
+		// Resetting the item fields
 		item.setItemId(null);
 		item.setCreatedBy(null);
 		item.setCreatedDate(null);
 		item.setModifiedBy(null);
 		item.setModifiedDate(null);
-		
-		//Resetting the item options 
+
+		// Resetting the item options
 		item.getItemOptions().setItemId(item.getItemId());
 
-		//Resetting the item images
+		// Resetting the item images
 		List<ItemImage> itemImages = item.getImages();
 		if (itemImages != null && itemImages.size() > 1) {
 			ItemImage itemImage = itemImages.get(0);
@@ -481,6 +531,27 @@ public class ItemTransformer {
 		}
 		logger.info("The SKU bean has been transformed to sku item entity successfully");
 
+	}
+
+	public static List<String> getAttrCodes(List<AttributeBean> attrBeans) {
+		List<String> attrCodes = new ArrayList<>(attrBeans.size());
+		for (AttributeBean attrBean : attrBeans) {
+			attrCodes.add(attrBean.getCode());
+		}
+		logger.info("The attribute codes has been retrieved from attribute list");
+
+		return attrCodes;
+	}
+
+	public static void updateAttrValues(List<AttributeBean> attrBeans, Map<String, List<Attribute>> attrValList) {
+		List<Attribute> attrList=null;
+		for(AttributeBean attrBean: attrBeans) {
+			attrList=attrValList.get(attrBean.getCode());
+			if(attrList!=null && !attrList.isEmpty())
+				attrBean.setAttrValList(ItemTransformer.transformAttributes(attrList));
+			}
+		
+		logger.info("The attribute values has been updated in attribute beans successfully");
 	}
 
 }

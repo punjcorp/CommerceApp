@@ -1,77 +1,53 @@
 package com.punj.app.ecommerce.domains.item.ids;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
 import com.punj.app.ecommerce.domains.item.StyleCounter;
 
 @Embeddable
 public class SKUCounterId implements Serializable {
-	
+
 	private static final long serialVersionUID = -3763829412400209829L;
-	private Integer color;
-	private Integer size;
+	@Column(name = "sku_id")
+	private BigInteger skuId;
 
-	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "style_id")
-	private StyleCounter styleCounter;
+	@Column(name = "style_id")
+	private BigInteger styleId;
 
-	public SKUCounterId() {
-	}
-
-	public SKUCounterId(Integer color, Integer size, StyleCounter styleCounter) {
-		this.color = color;
-		this.size = size;
-		this.styleCounter = styleCounter;
+	/**
+	 * @return the skuId
+	 */
+	public BigInteger getSkuId() {
+		return skuId;
 	}
 
 	/**
-	 * @return the color
+	 * @param skuId the skuId to set
 	 */
-	public Integer getColor() {
-		return color;
+	public void setSkuId(BigInteger skuId) {
+		this.skuId = skuId;
 	}
 
 	/**
-	 * @param color
-	 *            the color to set
+	 * @return the styleId
 	 */
-	public void setColor(Integer color) {
-		this.color = color;
+	public BigInteger getStyleId() {
+		return styleId;
 	}
 
 	/**
-	 * @return the size
+	 * @param styleId the styleId to set
 	 */
-	public Integer getSize() {
-		return size;
+	public void setStyleId(BigInteger styleId) {
+		this.styleId = styleId;
 	}
 
-	/**
-	 * @param size
-	 *            the size to set
-	 */
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-
-	/**
-	 * @return the styleCounter
-	 */
-	public StyleCounter getStyleCounter() {
-		return styleCounter;
-	}
-
-	/**
-	 * @param styleCounter
-	 *            the styleCounter to set
-	 */
-	public void setStyleCounter(StyleCounter styleCounter) {
-		this.styleCounter = styleCounter;
-	}
+	
 
 }
