@@ -415,8 +415,10 @@ public class OrderTransformer {
 		List<OrderItem> orderItems = OrderTransformer.transformOrderItemsBean(orderBean.getOrderItems(), order);
 		order.setOrderItems(orderItems);
 
-		List<OrderBill> orderBillList = OrderTransformer.tranformOrderBillBeanList(order, orderBean.getOrderBills());
-		order.setOrderBills(orderBillList);
+		if(orderBean.getOrderBills()!=null && !orderBean.getOrderBills().isEmpty()) {
+			List<OrderBill> orderBillList = OrderTransformer.tranformOrderBillBeanList(order, orderBean.getOrderBills());
+			order.setOrderBills(orderBillList);
+		}
 
 		logger.info("All the order details has been transformed successfully");
 		return order;

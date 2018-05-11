@@ -142,24 +142,24 @@ public final class ViewPathConstants {
 	/**
 	 * The inventory adjustment pages section starts
 	 */
-	public static final String SEARCH_INV_ADJUST_URL = "/search_inv_adjust";
-	public static final String MANAGE_INV_ADJUST_URL = "/manage_inv_adjust";
+	public static final String SEARCH_INV_ADJUST_URL = "/admin/search_inv_adjust";
+	public static final String MANAGE_INV_ADJUST_URL = "/admin/manage_inv_adjust";
 	public static final String MANAGE_INV_ADJUST_PAGE = "inventory/manage_inv_adjust";
 	
-	public static final String EDIT_INV_ADJUST_URL ="/edit_inv_adjust";
+	public static final String EDIT_INV_ADJUST_URL ="/admin/edit_inv_adjust";
 	public static final String EDIT_INV_ADJUST_PAGE ="inventory/edit_inv_adjust";
 	
-	public static final String APPROVE_INV_ADJUST_URL ="/approve_inv_adjust";
+	public static final String APPROVE_INV_ADJUST_URL ="/admin/approve_inv_adjust";
 	
-	public static final String ADD_INV_ADJUST_URL ="/add_inv_adjust";
+	public static final String ADD_INV_ADJUST_URL ="/admin/add_inv_adjust";
 	public static final String GET_ITEM_INV_URL ="/get_item_inv";
 	public static final String ADD_INV_ADJUST_PAGE ="inventory/add_inv_adjust";	
 	
-	public static final String DELETE_INV_ADJUST_URL ="/delete_inv_adjust";
-	public static final String BULK_INV_ADJUST_URL ="/bulk_inv_adjust_action";
+	public static final String DELETE_INV_ADJUST_URL ="/admin/delete_inv_adjust";
+	public static final String BULK_INV_ADJUST_URL ="/admin/bulk_inv_adjust_action";
 
-	public static final String PRINT_INV_ADJUSTS_URL = "/print_inv_adjusts";
-	public static final String PRINT_INV_ADJUST_URL = "/print_inv_adjust";	
+	public static final String PRINT_INV_ADJUSTS_URL = "/admin/print_inv_adjusts";
+	public static final String PRINT_INV_ADJUST_URL = "/admin/print_inv_adjust";	
 	/**
 	 * The inventory adjustment pages section ends
 	 */
@@ -174,22 +174,22 @@ public final class ViewPathConstants {
 	/**
 	 * The price event pages section starts
 	 */
-	public static final String SEARCH_PRICE_URL = "/search_price";
-	public static final String MANAGE_PRICE_URL = "/manage_price";
+	public static final String SEARCH_PRICE_URL = "/admin/search_price";
+	public static final String MANAGE_PRICE_URL = "/admin/manage_price";
 	public static final String MANAGE_PRICE_PAGE = "price/manage_price";
 	
 	public static final String PRICE_DETAIL_PAGE ="price/price_details";	
-	public static final String EDIT_PRICE_URL ="/edit_price";
+	public static final String EDIT_PRICE_URL ="/admin/edit_price";
 	public static final String EDIT_PRICE_PAGE ="price/edit_price";
 	
-	public static final String APPROVE_PRICE_URL ="/approve_price";
+	public static final String APPROVE_PRICE_URL ="/admin/approve_price";
 	
-	public static final String ADD_PRICE_URL ="/add_price";
+	public static final String ADD_PRICE_URL ="/admin/add_price";
 	public static final String GET_PRICE_URL ="/get_item_price";
 	public static final String ADD_PRICE_PAGE ="price/add_price";	
 	
-	public static final String DELETE_PRICE_URL ="/delete_price";
-	public static final String BULK_PRICE_URL ="/bulk_price";
+	public static final String DELETE_PRICE_URL ="/admin/delete_price";
+	public static final String BULK_PRICE_URL ="/admin/bulk_price";
 
 	/**
 	 * The price event pages section ends

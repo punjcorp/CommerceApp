@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   `created_by` VARCHAR(50) NOT NULL,
   `parent_id` INT NULL,
   PRIMARY KEY (`hierarchy_id`),
-  INDEX `fk_item_hierarchy_item_hierarchy1_idx` (`parent_id` ASC),
   CONSTRAINT `fk_item_hierarchy_item_hierarchy1`
     FOREIGN KEY (`parent_id`)
     REFERENCES `commercedb`.`item_hierarchy` (`hierarchy_id`)
@@ -80,7 +79,8 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `unit_cost` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   `suggested_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   `current_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
-  `compare_at_price` DECIMAL(12,2) NOT NULL,
+  `compare_at_price` DECIMAL(12,2) NULL,
+  `max_retail_price` DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   `return_flag` TINYINT NOT NULL DEFAULT 1,
   `desc_flag` TINYINT NOT NULL DEFAULT 0,
   `related_item_flag` TINYINT NOT NULL DEFAULT 0,
@@ -93,6 +93,8 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `customer_prompt` TINYINT NOT NULL DEFAULT 0,
   `shipping_weight` DECIMAL(12,2) NULL,
   `pack_size` VARCHAR(45) NULL,
+  `hsn_no` VARCHAR(15) NOT NULL,
+  `next_level_created` VARCHAR(2) NULL DEFAULT 'N',
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_options_item1`
     FOREIGN KEY (`item_id`)
@@ -132,8 +134,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_attributes` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_attributes` (
   `item_id` BIGINT NOT NULL,
   `attribute_id` BIGINT NOT NULL,
-  `value` VARCHAR(80) NOT NULL,
-  PRIMARY KEY (`item_id`, `attribute_id`, `value`),
+  PRIMARY KEY (`item_id`, `attribute_id`),
   CONSTRAINT `fk_item_attributes_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
@@ -236,7 +237,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_related` (
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_item_related_item1_idx` ON `commercedb`.`item_related` (`item_id` ASC);
-
 
 
 

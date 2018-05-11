@@ -26,7 +26,7 @@ $(function() {
 
 
 	
-	$('input[type=number]').change(function(){
+	$('input[type=number][class=amount]').change(function(){
 		var nbrValue=+$(this).val();
 		if(nbrValue=='undefined' || $.trim(nbrValue)==''){
 			$(this).val('0.00');

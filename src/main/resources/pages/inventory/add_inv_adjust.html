@@ -28,7 +28,7 @@
 					<div class="card-text">
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-						<form class="form" id="addForm" action="#" th:action="@{/add_inv_adjust}" th:object="${invAdjustBean}" method="post">
+						<form class="form" id="addForm" action="#" th:action="@{/admin/add_inv_adjust}" th:object="${invAdjustBean}" method="post">
 							<div class="row">
 								<div class="col-6">
 									<div class="form-group">
@@ -142,7 +142,7 @@
 													<i class="material-icons">add_circle</i>
 												</button>
 												<button type="button" th:if="${(#lists.size(invAdjustBean.invAdjustItems))>1}"
-													th:onclick="'deleteItem(\'/add_inv_adjust?removeInvAdjustItem=&amp;id='+ ${itrStat.index} +'\')'" class="btn btn-secondary btn-sm">
+													th:onclick="'deleteItem(\'/admin/add_inv_adjust?removeInvAdjustItem=&amp;id='+ ${itrStat.index} +'\')'" class="btn btn-secondary btn-sm">
 													<i class="material-icons">remove_circle</i>
 												</button>
 											</div>
@@ -155,7 +155,7 @@
 									<div class="form-group">
 										<input type="submit" name="saveInvAdjust" value="Save" th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info  btn-sm"></input> <input
 											type="submit" name="approveInvAdjust" value="Approve" th:value="#{commerce.screen.btn.submit.approve}" class="btn btn-success  btn-sm"></input>
-										<a th:if="${invAdjustBean.invAdjustId!=null}" th:href="@{/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}"
+										<a th:if="${invAdjustBean.invAdjustId!=null}" th:href="@{/admin/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}"
 											href="../inventory/inv_adjust.html" class="btn btn-secondary btn-sm" target="_blank"><span th:text="#{commerce.screen.actions.print}">Print</span></a>
 									</div>
 								</div>

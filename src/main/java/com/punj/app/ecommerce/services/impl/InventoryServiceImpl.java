@@ -370,6 +370,11 @@ public class InventoryServiceImpl implements InventoryService {
 				itemStockId.setItem(item);
 				itemStockId.setLocationId(locationId);
 
+				itemStock.setNonSellableQty(0);
+				itemStock.setReservedQty(0);
+				itemStock.setStockOnHand(0);
+				itemStock.setTotalQty(0);
+				
 				itemStock.setItemStockId(itemStockId);
 
 				itemStockList.add(itemStock);
@@ -382,7 +387,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 					itemStockBucket = new ItemStockBucket();
 					itemStockBucket.setItemStockBucketId(itemStockBucketId);
-
+					itemStockBucket.setTotalQty(0);
 					itemStockBucketList.add(itemStockBucket);
 				}
 

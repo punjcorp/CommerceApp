@@ -20,7 +20,7 @@
 					<h3 th:text="#{commerce.screen.price.search}">Search Style/Item Price</h3>
 				</div>
 				<div class="card-body">
-					<form class="form" id="manageForm" action="#" th:action="@{/manage_price}" th:object="${priceBeanDTO}" method="post">
+					<form class="form" id="manageForm" action="#" th:action="@{/admin/manage_price}" th:object="${priceBeanDTO}" method="post">
 						<!-- SEARCH SECTION FOR PRICE STARTS -->
 						<div class="card-text">
 							<div class="row">
@@ -66,10 +66,10 @@
 								<div class="col-6">
 									<div class="form-group text-left">
 										<div class="input-group">
-											<input type="button" th:onclick="'submitForm(\'/manage_price?search=\')'" id="btnSearch" value="Search"
+											<input type="button" th:onclick="'submitForm(\'/admin/manage_price?search=\')'" id="btnSearch" value="Search"
 												th:value="#{commerce.screen.btn.search}" class="btn btn-info btn-sm"></input> <a
 												th:if="${priceBeanDTO==null or priceBeanDTO.priceBeans==null or #lists.size(priceBeanDTO.priceBeans)&lt;1}" href="add_price.html"
-												th:href="@{/add_price}" class="btn btn-success btn-sm"> <span th:text="#{commerce.screen.btn.submit.add.price}">New Price</span>
+												th:href="@{/admin/add_price}" class="btn btn-success btn-sm"> <span th:text="#{commerce.screen.btn.submit.add.price}">New Price</span>
 											</a>
 										</div>
 									</div>
@@ -177,13 +177,13 @@
 							<div class="row">
 								<div class="col-8">
 									<div class="form-group">
-										<input type="button" th:onclick="'submitForm(\'/bulk_price?save=\')'" id="btnSave" value="Save"
+										<input type="button" th:onclick="'submitForm(\'/admin/bulk_price?save=\')'" id="btnSave" value="Save"
 											th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
-											type="button" th:onclick="'submitForm(\'/bulk_price?approve=\')'" id="btnApprove" value="Approve"
+											type="button" th:onclick="'submitForm(\'/admin/bulk_price?approve=\')'" id="btnApprove" value="Approve"
 											th:value="#{commerce.screen.btn.submit.approve}" class="btn btn-success btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
-											type="button" th:onclick="'submitForm(\'/bulk_price?delete=\')'" id="btnDelete" value="Delete"
+											type="button" th:onclick="'submitForm(\'/admin/bulk_price?delete=\')'" id="btnDelete" value="Delete"
 											th:value="#{commerce.screen.btn.submit.delete}" class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <a
-											href="../price/add_price.html" th:href="@{/add_price}" class="btn btn-info btn-sm"><span
+											href="../price/add_price.html" th:href="@{/admin/add_price}" class="btn btn-info btn-sm"><span
 											th:text="#{commerce.screen.btn.submit.add.price}">New Price</span></a>
 									</div>
 								</div>

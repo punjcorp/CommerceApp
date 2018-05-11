@@ -260,6 +260,7 @@ function getItemDetails(event, ui) {
 }
 
 function renderOrderItem(orderItem) {
+	$('#order\\.orderItems' + targetItemIndex + '\\.itemId').val(orderItem.itemId);
 	$('#order\\.orderItems' + targetItemIndex + '\\.itemDesc').val(orderItem.name);
 	$('#itemSearchHelp').html(orderItem.name + '<br>' + orderItem.longDesc);
 	$('#order\\.orderItems' + targetItemIndex + '\\.orderedQty').val(orderItem.qty.toFixed(2));
@@ -268,7 +269,7 @@ function renderOrderItem(orderItem) {
 	$('#order\\.orderItems' + targetItemIndex + '\\.costAmount').val((+orderItem.priceAmt).toFixed(2));
 	$('#lbl_' + targetItemIndex + '_costAmount').text((+orderItem.priceAmt).toFixed(2));
 
-	if (orderItem.igstTax && orderItem.igstTax.amount) {
+	if (orderItem.igstTax && orderItem.igstTax.amount!=null) {
 		$('#order\\.orderItems' + targetItemIndex + '\\.taxGroupId').val(orderItem.igstTax.taxGroupId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstRateRuleId').val(orderItem.igstTax.taxRuleRateId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.igstCode').val(orderItem.igstTax.typeCode);
@@ -278,7 +279,7 @@ function renderOrderItem(orderItem) {
 
 		$('#lbl_' + targetItemIndex + '_igstTaxAmount').text(orderItem.igstTax.amount.toFixed(2));
 
-	} else if (orderItem.cgstTax && orderItem.cgstTax.amount) {
+	} else if (orderItem.cgstTax && orderItem.cgstTax.amount!=null) {
 		$('#order\\.orderItems' + targetItemIndex + '\\.taxGroupId').val(orderItem.sgstTax.taxGroupId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.sgstRateRuleId').val(orderItem.sgstTax.taxRuleRateId);
 		$('#order\\.orderItems' + targetItemIndex + '\\.cgstRateRuleId').val(orderItem.cgstTax.taxRuleRateId);

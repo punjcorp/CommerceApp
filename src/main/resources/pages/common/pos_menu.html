@@ -29,69 +29,107 @@
 						</div>
 					</li>
 					<li><div class="valign-center">
-							<a id="home" th:href="@{/home}"><span th:text="#{commerce.home.link.home}">Home</span></a>
+							<a id="home" th:href="@{/home}"><i class="fas fa-home fa-3x mx-2"></i><span th:text="#{commerce.home.link.home}">Home</span></a>
 						</div></li>
-					<li><a id="sales" th:href="@{/pos/open_store}"><span th:text="#{commerce.home.menu.sale}">Sale</span></a></li>
+					<li><a id="sales" th:href="@{/pos/open_store}"><i class="fas fa-cart-plus fa-3x mx-2" data-fa-transform="flip-h"></i><span
+							th:text="#{commerce.home.menu.sale}">Sale</span></a></li>
 					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#order" id="ordermenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.order}">Purchase Order</span></a>
+						data-toggle="dropdown"><i class="far fa-file-powerpoint fa-3x mx-3"></i><span th:text="#{commerce.home.menu.order}">Purchase Order</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageorder" th:href="@{/admin/manage_order}"><span th:text="#{commerce.home.menu.search.order}">Search Purchase
-										Order</span></a></li>
-							<li><a id="addorder" th:href="@{/admin/add_order}"><span th:text="#{commerce.home.menu.add.order}">Create Purchase Order</span></a></li>
+							<li><a id="manageorder" th:href="@{/admin/manage_order}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i
+										class="far fa-file-powerpoint"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.search.order}">Search Purchase Order</span></a></li>
+							<li><a id="addorder" th:href="@{/admin/add_order}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i>
+										<i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.add.order}">Create Purchase Order</span></a></li>
 						</ul></li>
 					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#supplier" id="suppliermenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.supplier}">Supplier</span></a>
+						data-toggle="dropdown"><i class="fas fa-users fa-3x mx-1"></i><span th:text="#{commerce.home.menu.supplier}">Supplier</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="managesupplier" th:href="@{/admin/manage_supplier}"><span th:text="#{commerce.home.menu.manage.supplier}">Manage
-										Supplier</span></a></li>
-							<li><a id="addsupplier" th:href="@{/admin/add_supplier}"><span th:text="#{commerce.home.menu.add.supplier}">Add New Supplier</span></a></li>
-							<li><a id="supplierpayment" th:href="@{/admin/supplier/payment}"><span th:text="#{commerce.home.menu.payment.supplier}">Supplier
-										Payment</span></a></li>
+							<li><a id="managesupplier" th:href="@{/admin/manage_supplier}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i
+										class="fas fa-users"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-11 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.manage.supplier}">Manage Supplier</span></a></li>
+							<li><a id="addsupplier" th:href="@{/admin/add_supplier}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-users"></i>
+										<i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.add.supplier}">Add New Supplier</span></a></li>
 						</ul></li>
 					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#finance" id="financemenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.finance}">Finance Management</span></a>
+						data-toggle="dropdown"><i class="fas fa-dollar-sign fa-3x mx-4"></i><span th:text="#{commerce.home.menu.finance}">Finance Management</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="supplierpayment" th:href="@{/admin/supplier/payment}"><span th:text="#{commerce.home.menu.payment.supplier}">Supplier
-										Payment</span></a></li>
-							<li><a id="expenses" th:href="@{/pos/expenses}"><span th:text="#{commerce.home.menu.expense}">Expense</span></a></li>
+							<li><a id="supplierpayment" th:href="@{/admin/supplier/payment}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i
+										class="fas fa-users"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-11 right-10 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.payment.supplier}">Supplier Payment</span></a></li>
+							<li><a id="expenses" th:href="@{/pos/expenses}"><span class="fa-layers fa-fw fa-2x mx-2"> <i class="fas fa-hand-holding"
+										data-fa-transform="rotate-180"></i> <i class="fas fa-money-bill-alt" data-fa-transform="shrink-6 left-6 down-5 rotate-90"></i> <i
+										class="fas fa-money-bill-alt" data-fa-transform="shrink-6 down-5 rotate-45"></i>
+								</span><span th:text="#{commerce.home.menu.expense}">Expense</span></a></li>
 						</ul></li>
 					<li class="dropdown" sec:authorize="isAuthenticated()"><a href="#lookup" id="lookupmenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.lookup}">Lookups</span></a>
+						data-toggle="dropdown"><i class="fas fa-search fa-3x mx-2"></i><span th:text="#{commerce.home.menu.lookup}">Lookups</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="lookupitem" th:href="@{/item_lookup}"><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a></li>
+							<li><a id="lookupitem" th:href="@{/item_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="far fa-file-alt"></i> <i
+										class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a></li>
 						</ul></li>
-					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#pricemenu" id="pricemenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.price}">Price Events</span></a>
+					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#price" id="pricemenu" class="dropdown-toggle offcanvas"
+						data-toggle="dropdown"><span class="fa-3x mx-1 fa-layers fa-fw"> <i class="far fa-file" data-fa-transform="rotate-180"></i> <i
+								class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i>
+						</span><span th:text="#{commerce.home.menu.price}">Price Events</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageinventory" th:href="@{/manage_price}"><span th:text="#{commerce.home.menu.search.price}">Search Price Events</span></a></li>
-							<li><a id="addinventory" th:href="@{/add_price}"><span th:text="#{commerce.home.menu.add.price}">New Price Event</span></a></li>
+							<li><a id="manageinventory" th:href="@{/admin/manage_price}"><span class="fa-2x mx-2 fa-layers fa-fw"> <i class="far fa-file"
+										data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i><i class="fas fa-cog"
+										data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.search.price}">Search Price Events</span></a></li>
+							<li><a id="addinventory" th:href="@{/admin/add_price}"><span class="fa-2x mx-2 fa-layers fa-fw"> <i class="far fa-file"
+										data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i><i class="fas fa-plus"
+										data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span><span th:text="#{commerce.home.menu.add.price}">New Price Event</span></a></li>
 						</ul></li>
 					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#style" id="stylemenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><i class="far fa-file-alt fa-4x mx-3" data-fa-transform="rotate-180"></i><span th:text="#{commerce.home.menu.style}">Style</span></a>
+						data-toggle="dropdown"><i class="far fa-file-alt fa-3x mx-3" data-fa-transform="rotate-180"></i><span th:text="#{commerce.home.menu.style}">Style</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageitem" th:href="@{/search_item}"><span th:text="#{commerce.home.menu.search.item}">Search Items</span></a></li>
-							<li><a th:href="@{/admin/add_style}"><span
-								class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus"
-										data-fa-transform="shrink-10 right-10 up-4"></i>
-								</span>
-							</span><span th:text="#{commerce.home.menu.add.style}">Add New Style</span></a></li>
-							<li><a id="addhierarchy" th:href="@{/add_hierachy}"><span th:text="#{commerce.home.menu.add.hierarchy}">Add Hierarchy</span></a></li>
+							<li><a id="manageitem" th:href="@{/search_item}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.search.item}">Search Items</span></a></li>
+							<li><a th:href="@{/admin/add_style}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
+											data-fa-transform="rotate-180"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.add.style}">Add New Style</span></a></li>
+							<li><a id="addhierarchy" th:href="@{/admin/add_hierachy}"><span th:text="#{commerce.home.menu.add.hierarchy}">Add Hierarchy</span></a></li>
 						</ul></li>
 					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#inventory" id="inventorymenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.inventory}">Inventory Adjustment</span></a>
+						data-toggle="dropdown"><i class="far fa-clipboard fa-3x mx-3"></i><span th:text="#{commerce.home.menu.inventory}">Inventory
+								Adjustment</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageinventory" th:href="@{/manage_inv_adjust}"><span th:text="#{commerce.home.menu.search.inventory}">Search
-										Inventory Adjustment</span></a></li>
-							<li><a id="addinventory" th:href="@{/add_inv_adjust}"><span th:text="#{commerce.home.menu.add.inventory}">Create Inventory
-										Adjustment</span></a></li>
+							<li><a id="manageinventory" th:href="@{/admin/manage_inv_adjust}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="far fa-clipboard"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.search.inventory}">Search Inventory Adjustment</span></a></li>
+							<li><a id="addinventory" th:href="@{/admin/add_inv_adjust}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="fas fa-clipboard"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.add.inventory}">Create Inventory Adjustment</span></a></li>
 						</ul></li>
 					<li class="dropdown" sec:authorize="isAuthenticated()"><a href="#account" id="accountmenu" class="dropdown-toggle offcanvas"
-						data-toggle="dropdown"><span th:text="#{commerce.home.menu.account}">Account</span></a>
+						data-toggle="dropdown"><i class="far fa-user fa-3x mx-2"></i><span th:text="#{commerce.home.menu.account}">Account</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageaccount" th:href="@{/manage_user}"><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a></li>
-							<li><a id="changepassword" th:href="@{/manage_password}"><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a></li>
-							<li><a id="manageaddress" th:href="@{/manage_address}"><span th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a></li>
-							<li><a id="managecard" th:href="@{/manage_card}"><span th:text="#{commerce.home.menu.manage.card}">Manage Cards</span></a></li>
+							<li><a id="manageaccount" th:href="@{/manage_user}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="far fa-user"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a></li>
+							<li><a id="changepassword" th:href="@{/manage_password}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="fas fa-user-secret"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a></li>
+							<li><a id="manageaddress" th:href="@{/manage_address}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="far fa-address-card"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a></li>
+							<li><a id="managecard" th:href="@{/manage_card}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+											class="far fa-credit-card"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+									</span>
+								</span><span th:text="#{commerce.home.menu.manage.card}">Manage Cards</span></a></li>
 						</ul></li>
 				</ul>
 			</nav>

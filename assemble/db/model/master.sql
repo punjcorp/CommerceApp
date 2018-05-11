@@ -355,6 +355,8 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `customer_prompt` TINYINT NOT NULL DEFAULT 0,
   `shipping_weight` DECIMAL(12,2) NULL,
   `pack_size` VARCHAR(45) NULL,
+  `hsn_no` VARCHAR(15) NOT NULL,
+  `next_level_created` VARCHAR(2) NULL DEFAULT 'N',
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_options_item1`
     FOREIGN KEY (`item_id`)
@@ -394,8 +396,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_attributes` ;
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_attributes` (
   `item_id` BIGINT NOT NULL,
   `attribute_id` BIGINT NOT NULL,
-  `value` VARCHAR(80) NOT NULL,
-  PRIMARY KEY (`item_id`, `attribute_id`, `value`),
+  PRIMARY KEY (`item_id`, `attribute_id`),
   CONSTRAINT `fk_item_attributes_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)

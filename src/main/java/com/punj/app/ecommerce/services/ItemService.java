@@ -42,6 +42,9 @@ public interface ItemService {
 	public Map<String, List<Attribute>> retrieveAttrListValues(List<String> attrCodeList);
 	
 	public void deleteSKUs(BigInteger styleNo);
+		
+	public List<Item> retrieveItems(Item itemCriteria);
+	
 	
 	
 

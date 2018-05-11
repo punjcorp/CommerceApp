@@ -56,6 +56,7 @@
 												type="hidden" th:field="*{itemId}"></input> <input type="hidden" th:field="*{status}"></input> <input type="hidden"
 												th:field="*{parentItemId}"></input> <input type="hidden" th:field="*{itemLevel}"></input> <input type="hidden" th:field="*{createdBy}"></input>
 											<input type="hidden" th:field="*{createdDate}"></input> <input type="hidden" th:field="*{itemOptions.itemId}"></input>
+											<input type="hidden" th:field="*{itemOptions.nextLevelCreated}"></input>
 										</div>
 										<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</div>
 									</div>

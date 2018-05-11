@@ -249,10 +249,10 @@
 									<div class="form-group">
 										<label></label>
 										<div class="input-group text-left">
-											<button type="submit" name="saveSKU" value="saveSKU" class="btn btn-info mx-2">
+											<button type="submit" name="saveSKU" value="saveSKU" class="btn btn-info mx-2" th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
 												<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
 											</button>
-											<button type="submit" name="saveApproveSKU" value="saveApproveSKU" class="btn btn-info  mx-2">
+											<button type="submit" name="saveApproveSKU" value="saveApproveSKU" class="btn btn-info  mx-2"  th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
 												<i class="far fa-save fa-2x mx-1"></i><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
 														data-fa-transform="rotate-180"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>

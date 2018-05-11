@@ -260,8 +260,11 @@ public class ManageStyleController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW, MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM);
-
-			item = this.itemService.saveNewItem(item);
+			
+			if(item.getItemId()!=null)
+				item = this.itemService.saveItem(item);
+			else
+				item = this.itemService.saveNewItem(item);
 			logger.info("The style details has been saved successfully");
 
 			if (item != null) {

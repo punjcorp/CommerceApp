@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.controller.item;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +35,7 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.Item;
+import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.item.AttributeBean;
@@ -98,10 +100,11 @@ public class ManageSKUController {
 
 		logger.info("The edit method for item has been called");
 		ItemBean itemBean = null;
+		List<AttributeBean> attributeBeans = null;
 		ItemBeanDTO itemDTO = null;
 		try {
 			BigInteger styleNumber = new BigInteger(req.getParameter(MVCConstants.STYLE_ID_PARAM));
-
+			List<ItemBean> skuList = null;
 			Item item = this.itemService.getItem(styleNumber);
 
 			if (item != null) {
@@ -109,8 +112,39 @@ public class ManageSKUController {
 				item = this.itemService.getItem(item.getItemId());
 				itemBean = ItemTransformer.transformItem(item);
 
+				if (item.getItemOptions().getNextLevelCreated() != null
+						&& item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_CREATED)) {
+					Item itemCriteria = new Item();
+					itemCriteria.setParentItemId(styleNumber);
+					List<Item> skuItemList = this.itemService.retrieveItems(itemCriteria);
+					if (skuItemList != null && !skuItemList.isEmpty()) {
+						List<ItemAttribute> itemAttributes = skuItemList.get(0).getItemAttributes();
+
+						List<Attribute> attributes = new ArrayList<>(itemAttributes.size());
+						Attribute attr = null;
+						for (ItemAttribute itemAttribute : itemAttributes) {
+							attr = itemAttribute.getItemAttributeId().getAttribute();
+							attributes.add(attr);
+						}
+						attributeBeans = ItemTransformer.transformAttributes(attributes);
+
+						List<String> attrCodeList = ItemTransformer.retrieveSelectedAttributes(skuItemList);
+						Map<String, List<Attribute>> attrValueMap = this.itemService.retrieveAttrListValues(attrCodeList);
+						if (attrValueMap != null && attrValueMap.size() > 0)
+							ItemTransformer.updateAttrValues(attributeBeans, attrValueMap);
+						logger.info("The attribute value list has been successfully retrieved");
+
+						skuList = ItemTransformer.transformItems(skuItemList);
+						
+
+					}
+
+				}
+
 				if (this.isItemEligibleForSKUCreation(itemBean, model, locale)) {
 					itemDTO = new ItemBeanDTO();
+					itemDTO.setSkus(skuList);
+					itemBean.setSelectedAttributes(attributeBeans);
 					itemDTO.setStyle(itemBean);
 
 					logger.info("The selected style details has been retrieved successfully for sku creation");
@@ -144,6 +178,12 @@ public class ManageSKUController {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.error.style.status.not.approved", null, locale));
 			result = Boolean.FALSE;
 		}
+		if (itemBean.getItemOptions() == null || itemBean.getItemOptions().getNextLevelCreated() == null
+				|| MVCConstants.NEXT_LEVEL_APPROVED.equals(itemBean.getItemOptions().getNextLevelCreated())) {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.error.style.sku.status.approved", null, locale));
+			result = Boolean.FALSE;
+		}
+
 		return result;
 
 	}
@@ -211,12 +251,14 @@ public class ManageSKUController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			Item style = this.itemService.getStyle(itemBean.getStyle().getItemId());
-			if (style != null) {
+			if (style != null && itemBean.getSkus()!=null && !itemBean.getSkus().isEmpty()) {
 
 				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW);
 
 				Boolean nextLevelCreated = Boolean.FALSE;
-				if (style.getItemOptions().getNextLevelCreated() != null && MVCConstants.YES.equals(style.getItemOptions().getNextLevelCreated()))
+				if (style.getItemOptions().getNextLevelCreated() != null
+						&& (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
+								|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
 					nextLevelCreated = Boolean.TRUE;
 				skuList = this.itemService.createSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
 				if (skuList != null && !skuList.isEmpty()) {

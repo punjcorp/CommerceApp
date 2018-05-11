@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +26,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
+import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.AttributeDTO;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
@@ -50,6 +52,7 @@ import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.item.ItemSearchRepository;
 import com.punj.app.ecommerce.repositories.item.SKUCounterRepository;
 import com.punj.app.ecommerce.repositories.item.StyleCounterRepository;
+import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -79,6 +82,7 @@ public class ItemServiceImpl implements ItemService {
 	private AttributeSearchRepository attributeSearchRepository;
 	private CommonService commonService;
 	private PriceService priceService;
+	private InventoryService inventoryService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -100,6 +104,15 @@ public class ItemServiceImpl implements ItemService {
 	@Autowired
 	public void setPriceService(PriceService priceService) {
 		this.priceService = priceService;
+	}
+
+	/**
+	 * @param inventoryService
+	 *            the inventoryService to set
+	 */
+	@Autowired
+	public void setInventoryService(InventoryService inventoryService) {
+		this.inventoryService = inventoryService;
 	}
 
 	/**
@@ -696,18 +709,29 @@ public class ItemServiceImpl implements ItemService {
 	@Transactional
 	public Item approveItem(Item item) {
 
-		item = this.saveItem(item);
+		if (item.getItemId() != null && StringUtils.isNotEmpty(item.getItemId().toString()))
+			item = this.saveItem(item);
+		else
+			item = this.saveNewItem(item);
+
 		logger.info("The price information will be updated in price records now.");
 
 		List<Location> locations = this.commonService.retrieveAllLocations();
-		List<ItemPrice> itemPriceList = ItemConverter.convertToItemPriceForAll(item, item.getModifiedBy(), locations);
+		this.updateItemPrices(locations, item, item.getModifiedBy());
+		
+		return item;
+
+	}
+
+	@Transactional
+	public List<ItemPrice> updateItemPrices(List<Location> locations, Item item, String username) {
+		List<ItemPrice> itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations);
 		itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
 		if (itemPriceList != null && !itemPriceList.isEmpty())
 			logger.info("The item price records were created successfully");
 		else
 			logger.info("There was some issue while creating the item prices");
-		return item;
-
+		return itemPriceList;
 	}
 
 	@Override
@@ -781,13 +805,62 @@ public class ItemServiceImpl implements ItemService {
 				sku = this.saveNewSKU(sku, skuNo);
 				finalSKUs.add(sku);
 			}
-			if (!finalSKUs.isEmpty())
+			if (!finalSKUs.isEmpty()) {
+				List<Location> locations = this.commonService.retrieveAllLocations();
 				logger.info("The skus were created successfully");
-			else
+				
+				this.inventoryService.rangeSKUs(finalSKUs);
+				logger.info("The skus have been ranged successfully");
+				
+				for (Item sku : finalSKUs) {
+					this.updateItemPrices(locations, sku, username);
+					logger.info("The sku {} price has been updated successfully", sku.getItemId());
+
+					List<ItemStockJournal> inventoryDetails = this.createStockDetails(locations, sku, username);
+					this.inventoryService.updateInventory(inventoryDetails);
+					logger.info("The sku {} inventory has been updated successfully", sku.getItemId());
+				}
+
+			} else {
 				logger.error("There was some issue while creating the skus");
+			}
+
 		}
 
 		return finalSKUs;
+	}
+
+	private List<ItemStockJournal> createStockDetails(List<Location> locations, Item item, String username) {
+
+		List<ItemStockJournal> itemStockDetails = new ArrayList<>();
+		ItemStockJournal itemStockJournal = null;
+
+		for (Location location : locations) {
+
+			itemStockJournal = new ItemStockJournal();
+			itemStockJournal.setCreatedBy(username);
+			itemStockJournal.setCreatedDate(LocalDateTime.now());
+			itemStockJournal.setLocationId(location.getLocationId());
+			itemStockJournal.setItemId(item.getItemId());
+
+			StockReason stockReason = new StockReason();
+			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
+			itemStockJournal.setReasonCode(stockReason);
+			itemStockJournal.setFunctionality(ServiceConstants.SKU_CREATION_FUNCTIONALITY);
+			
+			String stockStatus=item.getItemOptions().getStockStatus();
+			if(stockStatus!=null && StringUtils.isNotEmpty(stockStatus)){
+				stockStatus=stockStatus.replace(".00","");
+			}
+			
+			itemStockJournal.setQty(new Integer(stockStatus));
+
+			itemStockDetails.add(itemStockJournal);
+		}
+
+		logger.info("The stock details has been created from sku/item details");
+		return itemStockDetails;
+
 	}
 
 	@Override
@@ -827,6 +900,17 @@ public class ItemServiceImpl implements ItemService {
 
 		logger.info("The skus has been deleted successfully");
 
+	}
+
+	@Override
+	public List<Item> retrieveItems(Item itemCriteria) {
+		List<Item> itemList = this.itemRepository.findAll(Example.of(itemCriteria));
+		if (itemList != null && !itemList.isEmpty())
+			logger.info("The item  were retrieved successfully");
+		else
+			logger.error("There was some issue while retrieveing the items");
+
+		return itemList;
 	}
 
 }
