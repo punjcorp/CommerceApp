@@ -32,7 +32,7 @@
 							<div class="row">
 								<div class="col-6">
 									<div class="form-group">
-										<label for="locationId"><small><span th:text="#{commerce.screen.common.location}"></span></small></label>
+										<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.location}"></span></small></label>
 										<div class="input-group text-left">
 											<select th:field="*{locationId}" class="form-control input-sm">
 												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.location}">Select Location</option>
@@ -45,7 +45,7 @@
 								</div>
 								<div class="col-6">
 									<div class="form-group">
-										<label for="reasonCodeId"><small><span th:text="#{commerce.screen.common.reason}"></span></small></label>
+										<label for="reasonCodeId"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.reason}"></span></small></label>
 										<div class="input-group text-left">
 											<select th:field="*{reasonCodeId}" class="form-control input-sm">
 												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.reason}">Select Inventory
@@ -53,8 +53,8 @@
 												<option th:each="reasonCode: ${invAdjustBean.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="#{${reasonCode.name}}"></option>
 											</select>
 										</div>
+										<small th:if="${#fields.hasErrors('reasonCodeId')}" th:errors="*{reasonCodeId}" class="text-danger">Reason Code Error </small>
 									</div>
-									<small th:if="${#fields.hasErrors('reasonCodeId')}" th:errors="*{reasonCodeId}" class="text-danger">Reason Code Error </small>
 								</div>
 							</div>
 							<div class="row">
@@ -72,13 +72,13 @@
 							</div>
 							<div class="row mx-1">
 								<div class="col-3">
-									<label><small><span th:text="#{commerce.screen.order.item}"></span></small></label>
+									<label><small><span class="pos-mandatory" th:text="#{commerce.screen.order.item}"></span></small></label>
 								</div>
 								<div class="col-2">
-									<label><small><span th:text="#{commerce.screen.common.reason}"></span></small></label>
+									<label><small><span class="pos-mandatory" th:text="#{commerce.screen.common.reason}"></span></small></label>
 								</div>
 								<div class="col-2">
-									<label><small><span th:text="#{commerce.screen.common.qty}"></span></small></label>
+									<label><small><span class="pos-mandatory" th:text="#{commerce.screen.common.qty}"></span></small></label>
 								</div>
 								<div class="col">
 									<label><small><span th:text="#{commerce.screen.common.inv.from}"></span></small></label>
@@ -116,7 +116,7 @@
 										</div>
 										<div class="col-2">
 											<div class="form-group">
-												<input type="text" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="form-control input-sm"
+												<input type="number" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="form-control input-sm"
 													th:placeholder="#{commerce.screen.inventory.qty}" maxlength="150"></input> <small
 													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].qty')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="text-danger">Quantity Error </small>
@@ -132,8 +132,7 @@
 										<div class="col">
 											<div class="form-group">
 												<input type="hidden" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}"></input> <span
-													th:id="'invAdjustItems'+${itrStat.index}+'.span.toAvailable'"
-													th:text="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}"></span>
+													th:id="'invAdjustItems'+${itrStat.index}+'.span.toAvailable'" th:text="${invAdjustBean.invAdjustItems[__${itrStat.index}__].toAvailable}"></span>
 											</div>
 										</div>
 										<div class="col-2">

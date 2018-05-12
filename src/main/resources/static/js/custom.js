@@ -24,19 +24,25 @@ function resetAllMenus() {
 
 $(function() {
 
+	$('input[type=number][class$="pos-amount"]').each(function() {
 
-	
-	$('input[type=number][class=amount]').change(function(){
-		var nbrValue=+$(this).val();
-		if(nbrValue=='undefined' || $.trim(nbrValue)==''){
+		var nbrValue = +$(this).val();
+		if (nbrValue == 'undefined' || $.trim(nbrValue) == '') {
 			$(this).val('0.00');
-		}else if(nbrValue>=0){
+		} else if (nbrValue >= 0) {
+			$(this).val(nbrValue.toFixed(2));
+		}
+	});
+
+	$('input[type=number][class$="pos-amount"]').change(function() {
+		var nbrValue = +$(this).val();
+		if (nbrValue == 'undefined' || $.trim(nbrValue) == '') {
+			$(this).val('0.00');
+		} else if (nbrValue >= 0) {
 			$(this).val(nbrValue.toFixed(2));
 		}
 	});
 });
-
-
 
 $(document).ready(
 		function() {

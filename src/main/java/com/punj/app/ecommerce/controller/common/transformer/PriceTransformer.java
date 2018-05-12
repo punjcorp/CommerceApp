@@ -44,7 +44,7 @@ public class PriceTransformer {
 		itemPrice.setStatus(priceBean.getStatus());
 		itemPrice.setType(priceBean.getPriceType());
 
-		itemPrice.setItemPrice(BigDecimal.valueOf(priceBean.getItemPriceAmt().getNumber().doubleValueExact()));
+		itemPrice.setItemPrice(priceBean.getItemPriceAmt());
 
 		Item item = new Item();
 		item.setItemId(priceBean.getItemId());
@@ -76,7 +76,7 @@ public class PriceTransformer {
 		priceBean.setStatus(itemPrice.getStatus());
 		priceBean.setPriceType(itemPrice.getType());
 
-		priceBean.setItemPriceAmt(Money.of(itemPrice.getItemPrice(), Utils.getLocaleCurrency()));
+		priceBean.setItemPriceAmt(itemPrice.getItemPrice());
 
 		priceBean.setItemId(itemPrice.getItem().getItemId());
 

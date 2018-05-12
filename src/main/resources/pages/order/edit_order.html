@@ -64,6 +64,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group text-left">
+												<label for="searchText"><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.searchtext}">Supplier</span></small></label>
 												<div class="input-group">
 													<div class="input-group-prepend">
 														<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-search"
@@ -77,14 +78,14 @@
 														placeholder="Enter keyword to search" aria-describedby="searchHelp"></input>
 												</div>
 												<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.supplier.search.keywords}">Enter keywords like
-													id/Name/Email/Address/Phone#</small>
-												<div th:if="${#fields.hasErrors('supplierSearch.searchText')}" th:errors="*{supplierSearch.searchText}" class="text-danger">Search
-													Text Error</div>
+													id/Name/Email/Address/Phone#</small> <small th:if="${#fields.hasErrors('order.supplierId')}" th:errors="*{order.supplierId}" class="text-danger">Supplier
+													Error</small>
 												<div id="supplierMsg"></div>
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="form-group text-left">
+												<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.location}">Location </span></small></label>
 												<div class="input-group">
 													<select th:field="*{order.locationId}" class="form-control input-sm">
 														<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.location}">Select
@@ -93,7 +94,7 @@
 															th:text="${location.locationId} + ' - ' +${location.name}"></option>
 													</select>
 												</div>
-												<div th:if="${#fields.hasErrors('order.locationId')}" th:errors="*{order.locationId}" class="text-danger">Location Error</div>
+												<small th:if="${#fields.hasErrors('order.locationId')}" th:errors="*{order.locationId}" class="text-danger">Location Error</small>
 												<div id="locationMsg"></div>
 											</div>
 										</div>
@@ -103,7 +104,8 @@
 											<div class="form-group">
 												<label><small><span th:text="#{commerce.screen.order.comments}">Comments</span></small></label>
 												<div class="input-group text-left">
-													<textarea rows="4" th:field="*{order.comments}" class="form-control input-sm"></textarea>
+													<textarea rows="4" th:field="*{order.comments}" class="form-control input-sm"
+														th:placeholder="#{commerce.screen.order.comments.placeholder}"></textarea>
 												</div>
 												<div id="commentsMsg"></div>
 											</div>
@@ -113,17 +115,17 @@
 										<div class="row">
 											<div class="col-3 text-left">
 												<h6>
-													<span th:text="#{commerce.screen.order.item.details}"></span>
+													<span class="pos-mandatory" th:text="#{commerce.screen.order.item.details}"></span>
 												</h6>
 											</div>
 											<div class="col padding-sm text-center">
 												<h6>
-													<span th:text="#{commerce.screen.order.item.qty}"></span>
+													<span class="pos-mandatory" th:text="#{commerce.screen.order.item.qty}"></span>
 												</h6>
 											</div>
 											<div class="col text-center">
 												<h6>
-													<span th:text="#{commerce.screen.order.unit.cost}"></span>
+													<span class="pos-mandatory" th:text="#{commerce.screen.order.unit.cost}"></span>
 												</h6>
 											</div>
 											<div class="col text-center">
@@ -179,24 +181,25 @@
 																th:text="#{commerce.screen.item.search.keywords}">Enter keywords like Item#/Name/Description</small> <small id="itemSearchHelp"
 																class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc!=null}"
 																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"> Item Name</small>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].itemId')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="text-danger">Item Id Error</div>
+															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].itemId')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="text-danger">Item Id Error</small>
 														</div>
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" onChange="saleItemChanged(this);"
+															<input type="number" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" onChange="saleItemChanged(this);"
 																class="form-control input-sm" th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].orderedQty')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" class="text-danger">Quantity Error</div>
+															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].orderedQty')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" class="text-danger">Quantity Error</small>
 														</div>
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}" onChange="saleItemChanged(this);"
-																class="form-control input-sm" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].unitCost')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}" class="text-danger">Cost Error</div>
+															<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}"
+																onChange="saleItemChanged(this);" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.cost}"
+																maxlength="150"></input>
+															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].unitCost')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}" class="text-danger">Cost Error</small>
 														</div>
 													</div>
 													<div class="col padding-sm text-center">
@@ -283,7 +286,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-4">
+					<div class="col-3">
 						<div id="supplierDetails" th:class="${orderBeanDTO.order.supplier.supplierId==null}?'d-none':''">
 							<div class="card border-box-filled">
 								<input type="hidden" th:field="*{order.supplier.supplierId}"></input> <input type="hidden" th:field="*{order.supplier.name}"></input> <input
@@ -298,11 +301,6 @@
 								<div class="card-body">
 									<div class="row">
 										<div class="col-4">
-											<div class="card-text">
-												<h4>
-													<span th:text="#{commerce.screen.order.supplier.address}"></span>
-												</h4>
-											</div>
 											<div class="card-text my-3">
 												<div class="fa-3x">
 													<span class="fa-layers fa-fw"> <i class="fas fa-map-marker"></i> <i class="fas fa-circle color-blue"
@@ -366,6 +364,17 @@
 														<small><span id="supplierEmail" th:text="${orderBeanDTO.order.supplier.email}"></span></small>
 													</div>
 												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<div class="card-text text-center">
+												<br />
+												<br />
+												<h4>
+													<span th:text="#{commerce.screen.order.supplier.address}"></span>
+												</h4>
 											</div>
 										</div>
 									</div>

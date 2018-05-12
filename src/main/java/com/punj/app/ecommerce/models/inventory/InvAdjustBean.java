@@ -26,6 +26,7 @@ public class InvAdjustBean {
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer locationId;
 
+	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer reasonCodeId;
 
 	private List<InvReasonBean> reasonCodes;

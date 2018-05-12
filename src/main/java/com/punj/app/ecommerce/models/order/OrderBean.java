@@ -13,6 +13,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -25,10 +26,10 @@ public class OrderBean implements Serializable {
 	private static final long serialVersionUID = -4016931635705372146L;
 
 	private BigInteger orderId;
-	@NotNull(message = "{commerce.error.string.empty}")
+	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
 	private Integer supplierId;
 	private String supplierName;
-	@NotNull(message = "{commerce.error.string.empty}")
+	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
 	private Integer locationId;
 	private String locationName;
 

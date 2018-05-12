@@ -12,7 +12,6 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,6 +41,7 @@ import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeanDTO;
 import com.punj.app.ecommerce.models.order.OrderBillBean;
@@ -257,8 +258,8 @@ public class OrderPhaseController {
 	}
 
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
-	public String saveOrderForReceival(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, HttpSession session,
-			Locale locale, Authentication authentication) {
+	public String saveOrderForReceival(@ModelAttribute @Validated(ValidationGroup.VGReceiveOrder.class) OrderBeanDTO orderBeanDTO,
+			final BindingResult bindingResult, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.RECEIVE_ORDER_PAGE;
@@ -288,12 +289,12 @@ public class OrderPhaseController {
 	}
 
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ORDER_PARAM })
-	public String receiveOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, HttpSession session,
-			Locale locale, Authentication authentication) {
+	public String receiveOrder(@ModelAttribute @Validated(ValidationGroup.VGReceiveOrder.class) OrderBeanDTO orderBeanDTO, final BindingResult bindingResult,
+			Model model, HttpSession session, Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.RECEIVE_ORDER_PAGE;
-		}		
+		}
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -314,11 +315,12 @@ public class OrderPhaseController {
 	}
 
 	@PostMapping(value = ViewPathConstants.RECEIVE_ORDER_URL, params = { MVCConstants.RECEIVE_ALL_ORDERS_PARAM })
-	public String receiveAllOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, final BindingResult bindingResult, Model model, HttpSession session, Locale locale, Authentication authentication) {
+	public String receiveAllOrder(@ModelAttribute @Validated(ValidationGroup.VGReceiveOrder.class) OrderBeanDTO orderBeanDTO, final BindingResult bindingResult,
+			Model model, HttpSession session, Locale locale, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.RECEIVE_ORDER_PAGE;
-		}		
+		}
 		try {
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();

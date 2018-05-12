@@ -139,11 +139,11 @@
 												disabled="disabled"></input> <input type="hidden" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].createdBy}"></input></td>
 											<td>
 												<div class="btn-group" th:if="${priceBeanDTO.priceBeans[__${itrStat.index}__].status=='C'}">
-													<a th:href="@{/edit_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/edit_price.html"
+													<a th:href="@{/admin/edit_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/edit_price.html"
 														class="btn btn-info btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
-														th:href="@{/approve_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
+														th:href="@{/admin/approve_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
 														class="btn btn-success btn-sm"><span th:text="#{commerce.screen.actions.approve}">Approve</span></a> <a
-														th:href="@{/delete_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
+														th:href="@{/admin/delete_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
 														class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a>
 												</div>
 											</td>

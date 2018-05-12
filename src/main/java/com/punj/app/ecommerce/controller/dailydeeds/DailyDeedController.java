@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,7 @@ import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
@@ -177,7 +179,7 @@ public class DailyDeedController {
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
-	public String processOpenStoreDetails(@ModelAttribute @Valid DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
+	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
 			Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
@@ -425,11 +427,11 @@ public class DailyDeedController {
 	}
 
 	@PostMapping(value = ViewPathConstants.REGISTER_OPEN_URL, params = { MVCConstants.OPEN_REGISTER_PARAM })
-	public String processOpenRegisterDetails(@ModelAttribute @Valid DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
+	public String processOpenRegisterDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupRegOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
 			Authentication authentication, HttpSession session) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
-			this.updateBeans(dailyDeedBean, model);
+			this.updateBeansForRegisterOpen(dailyDeedBean, model);
 			return ViewPathConstants.REGISTER_OPEN_PAGE;
 		}
 		try {

@@ -3,19 +3,21 @@
  */
 package com.punj.app.ecommerce.models.price;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.money.MonetaryAmount;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.javamoney.moneta.Money;
 
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.utils.Pager;
-import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -41,8 +43,11 @@ public class PriceBean {
 
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
+	
 	@NotNull(message = "{commerce.error.amount.empty}")
-	private MonetaryAmount itemPriceAmt = Money.of(0, Utils.getLocaleCurrency());
+	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}")
+	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}")
+	private BigDecimal itemPriceAmt;
 
 	private String status;
 
@@ -183,18 +188,19 @@ public class PriceBean {
 		this.modifiedDate = modifiedDate;
 	}
 
+	
+
 	/**
 	 * @return the itemPriceAmt
 	 */
-	public MonetaryAmount getItemPriceAmt() {
+	public BigDecimal getItemPriceAmt() {
 		return itemPriceAmt;
 	}
 
 	/**
-	 * @param itemPriceAmt
-	 *            the itemPriceAmt to set
+	 * @param itemPriceAmt the itemPriceAmt to set
 	 */
-	public void setItemPriceAmt(MonetaryAmount itemPriceAmt) {
+	public void setItemPriceAmt(BigDecimal itemPriceAmt) {
 		this.itemPriceAmt = itemPriceAmt;
 	}
 
@@ -251,12 +257,11 @@ public class PriceBean {
 	}
 
 	/**
-	 * @param priceType the priceType to set
+	 * @param priceType
+	 *            the priceType to set
 	 */
 	public void setPriceType(String priceType) {
 		this.priceType = priceType;
 	}
 
-	
-	
 }

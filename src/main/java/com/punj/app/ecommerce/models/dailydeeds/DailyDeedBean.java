@@ -11,6 +11,7 @@ import javax.money.MonetaryAmount;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -20,13 +21,15 @@ import com.punj.app.ecommerce.utils.Utils;
  */
 public class DailyDeedBean {
 
-	@NotNull(message = "{commerce.error.location.empty}")
+	@NotNull(message = "{commerce.error.location.empty}", groups = {ValidationGroup.ValidationGroupStoreOpen.class})
 	private Integer locationId;
 	private String locationName;
 	private String defaultTender;
 
-	@NotNull(message = "{commerce.error.date.empty}")
+	@NotNull(message = "{commerce.error.date.empty}", groups = {ValidationGroup.ValidationGroupStoreOpen.class})
 	private LocalDateTime businessDate;
+	
+	@NotNull(message = "{commerce.error.register.empty}", groups = {ValidationGroup.ValidationGroupRegOpen.class})
 	private Integer register;
 	private Integer txnNo;
 	private Integer selectedTenderId;

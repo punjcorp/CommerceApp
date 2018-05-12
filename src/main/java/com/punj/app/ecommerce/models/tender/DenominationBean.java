@@ -6,7 +6,14 @@ package com.punj.app.ecommerce.models.tender;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
+
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 
 /**
  * @author admin
@@ -14,11 +21,14 @@ import javax.validation.constraints.NotNull;
  */
 public class DenominationBean {
 
-	@NotNull(message = "{commerce.error.select.empty}")
+	@NotNull(message = "{commerce.error.select.empty}", groups = {ValidationGroup.ValidationGroupStoreOpen.class,ValidationGroup.ValidationGroupRegOpen.class})
 	private BigDecimal denomination;
-	@NotNull(message = "{commerce.error.count.min}")
+	@NotNull(message = "{commerce.error.count.min}", groups = {ValidationGroup.ValidationGroupStoreOpen.class,ValidationGroup.ValidationGroupRegOpen.class})
+	@Range(min = 1, max = 9999, message = "{commerce.error.media.count}", groups = {ValidationGroup.ValidationGroupStoreOpen.class,ValidationGroup.ValidationGroupRegOpen.class})
 	private BigInteger mediaCount;
-	@NotNull(message = "{commerce.error.amount.empty}")
+	@NotNull(message = "{commerce.error.amount.empty}", groups = {ValidationGroup.ValidationGroupStoreOpen.class,ValidationGroup.ValidationGroupRegOpen.class})
+	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = {ValidationGroup.ValidationGroupStoreOpen.class,ValidationGroup.ValidationGroupRegOpen.class})
+	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = {ValidationGroup.ValidationGroupStoreOpen.class,ValidationGroup.ValidationGroupRegOpen.class})
 	private BigDecimal amount;
 
 	/**

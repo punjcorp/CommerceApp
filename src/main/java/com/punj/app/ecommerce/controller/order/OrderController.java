@@ -4,38 +4,27 @@ package com.punj.app.ecommerce.controller.order;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
@@ -47,8 +36,7 @@ import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
-import com.punj.app.ecommerce.models.financials.AccountDTO;
-import com.punj.app.ecommerce.models.item.ItemBean;
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.OrderBeanDTO;
 import com.punj.app.ecommerce.models.order.OrderItemBean;
@@ -57,15 +45,6 @@ import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
 
 /**
  * @author admin
@@ -97,7 +76,7 @@ public class OrderController {
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
 	}
-	
+
 	/**
 	 * @param orderPrintUtil
 	 *            the orderPrintUtil to set
@@ -105,7 +84,7 @@ public class OrderController {
 	@Autowired
 	public void setOrderPrintUtil(OrderPrintUtil orderPrintUtil) {
 		this.orderPrintUtil = orderPrintUtil;
-	}	
+	}
 
 	/**
 	 * @param messageSource
@@ -181,8 +160,8 @@ public class OrderController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
-	public String saveOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale, HttpSession session,
-			Authentication authentication) {
+	public String saveOrder(@ModelAttribute @Validated(ValidationGroup.VGAddOrder.class) OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model,
+			Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.ADD_ORDER_PAGE;
@@ -202,9 +181,9 @@ public class OrderController {
 	private void prepareOrderDetailsForSaving(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale,
 			String status) throws IOException {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String username=userDetails.getUsername();
+		String username = userDetails.getUsername();
 		OrderBean orderBean = orderBeanDTO.getOrder();
-		Order order = OrderTransformer.transformOrderBean(orderBean,username , status, Boolean.FALSE);
+		Order order = OrderTransformer.transformOrderBean(orderBean, username, status, Boolean.FALSE);
 		order = this.orderService.createOrder(order);
 		logger.info("The {} order details has been saved successfully", order.getOrderId());
 		orderBean.setOrderId(order.getOrderId());
@@ -227,11 +206,9 @@ public class OrderController {
 		}
 	}
 
-
-
 	@PostMapping(value = ViewPathConstants.ADD_ORDER_URL, params = { MVCConstants.APPROVE_ORDER_PARAM })
-	public String approveOrder(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale, HttpSession session,
-			Authentication authentication) {
+	public String approveOrder(@ModelAttribute @Validated(ValidationGroup.VGAddOrder.class) OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model,
+			Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.ADD_ORDER_PAGE;
@@ -259,7 +236,6 @@ public class OrderController {
 
 		return orderReportBean;
 	}
-
 
 	@GetMapping(value = ViewPathConstants.EDIT_ORDER_URL)
 	public String editOrder(Model model, final HttpServletRequest req, Locale locale) {
@@ -327,14 +303,14 @@ public class OrderController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.SAVE_ORDER_PARAM })
-	public String saveOrderAfterEdit(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale,
-			HttpSession session, Authentication authentication) {
+	public String saveOrderAfterEdit(@ModelAttribute @Validated(ValidationGroup.VGAddOrder.class) OrderBeanDTO orderBeanDTO, BindingResult bindingResult,
+			Model model, Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.EDIT_ORDER_PAGE;
 		}
 		try {
-			this.prepareOrderDetailsAfterUpdates(orderBeanDTO, model, session, authentication, locale,orderBeanDTO.getOrder().getStatus());
+			this.prepareOrderDetailsAfterUpdates(orderBeanDTO, model, session, authentication, locale, orderBeanDTO.getOrder().getStatus());
 		} catch (Exception e) {
 			logger.error("There is an error while updating purchase order", e);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
@@ -342,10 +318,11 @@ public class OrderController {
 		}
 		return ViewPathConstants.EDIT_ORDER_PAGE;
 	}
-	
-	private void prepareOrderDetailsAfterUpdates(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status) throws IOException {
+
+	private void prepareOrderDetailsAfterUpdates(OrderBeanDTO orderBeanDTO, Model model, HttpSession session, Authentication authentication, Locale locale,
+			String status) throws IOException {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String username=userDetails.getUsername();
+		String username = userDetails.getUsername();
 		OrderBean orderBean = orderBeanDTO.getOrder();
 		Order order = OrderTransformer.transformOrderBean(orderBean, username, status, Boolean.TRUE);
 		order = this.orderService.createOrder(order);
@@ -365,11 +342,11 @@ public class OrderController {
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.edit.save.success", new Object[] { order.getOrderId() }, locale));
 		}
-	}	
-	
+	}
+
 	@PostMapping(value = ViewPathConstants.EDIT_ORDER_URL, params = { MVCConstants.APPROVE_ORDER_PARAM })
-	public String approveOrderAfterEdit(@ModelAttribute @Valid OrderBeanDTO orderBeanDTO, BindingResult bindingResult, Model model, Locale locale, HttpSession session,
-			Authentication authentication) {
+	public String approveOrderAfterEdit(@ModelAttribute @Validated(ValidationGroup.VGAddOrder.class) OrderBeanDTO orderBeanDTO, BindingResult bindingResult,
+			Model model, Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 			return ViewPathConstants.EDIT_ORDER_PAGE;
@@ -384,6 +361,6 @@ public class OrderController {
 			this.updateOrderModelDetails(model, orderBeanDTO);
 		}
 		return ViewPathConstants.EDIT_ORDER_PAGE;
-	}	
+	}
 
 }

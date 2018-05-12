@@ -597,4 +597,8 @@ preview-thumbnail-cart{
 }
 
 
-
+.pos-mandatory:after {
+ 	content: "*";
+    padding-left:5px;
+    color: red
+}

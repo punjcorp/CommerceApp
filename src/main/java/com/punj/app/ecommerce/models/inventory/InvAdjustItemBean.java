@@ -7,6 +7,10 @@ import java.math.BigInteger;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Range;
+
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
+
 /**
  * @author admin
  *
@@ -19,6 +23,7 @@ public class InvAdjustItemBean {
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer reasonCodeId;
 	@NotNull(message = "{commerce.error.qty.min.small}")
+	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}")
 	private Integer qty;
 
 	private Integer fromAvailable;

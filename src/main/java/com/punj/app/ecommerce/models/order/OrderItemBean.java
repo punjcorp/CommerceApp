@@ -7,8 +7,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Range;
+
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
 
 /**
@@ -16,7 +21,7 @@ import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
  *
  */
 public class OrderItemBean {
-	@NotNull(message = "{commerce.error.string.empty}")
+	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
 	private BigInteger itemId;
 	
 	private String itemDesc;
@@ -24,10 +29,13 @@ public class OrderItemBean {
 	private BigInteger orderId;
 	private Integer taxGroupId;
 
-	@NotNull(message = "{commerce.error.string.empty}")
+	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
+	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = {ValidationGroup.VGAddOrder.class})
 	private BigDecimal orderedQty;
 
-	@NotNull(message = "{commerce.error.string.empty}")
+	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
+	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGAddOrder.class})
+	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGAddOrder.class})	
 	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal costAmount = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
@@ -54,9 +62,14 @@ public class OrderItemBean {
 
 	private BigDecimal taxAmount = BigDecimal.ZERO;
 
+	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGReceiveOrder.class})
+	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = {ValidationGroup.VGReceiveOrder.class})	
 	private BigDecimal delieveredQty;
 	private LocalDateTime delieveredDate;
-
+	
+	@NotNull(message = "{commerce.error.amount.empty}", groups = {ValidationGroup.VGReceiveOrder.class})
+	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGReceiveOrder.class})
+	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGReceiveOrder.class})
 	private BigDecimal actualUnitCost = BigDecimal.ZERO;
 	private BigDecimal actualCostAmount = BigDecimal.ZERO;
 	private BigDecimal actualTotalCost = BigDecimal.ZERO;
