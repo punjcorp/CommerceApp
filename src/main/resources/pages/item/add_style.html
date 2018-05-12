@@ -50,13 +50,13 @@
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<label><small><span th:text="#{commerce.screen.item.name}">Item Name</span></small></label>
+										<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.name}">Item Name</span></small></label>
 										<div class="input-group">
 											<input type="text" th:field="*{name}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.name.placeholder}"></input> <input
 												type="hidden" th:field="*{itemId}"></input> <input type="hidden" th:field="*{status}"></input> <input type="hidden"
 												th:field="*{parentItemId}"></input> <input type="hidden" th:field="*{itemLevel}"></input> <input type="hidden" th:field="*{createdBy}"></input>
-											<input type="hidden" th:field="*{createdDate}"></input> <input type="hidden" th:field="*{itemOptions.itemId}"></input>
-											<input type="hidden" th:field="*{itemOptions.nextLevelCreated}"></input>
+											<input type="hidden" th:field="*{createdDate}"></input> <input type="hidden" th:field="*{itemOptions.itemId}"></input> <input type="hidden"
+												th:field="*{itemOptions.nextLevelCreated}"></input>
 										</div>
 										<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</div>
 									</div>
@@ -81,10 +81,13 @@
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<label><small><span th:text="#{commerce.screen.item.current.price}">Current Selling Price</span></small></label>
+										<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.current.price}">Current Selling Price</span></small></label>
 										<div class="input-group">
-											<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.current.price.placeholder}"
-												th:field="*{itemOptions.currentPrice}"></input>
+											<div class="input-group-prepend">
+												<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+											</div>
+											<input type="number" step="0.01" class="form-control input-sm pos-amount"
+												th:placeholder="#{commerce.screen.item.current.price.placeholder}" th:field="*{itemOptions.currentPrice}"></input>
 										</div>
 										<div th:if="${#fields.hasErrors('itemOptions.currentPrice')}" th:errors="*{itemOptions.currentPrice}" class="text-danger">Current
 											Price Error</div>
@@ -92,7 +95,7 @@
 								</div>
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<label><small><span th:text="#{commerce.screen.item.tax.group}">Tax Group</span></small></label>
+										<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.tax.group}">Tax Group</span></small></label>
 										<div class="input-group">
 											<select th:field="*{itemOptions.taxGroupId}" class="form-control input-sm">
 												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.tax.group}">Select Tax
@@ -222,7 +225,7 @@
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.item.hierarchy}">Item Hierarchy
+															<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.hierarchy}">Item Hierarchy
 																		(Department/Sub-Department/Category/Sub-Category)</span></small></label>
 															<div class="input-group">
 																<input type="text" th:field="*{hierarchy.name}" class="form-control input-sm"
@@ -234,7 +237,7 @@
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.item.select.type}">Select Item Type</span></small></label>
+															<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.select.type}">Select Item Type</span></small></label>
 															<div class="input-group">
 																<select th:field="*{itemType}" class="form-control input-sm">
 																	<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.type}">Select Item
@@ -251,7 +254,7 @@
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.item.uom}">Unit of Measure</span></small></label>
+															<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.uom}">Unit of Measure</span></small></label>
 															<div class="input-group">
 																<select th:field="*{itemOptions.uom}" class="form-control input-sm">
 																	<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.uom}">Select UOM</option>
@@ -263,7 +266,7 @@
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.item.pack.size}">Pack Size</span></small></label>
+															<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.pack.size}">Pack Size</span></small></label>
 															<div class="input-group">
 																<input type="text" th:field="*{itemOptions.packSize}" class="form-control input-sm"
 																	th:placeholder="#{commerce.screen.item.pack.size.placeholder}"></input>
@@ -277,8 +280,11 @@
 														<div class="form-group">
 															<label><small><span th:text="#{commerce.screen.item.unit.cost}">Unit Cost Amount</span></small></label>
 															<div class="input-group">
-																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.unit.cost.placeholder}"
-																	th:field="*{itemOptions.unitCost}"></input>
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+																</div>
+																<input type="number" step="0.01" class="form-control input-sm pos-amount"
+																	th:placeholder="#{commerce.screen.item.unit.cost.placeholder}" th:field="*{itemOptions.unitCost}"></input>
 															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.unitCost')}" th:errors="*{itemOptions.unitCost}" class="text-danger">Unit Cost Error</div>
 														</div>
@@ -287,7 +293,10 @@
 														<div class="form-group">
 															<label><small><span th:text="#{commerce.screen.item.mrp}">MRP</span></small></label>
 															<div class="input-group">
-																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.mrp.placeholder}"
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+																</div>
+																<input type="number" step="0.01" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.item.mrp.placeholder}"
 																	th:field="*{itemOptions.maxRetailPrice}"></input>
 															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.maxRetailPrice')}" th:errors="${itemOptions.maxRetailPrice}" class="text-danger">MRP
@@ -300,8 +309,11 @@
 														<div class="form-group">
 															<label><small><span th:text="#{commerce.screen.item.suggested.price}">Suggested Price</span></small></label>
 															<div class="input-group">
-																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.suggested.price.placeholder}"
-																	th:field="*{itemOptions.suggestedPrice}"></input>
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+																</div>
+																<input type="number" step="0.01" class="form-control input-sm pos-amount"
+																	th:placeholder="#{commerce.screen.item.suggested.price.placeholder}" th:field="*{itemOptions.suggestedPrice}"></input>
 															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.suggestedPrice')}" th:errors="*{itemOptions.suggestedPrice}" class="text-danger">Suggested
 																Price Error</div>
@@ -311,8 +323,11 @@
 														<div class="form-group">
 															<label><small><span th:text="#{commerce.screen.item.compareat.price}">Compare At Price</span></small></label>
 															<div class="input-group">
-																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.compareat.price.placeholder}"
-																	th:field="*{itemOptions.compareAtPrice}"></input>
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+																</div>
+																<input type="number" step="0.01" class="form-control input-sm pos-amount"
+																	th:placeholder="#{commerce.screen.item.compareat.price.placeholder}" th:field="*{itemOptions.compareAtPrice}"></input>
 															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.compareAtPrice')}" th:errors="*{itemOptions.compareAtPrice}" class="text-danger">Compare
 																At Price Error</div>
@@ -324,7 +339,11 @@
 														<div class="form-group">
 															<label><small><span th:text="#{commerce.screen.item.restocking.fee}">Restocking Fee</span></small></label>
 															<div class="input-group">
-																<input type="number" step="0.01" class="form-control input-sm" placeholder="Restocking Fee" th:field="*{itemOptions.restockingFee}"></input>
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+																</div>
+																<input type="number" step="0.01" class="form-control input-sm pos-amount" placeholder="Restocking Fee"
+																	th:field="*{itemOptions.restockingFee}"></input>
 															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.restockingFee')}" th:errors="${itemOptions.restockingFee}" class="text-danger">Restocking
 																Fee Error</div>

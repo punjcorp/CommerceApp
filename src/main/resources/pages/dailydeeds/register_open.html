@@ -31,11 +31,11 @@
 					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}" th:object="${dailyDeedBean}" method="post">
 						<div class="row">
 							<div class="col-6">
-								<label for="registerId"><small><span th:text="#{commerce.screen.register.open.select}">Select Register to open</span></small></label>
+								<label for="registerId"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.open.select}">Select
+											Register to open</span></small></label>
 								<div class="box-radio-parent">
 									<th:block th:each="register,itrStat:${registers}">
-										<label> <input type="radio" name="registerRadio" id="registerRadio" th:field="*{register}" th:value="${register.registerId}"
-											></input>
+										<label> <input type="radio" name="registerRadio" id="registerRadio" th:field="*{register}" th:value="${register.registerId}"></input>
 											<div class="sm-box">
 												<div class="row box-text">
 													<div class="col-4">
@@ -57,8 +57,8 @@
 												<div class="row box-footer">
 													<div class="col">
 														<div th:if="${register.lastStatus}">
-															<input type="hidden" th:id="${register.registerId+'_reg_status'}" th:value="${register.lastStatus}"></input> 
-															<small><span th:text="#{commerce.screen.store.open.status.last}"></span></small> : <span th:text="${register.lastStatus}"></span>
+															<input type="hidden" th:id="${register.registerId+'_reg_status'}" th:value="${register.lastStatus}"></input> <small><span
+																th:text="#{commerce.screen.store.open.status.last}"></span></small> : <span th:text="${register.lastStatus}"></span>
 														</div>
 														<div th:if="${register.lastBusinessDate}">
 															<small><span th:text="#{commerce.screen.store.open.date.on}"></span></small> : <span th:text="${register.lastBusinessDate}"></span>
@@ -70,7 +70,6 @@
 									</th:block>
 								</div>
 							</div>
-
 							<div class="col-6">
 								<div class="row border-box-filled">
 									<div class="col-6">
@@ -99,40 +98,42 @@
 							</div>
 						</div>
 						<div id="tenderListContainer" th:class="${#lists.size(registers)>1}?'d-none':''">
-						<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
-						<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
-							<div class="border-box">
-								<div class="border-box-title">
-									<div class="row">
-										<div class="col-2">
-											<div class="form-group">
-												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].tenderId}"></input> <input type="hidden"
-													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <input type="hidden"
-													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <input type="hidden"
-													th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input> <input type="hidden" id="storeOpenTAmount"
-													th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <input type="hidden" id="storeOpenMCount"
-													th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <label><span th:text="#{commerce.screen.common.tender.type}">Tender
-														Type</span></label>
+							<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
+							<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
+								<div class="border-box">
+									<div class="border-box-title">
+										<div class="row">
+											<div class="col-2">
+												<div class="form-group">
+													<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].tenderId}"></input> <input type="hidden"
+														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <input type="hidden"
+														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <input type="hidden"
+														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input> <input type="hidden" id="storeOpenTAmount"
+														th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <input type="hidden" id="storeOpenMCount"
+														th:value="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <label><span
+														th:text="#{commerce.screen.common.tender.type}">Tender Type</span></label>
+												</div>
 											</div>
-										</div>
-										<div class="col-4">
-											<div class="form-group">
-												<label><h5>
-														<span th:text="${tender.name}">Cash</span>
-													</h5></label>
+											<div class="col-4">
+												<div class="form-group">
+													<label><h5>
+															<span th:text="${tender.name}">Cash</span>
+														</h5></label>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="border-box-body">
-									<th:block th:each="dnmn,itrDenomination:${dailyDeedBean.tenders[__${itrStat.index}__].denominations}">
-										<div class="row">
-											<div class="col-3">
+									<div class="border-box-body">
+										<th:block th:each="dnmn,itrDenomination:${dailyDeedBean.tenders[__${itrStat.index}__].denominations}">
+											<div class="row">
+												<div class="col-3">
 													<div class="form-group">
-														<label for="type"><small><span th:text="#{commerce.screen.common.tender.denomination}">Tender Denominations</span></small></label>
+														<label for="type"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.tender.denomination}">Tender
+																	Denominations</span></small></label>
 														<div class="input-group text-left">
 															<select th:onChange="'changedDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"
-																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="form-control input-sm">
+																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
+																class="form-control input-sm">
 																<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.common.tender.denomination.select}">Select
 																	Denomination</option>
 																<th:block th:each="dnmnAmt,itrDnmnAmt:${dailyDeedBean.denominationList}">
@@ -141,81 +142,84 @@
 															</select>
 														</div>
 														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination')}"
-															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}" class="text-danger align-top">Denomination
-															Error </small>
-													</div>
-											</div>
-											<div class="col-3">
-												<div class="form-group">
-													<label th:for="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"><small><span
-															th:text="#{commerce.screen.common.tender.count}">Media Count</span></small></label>
-													<div class="input-group text-left">
-														<input th:onChange="'changedCount(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'" type="text"
-															th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
-															th:placeholder="#{commerce.screen.store.open.tender.count}" class="form-control input-sm" data-input="data-input"></input>
-													</div>
-													<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount')}"
-														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}" class="text-danger align-top">Media
-														Count Error </small>
-												</div>
-											</div>
-											<div class="col-3">
-												<div class="form-group">
-													<label th:for="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"><small><span
-															th:text="#{commerce.screen.common.amount}">Amount</span></small></label>
-													<div class="input-group text-left">
-														<input th:onChange="'changedAmount(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'" type="text"
-															th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
-															th:placeholder="#{commerce.screen.store.open.tender.amount}" class="form-control input-sm" data-input="data-input"></input>
-													</div>
-													<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount')}"
-														th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}" class="text-danger align-top">Amount
-														Error </small>
-												</div>
-											</div>
-											<div class="col">
-												<div class="form-group">
-													<label><span></span></label>
-													<div class="input-group text-left">
-														<button type="button" name="addDenomination"
-															th:onclick="'actionDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\',\'addDenomination\',\'openRegisterForm\')'"
-															class="btn btn-secondary btn-sm">
-															<i class="fas fa-plus fa-2x"></i>
-														</button>
-														<button type="button" name="removeDenomination" th:if="${#lists.size(dailyDeedBean.tenders[__${itrStat.index}__].denominations)>1}"
-															th:onclick="'actionDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\',\'removeDenomination\',\'openRegisterForm\')'"
-															class="btn btn-secondary btn-sm">
-															<i class="fas fa-minus fa-2x"></i>
-														</button>
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
+															class="text-danger align-top">Denomination Error </small>
 													</div>
 												</div>
+												<div class="col-3">
+													<div class="form-group">
+														<label th:for="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"><small><span
+																class="pos-mandatory" th:text="#{commerce.screen.common.tender.count}">Media Count</span></small></label>
+														<div class="input-group text-left">
+															<input th:onChange="'changedCount(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'" type="number"
+																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
+																th:placeholder="#{commerce.screen.store.open.tender.count}" class="form-control input-sm" data-input="data-input"></input>
+														</div>
+														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount')}"
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
+															class="text-danger align-top">Media Count Error </small>
+													</div>
+												</div>
+												<div class="col-3">
+													<div class="form-group">
+														<label th:for="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"><small><span
+																class="pos-mandatory" th:text="#{commerce.screen.common.amount}">Amount</span></small></label>
+														<div class="input-group text-left">
+															<div class="input-group-prepend">
+																<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+															</div>
+															<input th:onChange="'changedAmount(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'" type="number" step="0.01"
+																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
+																th:placeholder="#{commerce.screen.store.open.tender.amount}" class="form-control input-sm pos-amount" data-input="data-input"></input>
+														</div>
+														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount')}"
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
+															class="text-danger align-top">Amount Error </small>
+													</div>
+												</div>
+												<div class="col">
+													<div class="form-group">
+														<label><span></span></label>
+														<div class="input-group text-left">
+															<button type="button" name="addDenomination"
+																th:onclick="'actionDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\',\'addDenomination\',\'openRegisterForm\')'"
+																class="btn btn-secondary btn-sm">
+																<i class="fas fa-plus fa-2x"></i>
+															</button>
+															<button type="button" name="removeDenomination" th:if="${#lists.size(dailyDeedBean.tenders[__${itrStat.index}__].denominations)>1}"
+																th:onclick="'actionDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\',\'removeDenomination\',\'openRegisterForm\')'"
+																class="btn btn-secondary btn-sm">
+																<i class="fas fa-minus fa-2x"></i>
+															</button>
+														</div>
+													</div>
+												</div>
 											</div>
+										</th:block>
+									</div>
+									<div class="row">
+										<div class="col-3"></div>
+										<div class="col-3 text-right">
+											<h5>
+												<span th:text="#{commerce.screen.common.tender.count.total}"></span>
+											</h5>
+											<h5>
+												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <span
+													th:id="${itrStat.index+'lblMediaCount'}" th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
+											</h5>
 										</div>
-									</th:block>
-								</div>
-								<div class="row">
-									<div class="col-3"></div>
-									<div class="col-3 text-right">
-										<h5>
-											<span th:text="#{commerce.screen.common.tender.count.total}"></span>
-										</h5>
-										<h5>
-											<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <span th:id="${itrStat.index+'lblMediaCount'}"
-												th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
-										</h5>
-									</div>
-									<div class="col-3 text-right">
-										<h5>
-											<span th:text="#{commerce.screen.common.amount.total}"></span>
-										</h5>
-										<h5>
-											<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <span th:id="${itrStat.index+'lbltenderAmount'}"
-												th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR 0.00</span>
-										</h5>
+										<div class="col-3 text-right">
+											<h5>
+												<span th:text="#{commerce.screen.common.amount.total}"></span>
+											</h5>
+											<h5>
+												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <span
+													th:id="${itrStat.index+'lbltenderAmount'}" th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR 0.00</span>
+											</h5>
+										</div>
 									</div>
 								</div>
-							</div>
-						</th:block>
+							</th:block>
 						</div>
 						<div class="row">
 							<div class="col-12 text-right">
@@ -243,7 +247,6 @@
 			   });
 			
 		});
-	</script>	
-	
+	</script>
 </body>
 </html>

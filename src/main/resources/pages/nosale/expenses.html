@@ -36,7 +36,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.expense.type}">Expense Type</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.type}">Expense Type</span></small></label>
 												<div class="input-group text-left">
 													<div class="input-group-prepend">
 														<span class="input-group-text"><div class="fa-2x">
@@ -63,7 +63,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.expense.payee.name}">Payee Name</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.payee.name}">Payee Name</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toPayeeName}" class="form-control input-sm"></input>
 												</div>
@@ -138,12 +138,12 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.expense.amount}">Expense Amount</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.amount}">Expense Amount</span></small></label>
 												<div class="input-group text-left">
 													<div class="input-group-prepend">
 														<span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
 													</div>
-													<input type="text" th:field="*{tenderAmount}" class="form-control input-sm text-right"></input>
+													<input type="number" step="0.01" th:field="*{tenderAmount}" class="form-control input-sm text-right pos-amount"></input>
 												</div>
 												<div id="tenderAmountMsg"></div>
 											</div>
@@ -162,7 +162,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group d-none" id="payeeAccountDiv">
-												<label><small><span th:text="#{commerce.screen.expense.payee.account}">Payee Account</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.payee.account}">Payee Account</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toAccountNo}" class="form-control input-sm"></input>
 												</div>
@@ -182,7 +182,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group d-none" id="payeeBankDiv">
-												<label><small><span th:text="#{commerce.screen.expense.bank.name}">Bank Name</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.bank.name}">Bank Name</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toBankName}" class="form-control input-sm"></input>
 												</div>
@@ -191,7 +191,7 @@
 										</div>
 										<div class="col-6">
 											<div class="form-group d-none" id="payeeBranchDiv">
-												<label><small><span th:text="#{commerce.screen.expense.bank.branch}">Bank Branch</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.bank.branch}">Bank Branch</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{toBankBranch}" class="form-control input-sm"></input>
 												</div>

@@ -101,9 +101,9 @@ $
 												skuName=style_name;
 												
 												var priceHtml = '<div class="form-group">';
-												priceHtml += '<label><small><span>SKU Price</span></small></label>';
+												priceHtml += '<label><small><span class="pos-mandatory">SKU Price</span></small></label>';
 												priceHtml += '<div class="input-group">';
-												priceHtml += '<input type="number" step="0.01" class="form-control input-sm"';
+												priceHtml += '<input type="number" step="0.01" class="form-control input-sm pos-amount"';
 												priceHtml += 'id="skus'+index+'.itemOptions.currentPrice" name="skus['+index+'].itemOptions.currentPrice"';
 												priceHtml += 'placeholder="Enter SKU Price" value="'+ style_price.toFixed(2) + '"></input>';
 												priceHtml += '</div>';
@@ -178,7 +178,7 @@ $
 												
 												
 												var skuNameHtml = '<div class="form-group">';
-												skuNameHtml += '<label><small><span>SKU Name</span></small></label>';
+												skuNameHtml += '<label><small><span class="pos-mandatory">SKU Name</span></small></label>';
 												skuNameHtml += '<div class="input-group">';
 												skuNameHtml += '<input type="text" class="form-control input-sm"';
 												skuNameHtml += 'id="skus'+index+'.name" name="skus['+index+'].name"';

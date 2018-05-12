@@ -36,7 +36,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.supplier.payment.ids}">Supplier Id Lookup</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.payment.ids}">Supplier Id Lookup</span></small></label>
 												<div class="input-group text-left">
 													<div class="input-group-prepend">
 														<span class="input-group-text"><i class="fas fa-users fa-2x"></i> </span>
@@ -87,7 +87,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.supplier.payment.type}">Payment Type</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.payment.type}">Payment Type</span></small></label>
 												<div class="input-group text-left">
 													<select th:field="*{journalType}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.payment.type}">
 														<option th:value="full" th:text="#{commerce.screen.supplier.payment.full}"></option>
@@ -160,12 +160,12 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.supplier.payment.amount}">Payment Option Amount</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.payment.amount}">Payment Option Amount</span></small></label>
 												<div class="input-group text-left">
 													<div class="input-group-prepend">
 														<span class="input-group-text"><i class="fas fa-rupee-sign"></i></span>
 													</div>
-													<input type="number" step="0.01" th:field="*{tenderAmount}" class="form-control input-sm text-right"></input>
+													<input type="number" step="0.01" th:field="*{tenderAmount}" class="form-control input-sm text-right pos-amount"></input>
 												</div>
 												<div id="tenderAmountMsg"></div>
 											</div>
@@ -184,7 +184,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group d-none" id="payeeAccountDiv">
-												<label><small><span th:text="#{commerce.screen.expense.payee.account}">Payee Account</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.payee.account}">Payee Account</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{accountNo}" class="form-control input-sm"></input>
 												</div>
@@ -195,7 +195,7 @@
 									<div class="row">
 										<div class="col-6">
 											<div class="form-group d-none" id="payeeBankDiv">
-												<label><small><span th:text="#{commerce.screen.expense.bank.name}">Bank Name</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.bank.name}">Bank Name</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{bankName}" class="form-control input-sm"></input>
 												</div>
@@ -204,7 +204,7 @@
 										</div>
 										<div class="col-6">
 											<div class="form-group d-none" id="payeeBranchDiv">
-												<label><small><span th:text="#{commerce.screen.expense.bank.branch}">Bank Branch</span></small></label>
+												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.bank.branch}">Bank Branch</span></small></label>
 												<div class="input-group text-left">
 													<input type="text" th:field="*{bankBranch}" class="form-control input-sm"></input>
 												</div>
