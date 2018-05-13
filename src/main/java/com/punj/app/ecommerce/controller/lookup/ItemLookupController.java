@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
-import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
@@ -39,7 +38,6 @@ import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
-import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.SaleItemService;
 import com.punj.app.ecommerce.services.SupplierService;
@@ -201,7 +199,7 @@ public class ItemLookupController {
 		SaleItem saleItem = null;
 		try {
 
-			saleItem = saleItemService.getItem(itemId, locationId);
+			saleItem = this.saleItemService.getItem(itemId, locationId);
 
 			logger.info("the {} item details for sale item has been retrieved successfully", itemId);
 

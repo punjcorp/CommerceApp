@@ -300,8 +300,10 @@ public class OrderPhaseController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			Order order = OrderTransformer.transformOrderBean(orderBeanDTO.getOrder(), userDetails.getUsername(), MVCConstants.STATUS_RECEIVED, Boolean.TRUE);
 
-			order = this.orderService.createOrder(order);
+			order = this.orderService.receiveOrder(order, userDetails.getUsername());
 
+			orderBeanDTO.getOrder().setStatus(order.getStatus());
+			
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.receive.success", new Object[] { order.getOrderId() }, locale));
 			this.updateOrderModelDetails(model, orderBeanDTO);
@@ -326,9 +328,10 @@ public class OrderPhaseController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			Order order = OrderTransformer.transformOrderBeanAsReceivedAll(orderBeanDTO.getOrder(), userDetails.getUsername());
-			order = this.orderService.createOrder(order);
-
-			logger.info("All the purchase order items has been marked as received successfully");
+			order = this.orderService.receiveAllOrder(order, userDetails.getUsername());
+			orderBeanDTO.getOrder().setStatus(order.getStatus());
+			
+			logger.info("All the purchase order items has been marked as received all successfully");
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.all.success", new Object[] { order.getOrderId() }, locale));
 			this.updateOrderModelDetails(model, orderBeanDTO);

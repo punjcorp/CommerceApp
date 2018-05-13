@@ -48,6 +48,10 @@ public interface OrderService {
 	public OrderDTO findAll();
 
 	public Order receiveOrder(BigInteger orderId, String username);
+	
+	public Order receiveOrder(Order order, String username);
+	
+	public Order receiveAllOrder(Order order, String username);
 
 	public void deleteBill(OrderBill orderBill);
 

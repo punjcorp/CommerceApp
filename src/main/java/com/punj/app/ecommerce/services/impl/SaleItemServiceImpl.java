@@ -87,7 +87,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 		// Step 2 - Is Item Valid at the provided location
 		Item item = this.itemService.getItem(itemId);
 		if (item != null) {
-			
+
 			logger.info("Searching for Item Stock and Prices");
 			// Step 3 - does the location have inventory
 			ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
@@ -139,7 +139,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 		saleItem.setName(item.getName());
 		saleItem.setLongDesc(item.getDescription());
 		saleItem.setImagePath(item.getImages().get(0).getImageURL());
-		
+
 		saleItem.setUnitCostAmt(item.getItemOptions().getUnitCost());
 
 		BigDecimal itemPriceAmt = itemPrice.getItemPrice();
@@ -148,59 +148,58 @@ public class SaleItemServiceImpl implements SaleItemService {
 
 		BigDecimal discountAmt = new BigDecimal("0");
 		saleItem.setDiscountAmt(discountAmt);
-		
-		BigDecimal totalTaxAmt = new BigDecimal("0");		
+
+		BigDecimal totalTaxAmt = new BigDecimal("0");
 		BigDecimal taxPercentage;
 		BigDecimal taxAmt;
 
 		if (taxList != null && !taxList.isEmpty()) {
 			SaleItemTax saleItemTax = null;
 
-			for(LocationTax locationTax:taxList) {
-				saleItemTax=this.tranformItemTax(locationTax, itemPriceAmt);
-				if(saleItemTax.getTypeCode().equals(ServiceConstants.TAX_SGST)) {
+			for (LocationTax locationTax : taxList) {
+				saleItemTax = this.tranformItemTax(locationTax, itemPriceAmt);
+				if (saleItemTax.getTypeCode().equals(ServiceConstants.TAX_SGST)) {
 					saleItem.setSgstTax(saleItemTax);
-				} else if(saleItemTax.getTypeCode().equals(ServiceConstants.TAX_CGST)) {
+				} else if (saleItemTax.getTypeCode().equals(ServiceConstants.TAX_CGST)) {
 					saleItem.setCgstTax(saleItemTax);
-				} else if(saleItemTax.getTypeCode().equals(ServiceConstants.TAX_IGST)) {
+				} else if (saleItemTax.getTypeCode().equals(ServiceConstants.TAX_IGST)) {
 					saleItem.setIgstTax(saleItemTax);
 				}
 				totalTaxAmt = totalTaxAmt.add(saleItemTax.getAmount());
 			}
 		}
 
-		BigDecimal finaTotalAmt=itemPriceAmt.subtract(discountAmt).add(totalTaxAmt);
+		BigDecimal finaTotalAmt = itemPriceAmt.subtract(discountAmt).add(totalTaxAmt);
 		saleItem.setTaxAmt(totalTaxAmt);
 		saleItem.setTotalAmt(finaTotalAmt);
-	
+
 		return saleItem;
 	}
 
 	private SaleItemTax tranformItemTax(LocationTax locationTax, BigDecimal itemPriceAmt) {
 		SaleItemTax saleItemTax = new SaleItemTax();
-		
+
 		BigDecimal taxPercentage = locationTax.getPercentage();
 
 		saleItemTax.setTaxGroupId(locationTax.getLocationTaxId().getTaxGroupId());
 		saleItemTax.setTaxRuleRateId(locationTax.getRateRuleId());
-		
-		
+
 		saleItemTax.setTaxGroupName(locationTax.getGroupDesc());
 		saleItemTax.setTaxGroupRateName(locationTax.getGroupRateName());
 		saleItemTax.setTypeCode(locationTax.getTypeCode());
-		
+
 		saleItemTax.setPercentage(taxPercentage);
-		if(taxPercentage!=null && taxPercentage.doubleValue() > 0) {
+		if (taxPercentage != null && taxPercentage.doubleValue() > 0) {
 			BigDecimal taxAmt = taxPercentage.multiply(itemPriceAmt).divide(new BigDecimal("100"));
 			saleItemTax.setAmount(taxAmt);
-		}else {
+		} else {
 			saleItemTax.setAmount(locationTax.getAmount());
 		}
-	
-		return saleItemTax; 
+
+		return saleItemTax;
 	}
-	
-	private void updateItemImage(Item item, SaleItem saleItem ) throws UnsupportedEncodingException {
+
+	private void updateItemImage(Item item, SaleItem saleItem) throws UnsupportedEncodingException {
 
 		if (item.getImages() != null && !item.getImages().isEmpty()) {
 			ItemImage itemImage = item.getImages().get(0);
@@ -212,5 +211,5 @@ public class SaleItemServiceImpl implements SaleItemService {
 		}
 		logger.info("The item image data has been updated successfully");
 	}
-	
+
 }

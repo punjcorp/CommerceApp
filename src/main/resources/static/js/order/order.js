@@ -44,7 +44,7 @@ $(function() {
 						var dataVal = "" + supplier.name + "-( Ph- " + supplier.phone1 + " )";
 						var descVal = supplier.email;
 						return {
-							label : dataVal,
+							display : dataVal,
 							name : supplier.name,
 							phone : supplier.phone1,
 							phone2 : supplier.phone2,
@@ -165,7 +165,7 @@ $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 		}).append($('<div/>', {
 			'class' : 'col-12'
 		}).append($('<span/>', {
-			'html' : '<b>' + item.label + '</b>'
+			'html' : '<b>' + item.display + '</b>'
 		}))).append($('<div/>', {
 			'class' : 'col-12'
 		}).append($('<span/>', {

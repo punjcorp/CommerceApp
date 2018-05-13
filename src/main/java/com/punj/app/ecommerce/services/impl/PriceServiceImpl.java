@@ -190,20 +190,22 @@ public class PriceServiceImpl implements PriceService {
 	@Override
 	public ItemPrice getCurrentItemPrice(BigInteger itemId, Integer locationId, LocalDateTime currentDate) {
 
-		List<ItemPrice> itemPrices=this.listItemPrices(itemId, locationId);
+		ItemPrice itemPrice = null;
 		
-		ItemPrice itemPrice=null;
+		BigInteger itemPriceId=	this.itemPriceRepository.findCurrentPrice(itemId, locationId);
 		
-		//Fucking change this logic and get the right price
-		if(itemPrices!=null && !itemPrices.isEmpty()) {
-			itemPrice=itemPrices.get(0);
+		if (itemPriceId != null) {
+			itemPrice=this.itemPriceRepository.findOne(itemPriceId);
+			logger.info("The current item price for the item {} and location {} has been retrieved", itemId, locationId);
+		}	
+		else {
+			logger.info("There was no price  found for item {} at location {}", itemId, locationId);
 		}
-		
-		logger.info("The current item price for the item has been retrieved");
+			
 		return itemPrice;
 	}
-	
-	private List<ItemPrice> listItemPrices(BigInteger itemId, Integer locationId){
+
+	public List<ItemPrice> listItemPrices(BigInteger itemId, Integer locationId) {
 		ItemPrice itemPriceCriteria = new ItemPrice();
 		Item item = new Item();
 		item.setItemId(itemId);
@@ -213,7 +215,7 @@ public class PriceServiceImpl implements PriceService {
 
 		List<ItemPrice> itemPriceList = this.itemPriceRepository.findAll(Example.of(itemPriceCriteria));
 		logger.info("The price list for the provided item has been retrieved successfully");
-		
+
 		return itemPriceList;
 	}
 

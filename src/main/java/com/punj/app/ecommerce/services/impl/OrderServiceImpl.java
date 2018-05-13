@@ -494,4 +494,35 @@ public class OrderServiceImpl implements OrderService {
 		return orderBill;
 	}
 
+	@Override
+	@Transactional
+	public Order receiveOrder(Order order, String username) {
+		BigInteger orderId=order.getOrderId();
+		
+		order=this.createOrder(order);
+		if(order!=null) {
+			logger.info("The order {} has been marked as received in order tables.", orderId);
+			
+			List<OrderItem> orderItems = order.getOrderItems();
+			List<ItemStockJournal> inventoryDetails = this.createStockDetails(order, orderItems, username);
+			this.inventoryService.updateInventory(inventoryDetails);
+			logger.debug("The order items inventory has been updated successfully", orderId);
+
+			logger.info("The order {} receive process is completed successfully.", orderId);
+			
+		}else {
+			logger.error("The order {} was not marked as received due to some issue");
+		}
+		return order;		
+	}
+
+	@Override
+	@Transactional
+	public Order receiveAllOrder(Order order, String username) {
+		BigInteger orderId=order.getOrderId();
+		order=this.receiveOrder(order, username);
+		logger.info("The order {} receive all process is completed successfully.", orderId);
+		return order;
+	}
+
 }
