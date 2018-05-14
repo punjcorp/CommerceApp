@@ -2,260 +2,152 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.item.search}">Item Management
-	Page</title>
+<title th:text="#{commerce.screen.item.search}">Item Management Page</title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
-
 </head>
 <body>
-
 	<div id="wrapper">
-
 		<!-- This thymeleaf fragment include left menu -->
 		<div th:include="common/pos_menu:: leftMenu"></div>
-
 		<!-- Page Content -->
 		<div id="page-content-wrapper">
-
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
-
-
-
 			<!-- This thymeleaf fragment is the body part for the page-->
-
 			<div class="card content-container">
 				<div class="card-header">
 					<h3 th:text="#{commerce.screen.item.search}">Search Item</h3>
 				</div>
 				<div class="card-body">
 					<div class="card-text">
-						<form class="form" id="searchForm" action="#"
-							th:action="@{/search_item}" th:object="${searchBean}"
-							method="post">
+						<form class="form" id="searchForm" action="#" th:action="@{/search_item}" th:object="${searchBean}" method="post">
 							<div class="row">
 								<div class="col-12">
 									<div class="form-group text-left">
 										<div class="input-group">
-											<input type="text" th:field="*{searchText}"
-												class="input-control input-sm"
-												th:placeholder="#{commerce.screen.item.search.text}"
-												placeholder="Enter keyword to search"
-												aria-describedby="searchHelp"></input>
+											<input type="text" th:field="*{searchText}" class="input-control input-sm" th:placeholder="#{commerce.screen.item.search.text}"
+												placeholder="Enter keyword to search" aria-describedby="searchHelp"></input>
 											<div class="input-group-append">
-												<input type="submit" value="Search"
-													th:value="#{commerce.screen.btn.search}"
-													class="form-control btn btn-info btn-sm"></input> <a
-													th:if="${items==null or items.items==null or #lists.size(items.items)&lt;1}"
-													href="add_style.html" th:href="@{/add_style}"
-													class="btn btn-success btn-sm"><span
-													th:text="#{commerce.screen.btn.submit.add.style}">Add
-														Style</span></a>
+												<input type="submit" value="Search" th:value="#{commerce.screen.btn.search}" class="form-control btn btn-info btn-sm"></input> <a
+													th:if="${items==null or items.items==null or #lists.size(items.items)&lt;1}" href="add_style.html" th:href="@{/add_style}"
+													class="btn btn-success btn-sm"><span th:text="#{commerce.screen.btn.submit.add.style}">Add Style</span></a>
 											</div>
 										</div>
-
-										<small id="searchHelp" class="form-text text-muted"
-											th:text="#{commerce.screen.item.search.keywords}">Enter
-											keywords like Item#/Style#/Name/Description</small>
-										<div th:if="${#fields.hasErrors('searchText')}"
-											th:errors="*{searchText}" class="text-danger">Search
-											Text Error</div>
+										<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.item.search.keywords}">Enter keywords like
+											Item#/Style#/Name/Description</small>
+										<div th:if="${#fields.hasErrors('searchText')}" th:errors="*{searchText}" class="text-danger">Search Text Error</div>
 									</div>
 								</div>
 							</div>
 						</form>
 					</div>
 					<div class="card-text">
-						<div th:if="${ success!=null}" th:text="${success}"
-							class="alert alert-success " role="alert"></div>
-						<div th:if="${ alert!=null}" th:text="${alert}"
-							class="alert alert-danger " role="alert"></div>
-
-						<form class="form" id="bulkForm" action="#"
-							th:action="@{/bulk_item_action}" th:object="${items}"
-							method="post"
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form class="form" id="bulkForm" action="#" th:action="@{/bulk_item_action}" th:object="${items}" method="post"
 							th:if="${items!=null and items.items!=null and #lists.size(items.items)>0}">
-
-
 							<div class="row">
 								<div class="col-12 text-right">
 									<nav aria-label="Pagination" th:if="${pager!=null}">
 										<ul class="pagination pagination-sm justify-content-end">
-											<li
-												th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a
-												class="page-link" href="#" tabindex="-1"
+											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
 												th:onclick="'searchResults(\'/search_item?page=1\')'">First</a></li>
-
 											<th:block th:each="page,itrStat:${pager.displayPages}">
-												<li
-													th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a
-													class="page-link" href="#"
-													th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span
-														th:text="${page}"></span></a></li>
+												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
+													th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
 											</th:block>
-
-
-											<li
-												th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a
-												class="page-link" href="#"
+											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
 												th:onclick="'searchResults(\'/search_item?page='+${pager.lastPageNo}+'\')'">Last</a></li>
-
 										</ul>
 									</nav>
 								</div>
 							</div>
-
 							<table class="table table-striped table-hover table-bordered">
 								<thead class="thead-light">
 									<tr>
 										<th scope="col" th:text="#{commerce.screen.item.id}">Select</th>
-										<th scope="col" th:text="#{commerce.screen.item.name}">Item
-											Name</th>
-										<th scope="col"
-											th:text="#{commerce.screen.item.description}">Description</th>
+										<th scope="col" th:text="#{commerce.screen.item.name}">Item Name</th>
+										<th scope="col" th:text="#{commerce.screen.item.description}">Description</th>
 										<th scope="col" th:text="#{commerce.screen.actions}">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="item,itrStat:${items.items}">
 										<tr>
-											<td class="input-group"><input type="checkbox"
-												th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
-												class="form-control input-sm itemId" th:field="*{itemIds}"
-												th:value="${items.items[__${itrStat.index}__].itemId}+'_'+${itrStat.index}"></input>
-												<span class="badge badge-info"
-												th:text="#{commerce.screen.actions.badge.sku}"
-												th:if="${items.items[__${itrStat.index}__].parentItemId!=null}">Sk</span>
-												<span class="badge badge-dark"
-												th:text="#{commerce.screen.actions.badge.style}"
-												th:unless="${items.items[__${itrStat.index}__].parentItemId!=null}">St</span>
-											</td>
-											<td><input type="text" class="form-control input-sm"
-												th:field="${items.items[__${itrStat.index}__].name}"
-												disabled="disabled"></input></td>
-											<td><input type="text" class="form-control input-sm"
-												th:field="${items.items[__${itrStat.index}__].longDesc}"
-												disabled="disabled"></input></td>
+											<td class="input-group"><input type="checkbox" th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
+												class="form-control input-sm itemId" th:field="*{itemIds}" th:value="${items.items[__${itrStat.index}__].itemId}+'_'+${itrStat.index}"></input>
+												<span class="badge badge-info" th:text="#{commerce.screen.actions.badge.sku}"
+												th:if="${items.items[__${itrStat.index}__].parentItemId!=null}">Sk</span> <span class="badge badge-dark"
+												th:text="#{commerce.screen.actions.badge.style}" th:unless="${items.items[__${itrStat.index}__].parentItemId!=null}">St</span></td>
+											<td><input type="text" class="form-control input-sm" th:field="${items.items[__${itrStat.index}__].name}" disabled="disabled"></input></td>
+											<td><input type="text" class="form-control input-sm" th:field="${items.items[__${itrStat.index}__].longDesc}" disabled="disabled"></input></td>
 											<td>
 												<div class="btn-group">
-
-													<a
-														th:href="@{/edit_item(itemId=${items.items[__${itrStat.index}__].itemId})}"
-														href="../item/add_item.html"
-														class="btn btn-secondary btn-sm"><span
-														th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
-														th:href="@{/delete_item(itemId=${items.items[__${itrStat.index}__].itemId})}"
-														href="../item/manage_item.html"
-														class="btn btn-danger btn-sm"><span
-														th:text="#{commerce.screen.actions.delete}">Delete</span></a>
-													<a
-														th:href="@{/add_item(styleNumber=${items.items[__${itrStat.index}__].itemId})}"
-														href="../item/add_item.html" class="btn btn-info btn-sm"
-														th:if="${items.items[__${itrStat.index}__].parentItemId==null}"><span
-														th:text="#{commerce.screen.actions.add.sku}">Add
-															SKU(s)</span></a>
-
+													<a th:href="@{/admin/edit_sku(styleId=${items.items[__${itrStat.index}__].itemId})}" href="../item/add_item.html"
+														class="btn btn-secondary btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
+														th:href="@{/admin/delete_item(itemId=${items.items[__${itrStat.index}__].itemId})}" href="../item/manage_item.html"
+														class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a> <a
+														th:href="@{/admin/add_sku(styleId=${items.items[__${itrStat.index}__].itemId})}" href="../item/add_item.html" class="btn btn-info btn-sm"
+														th:if="${items.items[__${itrStat.index}__].parentItemId==null}"><span th:text="#{commerce.screen.actions.add.sku}">Add SKU(s)</span></a>
 												</div>
-
 											</td>
-
 										</tr>
 									</th:block>
-
 								</tbody>
 							</table>
 							<div class="row">
 								<div class="col-4">
 									<div class="form-group">
-										<a th:href="'javascript:selectAll()'" href="#"
-											class="badge badge-secondary"><span
-											th:text="#{commerce.screen.actions.selectall}">Select
-												All</span></a> <a th:href="'javascript:deselectAll()'" href="#"
-											class="badge badge-secondary"><span
-											th:text="#{commerce.screen.actions.deselectall}">Deselect
-												All</span></a>
+										<a th:href="'javascript:selectAll()'" href="#" class="badge badge-secondary"><span th:text="#{commerce.screen.actions.selectall}">Select
+												All</span></a> <a th:href="'javascript:deselectAll()'" href="#" class="badge badge-secondary"><span
+											th:text="#{commerce.screen.actions.deselectall}">Deselect All</span></a>
 									</div>
 								</div>
 								<div class="col-8 text-right">
-
 									<th:block th:fragment="pagination-script">
-
 										<nav aria-label="Pagination" th:if="${pager!=null}">
 											<ul class="pagination pagination-sm justify-content-end">
-												<li
-													th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a
-													class="page-link" href="#" tabindex="-1"
+												<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
 													th:onclick="'searchResults(\'/search_item?page=1\')'">First</a></li>
-
 												<th:block th:each="page,itrStat:${pager.displayPages}">
-													<li
-														th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a
-														class="page-link" href="#"
-														th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span
-															th:text="${page}"></span></a></li>
+													<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
+														th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
 												</th:block>
-
-
-												<li
-													th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a
-													class="page-link" href="#"
+												<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
 													th:onclick="'searchResults(\'/search_item?page='+${pager.lastPageNo}+'\')'">Last</a></li>
-
 											</ul>
 										</nav>
 									</th:block>
 								</div>
 							</div>
-
 							<div class="row">
 								<div class="col-12">
 									<div class="form-group">
-										<input type="button"
-											th:onclick="'submitForm(\'/bulk_item_action?saveItems=\')'"
-											id="btnSave" value="Save"
-											th:value="#{commerce.screen.btn.submit.save}"
-											class="btn btn-info btn-sm" aria-describedby="bulkHelp"
-											disabled="disabled"></input> <input type="button"
-											th:onclick="'submitForm(\'/bulk_item_action?deleteItems=\')'"
-											id="btnDelete" value="Delete"
-											th:value="#{commerce.screen.btn.submit.delete}"
-											class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
-											disabled="disabled"></input> <a href="add_style.html"
-											th:href="@{/add_style}" class="btn btn-success btn-sm"><span
-											th:text="#{commerce.screen.btn.submit.add.style}">Add
+										<input type="button" th:onclick="'submitForm(\'/bulk_item_action?saveItems=\')'" id="btnSave" value="Save"
+											th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
+											type="button" th:onclick="'submitForm(\'/bulk_item_action?deleteItems=\')'" id="btnDelete" value="Delete"
+											th:value="#{commerce.screen.btn.submit.delete}" class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <a
+											href="add_style.html" th:href="@{/add_style}" class="btn btn-success btn-sm"><span th:text="#{commerce.screen.btn.submit.add.style}">Add
 												Style</span></a>
 									</div>
 								</div>
-
 							</div>
 							<div class="row text-left">
 								<div class="col-4">
-									<small id="btnActions" class="form-text text-muted"
-										th:text="#{commerce.screen.search.action.bulk}">Please
-										select records for the actions</small>
+									<small id="btnActions" class="form-text text-muted" th:text="#{commerce.screen.search.action.bulk}">Please select records for the
+										actions</small>
 								</div>
 							</div>
 						</form>
-
-
 					</div>
 				</div>
-
 			</div>
-
-
-
 		</div>
 		<!-- /#page-content-wrapper -->
-
 	</div>
 	<!-- /#wrapper -->
-
-
-
-	<script th:inline="javascript"
-		th:if="${items!=null and items.items!=null}">
+	<script th:inline="javascript" th:if="${items!=null and items.items!=null}">
 	/*<![CDATA[*/
 	
 	    var totalRecords = [[${#lists.size(items.items)}]];
@@ -331,6 +223,5 @@
 			}
 		}
 	</script>
-
 </body>
 </html>

@@ -238,15 +238,15 @@ values('STKOUT', 'commerce.reason.code.inventory.stockout', '1', NULL, 'SUBTRACT
 -- -----------------------------------------------------
 truncate `commercedb`.`item_hierarchy`;
 INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`, `sort_order`, `hidden_flag`, `created_by`, `created_date`) VALUES ('dept', 'Default', 'This is default department for any item', '1', 'N', 'admin', now());
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('dept','Mens',1,'N','2017-12-07 17:55:32','admin',NULL);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Clothes',1,'N','2017-12-07 17:56:25','admin',1);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Shirts',1,'N','2017-12-07 18:01:00','admin',2);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal',1,'N','2017-12-07 18:01:00','admin',3);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Shoes',1,'N','2017-12-07 18:01:00','admin',1);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Personal Care',1,'N','2017-12-07 18:01:00','admin',1);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Pants',1,'N','2017-12-07 18:01:00','admin',2);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal',1,'N','2017-12-07 18:01:00','admin',3);
-INSERT INTO `commercedb`.`item_hierarchy` (`level_code`,`description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Casual',1,'N','2017-12-07 18:01:00','admin',3);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('dept','Mens','Mens',1,'N','2017-12-07 17:55:32','admin',NULL);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Clothes','Clothes',1,'N','2017-12-07 17:56:25','admin',1);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Shirts','Shirts',1,'N','2017-12-07 18:01:00','admin',2);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal','Formal',1,'N','2017-12-07 18:01:00','admin',3);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Shoes','Shoes',1,'N','2017-12-07 18:01:00','admin',1);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Personal Care','Personal Care',1,'N','2017-12-07 18:01:00','admin',1);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Pants','Pants',1,'N','2017-12-07 18:01:00','admin',2);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal','Formal',1,'N','2017-12-07 18:01:00','admin',3);
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Casual','Casual',1,'N','2017-12-07 18:01:00','admin',3);
 
 commit;
 

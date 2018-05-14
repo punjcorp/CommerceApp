@@ -285,7 +285,7 @@ public class OrderController {
 			orderItemBean.setOrderId(orderBeanDTO.getOrder().getOrderId());
 			OrderItem orderItem = OrderTransformer.transformOrderItemBean(orderItemBean, null);
 			this.orderService.deleteOrderItem(orderItem);
-			Order order = this.orderService.updateOrderTotals(orderItem.getOrderItemId().getOrder().getOrderId(), userDetails.getUsername());
+			Order order = this.orderService.updateOrderTotals(orderItem.getOrder().getOrderId(), userDetails.getUsername());
 			if (order != null) {
 				orderBeanDTO.getOrder().getOrderItems().remove(rowId.intValue());
 				logger.info("The selected purchase order item has been deleted now");

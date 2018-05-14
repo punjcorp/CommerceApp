@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `customer_prompt` TINYINT NOT NULL DEFAULT 0,
   `shipping_weight` DECIMAL(12,2) NULL,
   `pack_size` VARCHAR(45) NULL,
-  `hsn_no` VARCHAR(15) NOT NULL,
+  `hsn_no` VARCHAR(15) NULL,
   `next_level_created` VARCHAR(2) NULL DEFAULT 'N',
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_options_item1`
@@ -156,21 +156,22 @@ CREATE INDEX `fk_style_attribute_values_attribute_master1_idx` ON `commercedb`.`
 DROP TABLE IF EXISTS `commercedb`.`item_images` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_images` (
+  `item_image_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
-  `feature_name` VARCHAR(80) NOT NULL,
-  `image_url` VARCHAR(300) NOT NULL,
   `name` VARCHAR(80) NOT NULL,
+  `image_type` VARCHAR(120) NOT NULL,
+  `image_url` VARCHAR(300) NOT NULL,
+  `image_data` BLOB NOT NULL,
   `created_date` DATETIME NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`item_id`, `feature_name`),
+  PRIMARY KEY (`item_image_id`),
+  INDEX `fk_item_images_item1_idx` (`item_id` ASC),
   CONSTRAINT `fk_item_images_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_item_images_item1_idx` ON `commercedb`.`item_images` (`item_id` ASC);
 
 
 -- -----------------------------------------------------

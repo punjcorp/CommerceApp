@@ -354,8 +354,8 @@ public class OrderServiceImpl implements OrderService {
 
 		this.orderItemRepository.delete(orderItem.getOrderItemId());
 
-		logger.info("The selected item {} has been deleted from order {} successfully", orderItem.getOrderItemId().getItemId(),
-				orderItem.getOrderItemId().getOrder().getOrderId());
+		logger.info("The selected item {} has been deleted from order {} successfully", orderItem.getItemId(),
+				orderItem.getOrder().getOrderId());
 
 	}
 
@@ -433,7 +433,7 @@ public class OrderServiceImpl implements OrderService {
 			itemStockJournal.setLocationId(order.getLocation().getLocationId());
 
 			item = new Item();
-			item.setItemId(orderItem.getOrderItemId().getItemId());
+			item.setItemId(orderItem.getItemId());
 			itemStockJournal.setItemId(item.getItemId());
 
 			StockReason stockReason = new StockReason();

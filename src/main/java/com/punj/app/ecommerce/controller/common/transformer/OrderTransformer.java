@@ -22,8 +22,6 @@ import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.OrderItemTax;
-import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
-import com.punj.app.ecommerce.domains.order.ids.OrderItemTaxId;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
@@ -125,11 +123,15 @@ public class OrderTransformer {
 		orderBean.setDiscountAmount(order.getDiscountAmount());
 		orderBean.setPaidAmount(order.getPaidAmount());
 
-		List<OrderItemBean> orderItemBeans = OrderTransformer.transformOrderItems(order.getOrderItems(), orderBean);
-		orderBean.setOrderItems(orderItemBeans);
+		if(order.getOrderItems()!=null && !order.getOrderItems().isEmpty()) {
+			List<OrderItemBean> orderItemBeans = OrderTransformer.transformOrderItems(order.getOrderItems(), orderBean);
+			orderBean.setOrderItems(orderItemBeans);
+		}
 
-		List<OrderBillBean> orderBillBeanList = OrderTransformer.tranformOrderBills(order.getOrderBills());
-		orderBean.setOrderBills(orderBillBeanList);
+		if(order.getOrderBills()!=null && !order.getOrderBills().isEmpty()) {
+			List<OrderBillBean> orderBillBeanList = OrderTransformer.tranformOrderBills(order.getOrderBills());
+			orderBean.setOrderBills(orderBillBeanList);
+		}
 
 		logger.info("The order details has been transformed successfully");
 
@@ -300,8 +302,10 @@ public class OrderTransformer {
 	public static OrderItemBean transformOrderItem(OrderItem orderItem) {
 		OrderItemBean orderItemBean = new OrderItemBean();
 
-		orderItemBean.setOrderId(orderItem.getOrderItemId().getOrder().getOrderId());
-		orderItemBean.setItemId(orderItem.getOrderItemId().getItemId());
+		orderItemBean.setOrderItemId(orderItem.getOrderItemId());
+		
+		orderItemBean.setOrderId(orderItem.getOrder().getOrderId());
+		orderItemBean.setItemId(orderItem.getItemId());
 		orderItemBean.setItemDesc(orderItem.getItemDesc());
 		orderItemBean.setUnitCost(orderItem.getUnitCost());
 		orderItemBean.setOrderedQty(orderItem.getOrderedQty());
@@ -328,22 +332,35 @@ public class OrderTransformer {
 
 		for (OrderItemTax orderItemTax : orderItemTaxes) {
 			if (orderItemTax.getTaxCode().equals(MVCConstants.TAX_SGST)) {
+				orderItemBean.setSgstTaxId(orderItemTax.getOrderItemTaxId());
+				
 				orderItemBean.setSgstRate(orderItemTax.getTaxRulePercentage());
-				orderItemBean.setSgstRateRuleId(orderItemTax.getOrderItemTaxId().getTaxRateRuleId());
+				orderItemBean.setSgstRateRuleId(orderItemTax.getTaxRateRuleId());
 				orderItemBean.setSgstTaxAmount(orderItemTax.getTaxRuleAmt());
 				orderItemBean.setSgstCode(orderItemTax.getTaxCode());
+				
+				orderItemBean.setSgstActualTaxAmount(orderItemTax.getActualTaxRuleAmt());
 			} else if (orderItemTax.getTaxCode().equals(MVCConstants.TAX_CGST)) {
+				orderItemBean.setCgstTaxId(orderItemTax.getOrderItemTaxId());
+				
 				orderItemBean.setCgstRate(orderItemTax.getTaxRulePercentage());
-				orderItemBean.setCgstRateRuleId(orderItemTax.getOrderItemTaxId().getTaxRateRuleId());
+				orderItemBean.setCgstRateRuleId(orderItemTax.getTaxRateRuleId());
 				orderItemBean.setCgstTaxAmount(orderItemTax.getTaxRuleAmt());
 				orderItemBean.setCgstCode(orderItemTax.getTaxCode());
+
+				orderItemBean.setCgstActualTaxAmount(orderItemTax.getActualTaxRuleAmt());				
 			} else if (orderItemTax.getTaxCode().equals(MVCConstants.TAX_IGST)) {
+				orderItemBean.setIgstTaxId(orderItemTax.getOrderItemTaxId());
+				
 				orderItemBean.setIgstRate(orderItemTax.getTaxRulePercentage());
-				orderItemBean.setIgstRateRuleId(orderItemTax.getOrderItemTaxId().getTaxRateRuleId());
+				orderItemBean.setIgstRateRuleId(orderItemTax.getTaxRateRuleId());
 				orderItemBean.setIgstTaxAmount(orderItemTax.getTaxRuleAmt());
 				orderItemBean.setIgstCode(orderItemTax.getTaxCode());
+				
+				orderItemBean.setIgstActualTaxAmount(orderItemTax.getActualTaxRuleAmt());				
 			}
-			orderItemBean.setTaxGroupId(orderItemTax.getOrderItemTaxId().getTaxGroupId());
+			orderItemBean.setTaxGroupId(orderItemTax.getTaxGroupId());
+
 		}
 
 		return orderItemBean;
@@ -412,10 +429,12 @@ public class OrderTransformer {
 		order.setActualTaxAmount(orderBean.getActualTaxAmount());
 		order.setActualTotalAmount(orderBean.getActualTotalAmount());
 
-		List<OrderItem> orderItems = OrderTransformer.transformOrderItemsBean(orderBean.getOrderItems(), order);
-		order.setOrderItems(orderItems);
+		if(orderBean.getOrderItems()!=null && !orderBean.getOrderItems().isEmpty()) {
+			List<OrderItem> orderItems = OrderTransformer.transformOrderItemsBean(orderBean.getOrderItems(), order);
+			order.setOrderItems(orderItems);			
+		}
 
-		if(orderBean.getOrderBills()!=null && !orderBean.getOrderBills().isEmpty()) {
+		if (orderBean.getOrderBills() != null && !orderBean.getOrderBills().isEmpty()) {
 			List<OrderBill> orderBillList = OrderTransformer.tranformOrderBillBeanList(order, orderBean.getOrderBills());
 			order.setOrderBills(orderBillList);
 		}
@@ -425,14 +444,15 @@ public class OrderTransformer {
 
 	}
 
-	public static List<OrderItemTax> transformOrderItemTaxBean(OrderItemBean orderItemBean, Order order) {
+	public static List<OrderItemTax> transformOrderItemTaxBean(OrderItemBean orderItemBean, Order order, OrderItem orderItem ) {
 
 		List<OrderItemTax> orderItemTaxes = new ArrayList<>();
 
 		Boolean sgstFlag = null;
-		Boolean cgstFlag = null;
 		Boolean igstFlag = null;
-
+		OrderItemTax orderCGSTTax = null;
+		OrderItemTax orderItemTax = new OrderItemTax();
+		
 		if (orderItemBean.getIgstRate() != null && orderItemBean.getIgstTaxAmount() != null
 				&& orderItemBean.getIgstTaxAmount().compareTo(BigDecimal.ZERO) > 0) {
 			igstFlag = Boolean.TRUE;
@@ -441,63 +461,49 @@ public class OrderTransformer {
 			sgstFlag = Boolean.TRUE;
 		}
 
-		OrderItemTax orderCGSTTax = null;
-		OrderItemTaxId orderCGSTTaxId = null;
-		OrderItemId orderCGSTItemId = null;
 
-		OrderItemTax orderItemTax = new OrderItemTax();
-		OrderItemTaxId orderItemTaxId = new OrderItemTaxId();
-		OrderItemId orderItemId = new OrderItemId();
-
-		orderItemId.setItemId(orderItemBean.getItemId());
-		orderItemId.setOrder(order);
-		orderItemTaxId.setOrderItemId(orderItemId);
-		orderItemTaxId.setTaxGroupId(orderItemBean.getTaxGroupId());
+		orderItemTax.setOrderItem(orderItem);
+		orderItemTax.setTaxGroupId(orderItemBean.getTaxGroupId());
 
 		if (igstFlag != null && igstFlag) {
-			orderItemTaxId.setTaxRateRuleId(orderItemBean.getIgstRateRuleId());
+			orderItemTax.setTaxRateRuleId(orderItemBean.getIgstRateRuleId());
 
 		} else if (sgstFlag != null && sgstFlag) {
-			orderItemTaxId.setTaxRateRuleId(orderItemBean.getSgstRateRuleId());
+			orderItemTax.setTaxRateRuleId(orderItemBean.getSgstRateRuleId());
 
 			orderCGSTTax = new OrderItemTax();
-			orderCGSTTaxId = new OrderItemTaxId();
-			orderCGSTItemId = new OrderItemId();
-			orderCGSTItemId.setItemId(orderItemBean.getItemId());
-			orderCGSTItemId.setOrder(order);
-			orderCGSTTaxId.setOrderItemId(orderCGSTItemId);
-			orderCGSTTaxId.setTaxGroupId(orderItemBean.getTaxGroupId());
-			orderCGSTTaxId.setTaxRateRuleId(orderItemBean.getCgstRateRuleId());
+			orderCGSTTax.setOrderItem(orderItem);
+			orderCGSTTax.setTaxGroupId(orderItemBean.getTaxGroupId());			
+			orderCGSTTax.setTaxRateRuleId(orderItemBean.getCgstRateRuleId());
 
 		}
 
-		orderItemTax.setOrderItemTaxId(orderItemTaxId);
 		orderItemTax.setTaxableAmt(orderItemBean.getCostAmount());
+		orderItemTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
 
 		if (igstFlag != null && igstFlag) {
+			orderItemTax.setOrderItemTaxId(orderItemBean.getIgstTaxId());
 			orderItemTax.setTaxRuleAmt(orderItemBean.getIgstTaxAmount());
 			orderItemTax.setTaxRulePercentage(orderItemBean.getIgstRate());
 			orderItemTax.setTaxCode(orderItemBean.getIgstCode());
-
 			orderItemTax.setActualTaxRuleAmt(orderItemBean.getIgstActualTaxAmount());
-			orderItemTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
 
 			logger.info("The IGST taxes has been created successfully");
 		} else if (sgstFlag != null && sgstFlag) {
+			orderItemTax.setOrderItemTaxId(orderItemBean.getSgstTaxId());
 			orderItemTax.setTaxRuleAmt(orderItemBean.getSgstTaxAmount());
 			orderItemTax.setTaxRulePercentage(orderItemBean.getSgstRate());
 			orderItemTax.setTaxCode(orderItemBean.getSgstCode());
 			orderItemTax.setActualTaxRuleAmt(orderItemBean.getSgstActualTaxAmount());
-			orderItemTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
 
-			orderCGSTTax.setOrderItemTaxId(orderCGSTTaxId);
 			orderCGSTTax.setTaxableAmt(orderItemBean.getCostAmount());
+			orderCGSTTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
+			orderCGSTTax.setOrderItemTaxId(orderItemBean.getCgstTaxId());
 			orderCGSTTax.setTaxRuleAmt(orderItemBean.getCgstTaxAmount());
 			orderCGSTTax.setTaxRulePercentage(orderItemBean.getCgstRate());
 			orderCGSTTax.setTaxCode(orderItemBean.getCgstCode());
 			orderCGSTTax.setActualTaxRuleAmt(orderItemBean.getCgstActualTaxAmount());
-			orderCGSTTax.setActualTaxableAmt(orderItemBean.getActualCostAmount());
-
+			
 			orderItemTaxes.add(orderCGSTTax);
 			logger.info("The SGST and CGST taxes has been created successfully");
 		}
@@ -522,17 +528,19 @@ public class OrderTransformer {
 
 	public static OrderItem transformOrderItemBean(OrderItemBean orderItemBean, Order order) {
 		OrderItem orderItem = new OrderItem();
-		OrderItemId orderItemId = new OrderItemId();
 		if (order != null) {
-			orderItemId.setOrder(order);
+			orderItem.setOrder(order);
 		} else {
 			order = new Order();
 			order.setOrderId(orderItemBean.getOrderId());
-			orderItemId.setOrder(order);
+			orderItem.setOrder(order);
 		}
 
-		orderItemId.setItemId(orderItemBean.getItemId());
-		orderItem.setOrderItemId(orderItemId);
+		orderItem.setItemId(orderItemBean.getItemId());
+		if(orderItemBean.getOrderItemId()!=null)
+			orderItem.setOrderItemId(orderItemBean.getOrderItemId());
+		else
+			orderItem.setOrderItemId(orderItem.getOrderItemId());
 		orderItem.setItemDesc(orderItemBean.getItemDesc());
 
 		orderItem.setOrderedQty(orderItemBean.getOrderedQty());
@@ -550,7 +558,7 @@ public class OrderTransformer {
 		orderItem.setActualTaxAmount(orderItemBean.getActualTaxAmount());
 		orderItem.setActualTotalCost(orderItemBean.getActualTotalCost());
 
-		List<OrderItemTax> orderItemTaxes = OrderTransformer.transformOrderItemTaxBean(orderItemBean, order);
+		List<OrderItemTax> orderItemTaxes = OrderTransformer.transformOrderItemTaxBean(orderItemBean, order, orderItem);
 		orderItem.setOrderItemTaxes(orderItemTaxes);
 
 		logger.info("The order item details has been transformed successfully.");

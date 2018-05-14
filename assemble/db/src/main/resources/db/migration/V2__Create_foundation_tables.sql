@@ -49,13 +49,12 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `commercedb`.`style_generator` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
-  `style_id` MEDIUMINT(7) ZEROFILL NOT NULL AUTO_INCREMENT,
+  `style_id` BIGINT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`style_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1000000;
 
-alter table commercedb.style_generator auto_increment=1000000;
 
 -- -----------------------------------------------------
 -- Table `commercedb`.`sku_generator`
@@ -63,19 +62,12 @@ alter table commercedb.style_generator auto_increment=1000000;
 DROP TABLE IF EXISTS `commercedb`.`sku_generator` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`sku_generator` (
-  `style_id` MEDIUMINT(7) ZEROFILL NOT NULL,
-  `color` INT(2) ZEROFILL NOT NULL,
-  `size` INT(2) ZEROFILL NOT NULL,
+  `style_id` BIGINT NOT NULL,
+  `sku_id` BIGINT ZEROFILL NOT NULL,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`style_id`, `color`, `size`),
-  CONSTRAINT `fk_sku_generator_style_generator1`
-    FOREIGN KEY (`style_id`)
-    REFERENCES `commercedb`.`style_generator` (`style_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`sku_id`, `style_id`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_sku_generator_style_generator1_idx` ON `commercedb`.`sku_generator` (`style_id` ASC);
 
 -- -----------------------------------------------------
 -- Table `commercedb`.`seq_generator`
@@ -141,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
   `code` VARCHAR(15) NOT NULL,
   `description` VARCHAR(100) NULL,
   `type` VARCHAR(45) NOT NULL,
-  `parent_uom_id` INT NOT NULL,
+  `parent_uom_id` INT NULL,
   `formula_to_parent_uom` VARCHAR(45) NULL,
   `is_primary` TINYINT NOT NULL DEFAULT 0,
   `created_by` VARCHAR(50) NOT NULL,

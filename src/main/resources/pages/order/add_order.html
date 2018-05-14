@@ -66,8 +66,8 @@
 												</div>
 												<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.supplier.search.keywords}">Enter keywords like
 													id/Name/Email/Address/Phone#</small> <small th:if="${#fields.hasErrors('supplierSearch.searchText')}" th:errors="*{supplierSearch.searchText}"
-													class="text-danger">Search Text Error</small>
-												<small th:if="${#fields.hasErrors('order.supplierId')}" th:errors="*{order.supplierId}" class="text-danger">Supplier Error</small>
+													class="text-danger">Search Text Error</small> <small th:if="${#fields.hasErrors('order.supplierId')}" th:errors="*{order.supplierId}"
+													class="text-danger">Supplier Error</small>
 												<div id="supplierMsg"></div>
 											</div>
 										</div>
@@ -163,7 +163,8 @@
 																</div>
 																<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="form-control input-sm"
 																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input> <input type="hidden"
-																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input>
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderItemId}"></input>
 															</div>
 															<small id="itemSearchHelp" class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc==null}"
 																th:text="#{commerce.screen.item.search.keywords}">Enter keywords like Item#/Name/Description</small> <small id="itemSearchHelp"
@@ -236,6 +237,9 @@
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxId}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxAmount}"></input>
 														</div>
 													</div>
@@ -362,7 +366,9 @@
 									</div>
 									<div class="row">
 										<div class="col">
-											<div class="card-text text-center"><br/><br/>
+											<div class="card-text text-center">
+												<br />
+												<br />
 												<h4>
 													<span th:text="#{commerce.screen.order.supplier.address}"></span>
 												</h4>

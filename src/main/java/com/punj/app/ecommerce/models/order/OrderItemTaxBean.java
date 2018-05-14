@@ -11,6 +11,8 @@ import java.math.BigInteger;
  *
  */
 public class OrderItemTaxBean {
+	private BigInteger orderItemTaxId;
+
 	private BigInteger orderId;
 	private BigInteger itemId;
 
@@ -140,6 +142,21 @@ public class OrderItemTaxBean {
 	 */
 	public void setOrderId(BigInteger orderId) {
 		this.orderId = orderId;
+	}
+
+	/**
+	 * @return the orderItemTaxId
+	 */
+	public BigInteger getOrderItemTaxId() {
+		return orderItemTaxId;
+	}
+
+	/**
+	 * @param orderItemTaxId
+	 *            the orderItemTaxId to set
+	 */
+	public void setOrderItemTaxId(BigInteger orderItemTaxId) {
+		this.orderItemTaxId = orderItemTaxId;
 	}
 
 }

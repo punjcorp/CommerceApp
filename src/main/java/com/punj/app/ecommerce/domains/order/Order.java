@@ -91,7 +91,7 @@ public class Order implements Serializable {
 	@IndexedEmbedded(depth = 1)
 	private Supplier supplier;
 
-	@OneToMany(mappedBy = "orderItemId.order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	@IndexedEmbedded
 	private List<OrderItem> orderItems;
 

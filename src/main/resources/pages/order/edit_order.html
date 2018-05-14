@@ -175,21 +175,22 @@
 																</div>
 																<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="form-control input-sm"
 																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input><input type="hidden"
-																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input>
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderItemId}"></input>
 															</div>
 															<small id="itemSearchHelp" class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc==null}"
 																th:text="#{commerce.screen.item.search.keywords}">Enter keywords like Item#/Name/Description</small> <small id="itemSearchHelp"
 																class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc!=null}"
-																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"> Item Name</small>
-															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].itemId')}"
+																th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"> Item Name</small> <small
+																th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].itemId')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="text-danger">Item Id Error</small>
 														</div>
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
 															<input type="number" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" onChange="saleItemChanged(this);"
-																class="form-control input-sm" th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input>
-															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].orderedQty')}"
+																class="form-control input-sm" th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input> <small
+																th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].orderedQty')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderedQty}" class="text-danger">Quantity Error</small>
 														</div>
 													</div>
@@ -197,8 +198,7 @@
 														<div class="form-group">
 															<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}"
 																onChange="saleItemChanged(this);" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.cost}"
-																maxlength="150"></input>
-															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].unitCost')}"
+																maxlength="150"></input> <small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].unitCost')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].unitCost}" class="text-danger">Cost Error</small>
 														</div>
 													</div>
@@ -243,6 +243,9 @@
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxId}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxId}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxAmount}"></input>
 														</div>
 													</div>
@@ -370,8 +373,7 @@
 									<div class="row">
 										<div class="col">
 											<div class="card-text text-center">
-												<br />
-												<br />
+												<br /> <br />
 												<h4>
 													<span th:text="#{commerce.screen.order.supplier.address}"></span>
 												</h4>
@@ -462,13 +464,42 @@
 				<div class="modal-body text-center">
 					<div id="receiptActions" class="col-12 text-center">
 						<button type="button" class="btn btn-info p-3 m-2" id="btnViewOrderReport">
-							<i class="fas fa-file-alt fa-5x"></i>
+							<div class="fa-5x">
+								<i class="fas fa-file-alt"></i>
+							</div>
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReportAndNewOrder">
-							<i class="fas fa-print fa-5x"></i>
+							<div class="fa-5x">
+								<i class="fas fa-print"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnEditOrder" th:if="${orderBeanDTO.order.status=='C'}">
+							<div class="fa-5x">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-pencil-alt"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnApproveOrder" th:if="${orderBeanDTO.order.status=='C'}">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-check"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnReceiveOrder" th:if="${orderBeanDTO.order.status=='A'}">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-arrow-left"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnNewOrder">
-							<i class="far fa-plus-square fa-5x"></i>
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-plus"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">

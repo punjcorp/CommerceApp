@@ -10,12 +10,57 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 USE `commercedb` ;
 
 -- -----------------------------------------------------
+-- View `commercedb`.`v_location_tax`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `commercedb`.`v_location_tax` ;
+DROP TABLE IF EXISTS `commercedb`.`v_location_tax`;
+USE `commercedb`;
+CREATE  
+VIEW `commercedb`.`v_location_tax` AS
+    SELECT 
+        `tlm`.`location_id` AS `location_id`,
+        `tl`.`code` AS `billing_location`,
+        `tg`.`tax_group_id` AS `tax_group_id`,
+        `tg`.`name` AS `tax_group_name`,
+        `tg`.`description` AS `tax_group_desc`,
+        `tgr`.`seq_no` AS `tax_group_rate_seq`,
+        `tgr`.`name` AS `tax_group_rate_name`,
+        `tgr`.`description` AS `tax_group_rate_desc`,
+        `tgr`.`compound_flag` AS `compound_flag`,
+        `tgr`.`type_code` AS `type_code`,
+        `trr`.`tax_rate_rule_id` AS `tax_rate_rule_id`,
+        `trr`.`seq_no` AS `seq_no`,
+        `trr`.`effective_date` AS `effective_Date`,
+        `trr`.`expiry_date` AS `expiry_date`,
+        `trr`.`percentage` AS `percentage`,
+        `trr`.`amount` AS `amount`
+    FROM
+        ((((`tax_location_mapping` `tlm`
+        JOIN `tax_location` `tl`)
+        JOIN `tax_group` `tg`)
+        JOIN `tax_group_rule` `tgr`)
+        JOIN `tax_rate_rule` `trr`)
+    WHERE
+        ((`tl`.`tax_location_id` = `tlm`.`tax_location_id`)
+            AND (`tg`.`tax_group_id` = `tgr`.`tax_group_id`)
+            AND (`tlm`.`tax_location_id` = `tgr`.`tax_location_id`)
+            AND (`tg`.`tax_group_id` = `trr`.`tax_group_id`)
+            AND (`tlm`.`tax_location_id` = `trr`.`tax_location_id`)
+            AND (`tgr`.`tax_group_id` = `trr`.`tax_group_id`)
+            AND (`tgr`.`tax_location_id` = `trr`.`tax_location_id`)
+            AND (`tgr`.`tax_authority_id` = `trr`.`tax_authority_id`)
+            AND (`tgr`.`seq_no` = `trr`.`tax_group_rule_seq`))
+    ORDER BY `tg`.`name` , `tgr`.`name` , `tgr`.`seq_no` , `trr`.`seq_no`;
+
+
+
+-- -----------------------------------------------------
 -- View `commercedb`.`v_item_location_tax`
 -- -----------------------------------------------------
 DROP VIEW IF EXISTS `commercedb`.`v_item_location_tax` ;
 DROP TABLE IF EXISTS `commercedb`.`v_item_location_tax`;
 USE `commercedb`;
-CREATE OR REPLACE
+CREATE 
 VIEW `commercedb`.`v_item_location_tax` AS
     SELECT 
         `itm`.`item_id` AS `item_id`,
@@ -84,48 +129,6 @@ VIEW `commercedb`.`v_item_location_tax` AS
             `commercedb`.`v_location_tax` `vlt`
         GROUP BY `vlt`.`location_id` , `vlt`.`tax_group_id`) `taxdtl` ON ((`itmopt`.`tax_group_id` = `taxdtl`.`tax_group_id`)));
 
--- -----------------------------------------------------
--- View `commercedb`.`v_location_tax`
--- -----------------------------------------------------
-DROP VIEW IF EXISTS `commercedb`.`v_location_tax` ;
-DROP TABLE IF EXISTS `commercedb`.`v_location_tax`;
-USE `commercedb`;
-CREATE  OR REPLACE
-VIEW `commercedb`.`v_location_tax` AS
-    SELECT 
-        `tlm`.`location_id` AS `location_id`,
-        `tl`.`code` AS `billing_location`,
-        `tg`.`tax_group_id` AS `tax_group_id`,
-        `tg`.`name` AS `tax_group_name`,
-        `tg`.`description` AS `tax_group_desc`,
-        `tgr`.`seq_no` AS `tax_group_rate_seq`,
-        `tgr`.`name` AS `tax_group_rate_name`,
-        `tgr`.`description` AS `tax_group_rate_desc`,
-        `tgr`.`compound_flag` AS `compound_flag`,
-        `tgr`.`type_code` AS `type_code`,
-        `trr`.`tax_rate_rule_id` AS `tax_rate_rule_id`,
-        `trr`.`seq_no` AS `seq_no`,
-        `trr`.`effective_date` AS `effective_Date`,
-        `trr`.`expiry_date` AS `expiry_date`,
-        `trr`.`percentage` AS `percentage`,
-        `trr`.`amount` AS `amount`
-    FROM
-        ((((`tax_location_mapping` `tlm`
-        JOIN `tax_location` `tl`)
-        JOIN `tax_group` `tg`)
-        JOIN `tax_group_rule` `tgr`)
-        JOIN `tax_rate_rule` `trr`)
-    WHERE
-        ((`tl`.`tax_location_id` = `tlm`.`tax_location_id`)
-            AND (`tg`.`tax_group_id` = `tgr`.`tax_group_id`)
-            AND (`tlm`.`tax_location_id` = `tgr`.`tax_location_id`)
-            AND (`tg`.`tax_group_id` = `trr`.`tax_group_id`)
-            AND (`tlm`.`tax_location_id` = `trr`.`tax_location_id`)
-            AND (`tgr`.`tax_group_id` = `trr`.`tax_group_id`)
-            AND (`tgr`.`tax_location_id` = `trr`.`tax_location_id`)
-            AND (`tgr`.`tax_authority_id` = `trr`.`tax_authority_id`)
-            AND (`tgr`.`seq_no` = `trr`.`tax_group_rule_seq`))
-    ORDER BY `tg`.`name` , `tgr`.`name` , `tgr`.`seq_no` , `trr`.`seq_no`;
 
 -- -----------------------------------------------------
 -- View `commercedb`.`v_receipt_li_item`
@@ -133,7 +136,7 @@ VIEW `commercedb`.`v_location_tax` AS
 DROP VIEW IF EXISTS `commercedb`.`v_receipt_li_item` ;
 DROP TABLE IF EXISTS `commercedb`.`v_receipt_li_item`;
 USE `commercedb`;
-CREATE OR REPLACE
+CREATE 
 VIEW `commercedb`.`v_receipt_li_item` AS
     SELECT 
         `itm`.`name` AS `name`,

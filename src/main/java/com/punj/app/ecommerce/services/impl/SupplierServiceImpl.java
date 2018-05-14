@@ -123,15 +123,21 @@ public class SupplierServiceImpl implements SupplierService {
 	@Transactional
 	public Supplier createSupplier(Supplier supplier) {
 
+		Boolean isExisting=Boolean.FALSE;
+		if(supplier.getSupplierId()!=null)
+			isExisting=Boolean.TRUE;
 		supplier = this.supplierRepository.save(supplier);
 		if (supplier != null) {
-
-			List<AccountHead> accountHeads = this.paymentService.setupPaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER,
-					new BigInteger(supplier.getSupplierId().toString()), supplier.getCreatedBy());
-			if (accountHeads != null && !accountHeads.isEmpty()) {
-				logger.info("The supplier {} with all location account setup has been created successfully.", supplier.getSupplierId());
-			} else {
-				logger.info("There was some issue while setting up the supplier account for all the locations.");
+			if(isExisting) {
+				logger.info("The supplier account already exists and no changes are needed at this point.");
+			}else{
+				List<AccountHead> accountHeads = this.paymentService.setupPaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER,
+						new BigInteger(supplier.getSupplierId().toString()), supplier.getCreatedBy());
+				if (accountHeads != null && !accountHeads.isEmpty()) {
+					logger.info("The supplier {} with all location account setup has been created successfully.", supplier.getSupplierId());
+				} else {
+					logger.info("There was some issue while setting up the supplier account for all the locations.");
+				}
 			}
 
 		} else {

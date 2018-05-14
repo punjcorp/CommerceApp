@@ -21,24 +21,31 @@ import com.punj.app.ecommerce.models.supplier.SupplierItemBean;
  *
  */
 public class OrderItemBean {
-	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
+
+	private BigInteger orderItemId;
+
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
 	private BigInteger itemId;
-	
+
 	private String itemDesc;
 
 	private BigInteger orderId;
 	private Integer taxGroupId;
 
-	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
-	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = {ValidationGroup.VGAddOrder.class})
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
+	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = { ValidationGroup.VGAddOrder.class })
 	private BigDecimal orderedQty;
 
-	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
-	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGAddOrder.class})
-	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGAddOrder.class})	
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
+	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGAddOrder.class })
+	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGAddOrder.class })
 	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal costAmount = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
+
+	private BigInteger sgstTaxId;
+	private BigInteger cgstTaxId;
+	private BigInteger igstTaxId;
 
 	private String sgstCode;
 	private String cgstCode;
@@ -62,14 +69,14 @@ public class OrderItemBean {
 
 	private BigDecimal taxAmount = BigDecimal.ZERO;
 
-	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGReceiveOrder.class})
-	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = {ValidationGroup.VGReceiveOrder.class})	
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGReceiveOrder.class })
+	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = { ValidationGroup.VGReceiveOrder.class })
 	private BigDecimal delieveredQty;
 	private LocalDateTime delieveredDate;
-	
-	@NotNull(message = "{commerce.error.amount.empty}", groups = {ValidationGroup.VGReceiveOrder.class})
-	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGReceiveOrder.class})
-	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = {ValidationGroup.VGReceiveOrder.class})
+
+	@NotNull(message = "{commerce.error.amount.empty}", groups = { ValidationGroup.VGReceiveOrder.class })
+	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
+	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
 	private BigDecimal actualUnitCost = BigDecimal.ZERO;
 	private BigDecimal actualCostAmount = BigDecimal.ZERO;
 	private BigDecimal actualTotalCost = BigDecimal.ZERO;
@@ -551,10 +558,71 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param itemDesc the itemDesc to set
+	 * @param itemDesc
+	 *            the itemDesc to set
 	 */
 	public void setItemDesc(String itemDesc) {
 		this.itemDesc = itemDesc;
+	}
+
+	/**
+	 * @return the orderItemId
+	 */
+	public BigInteger getOrderItemId() {
+		return orderItemId;
+	}
+
+	/**
+	 * @param orderItemId
+	 *            the orderItemId to set
+	 */
+	public void setOrderItemId(BigInteger orderItemId) {
+		this.orderItemId = orderItemId;
+	}
+
+	/**
+	 * @return the sgstTaxId
+	 */
+	public BigInteger getSgstTaxId() {
+		return sgstTaxId;
+	}
+
+	/**
+	 * @param sgstTaxId
+	 *            the sgstTaxId to set
+	 */
+	public void setSgstTaxId(BigInteger sgstTaxId) {
+		this.sgstTaxId = sgstTaxId;
+	}
+
+	/**
+	 * @return the cgstTaxId
+	 */
+	public BigInteger getCgstTaxId() {
+		return cgstTaxId;
+	}
+
+	/**
+	 * @param cgstTaxId
+	 *            the cgstTaxId to set
+	 */
+	public void setCgstTaxId(BigInteger cgstTaxId) {
+		this.cgstTaxId = cgstTaxId;
+	}
+
+	/**
+	 * @return the igstTaxId
+	 */
+	public BigInteger getIgstTaxId() {
+		return igstTaxId;
+	}
+
+	/**
+	 * @param igstTaxId
+	 *            the igstTaxId to set
+	 */
+	public void setIgstTaxId(BigInteger igstTaxId) {
+		this.igstTaxId = igstTaxId;
 	}
 
 }

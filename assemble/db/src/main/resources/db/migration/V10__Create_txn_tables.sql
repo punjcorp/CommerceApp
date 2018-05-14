@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_tender` (
   `amount` DECIMAL(12,2) NOT NULL,
   `change_flag` TINYINT NOT NULL,
   `type_code` VARCHAR(40) NOT NULL,
-  `action_code` VARCHAR(40) NOT NULL,
+  `action_code` VARCHAR(40) NULL,
   `foreign_amount` DECIMAL(12,2) NULL,
   `exchange_rate` DECIMAL(12,2) NULL,
   `created_by` VARCHAR(50) NOT NULL,

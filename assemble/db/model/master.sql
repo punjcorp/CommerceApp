@@ -355,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `customer_prompt` TINYINT NOT NULL DEFAULT 0,
   `shipping_weight` DECIMAL(12,2) NULL,
   `pack_size` VARCHAR(45) NULL,
-  `hsn_no` VARCHAR(15) NOT NULL,
+  `hsn_no` VARCHAR(15) NULL,
   `next_level_created` VARCHAR(2) NULL DEFAULT 'N',
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_options_item1`
@@ -586,6 +586,7 @@ CREATE INDEX `fk_purchase_order_supplier1_idx` ON `commercedb`.`purchase_order` 
 DROP TABLE IF EXISTS `commercedb`.`purchase_order_items` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
+  `order_item_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
   `item_name` VARCHAR(150) NOT NULL,
@@ -601,7 +602,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   `actual_discount_amount` DECIMAL(12,2) NULL DEFAULT 0.00,
   `actual_tax_amount` DECIMAL(12,2) NULL DEFAULT '0.00',
   `actual_total_cost` DECIMAL(12,2) NULL DEFAULT 0.00,
-  PRIMARY KEY (`order_id`, `item_id`),
+  PRIMARY KEY (`order_item_id`),
   CONSTRAINT `fk_purchase_order_items_purchase_order1`
     FOREIGN KEY (`order_id`)
     REFERENCES `commercedb`.`purchase_order` (`order_id`)
@@ -863,8 +864,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`style_generator` ;
 
+
 CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
-  `style_id` MEDIUMINT(7) ZEROFILL NOT NULL AUTO_INCREMENT,
+  `style_id` BIGINT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`style_id`))
 ENGINE = InnoDB
@@ -877,11 +879,10 @@ AUTO_INCREMENT = 1000000;
 DROP TABLE IF EXISTS `commercedb`.`sku_generator` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`sku_generator` (
-  `style_id` MEDIUMINT(7) ZEROFILL NOT NULL,
-  `color` INT(2) ZEROFILL NOT NULL,
-  `size` INT(2) ZEROFILL NOT NULL,
+  `style_id` BIGINT NOT NULL,
+  `sku_id` BIGINT ZEROFILL NOT NULL,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`style_id`, `color`, `size`),
+  PRIMARY KEY (`style_id`, `sku_id`),
   CONSTRAINT `fk_sku_generator_style_generator1`
     FOREIGN KEY (`style_id`)
     REFERENCES `commercedb`.`style_generator` (`style_id`)
@@ -1734,6 +1735,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `commercedb`.`purchase_order_payment` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_payment` (
+  `order_payment_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `tender_id` INT NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
@@ -1745,7 +1747,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_payment` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`order_id`),
+  PRIMARY KEY (`order_payment_id`),
   CONSTRAINT `fk_purchase_order_payment_purchase_order1`
     FOREIGN KEY (`order_id`)
     REFERENCES `commercedb`.`purchase_order` (`order_id`)
@@ -1786,8 +1788,8 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `commercedb`.`purchase_order_items_tax` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items_tax` (
-  `order_id` BIGINT NOT NULL,
-  `item_id` BIGINT NOT NULL,
+  `order_item_tax_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `order_item_id` BIGINT NOT NULL,
   `tax_group_id` INT NOT NULL,
   `tax_rate_rule_id` INT NOT NULL,
   `tax_amount` DECIMAL(12,2) NOT NULL,
@@ -1796,13 +1798,15 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items_tax` (
   `taxable_amount` DECIMAL(12,2) NOT NULL,
   `actual_taxable_amount` DECIMAL(12,2) NULL,
   `actual_tax_amount` DECIMAL(12,2) NULL,
-  PRIMARY KEY (`order_id`, `item_id`, `tax_group_id`, `tax_rate_rule_id`),
+  PRIMARY KEY (`order_item_tax_id`),
   CONSTRAINT `fk_purchase_order_items_tax_purchase_order_items1`
-    FOREIGN KEY (`order_id` , `item_id`)
-    REFERENCES `commercedb`.`purchase_order_items` (`order_id` , `item_id`)
+    FOREIGN KEY (`order_item_id`)
+    REFERENCES `commercedb`.`purchase_order_items` (`order_item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_purchase_order_items_tax_purchase_order_items1_idx` ON `commercedb`.`purchase_order_items_tax` (`order_item_id` ASC);
 
 
 -- -----------------------------------------------------
@@ -1838,7 +1842,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
   `code` VARCHAR(15) NOT NULL,
   `description` VARCHAR(100) NULL,
   `type` VARCHAR(45) NOT NULL,
-  `parent_uom_id` INT NOT NULL,
+  `parent_uom_id` INT NULL,
   `formula_to_parent_uom` VARCHAR(45) NULL,
   `is_primary` TINYINT NOT NULL DEFAULT 0,
   `created_by` VARCHAR(50) NOT NULL,

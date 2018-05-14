@@ -5,21 +5,25 @@ package com.punj.app.ecommerce.domains.order;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
-
-import com.punj.app.ecommerce.domains.order.ids.OrderItemId;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * @author admin
@@ -32,14 +36,22 @@ public class OrderItem implements Serializable {
 
 	private static final long serialVersionUID = 7080804777591754919L;
 
-	@EmbeddedId
-	@FieldBridge(impl = OrderItemFieldBridge.class)
+	@Id
 	@DocumentId
-	private OrderItemId orderItemId;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "order_item_id", updatable = false, nullable = false)
+	private BigInteger orderItemId;
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "order_id")
+	private Order order;
+
+	@Column(name = "item_id")
+	private BigInteger itemId;
 
 	@Column(name = "item_name")
 	private String itemDesc;
-	
+
 	@Column(name = "ordered_qty")
 	private BigDecimal orderedQty;
 
@@ -72,23 +84,8 @@ public class OrderItem implements Serializable {
 	@Column(name = "actual_total_cost")
 	private BigDecimal actualTotalCost = BigDecimal.ZERO;
 
-	@OneToMany(mappedBy = "orderItemTaxId.orderItemId", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL)
 	private List<OrderItemTax> orderItemTaxes;
-	
-	/**
-	 * @return the orderItemId
-	 */
-	public OrderItemId getOrderItemId() {
-		return orderItemId;
-	}
-
-	/**
-	 * @param orderItemId
-	 *            the orderItemId to set
-	 */
-	public void setOrderItemId(OrderItemId orderItemId) {
-		this.orderItemId = orderItemId;
-	}
 
 	/**
 	 * @return the orderedQty
@@ -278,7 +275,8 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @param orderItemTaxes the orderItemTaxes to set
+	 * @param orderItemTaxes
+	 *            the orderItemTaxes to set
 	 */
 	public void setOrderItemTaxes(List<OrderItemTax> orderItemTaxes) {
 		this.orderItemTaxes = orderItemTaxes;
@@ -292,10 +290,56 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @param itemDesc the itemDesc to set
+	 * @param itemDesc
+	 *            the itemDesc to set
 	 */
 	public void setItemDesc(String itemDesc) {
 		this.itemDesc = itemDesc;
+	}
+
+	/**
+	 * @return the orderItemId
+	 */
+	public BigInteger getOrderItemId() {
+		return orderItemId;
+	}
+
+	/**
+	 * @param orderItemId
+	 *            the orderItemId to set
+	 */
+	public void setOrderItemId(BigInteger orderItemId) {
+		this.orderItemId = orderItemId;
+	}
+
+	/**
+	 * @return the order
+	 */
+	public Order getOrder() {
+		return order;
+	}
+
+	/**
+	 * @param order
+	 *            the order to set
+	 */
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	/**
+	 * @return the itemId
+	 */
+	public BigInteger getItemId() {
+		return itemId;
+	}
+
+	/**
+	 * @param itemId
+	 *            the itemId to set
+	 */
+	public void setItemId(BigInteger itemId) {
+		this.itemId = itemId;
 	}
 
 }

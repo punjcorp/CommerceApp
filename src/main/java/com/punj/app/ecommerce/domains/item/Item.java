@@ -54,7 +54,7 @@ public class Item implements Serializable, Cloneable {
 	private String itemType;
 	@Column(name = "record_status")
 	private String status;
-
+	@Field
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")

@@ -24,8 +24,7 @@
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<form class="form" id="addForm" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data"
-				method="post">
+			<form class="form" id="addForm" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data" method="post">
 				<div class="row m-3">
 					<div class="col">
 						<div class="card">
@@ -87,8 +86,7 @@
 												<div class="input-group  text-left">
 													<label><h5>
 															<span th:text="${orderBeanDTO.order.locationId}"></span> - <span th:text="${orderBeanDTO.order.locationName}"></span> <input
-																type="hidden" th:field="*{order.locationId}"></input> <input
-																type="hidden" th:field="*{order.locationName}"></input>
+																type="hidden" th:field="*{order.locationId}"></input> <input type="hidden" th:field="*{order.locationName}"></input>
 														</h5></label>
 												</div>
 											</div>
@@ -123,7 +121,8 @@
 																<span th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></span>
 															</div>
 															<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}"></input> <input type="hidden"
-																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input>
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
+																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderItemId}"></input>
 														</div>
 													</div>
 													<div class="col padding-sm">
@@ -175,6 +174,9 @@
 															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
 															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
 															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
+															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].sgstTaxId}"></input> <input type="hidden"
+															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].cgstTaxId}"></input> <input type="hidden"
+															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].igstTaxId}"></input> <input type="hidden"
 															th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].taxAmount}"></input>
 													</div>
 													<div class="col-2">
@@ -323,8 +325,7 @@
 														</div>
 														<div th:if="${#fields.hasErrors('order.orderBills[__${itrStat.index}__].billFile')}"
 															th:errors="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFile}" class="text-danger">Order Bill File Error</div>
-														<input type="hidden"
-															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].orderId}"></input> <input type="hidden"
+														<input type="hidden" th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].orderId}"></input> <input type="hidden"
 															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFileType}"></input> <input type="hidden"
 															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].billFileURL}"></input> <input type="hidden"
 															th:field="${orderBeanDTO.order.orderBills[__${itrStat.index}__].orderBillId}"></input> <a target="_blank"

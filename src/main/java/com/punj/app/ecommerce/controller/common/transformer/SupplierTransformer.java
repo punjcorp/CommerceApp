@@ -74,6 +74,8 @@ public class SupplierTransformer {
 		supplier.setEmail(supplierBean.getEmail());
 		supplier.setPhone1(supplierBean.getPhone1());
 		supplier.setPhone2(supplierBean.getPhone2());
+		supplier.setCreatedBy(supplierBean.getCreatedBy());
+		supplier.setCreatedDate(supplierBean.getCreatedDate());
 
 		List<AddressBean> supplierAddresses = supplierBean.getAddresses();
 		AddressBean primaryAddress = supplierAddresses.get(supplierBean.getPrimaryAddressIndex());
