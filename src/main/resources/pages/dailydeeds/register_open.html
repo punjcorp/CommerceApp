@@ -33,6 +33,8 @@
 							<div class="col-6">
 								<label for="registerId"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.open.select}">Select
 											Register to open</span></small></label>
+								<div th:if="${#fields.hasErrors('register')}" th:errors="${dailyDeedBean.register}" class="text-danger align-top">Register
+							Error </div>									
 								<div class="box-radio-parent">
 									<th:block th:each="register,itrStat:${registers}">
 										<label> <input type="radio" name="registerRadio" id="registerRadio" th:field="*{register}" th:value="${register.registerId}"></input>

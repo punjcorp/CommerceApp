@@ -77,7 +77,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_STORE);
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(storeOpenDetails.getTenders(), txnDetails.getTransactionId(), username);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(storeOpenDetails.getTenders(), txnDetails.getTransactionId(), username, Boolean.FALSE);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 				result = Boolean.TRUE;
@@ -100,7 +100,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_REGISTER);
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(registerOpenDetails.getTenders(), txnDetails.getTransactionId(), username);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(registerOpenDetails.getTenders(), txnDetails.getTransactionId(), username, Boolean.TRUE);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 				result = Boolean.TRUE;

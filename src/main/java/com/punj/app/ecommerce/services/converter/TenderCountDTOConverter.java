@@ -34,18 +34,19 @@ public class TenderCountDTOConverter {
 		throw new IllegalStateException("TenderCountDTOConverter class");
 	}
 
-	public static List<TenderCount> transformTenderList(List<TenderDTO> tenderDTOs, TransactionId txnId, String username) {
+	
+	public static List<TenderCount> transformTenderList(List<TenderDTO> tenderDTOs, TransactionId txnId, String username,Boolean isRegisterOpen) {
 		List<TenderCount> tenders = new ArrayList<>(tenderDTOs.size());
 		TenderCount tender;
 		for (TenderDTO tenderDTO : tenderDTOs) {
-			tender = TenderCountDTOConverter.transformTenderDTO(tenderDTO, txnId, username);
+			tender = TenderCountDTOConverter.transformTenderDTO(tenderDTO, txnId, username, isRegisterOpen);
 			tenders.add(tender);
 		}
 		logger.info("The tender detail list has been transformed successfully");
 		return tenders;
 	}
 
-	private static TenderCount transformTenderDTO(TenderDTO tenderDTO, TransactionId txnId, String username) {
+	private static TenderCount transformTenderDTO(TenderDTO tenderDTO, TransactionId txnId, String username,Boolean isRegisterOpen) {
 		TenderCount tenderCount = new TenderCount();
 
 		TenderCountId tenderCountId = new TenderCountId();
@@ -56,13 +57,13 @@ public class TenderCountDTOConverter {
 		tenderCountId.setTenderId(tenderDTO.getTenderId());
 
 		tenderCount.setTenderCountId(tenderCountId);
-
-		BigDecimal amount = new BigDecimal("1");
-		BigInteger mediaCount = new BigInteger("1");
-
-		tenderCount.setTxnType(ServiceConstants.TXN_OPEN_STORE);
-		tenderCount.setAmount(amount);
-		tenderCount.setMediaCount(mediaCount);
+		if(isRegisterOpen)
+			tenderCount.setTxnType(ServiceConstants.TXN_OPEN_REGISTER);
+		else
+			tenderCount.setTxnType(ServiceConstants.TXN_OPEN_STORE);
+		
+		tenderCount.setAmount(tenderDTO.getAmount());
+		tenderCount.setMediaCount(tenderDTO.getMediaCount());
 
 		tenderCount.setCreatedBy(username);
 		tenderCount.setCreatedDate(LocalDateTime.now());
