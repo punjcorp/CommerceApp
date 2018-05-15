@@ -35,7 +35,7 @@ var TransactionHeader = function() {
 
 	this.startTime;
 	this.endTime;
-	
+
 	this.subTotalAmt = 0.00;
 	this.totalDiscountAmt = 0.00;
 	this.totalSGSTTaxAmt = 0.00;
@@ -56,7 +56,21 @@ $.extend(TransactionHeader.prototype, {
 /**
  * Class definition for Sale Line Item Starts
  */
-var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal,itemImage) {
+var SaleLineItem = function(
+		itemId,
+		itemName,
+		itemDesc,
+		qty,
+		price,
+		discount,
+		cgstTax,
+		sgstTax,
+		igstTax,
+		cgstTaxRate,
+		sgstTaxRate,
+		igstTaxRate,
+		itemTotal,
+		itemImage) {
 	if (arguments.length > 0) {
 		this.itemId = itemId;
 		this.itemName = itemName;
@@ -95,9 +109,20 @@ var SaleLineItem = function(itemId, itemName, itemDesc, qty, price, discount, cg
 $.extend(SaleLineItem.prototype, {
 	validateSaleLineItem : function(cntl, itemId) {
 
-		if (cntl.id.indexOf('li_qty') == 0) {
+		if (cntl.id.indexOf('li_qty') == 0 && txn_type == 'R') {
 			var qtyValue = +$('#li_qty' + itemId).val();
-			if ((!qtyValue) || (qtyValue.toFixed(2) <= 0.00)) {
+			if ((qtyValue === '') || (qtyValue.toFixed(2) >= 0.00)) {
+				alert(i18next.t('sale_txn_validate_qty'));
+				$('#li_qty' + itemId).addClass("is-invalid");
+				$('#li_qty' + itemId).val(-1);
+				$('#li_qty' + itemId).focus();
+				return false;
+			} else {
+				$('#li_qty' + itemId).removeClass("is-invalid");
+			}
+		} else if (cntl.id.indexOf('li_qty') == 0 && txn_type != 'R') {
+			var qtyValue = +$('#li_qty' + itemId).val();
+			if ((qtyValue === '') || (qtyValue.toFixed(2) <= 0.00)) {
 				alert(i18next.t('sale_txn_validate_qty'));
 				$('#li_qty' + itemId).addClass("is-invalid");
 				$('#li_qty' + itemId).val(1);
@@ -107,10 +132,25 @@ $.extend(SaleLineItem.prototype, {
 				$('#li_qty' + itemId).removeClass("is-invalid");
 			}
 		}
-		if (cntl.id.indexOf('li_discountAmt') == 0) {
+
+		if (cntl.id.indexOf('li_discountAmt') == 0 && txn_type == 'R') {
 			var discountValue = +$('#li_discountAmt' + itemId).val();
 			var priceValue = +$('#li_priceAmt' + itemId).val();
-			if ((!discountValue) || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
+			priceValue = priceValue * -1;
+			if ((discountValue === '') || (discountValue < priceValue) || (discountValue > 0)) {
+				alert(i18next.t('sale_txn_validate_range_discount'));
+
+				$('#li_discountAmt' + itemId).addClass("is-invalid");
+				$('#li_discountAmt' + itemId).focus();
+				$('#li_discountAmt' + itemId).val(0.00);
+				return false;
+			} else {
+				$('#li_discountAmt' + itemId).removeClass("is-invalid");
+			}
+		} else if (cntl.id.indexOf('li_discountAmt') == 0 && txn_type != 'R') {
+			var discountValue = +$('#li_discountAmt' + itemId).val();
+			var priceValue = +$('#li_priceAmt' + itemId).val();
+			if ((discountValue === '') || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
 				alert(i18next.t('sale_txn_validate_range_discount'));
 
 				$('#li_discountAmt' + itemId).addClass("is-invalid");
@@ -138,13 +178,20 @@ $.extend(SaleLineItem.prototype, {
 		var qty = $('#li_qty' + itemId).val();
 		var unitPrice = $('#li_uh_priceAmt' + itemId).val();
 		var itemPrice = unitPrice * qty;
+		if (txn_type == 'R')
+			itemPrice = itemPrice * -1;
 		itemPrice = itemPrice.toFixed(2);
 		$('#li_priceAmt' + itemId).val(itemPrice);
 	},
 	calculateSaleLineItemDiscount : function(itemId) {
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
 		var itemPrice = +$('#li_priceAmt' + itemId).val();
-		if (discountAmt > itemPrice) {
+		if (txn_type == 'R')
+			itemPrice = itemPrice * -1;
+		if (discountAmt < itemPrice && txn_type == 'R') {
+			$('#li_discountAmt' + itemId).val(0.00);
+			alert(i18next.t('sale_txn_validate_exceed_discount'));
+		} else if (discountAmt > itemPrice && txn_type != 'R') {
 			$('#li_discountAmt' + itemId).val(0.00);
 			alert(i18next.t('sale_txn_validate_exceed_discount'));
 		} else {
@@ -155,45 +202,54 @@ $.extend(SaleLineItem.prototype, {
 	calculateSaleLineItemTax : function(itemId) {
 		var qty = +$('#li_qty' + itemId).val();
 		this.qty = qty;
-		
+
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
 
 		var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
 		var itemPrice = +$('#li_priceAmt' + itemId).val();
 
 		var sgstTaxAmt = (itemPrice - discountAmt) * sgstUnitTax / 100;
+		if (txn_type == 'R')
+			sgstTaxAmt = sgstTaxAmt * -1;
+
 		sgstTaxAmt = sgstTaxAmt.toFixed(2);
 		$('#li_sgstAmt' + itemId).val(sgstTaxAmt);
 
 		var cgstUnitTax = $('#li_uh_cgstRate' + itemId).val();
 		var cgstTaxAmt = (itemPrice - discountAmt) * cgstUnitTax / 100;
+
+		if (txn_type == 'R')
+			cgstTaxAmt = cgstTaxAmt * -1;
 		cgstTaxAmt = cgstTaxAmt.toFixed(2);
 		$('#li_cgstAmt' + itemId).val(cgstTaxAmt);
 	},
 	calculateSaleLineItemTotal : function(itemId) {
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
-		this.discount =discountAmt;
-		
+		this.discount = discountAmt;
+
 		var sgstTaxAmt = +$('#li_sgstAmt' + itemId).val();
-		this.sgstTax =sgstTaxAmt;
-			
+		this.sgstTax = sgstTaxAmt;
+
 		var cgstTaxAmt = +$('#li_cgstAmt' + itemId).val();
 		this.cgstTax = cgstTaxAmt;
-		
+
 		var itemPrice = +$('#li_priceAmt' + itemId).val();
-		this.price =+$('#li_uh_priceAmt' + itemId).val();;
-		
+		this.price = +$('#li_uh_priceAmt' + itemId).val();
+
+		if (txn_type == 'R')
+			itemPrice = itemPrice * -1;
+
 		var totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
 		totalItemPrice = totalItemPrice.toFixed(2);
-		
-		$('#li_itemTotal' + itemId).text(i18next.t('common_currency_sign_inr')+' ' + totalItemPrice);
-		this.itemTotal =totalItemPrice;
-		
+
+		$('#li_itemTotal' + itemId).text(i18next.t('common_currency_sign_inr') + ' ' + totalItemPrice);
+		this.itemTotal = totalItemPrice;
+
 	},
 	renderSaleLineItem : function(saleLineItem) {
 
 		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
-		saleLineItemHtml += '<img src="'+saleLineItem.itemImage+'" class="img-fluid" alt="Image for item '+saleLineItem.itemId+'"/>';
+		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
 		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
@@ -201,7 +257,7 @@ $.extend(SaleLineItem.prototype, {
 		saleLineItemHtml += '</span></div>';
 
 		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
-		qty += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		qty += saleLineItem.itemId + '" type="number" min="0" value="';
 		qty += saleLineItem.qty;
 		qty += '"></input></div>';
 
@@ -240,17 +296,102 @@ $.extend(SaleLineItem.prototype, {
 		cgstTaxAmt += '"></input>';
 
 		var total = '<div class="col-2 form-group padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
-		total += i18next.t('common_currency_sign_inr')+' ' + saleLineItem.itemTotal.toFixed(2);
+		total += i18next.t('common_currency_sign_inr') + ' ' + saleLineItem.itemTotal.toFixed(2);
 		total += '</span><button type="button" id="btnDeleteSLI"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
 		total += '</h5>';
 		total += '</div></div>';
-		
 
 		var finalSaleItemHtml = saleLineItemHtml + qty + priceAmt + discountAmt + sgstTaxAmt + cgstTaxAmt + total;
 
 		$('#result').append(finalSaleItemHtml);
+	},
+	renderReturnLineItem : function(saleLineItem) {
+
+		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
+		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
+		saleLineItemHtml += '</div>';
+		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
+		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
+		saleLineItemHtml += saleLineItem.itemName;
+		saleLineItemHtml += '</span></div>';
+
+		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
+		qty += saleLineItem.itemId + '" type="number" min="0" value="';
+		qty += saleLineItem.qty;
+		qty += '"></input></div>';
+
+		var priceAmt = '<div class="col padding-sm"><input class="form-control" id="li_priceAmt' + saleLineItem.itemId
+				+ '" type="number" min="0" step="0.01" value="';
+		priceAmt += saleLineItem.price.toFixed(2);
+		priceAmt += '" disabled></input></div>';
+		priceAmt += '<input id="li_uh_priceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		priceAmt += saleLineItem.price.toFixed(2);
+		priceAmt += '"></input>';
+
+		var discountAmt = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_discountAmt';
+		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		discountAmt += saleLineItem.discount.toFixed(2);
+		discountAmt += '"></input></div>';
+		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		discountAmt += saleLineItem.discount.toFixed(2);
+		discountAmt += '"></input>';
+
+		var sgstTaxAmt = '<div class="col-1 padding-sm">';
+		sgstTaxAmt += '<input class="form-control" id="li_sgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		sgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+		sgstTaxAmt += '" disabled></input>';
+		sgstTaxAmt += '<label><small><span>(' + saleLineItem.sgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
+		sgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+		sgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+		sgstTaxAmt += '"></input>';
+
+		var cgstTaxAmt = '<div class="col-1 padding-sm">';
+		cgstTaxAmt += '<input class="form-control" id="li_cgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
+		cgstTaxAmt += '" disabled></input>';
+		cgstTaxAmt += '<label><small><span>(' + saleLineItem.cgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
+		cgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+		cgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+		cgstTaxAmt += '"></input>';
+
+		var total = '<div class="col-2 form-group padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
+		total += i18next.t('common_currency_sign_inr') + ' ' + saleLineItem.itemTotal.toFixed(2);
+		total += '</span><button type="button" id="btnDeleteSLI"';
+		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
+		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
+		total += '</h5>';
+		total += '</div></div>';
+
+		var finalReturnItemHtml = saleLineItemHtml + qty + priceAmt + discountAmt + sgstTaxAmt + cgstTaxAmt + total;
+
+		$('#result').append(finalReturnItemHtml);
+	},
+
+	parseReturnLineItem : function(data) {
+		var returnLineItem = this.parseSaleLineItem(data);
+
+		if (returnLineItem.qty > 0)
+			returnLineItem.qty = returnLineItem.qty * -1;
+
+		if (returnLineItem.discount > 0)
+			returnLineItem.discount = returnLineItem.discount * -1;
+
+		if (returnLineItem.sgstTax > 0) {
+			returnLineItem.sgstTax = returnLineItem.sgstTax * -1;
+		}
+
+		if (returnLineItem.cgstTax > 0) {
+			returnLineItem.cgstTax = returnLineItem.cgstTax * -1;
+		}
+
+		if (returnLineItem.itemTotal > 0) {
+			returnLineItem.itemTotal = returnLineItem.itemTotal * -1;
+		}
+
+		return returnLineItem;
+
 	},
 	parseSaleLineItem : function(data) {
 		var itemId = data.itemId;
@@ -259,7 +400,12 @@ $.extend(SaleLineItem.prototype, {
 		var qty = data.qty;
 		var price = data.priceAmt;
 		var discount = data.discountAmt;
-		var itemImage = 'data:'+data.imageType+';base64,'+data.imageData;
+
+		var itemImage = '';
+		if (data.imageType && data.imageType.length > 0)
+			itemImage = 'data:' + data.imageType + ';base64,' + data.imageData;
+		else
+			itemImage = '/images/item_image_default_200.png';
 
 		var cgstTax;
 		var sgstTax;
@@ -271,8 +417,8 @@ $.extend(SaleLineItem.prototype, {
 		var igstTaxLineItem;
 		var sgstTaxLineItem;
 		var cgstTaxLineItem;
-		
-		//Retrieve tax and check for tax types
+
+		// Retrieve tax and check for tax types
 		if (data.igstTax) {
 			igstTax = data.igstTax.amount;
 			igstTaxRate = data.igstTax.percentage;
@@ -288,21 +434,20 @@ $.extend(SaleLineItem.prototype, {
 			sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate);
 		}
 
-		//calculate the total for item after taxes and everything for sale item
+		// calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
 		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, price, discount, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate,
-				itemTotal,itemImage);
-		
+				itemTotal, itemImage);
+
 		/**
 		 * Update the tax line items in the sale item
 		 */
 		if (data.igstTax) {
 			saleLineItem.taxLineItems.push(igstTaxLineItem);
-		}else{
+		} else {
 			saleLineItem.taxLineItems.push(sgstTaxLineItem);
 			saleLineItem.taxLineItems.push(cgstTaxLineItem);
 		}
-		
 
 		return saleLineItem;
 	}
@@ -369,9 +514,9 @@ $.extend(TenderLineItem.prototype, {
 	clearTenderContainer : function() {
 		$('#tenderLineItemContainer').html('');
 	},
-	updateTenderIndex: function(tenderIndex) {
-			g_tenderIndex=tenderIndex;
-	},	
+	updateTenderIndex : function(tenderIndex) {
+		g_tenderIndex = tenderIndex;
+	},
 	render : function() {
 		if (g_tenderIndex >= 0) {
 			$('#tenderLineItemContainer').removeClass('d-none');
@@ -391,7 +536,7 @@ $.extend(TenderLineItem.prototype, {
 
 		htmlContent += '</div><div class="col-4">';
 		htmlContent += '<input id="tli_amt_' + g_tenderIndex + '" type="hidden" value="' + this.amount.toFixed(2) + '"></input>';
-		htmlContent += '<h5><span>'+i18next.t('common_currency_sign_inr')+' ' + this.amount.toFixed(2) + '</span></h5>';
+		htmlContent += '<h5><span>' + i18next.t('common_currency_sign_inr') + ' ' + this.amount.toFixed(2) + '</span></h5>';
 		htmlContent += '</div><div class="col-2">';
 		htmlContent += '<button type="button" id="btnDeleteTLI"';
 		htmlContent += 'onClick="deleteTender(' + g_tenderIndex;
@@ -418,6 +563,30 @@ $.extend(TenderLineItem.prototype, {
 		var tenderEnteredAmt = +$('#dueAmt').val();
 		if ((!tenderEnteredAmt) || (tenderEnteredAmt == '') || (tenderEnteredAmt <= 0.00)) {
 			alert(i18next.t('sale_txn_validate_amount_tender'));
+			$('#dueAmt').addClass("is-invalid");
+			$('#dueAmt').focus();
+			return false;
+		} else {
+
+			$('#dueAmt').removeClass("is-invalid");
+		}
+		return true;
+	},
+	validateReturnTenderLineItem : function() {
+		var tenderEnteredAmt = +$('#dueAmt').val();
+		var totalDueAmt = +$('#hc_totalDueAmt').val();
+
+		var tliPaidAmt;
+		var totalPaidAmount = g_nbr_zero;
+		$("[id^=tli_amt_").each(function() {
+			tliPaidAmt = +$(this).val();
+			totalPaidAmount += tliPaidAmt;
+		});
+
+		var remainingAmount = totalDueAmt.toFixed(2) - (totalPaidAmount.toFixed(2));
+
+		if ((!tenderEnteredAmt) || (tenderEnteredAmt == '') || (tenderEnteredAmt >= 0.00) || (tenderEnteredAmt < remainingAmount)) {
+			alert(i18next.t('return_txn_validate_amount_refund'));
 			$('#dueAmt').addClass("is-invalid");
 			$('#dueAmt').focus();
 			return false;
@@ -454,16 +623,15 @@ $.extend(SaleTransaction.prototype, {
 		$.each(this.txnSaleLineItems, function() {
 			this.seqNo = seqVal;
 			seqVal = seqVal + 1;
-			
-			var saleItemTaxLineItems=this.taxLineItems;
+
+			var saleItemTaxLineItems = this.taxLineItems;
 			$.each(saleItemTaxLineItems, function() {
 				this.seqNo = seqVal;
 				seqVal = seqVal + 1;
 			});
-			
+
 		});
 
-		
 		$.each(this.txnTenderLineItems, function() {
 			this.seqNo = seqVal;
 			seqVal = seqVal + 1;
@@ -481,6 +649,27 @@ $.extend(SaleTransaction.prototype, {
 		// AJAX call here and refresh the sell item page with receipt printing
 		$.ajax({
 			url : '/pos/save_txn',
+			type : 'POST',
+			cache : false,
+			data : formdata,
+			contentType : "application/json; charset=utf-8",
+			dataType : "json",
+			success : function(data) {
+				postTxnSave(data);
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('X-CSRF-TOKEN', token)
+			}
+		});
+	},
+	saveReturnTxnDetails : function() {
+		this.preSaveActions();
+
+		var token = $("meta[name='_csrf']").attr("content");
+		var formdata = JSON.stringify(this);
+		// AJAX call here and refresh the sell item page with receipt printing
+		$.ajax({
+			url : '/pos/save_return_txn',
 			type : 'POST',
 			cache : false,
 			data : formdata,

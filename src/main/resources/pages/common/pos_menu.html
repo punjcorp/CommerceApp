@@ -31,8 +31,16 @@
 					<li><div class="valign-center">
 							<a id="home" th:href="@{/home}"><i class="fas fa-home fa-3x mx-2"></i><span th:text="#{commerce.home.link.home}">Home</span></a>
 						</div></li>
-					<li><a id="sales" th:href="@{/pos/open_store}"><i class="fas fa-cart-plus fa-3x mx-2" data-fa-transform="flip-h"></i><span
-							th:text="#{commerce.home.menu.sale}">Sale</span></a></li>
+					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#pos" id="posmenu" class="dropdown-toggle offcanvas"
+						data-toggle="dropdown"><i class="fas fa-shopping-cart fa-3x mx-2" data-fa-transform="flip-h"></i><span th:text="#{commerce.home.menu.pos}">Point of Sales</span></a>
+						<ul class="dropdown-menu animated fadeInLeft" role="menu">
+							<li><a id="sales" th:href="@{/pos/sale}"><i class="fas fa-cart-plus fa-3x mx-2" data-fa-transform="flip-h"></i><span
+									th:text="#{commerce.home.menu.sale}">Sale Transaction</span></a></li>
+							<li><a id="returns" th:href="@{/pos/return_txn}"> <span class="fa-layers fa-fw fa-3x mx-2"> <i
+										class="fas fa-shopping-cart" data-fa-transform="flip-H"></i> <i class="fas fa-minus-circle icon-blue-theme"
+										data-fa-transform="shrink-10 right--2 up-2"></i>
+								</span> <span th:text="#{commerce.home.menu.return}">Return Transaction</span></a></li>
+						</ul></li>
 					<li class="dropdown" sec:authorize="hasAuthority('ADMIN')"><a href="#order" id="ordermenu" class="dropdown-toggle offcanvas"
 						data-toggle="dropdown"><i class="far fa-file-powerpoint fa-3x mx-3"></i><span th:text="#{commerce.home.menu.order}">Purchase Order</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
@@ -102,8 +110,8 @@
 						data-toggle="dropdown"><i class="far fa-clipboard fa-3x mx-3"></i><span th:text="#{commerce.home.menu.inventory}">Inventory
 								Adjustment</span></a>
 						<ul class="dropdown-menu animated fadeInLeft" role="menu">
-							<li><a id="manageinventory" th:href="@{/admin/manage_inv_adjust}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
-											class="far fa-clipboard"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+							<li><a id="manageinventory" th:href="@{/admin/manage_inv_adjust}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw">
+											<i class="far fa-clipboard"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
 									</span>
 								</span><span th:text="#{commerce.home.menu.search.inventory}">Search Inventory Adjustment</span></a></li>
 							<li><a id="addinventory" th:href="@{/admin/add_inv_adjust}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
@@ -122,7 +130,8 @@
 											class="fas fa-user-secret"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
 									</span>
 								</span><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a></li>
-							<li><a id="manageaddress" th:href="@{/manage_address}"><i class="fas fa-key fa-2x mr-2"></i><span th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a></li>
+							<li><a id="manageaddress" th:href="@{/manage_address}"><i class="fas fa-key fa-2x mr-2"></i><span
+									th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a></li>
 							<li><a id="managecard" th:href="@{/manage_card}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
 											class="far fa-credit-card"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
 									</span>

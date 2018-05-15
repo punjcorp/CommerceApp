@@ -31,13 +31,12 @@ $(function() {
 					response($.map(data, function(item) {
 						var dataVal = "<small>" + item.itemId + "-" + item.name + "</small>";
 						var descVal = item.name;
-						
 						var finalItemPic='';
 						if(item.imageType && item.imageType.length>0)
 							finalItemPic='data:'+item.imageType+';base64,'+item.baseEncodedImage;
 						else
 							finalItemPic='/images/item_image_default_200.png';
-						
+
 						return {
 							label : dataVal,
 							value : item.itemId,
@@ -60,7 +59,7 @@ $(function() {
 	});
 
 	$('#btnTenderOK').click(function() {
-		if (txnAction.tenderLineItem.validateTenderLineItem()) {
+		if (txnAction.tenderLineItem.validateReturnTenderLineItem()) {
 			txnAction.processTender();
 		}
 	});
@@ -80,7 +79,15 @@ $(function() {
 	
 	$('#btnViewTxnReceipt').click(function() {
 		viewTxnReceipt();
-	});			
+	});		
+	
+	$('#dueAmt').change(function() {
+		var dueAmt=+$('#dueAmt').val();
+		if(dueAmt>0){
+			dueAmt= dueAmt * -1;
+			$('#dueAmt').val(dueAmt.toFixed(2));
+		}				
+	});	
 	
 	 // use plugins and options as needed, for options, detail see
     // http://i18next.com/docs/
@@ -95,7 +102,8 @@ $(function() {
               sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
               sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
               sale_txn_validate_tender:'Please select tender for the payment',
-              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00'              
+              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00',              
+              return_txn_validate_amount_refund:'The refund amount should be more than 0.00'
           }
         },
         hi: {
@@ -118,16 +126,16 @@ $(function() {
 	
 	
     /*
-     * This section will register the shortcut keys for various functions on sale screen
-     */
+	 * This section will register the shortcut keys for various functions on sale screen
+	 */
     
-    //item search selection
+    // item search selection
     Mousetrap.bind('enter', function() { $('#searchText').focus(); });
-    //item qty selection
+    // item qty selection
     Mousetrap.bind('ctrl+q', function() { });
-    //item discount selection
+    // item discount selection
     Mousetrap.bind('ctrl+d', function() { });
-    //tender due text selection
+    // tender due text selection
     Mousetrap.bind('ctrl+enter', function() { $('#dueAmt').focus();});            
     // First tender selection - CASH
     Mousetrap.bind('ctrl+1', function() { });
@@ -193,6 +201,26 @@ function getItemDetails(event, ui) {
 function saleItemChanged(cntl) {
 	var itemId = cntl.id.replace(/[^0-9]/gi, '');
 
+	if(cntl.id.indexOf('li_qty')==0){
+		var qty=+$('#'+cntl.id).val();
+		if(qty && qty=='')
+			qty=0;
+		else if(qty>0)
+			qty=qty * -1;
+		
+		$('#'+cntl.id).val(qty);
+			
+	}else if(cntl.id.indexOf('li_discountAmt')==0){
+		var discountAmt=+$('#'+cntl.id).val();
+		if(discountAmt && discountAmt=='')
+			discountAmt=0;
+		else if(discountAmt>0)
+			discountAmt=discountAmt * -1;
+		
+		$('#'+cntl.id).val(discountAmt);
+	}
+	
+	
 	if (txnAction.reCalculateSaleItemAmounts(cntl, itemId)) {
 		this.reCalculateTenders();
 	}
@@ -205,7 +233,7 @@ function deleteTender(deleteIndex) {
 
 function reCalculateTenders() {
 	var totalDueAmt = +$('#hc_totalDueAmt').val();
-	txnAction.calculateDue(0.00, totalDueAmt, 'Cash');
+	/* txnAction.calculateDue(0.00, totalDueAmt, 'Cash'); */
 }
 
 
@@ -215,7 +243,7 @@ function deleteSaleItem(deleteItemId) {
 }
 
 function postTxnSave(data){
-	//Update the txn no after successful save
+	// Update the txn no after successful save
 	rcpt_txn_id= data.uniqueTxnNo;
 	rcpt_txn_no= data.txnNo;
 	rcpt_pdfBlob=data.pdfbytes;
@@ -232,7 +260,7 @@ function viewTxnReceipt(){
 }
 
 function startNewTxn(){
-	var newTxnURL=new_txn_prefix+'='+txn_registerId +'&regName='+txn_registerName;
+	var newTxnURL=new_txn_prefix;
 	window.location.href = newTxnURL;
 }
 
@@ -244,7 +272,7 @@ function printTxnReceipt(){
 	txnHeader.businessDate=txn_businessDate;
 	txnHeader.txnNo=rcpt_txn_no;
 
-	//The AJAX call for receipt printing
+	// The AJAX call for receipt printing
 	var token = $("meta[name='_csrf']").attr("content");
 	var formdata = JSON.stringify(txnHeader);
 	// AJAX call here and refresh the sell item page with receipt printing

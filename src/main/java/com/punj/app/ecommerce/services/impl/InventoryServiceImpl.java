@@ -226,7 +226,6 @@ public class InventoryServiceImpl implements InventoryService {
 			stockReason = this.stockReasonRepository.findOne(Example.of(stockReason));
 
 			itemStockJournal.setReasonCode(stockReason);
-
 			itemStockJournal = this.itemStockJournalRepository.save(itemStockJournal);
 
 			this.updateItemStockAndBuckets(itemStockJournal);

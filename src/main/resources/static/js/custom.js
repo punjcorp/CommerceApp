@@ -2,6 +2,7 @@
  * This file contains all the custom JS code for commerce website
  */
 var menuStatus = 0;
+var posmenuStatus = 0;
 var financemenuStatus = 0;
 var accountmenuStatus = 0;
 var suppliermenuStatus = 0;
@@ -12,6 +13,7 @@ var lookupmenuStatus = 0;
 var pricemenuStatus = 0;
 
 function resetAllMenus() {
+	posmenuStatus = 0;
 	financemenuStatus = 0;
 	accountmenuStatus = 0;
 	suppliermenuStatus = 0;
@@ -67,7 +69,14 @@ $(document).ready(
 						if (menuStatus == 0) {
 							$('#wrapper').toggleClass('toggled');
 						}
-
+						if (this.id == 'posmenu') {
+							if (posmenuStatus == 0) {
+								resetAllMenus();
+								posmenuStatus = 1;
+							} else {
+								resetAllMenus();
+							}
+						}
 						if (this.id == 'suppliermenu') {
 							if (suppliermenuStatus == 0) {
 								resetAllMenus();
@@ -134,8 +143,8 @@ $(document).ready(
 							}
 						}
 
-						menuStatus = financemenuStatus + accountmenuStatus + suppliermenuStatus + stylemenuStatus + ordermenuStatus + inventorymenuStatus
-								+ lookupmenuStatus + pricemenuStatus;
+						menuStatus = posmenuStatus + financemenuStatus + accountmenuStatus + suppliermenuStatus + stylemenuStatus + ordermenuStatus
+								+ inventorymenuStatus + lookupmenuStatus + pricemenuStatus;
 						if (menuStatus < 1) {
 							$('#wrapper').toggleClass('toggled');
 						}

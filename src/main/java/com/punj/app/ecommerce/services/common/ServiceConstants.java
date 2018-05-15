@@ -60,6 +60,7 @@ public final class ServiceConstants {
 
 	public static final String SKU_CREATION_FUNCTIONALITY = "SKU_CREATION";
 	public static final String SALE_TXN_FUNCTIONALITY = "SALE_TXN";
+	public static final String RETURN_TXN_FUNCTIONALITY = "RETURN_TXN";
 	public static final String RECEIVE_ORDER_FUNCTIONALITY = "RECEIVE_ORDER";
 	public static final String STOCK_ADJUSTMENT_FUNCTIONALITY = "STOCK_ADJUSTMENT";
 

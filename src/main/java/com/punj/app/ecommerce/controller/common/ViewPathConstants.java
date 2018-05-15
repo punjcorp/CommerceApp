@@ -211,6 +211,10 @@ public final class ViewPathConstants {
 	public static final String SALES_PAGE="sale/sales";
 	public static final String AUTO_ITEM_PAGE="sale/auto_item";
 	
+	public static final String RETURN_TXN_URL="/pos/return_txn";
+	public static final String RETURN_TXN_PAGE="return/return_txn";
+	
+	
 	public static final String SKU_LOOKUP_URL="/sku_lookup";
 	public static final String SALEITEM_LOOKUP_URL="/sale_item_lookup";
 	
@@ -235,6 +239,7 @@ public final class ViewPathConstants {
 	 * The Transction section starts
 	 */
 	public static final String TXN_SAVE_URL="/pos/save_txn";
+	public static final String RETURN_TXN_SAVE_URL="/pos/save_return_txn";
 	public static final String TXN_RCPT_PRINT_URL="/pos/receipt_print";
 	public static final String TXN_RCPT_VIEW_URL="/pos/view_last_receipt";
 	public static final String TXN_POST_VOID_URL="/pos/post_void_txn";

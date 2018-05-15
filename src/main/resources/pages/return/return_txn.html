@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.return.add.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<th:block th:replace="common/header:: header"></th:block>
+<!-- Enable the auto complete item lookup-->
+<script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../static/js/i18next.min.js" th:src="@{/js/i18next.min.js}"></script>
+<script src="../../static/js/jquery-i18next.min.js" th:src="@{/js/jquery-i18next.min.js}"></script>
+<script src="../../js/moment.js" th:src="@{/js/moment.js}"></script>
+<script src="../../js/sale/mousetrap.min.js" th:src="@{/js/mousetrap.min.js}"></script>
+<script src="../../js/transaction/txn_classes.js" th:src="@{/js/transaction/txn_classes.js}"></script>
+<script src="../../js/return/return_txn.js" th:src="@{/js/return/return_txn.js}"></script>
+<script src="../../js/return/return.js" th:src="@{/js/return/return.js}"></script>
+<link href="../../static/css/box_radio.css" th:href="@{/css/box_radio.css}" rel="stylesheet" />
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/pos_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="row m-3">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<div class="card-text">
+								<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+								<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+								<form id="autoCompleteForm" action="#" th:action="@{/sku_lookup}" th:object="${searchBean}" method="post">
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<div class="input-group text-left">
+													<div class="input-group-prepend">
+														<span class="input-group-text"><i class="fas fa-barcode"></i></span>
+													</div>
+													<input type="text" th:field="*{searchText}" class="form-control input-sm"></input>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+								<div id="result" class="col-12">
+									<div class="row">
+										<div class="col-3">
+											<span th:text="#{commerce.screen.sale.item.details}"></span>
+										</div>
+										<div class="col padding-sm">
+											<span th:text="#{commerce.screen.sale.item.qty}"></span>
+										</div>
+										<div class="col">
+											<span th:text="#{commerce.screen.sale.item.price}"></span>
+										</div>
+										<div class="col">
+											<span th:text="#{commerce.screen.sale.item.discount}"></span>
+										</div>
+										<div class="col-2 text-center">
+											<span th:text="#{commerce.screen.sale.item.tax}"></span>
+										</div>
+										<div class="col-2">
+											<span th:text="#{commerce.screen.sale.item.total}"></span>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-3"></div>
+										<div class="col"></div>
+										<div class="col"></div>
+										<div class="col"></div>
+										<div class="col-1 padding-sm">
+											<span th:text="#{commerce.screen.sale.item.sgst}"></span>
+										</div>
+										<div class="col-1 padding-sm">
+											<span th:text="#{commerce.screen.sale.item.cgst}"></span>
+										</div>
+										<div class="col-2"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-4">
+					<div class="border-box-filled">
+						<div class="row ">
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.common.date.business}">Business Date</span></small></label> <input type="hidden"
+										th:field="${txnHeaderBean.businessDate}"></input>
+									<div class="input-group text-left">
+										<label><h5>
+												<span th:text="${{txnHeaderBean.businessDate}}">Business Date</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.common.location}">Location</span></small></label>
+									<div class="input-group text-left">
+										<label><h5>
+												<input type="hidden" th:field="${txnHeaderBean.locationId}"></input> <input type="hidden" th:field="${txnHeaderBean.locationName}"></input>
+												<span th:text="${txnHeaderBean.locationId}">Location Id</span> - <span th:text="${txnHeaderBean.locationName}"></span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row ">
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.common.register}">Register</span></small></label>
+									<div class="input-group text-left">
+										<label><h5>
+												<span th:text="${txnHeaderBean.registerId}">Register#</span> - <span th:text="${txnHeaderBean.registerName}">Register Name</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.common.operator}">Operator's Name</span></small></label>
+									<div class="input-group text-left">
+										<label><h5>
+												<span th:text="${#authentication.getPrincipal().getUsername()}"></span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row ">
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.sale.amount.subtotal}">Subtotal</span></small></label>
+									<div class="input-group text-left">
+										<input type="hidden" id="hc_totalSubAmt"></input> <label><h5>
+												<span id="salesHeaderSubTotalAmt"><span th:text="#{commerce.screen.common.currency.inr}"></span> 0.00</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.sale.amount.discount}">Total Discount</span></small></label>
+									<div class="input-group text-left">
+										<input type="hidden" id="hc_totalDiscountAmt"></input> <label><h5>
+												<span id="salesHeaderDiscountAmt"><span th:text="#{commerce.screen.common.currency.inr}"></span> 0.00</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row ">
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.sale.amount.tax}">Total Tax</span></small></label>
+									<div class="input-group text-left">
+										<input type="hidden" id="hc_totalTaxAmt"></input> <label><h5>
+												<span id="salesHeaderTaxAmt"><span th:text="#{commerce.screen.common.currency.inr}"></span> 0.00</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.sale.amount.total}">Total Amount</span></small></label>
+									<div class="input-group text-left">
+										<input type="hidden" id="hc_totalDueAmt"></input> <label><h5>
+												<span id="salesHeaderTotalAmt"><span th:text="#{commerce.screen.common.currency.inr}"></span> 0.00</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- This section is for the tender line items based on selected tenders-->
+					<div class="border-box-filled-light d-none" id="tenderLineItemContainer"></div>
+					<!-- This section is for the due amount and payment methods -->
+					<div class="border-box-filled">
+						<div class="row ">
+							<div class="col">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.sale.amount.due}" id="lbl_tenderDue">Total Due</span></small></label>
+									<div class="input-group text-left">
+										<div class="input-group-prepend">
+											<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+										</div>
+										<input type="number" min="0" step="0.01" class="form-control form-control-sm text-right" id="dueAmt" data-toggle="tooltip"
+											th:placeholder="#{commerce.screen.sale.amount.due.placeholder}"></input>
+										<div class="input-group-append">
+											<button class="btn btn-success" id="btnTenderOK" type="button">
+												<i class="fas fa-check"></i>
+											</button>
+											<button class="btn btn-success d-none" id="btnCompleteTxn" type="button" th:text="#{commerce.screen.sale.complete}"></button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-4 d-none" id="tenderChangeDueCol">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.common.tender.change}">Change Due</span></small></label>
+									<div class="input-group text-left">
+										<input type="hidden" id="hc_changeDueAmt"></input> <label><h5>
+												<span id="tenderChangeDueAmt"><span th:text="#{commerce.screen.common.currency.inr}"></span> 0.00</span>
+											</h5></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="box-radio-parent">
+									<th:block th:each="tenderBean,itrStat:${tenders}">
+										<input type="hidden" th:id="${tenderBean.tenderId+'tenderName'}" th:value="${tenderBean.name}"></input>
+										<input type="hidden" th:id="${tenderBean.tenderId+'tenderType'}" th:value="${tenderBean.tndrType}"></input>
+										<th:block th:if="${tenderBean.name =='Change'}">
+											<input type="hidden" id="hc_changeTenderId" th:value="${tenderBean.tenderId}"></input>
+										</th:block>
+										<th:block th:unless="${tenderBean.name =='Change'}">
+											<label> <input type="radio" name="tenderRadio" id="tenderRadio" th:value="${tenderBean.tenderId}"
+												th:checked="${txnHeaderBean.defaultTender==tenderBean.tndrType}"></input>
+												<div class="sm-btn">
+													<div class="box-text">
+														<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
+															th:if="${tenderBean.name=='Credit Card'}"><i class="fas fa-credit-card fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paypal'}"><i
+															class="fab fa-paypal fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paytm'}"><img th:src="@{/images/paytm_sm.png}"></img> </span> <span
+															th:if="${tenderBean.name=='Cheque'}"><i class="fas fa-id-card fa-4x"></i> </span>
+													</div>
+												</div>
+											</label>
+										</th:block>
+									</th:block>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var txn_locationId = /*[[${txnHeaderBean.locationId}]]*/;
+		var txn_registerId = /*[[${txnHeaderBean.registerId}]]*/;
+		var txn_registerName = /*[[${txnHeaderBean.registerName}]]*/;
+		
+		var txn_user = /*[[${#authentication.getPrincipal().getUsername()}]]*/;
+		var txn_businessDate = /*[[${{txnHeaderBean.businessDate}}]]*/;
+		var tndr_change_id=$('#hc_changeTenderId').val();
+		var receipt_file_prefix= /*[[@{/output/receipts/}]]*/;
+		var new_txn_prefix= /*[[@{/pos/return_txn}]]*/;
+		
+		var print_rcpt_url= /*[[@{/pos/receipt_print}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
+		var view_rcpt_url= /*[[@{/pos/view_last_receipt}]]*/;
+		var rcpt_txn_id= '';
+		var rcpt_txn_no= '';
+		var current_locale= /*[[${#locale.language}]]*/;
+		
+		var txn_type='R';
+		
+		/*]]>*/
+	</script>
+	<!-- Item Lookup Modal -->
+	<div class="modal fade " id="txnReceiptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.sale.receipt.print}"> Item Look up</span>
+					</h5>
+				</div>
+				<div class="modal-body text-center">
+					<div id="receiptActions" class="col-12 text-center">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewTxnReceipt">
+							<i class="fas fa-receipt fa-5x"></i>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewTxn">
+							<i class="fas fa-print fa-5x"></i>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewTxn">
+							<span class="fa-layers fa-fw fa-5x"> <i
+										class="fas fa-shopping-cart" data-fa-transform="flip-H"></i> <i class="fas fa-minus-circle icon-blue-theme"
+										data-fa-transform="shrink-10 right--2 up-2"></i>
+								</span>
+						</button>
+					</div>
+					<div class="col-12 d-none text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-9x"></i>
+						<div>
+							<span th:text="#{commerce.screen.sale.receipt.generate}"></span>
+						</div>
+					</div>
+					<iframe id="receiptPDFContainer" class="p-5" width="90%" height="90%" frameBorder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

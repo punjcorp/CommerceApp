@@ -36,7 +36,7 @@ import com.punj.app.ecommerce.services.common.CommonService;
  */
 @Controller
 @EnableAutoConfiguration
-public class SaleItemSearchController {
+public class SaleTransactionController {
 	private static final Logger logger = LogManager.getLogger();
 	private CommonService commonService;
 	private CommerceContext commerceContext;
@@ -62,7 +62,9 @@ public class SaleItemSearchController {
 	@GetMapping(ViewPathConstants.POS_URL)
 	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req) {
 		try {
-			this.updateBeans(model, session, req);
+			String forwardURL = this.updateBeans(model, session, req);
+			if (StringUtils.isNotEmpty(forwardURL))
+				return forwardURL;
 			logger.info("The sale screen is ready for display now");
 		} catch (Exception e) {
 			logger.error("There is an error while showing the new sale screen", e);
@@ -72,54 +74,64 @@ public class SaleItemSearchController {
 	}
 
 	/**
-	 * This method is to set all the bean objects in model needed for the sale screen functionalities
+	 * This method is to set all the bean objects in model needed for the return screen functionalities
 	 * 
 	 */
-	private void updateBeans(Model model, final HttpSession session, final HttpServletRequest req) {
+	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 
-		String registerIdValue=req.getParameter(MVCConstants.REGISTER_ID_PARAM);
-		Integer registerId = null;
-		String registerName = null;
-	
-		if(StringUtils.isEmpty(registerIdValue)) {
-			registerId=(Integer)session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
-			registerName=(String)session.getAttribute(MVCConstants.REG_NAME_PARAM);
-		}
-		else {
-			registerId =new Integer(registerIdValue);
-			registerName=req.getParameter(MVCConstants.REG_NAME_PARAM);
-			session.setAttribute(MVCConstants.REGISTER_ID_PARAM, registerId);
-			session.setAttribute(MVCConstants.REG_NAME_PARAM, registerName);
-		}
-
-		Integer openLocId=null;
+		Integer openLocId = null;
 		SaleHeaderBean saleHeaderBean = new SaleHeaderBean();
 		Object openLocationId = commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 		if (openLocationId != null) {
-			openLocId=(Integer)openLocationId;
+			openLocId = (Integer) openLocationId;
 			saleHeaderBean.setLocationId(openLocId);
-		}
 
-		Object openLocationName = commerceContext.getStoreSettings(openLocId+"-"+CommerceConstants.OPEN_LOC_NAME);
-		Object openBusinessDate = commerceContext.getStoreSettings(openLocId+"-"+CommerceConstants.OPEN_BUSINESS_DATE);
-		Object defaultTender = commerceContext.getStoreSettings(openLocId+"-"+CommerceConstants.LOC_DEFAULT_TENDER);
-		if (openLocationName != null)
-			saleHeaderBean.setLocationName((String) openLocationName);
-		if (openBusinessDate != null)
-			saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
-		if(defaultTender!=null) {
-			saleHeaderBean.setDefaultTender((String)defaultTender);
-		}
-		
-		List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
-		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+			String registerIdValue = req.getParameter(MVCConstants.REGISTER_ID_PARAM);
+			Integer registerId = null;
+			String registerName = null;
 
-		saleHeaderBean.setRegisterId(registerId);
-		saleHeaderBean.setRegisterName(registerName);
-		model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
-		logger.info("All the needed beans for sales screen has been set in the model");
+			if (StringUtils.isEmpty(registerIdValue)) {
+				registerId = (Integer) session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
+				registerName = (String) session.getAttribute(MVCConstants.REG_NAME_PARAM);
+			} else {
+				registerId = new Integer(registerIdValue);
+				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
+				session.setAttribute(MVCConstants.REGISTER_ID_PARAM, registerId);
+				session.setAttribute(MVCConstants.REG_NAME_PARAM, registerName);
+			}
+
+			if (registerId != null) {
+				Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
+				Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+				Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+				if (openLocationName != null)
+					saleHeaderBean.setLocationName((String) openLocationName);
+				if (openBusinessDate != null)
+					saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
+				if (defaultTender != null) {
+					saleHeaderBean.setDefaultTender((String) defaultTender);
+				}
+
+				List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
+				model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+
+				saleHeaderBean.setRegisterId(registerId);
+				saleHeaderBean.setRegisterName(registerName);
+				model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
+				logger.info("All the needed beans for return transaction screen has been set in the model");
+
+			} else {
+				logger.info("There is no open store existing as per this session, routing to register open screen");
+				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
+			}
+		} else {
+			logger.info("There is no open store existing as per application context, routing to store open screen");
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
+		}
+		return null;
+
 	}
 
 	private List<TenderBean> retrieveValidTenders(Integer locationId) {

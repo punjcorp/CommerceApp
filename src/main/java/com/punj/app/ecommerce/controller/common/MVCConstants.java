@@ -37,6 +37,7 @@ public final class MVCConstants {
 	
 	
 	public static final String TXN_SALE_PARAM="SALE";
+	public static final String TXN_RETURN_PARAM="RETURN";
 
 	public static final Integer STYLE_LEVEL=1;
 	public static final Integer ITEM_LEVEL=2;
@@ -168,6 +169,7 @@ public final class MVCConstants {
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
+	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
 	public static final String TENDER_BEANS= "tenders";
 	public static final String REASON_CODES= "reasonCodes";

@@ -235,7 +235,7 @@ public class TransactionServiceImpl implements TransactionService {
 		Transaction txnDetails = txnDTO.getTxn();
 		Transaction txnHeader = this.saveTransaction(txnDetails);
 		if (txnHeader != null) {
-			logger.info("The sale transaction header details has been saved successfully");
+			logger.info("The {} transaction header details has been saved successfully", txnHeader.getTxnType());
 			txnId = txnHeader.getTransactionId();
 			Boolean txnLISaveResult = this.saveTransactionLineItems(txnDTO, txnId);
 			if (!txnLISaveResult) {
@@ -243,7 +243,7 @@ public class TransactionServiceImpl implements TransactionService {
 			}
 			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getCreatedBy());
 			this.inventoryService.updateInventory(itemStockDetails);
-			logger.info("The inventory updates for the sale items has been posted successfully");
+			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());
 		} else {
 			logger.info("There is some issue while saving sale transaction header details");
 		}
@@ -396,6 +396,7 @@ public class TransactionServiceImpl implements TransactionService {
 		ItemStockJournal itemStockJournal = null;
 		Item item = null;
 
+		int itemQty=0;
 		for (SaleLineItem saleLineItem : saleLineItems) {
 			itemStockJournal = new ItemStockJournal();
 			itemStockJournal.setCreatedBy(username);
@@ -407,12 +408,19 @@ public class TransactionServiceImpl implements TransactionService {
 			item.setItemId(saleLineItem.getSaleLineItemId().getItemId());
 			itemStockJournal.setItemId(item.getItemId());
 
+			itemQty=saleLineItem.getQty().intValue();
 			StockReason stockReason = new StockReason();
-			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKOUT);
+			if(itemQty<0) {
+				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
+				itemStockJournal.setFunctionality(ServiceConstants.RETURN_TXN_FUNCTIONALITY);
+			}
+			else {
+				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKOUT);
+				itemStockJournal.setFunctionality(ServiceConstants.SALE_TXN_FUNCTIONALITY);
+			}
+			
 			itemStockJournal.setReasonCode(stockReason);
-
-			itemStockJournal.setFunctionality(ServiceConstants.SALE_TXN_FUNCTIONALITY);
-			itemStockJournal.setQty(saleLineItem.getQty().intValue());
+			itemStockJournal.setQty(itemQty);
 
 			itemStockDetails.add(itemStockJournal);
 		}

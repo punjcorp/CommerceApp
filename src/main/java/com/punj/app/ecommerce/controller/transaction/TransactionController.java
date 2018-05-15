@@ -131,6 +131,30 @@ public class TransactionController {
 
 	}
 
+	@PostMapping(value = ViewPathConstants.RETURN_TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	@Transactional
+	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale) {
+		TransactionDTO txnDTO = TransactionTransformer.transformReturnTransaction(saleTxn);
+		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
+		SaleTransactionReceipt txnReceipt = null;
+		if (txnId != null) {
+			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
+			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale,txnId);
+
+		}
+
+		if (txnReceipt != null) {
+			logger.info("The txn details has been saved successfully");
+			return txnReceipt.getTransactionHeader();
+		} else {
+			logger.info("There was some error while saving transaction details");
+			return null;
+		}
+
+	}	
+	
+	
 	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,TransactionId txnId ) {
 		SaleTransactionReceipt txnReceipt = null;
 		try {

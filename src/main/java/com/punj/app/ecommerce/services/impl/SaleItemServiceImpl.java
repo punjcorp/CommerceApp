@@ -138,7 +138,8 @@ public class SaleItemServiceImpl implements SaleItemService {
 		saleItem.setItemId(item.getItemId());
 		saleItem.setName(item.getName());
 		saleItem.setLongDesc(item.getDescription());
-		saleItem.setImagePath(item.getImages().get(0).getImageURL());
+		if(item.getImages()!=null && !item.getImages().isEmpty())
+			saleItem.setImagePath(item.getImages().get(0).getImageURL());
 
 		saleItem.setUnitCostAmt(item.getItemOptions().getUnitCost());
 

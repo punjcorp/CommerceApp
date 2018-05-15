@@ -9,7 +9,6 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -167,20 +166,21 @@ public class DailyDeedController {
 	}
 
 	private void updateCommerceContext(DailyDeedBean dailyDeedBean) {
-		Integer locationId=dailyDeedBean.getLocationId();
+		Integer locationId = dailyDeedBean.getLocationId();
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
-		commerceContext.setStoreSettings(locationId+"-"+CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
-		commerceContext.setStoreSettings(locationId+"-"+CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
-		//Get this from selected location later on
-		commerceContext.setStoreSettings(locationId+"-"+CommerceConstants.LOC_DEFAULT_TENDER,dailyDeedBean.getDefaultTender()); //MVCConstants.TNDR_CASH
+		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
+		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
+		// Get this from selected location later on
+		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER, dailyDeedBean.getDefaultTender()); // MVCConstants.TNDR_CASH
 
 		logger.info("All the store open details has been updated in commerce app context now");
 
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
-	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request) {
+	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean,
+			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs,
+			HttpServletRequest request) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
@@ -299,10 +299,25 @@ public class DailyDeedController {
 	public String showOpenRegisterScreen(final HttpServletRequest req, Model model, Locale locale) {
 		logger.info("The show store open screen method has been called when store is already open");
 		try {
-			Integer locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
-			String locationName = req.getParameter(MVCConstants.LOC_NAME_PARAM);
-			String defaultTender = req.getParameter(MVCConstants.DEFAULT_TENDER_PARAM);
-			LocalDateTime businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
+			Integer locationId = null;
+			String locationName = null;
+			String defaultTender = null;
+			LocalDateTime businessDate = null;
+
+			Object locIdObj = (Object) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+			if (locIdObj != null) {
+				locationId = (Integer) locIdObj;
+				locationName = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME);
+				businessDate = (LocalDateTime) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+				defaultTender = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+			} else {
+				locationId = new Integer(req.getParameter(MVCConstants.LOCATION_ID_PARAM));
+				locationName = req.getParameter(MVCConstants.LOC_NAME_PARAM);
+				defaultTender = req.getParameter(MVCConstants.DEFAULT_TENDER_PARAM);
+				businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
+
+			}
+
 			if (businessDate != null) {
 
 				Transaction txnDetails = this.txnService.searchLocationOpenTxn(locationId, businessDate);
@@ -427,8 +442,8 @@ public class DailyDeedController {
 	}
 
 	@PostMapping(value = ViewPathConstants.REGISTER_OPEN_URL, params = { MVCConstants.OPEN_REGISTER_PARAM })
-	public String processOpenRegisterDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupRegOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication, HttpSession session) {
+	public String processOpenRegisterDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupRegOpen.class) DailyDeedBean dailyDeedBean,
+			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, HttpSession session) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
 			this.updateBeansForRegisterOpen(dailyDeedBean, model);
