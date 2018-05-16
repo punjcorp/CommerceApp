@@ -67,9 +67,7 @@ $(function() {
 		if (validateExpenseDetails()) {
 			readExpenseDetails();
 			expense.saveExpense();
-		} else {
-			alert('the validation is working now');
-		}
+		} 
 	});
 
 });

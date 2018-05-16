@@ -39,11 +39,10 @@
 												<label><small><span class="pos-mandatory" th:text="#{commerce.screen.expense.type}">Expense Type</span></small></label>
 												<div class="input-group text-left">
 													<div class="input-group-prepend">
-														<span class="input-group-text"><div class="fa-2x">
-																<span class="fa-layers fa-fw"> <i class="fas fa-rupee-sign"></i> <i class="fas fa-arrow-right"
-																	data-fa-transform="shrink-10 right-8 bottom-1"></i>
-																</span>
-															</div></span>
+														<span class="input-group-text"> <span class="fa-layers fa-fw fa-2x"> <i class="fas fa-rupee-sign"></i> <i
+																class="fas fa-arrow-right" data-fa-transform="shrink-10 right-8 bottom-1"></i>
+														</span>
+														</span>
 													</div>
 													<input type="text" th:field="*{expenseType}" class="form-control input-sm"></input> <input type="hidden" th:field="*{expenseId}"
 														class="form-control input-sm"></input>
@@ -71,15 +70,9 @@
 											</div>
 										</div>
 										<div class="col-6">
-											<div class="form-group">
-												<label><small><span th:text="#{commerce.screen.expense.total.amount}">Total Amount</span></small></label>
-												<div class="input-group text-left">
-													<label><h3>
-															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="totalAmount"> 0.00</span> <input type="hidden"
-																th:field="*{expenseAmount}"></input>
-														</h3></label>
-												</div>
-											</div>
+										
+										
+										
 										</div>
 									</div>
 									<div class="row">
@@ -107,7 +100,6 @@
 							</div>
 						</div>
 						<!-- Expense details Section Ends -->
-						<div class="border-box-filled-light d-none" id="tenderLineItemContainer"></div>
 						<!-- Expense Tenders Section Starts -->
 						<div class="card">
 							<div class="card-body">
@@ -215,7 +207,74 @@
 						</div>
 						<!-- Expense Tender Section Ends -->
 					</div>
-					<div class="col-4"></div>
+					<div class="col-4">
+						<!-- Expense Header starts -->
+						<div class="border-box-filled">
+							<div class="row ">
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.common.date.business}">Business Date</span></small></label> <input type="hidden"
+											th:field="${expenseBean.businessDate}"></input>
+										<div class="input-group text-left">
+											<label><h5>
+													<span th:text="${{expenseBean.businessDate}}">Business Date</span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.common.location}">Location</span></small></label>
+										<div class="input-group text-left">
+											<label><h5>
+													<input type="hidden" th:field="${expenseBean.locationId}"></input> <input type="hidden" th:field="${expenseBean.locationName}"></input> <span
+														th:text="${expenseBean.locationId}">Location Id</span> - <span th:text="${expenseBean.locationName}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row ">
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.common.register}">Register</span></small></label>
+										<div class="input-group text-left">
+											<label><h5>
+													<span th:text="${expenseBean.registerId}">Register#</span> - <span th:text="${expenseBean.registerName}">Register Name</span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.common.operator}">Operator's Name</span></small></label>
+										<div class="input-group text-left">
+											<label><h5>
+													<span th:text="${#authentication.getPrincipal().getUsername()}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row ">
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.expense.total.amount}">Total Amount</span></small></label>
+										<div class="input-group text-left">
+											<label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="totalAmount"> 0.00</span> <input type="hidden"
+														th:field="*{expenseAmount}"></input>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-6"></div>
+							</div>
+						</div>
+						<!-- Expense Header ends -->
+						<!-- This is to show the selected tender values -->
+						<div class="border-box-filled-light d-none" id="tenderLineItemContainer"></div>
+					</div>
 				</div>
 			</form>
 		</div>

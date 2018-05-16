@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,27 +101,46 @@ public class ExpenseController {
 	}
 
 	@GetMapping(value = ViewPathConstants.TXN_EXPENSE_URL)
-	public String processExpenseType(Model model , HttpSession session) {
+	public String processExpenseType(Model model, HttpSession session) {
 		ExpenseBean expenseBean = new ExpenseBean();
 
 		Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-		LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
-		Integer registerId= (Integer) session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
-		
-		expenseBean.setBusinessDate(openBusinessDate);
-		expenseBean.setLocationId(openLocationId);
-		expenseBean.setRegisterId(registerId);
-		
-		List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
 
-		String defaultTender = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-		expenseBean.setDefaultTender(defaultTender);
+		if (openLocationId!=null) {
+			
+			Integer registerId = (Integer) session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
+			
+			if (registerId!=null) {
+				
+				List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
+				
+				Object openLocationName = commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_LOC_NAME);
+				LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+				
+				String defaultTender = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+				String registerName = (String) session.getAttribute(MVCConstants.REG_NAME_PARAM);
+				
+				expenseBean.setDefaultTender(defaultTender);
+				expenseBean.setBusinessDate(openBusinessDate);
+				expenseBean.setLocationId(openLocationId);
+				expenseBean.setRegisterId(registerId);
+				expenseBean.setRegisterName(registerName);
+				expenseBean.setLocationName((String) openLocationName);
+				
+				model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+				model.addAttribute(MVCConstants.EXPENSE_PARAM, expenseBean);
+				logger.info("The expense screen is ready for the display");
+				return ViewPathConstants.TXN_EXPENSE_PAGE;
+			} else {
+				logger.info("There is no open register existing as per this session, routing to register open screen");
+				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
+			}
 
-		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
-		model.addAttribute(MVCConstants.EXPENSE_PARAM, expenseBean);
+		} else {
+			logger.info("There is no open store existing as per application context, routing to store open screen");
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
+		}
 
-		logger.info("The expense screen is ready for the display");
-		return ViewPathConstants.TXN_EXPENSE_PAGE;
 	}
 
 	@PostMapping(value = ViewPathConstants.TXN_EXPENSE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })

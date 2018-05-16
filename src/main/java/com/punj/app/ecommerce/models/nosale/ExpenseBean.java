@@ -23,6 +23,9 @@ public class ExpenseBean {
 	private LocalDateTime businessDate;
 	@NotNull(message = "{commerce.error.item.empty}")
 	private Integer txnNo;
+	
+	private String locationName;
+	private String registerName;	
 
 	private Integer expenseId;
 	private String expenseType;
@@ -430,6 +433,34 @@ public class ExpenseBean {
 	 */
 	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
+	}
+
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+	/**
+	 * @param locationName the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+	/**
+	 * @return the registerName
+	 */
+	public String getRegisterName() {
+		return registerName;
+	}
+
+	/**
+	 * @param registerName the registerName to set
+	 */
+	public void setRegisterName(String registerName) {
+		this.registerName = registerName;
 	}
 
 }

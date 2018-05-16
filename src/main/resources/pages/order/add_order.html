@@ -63,6 +63,10 @@
 													<input type="hidden" th:field="*{order.supplierId}"></input> <input type="text" th:field="*{supplierSearch.searchText}"
 														class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.search.text}" placeholder="Enter keyword to search"
 														aria-describedby="searchHelp"></input>
+													<div class="input-group-append d-none" id="supplierSearchBusy">
+														<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
+														</span>
+													</div>														
 												</div>
 												<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.supplier.search.keywords}">Enter keywords like
 													id/Name/Email/Address/Phone#</small> <small th:if="${#fields.hasErrors('supplierSearch.searchText')}" th:errors="*{supplierSearch.searchText}"

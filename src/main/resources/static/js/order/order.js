@@ -22,15 +22,29 @@ var orderDTO = new Order();
 var searchBean = new SearchBean();
 var token = $("meta[name='_csrf']").attr("content");
 var targetItemIndex;
+var supplierChangeFlag='F';
 
 $(function() {
 
+	
+	$("#supplierSearch\\.searchText").change(function(){
+		
+		if(supplierChangeFlag=='F'){
+			$('#order\\.supplierId').val('');						
+			$('#supplierMsg').addClass('invalid-feedback');
+			$('#supplierMsg').html('<h6>Please enter a valid Supplier!</h6>');
+			$('#supplierMsg').show();
+		}
+	});
+	
+	
 	$("#supplierSearch\\.searchText").autocomplete({
-		minLength : 3,
+		minLength : 2,
 		source : function(request, response) {
+			$('#supplierSearchBusy').removeClass('d-none');
 			accountDTO.entityType = $("#supplierSearch\\.searchText").val();
 			var formdata = JSON.stringify(accountDTO);
-
+			supplierChangeFlag='T';
 			// AJAX call here and refresh the Expense Screen after the save
 			$.ajax({
 				url : '/admin/search_supplier',
@@ -40,37 +54,55 @@ $(function() {
 				contentType : "application/json; charset=utf-8",
 				dataType : "json",
 				success : function(suppliers) {
-					response($.map(suppliers, function(supplier) {
-						var dataVal = "" + supplier.name + "-( Ph- " + supplier.phone1 + " )";
-						var descVal = supplier.email;
-						return {
-							display : dataVal,
-							name : supplier.name,
-							phone : supplier.phone1,
-							phone2 : supplier.phone2,
-							supplierId : supplier.supplierId,
-							emailOrg : supplier.email,
-							email : descVal,
-							type : 'SUPPLIER',
-							addressId : supplier.primaryAddress.addressId,
-							addressType : supplier.primaryAddress.addressType,
-							address1 : supplier.primaryAddress.address1,
-							address2 : supplier.primaryAddress.address2,
-							city : supplier.primaryAddress.city,
-							state : supplier.primaryAddress.state,
-							country : supplier.primaryAddress.country,
-							pincode : supplier.primaryAddress.pincode
-						}
-					}));
-
-				},
+					$('#supplierSearchBusy').addClass('d-none');
+					if(!suppliers.length){
+						$('#order\\.supplierId').val('');						
+						$('#supplierMsg').addClass('invalid-feedback');
+						$('#supplierMsg').html('<h6>Please enter a valid Supplier!</h6>');
+						$('#supplierMsg').show();
+					}else{
+						$('#supplierMsg').hide();
+						
+						response($.map(suppliers, function(supplier) {
+							var dataVal = "" + supplier.name + "-( Ph- " + supplier.phone1 + " )";
+							var descVal = supplier.email;
+							return {
+								display : dataVal,
+								name : supplier.name,
+								phone : supplier.phone1,
+								phone2 : supplier.phone2,
+								supplierId : supplier.supplierId,
+								emailOrg : supplier.email,
+								email : descVal,
+								type : 'SUPPLIER',
+								addressId : supplier.primaryAddress.addressId,
+								addressType : supplier.primaryAddress.addressType,
+								address1 : supplier.primaryAddress.address1,
+								address2 : supplier.primaryAddress.address2,
+								city : supplier.primaryAddress.city,
+								state : supplier.primaryAddress.state,
+								country : supplier.primaryAddress.country,
+								pincode : supplier.primaryAddress.pincode
+							}
+						}));
+					}
+				},				
 				beforeSend : function(xhr) {
 					xhr.setRequestHeader('X-CSRF-TOKEN', token)
 				}
 			});
 
 		},
-
+		change: function (event, ui) {
+            if (ui.item == null || ui.item == undefined) {
+            	$('#order\\.supplierId').val('');						
+				$('#supplierMsg').addClass('invalid-feedback');
+				$('#supplierMsg').html('<h6>Please choose a valid Supplier from the list!</h6>');
+				$('#supplierMsg').show();
+            } else {
+            	$('#supplierMsg').hide();
+            }
+        },
 		select : function(event, ui) {
 			event.preventDefault();
 			if (ui.item) {

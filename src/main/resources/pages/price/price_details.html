@@ -4,8 +4,8 @@
 <meta th:name="_csrf" th:content="${_csrf.token}" />
 <meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="utf-8" />
-<title th:if="${ action!=null and action=='EDIT'}" th:text="#{commerce.screen.price.edit.title}"></title>
-<title th:if="${ action!=null and action=='NEW'}" th:text="#{commerce.screen.price.add.title}"></title>
+<title th:if="${ action!=null and (action=='EDIT' or action=='EDIT_SAVE' or action=='EDIT_APPROVE')}" th:text="#{commerce.screen.price.edit.title}"></title>
+<title th:if="${ action!=null and (action=='NEW' or action=='NEW_SAVE' or action=='NEW_APPROVE')}" th:text="#{commerce.screen.price.add.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <th:block th:replace="common/header:: header"></th:block>
 <!-- This thymeleaf fragment include the item lookup code-->
@@ -24,16 +24,19 @@
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<div class="card content-container">
 				<div class="card-header">
-					<h3 th:if="${ action!=null and action=='NEW'}" th:text="#{commerce.screen.price.add.header}">Create New Price for Style/Item</h3>
-					<h3 th:if="${ action!=null and action=='EDIT'}" th:text="#{commerce.screen.price.edit.header}">Modify Price for Style/Item</h3>
+					<h3 th:if="${ action!=null and (action=='NEW' or action=='NEW_SAVE' or action=='NEW_APPROVE')}" th:text="#{commerce.screen.price.add.header}">Create
+						New Price for Style/Item</h3>
+					<h3 th:if="${ action!=null and (action=='EDIT' or action=='EDIT_SAVE' or action=='EDIT_APPROVE')}" th:text="#{commerce.screen.price.edit.header}">Modify
+						Price for Style/Item</h3>
 				</div>
 				<div class="card-body">
 					<div class="card-text">
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-						<form id="addForm" action="#" th:action="${ action!=null and action=='NEW'}? @{/admin/add_price}:@{/admin/edit_price}" th:object="${priceBean}"
-							method="post">
-							<div class="row" th:if="${ action!=null and action=='EDIT'}">
+						<form id="addForm" action="#"
+							th:action="${ action!=null and (action=='NEW' or action=='NEW_SAVE' or action=='NEW_APPROVE')}? @{/admin/add_price}:@{/admin/edit_price}"
+							th:object="${priceBean}" method="post">
+							<div class="row" th:if="${ action!=null and (action=='EDIT' or action=='EDIT_SAVE' or action=='EDIT_APPROVE')}">
 								<div class="col-1">
 									<div class="form-group input-group text-right">
 										<label for="itemId"><small><span th:text="#{commerce.screen.common.id}"></span></small></label>
@@ -108,7 +111,8 @@
 									<div class="form-group">
 										<label for="startDate"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.date.start}">Start Date</span></small></label>
 										<div class="input-group text-left">
-											<input type="text" th:field="*{startDate}" class="form-control input-sm" data-input="data-input" th:placeholder="#{commerce.screen.common.date.start.placeholder}"></input>
+											<input type="text" th:field="*{startDate}" class="form-control input-sm" data-input="data-input"
+												th:placeholder="#{commerce.screen.common.date.start.placeholder}"></input>
 											<div class="input-group-append">
 												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="material-icons">done</i></a>
 											</div>
@@ -120,7 +124,8 @@
 									<div class="form-group">
 										<label for="endDate"><small><span th:text="#{commerce.screen.common.date.end}">End Date</span></small></label>
 										<div class="input-group text-left">
-											<input type="text" th:field="*{endDate}" class="form-control input-sm" data-input="data-input" th:placeholder="#{commerce.screen.common.date.end.placeholder}"></input>
+											<input type="text" th:field="*{endDate}" class="form-control input-sm" data-input="data-input"
+												th:placeholder="#{commerce.screen.common.date.end.placeholder}"></input>
 											<div class="input-group-append">
 												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="material-icons">done</i></a>
 											</div>
