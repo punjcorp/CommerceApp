@@ -12,6 +12,7 @@
 <th:block th:include="lookup/item_lookup :: itemlookup-scripts"></th:block>
 <link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
 <script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
+<script src="../../static/js/price/price.js" th:src="@{/js/price/price.js}"></script>
 </head>
 <body>
 	<div id="wrapper">
@@ -55,9 +56,10 @@
 									<div class="form-group">
 										<label for="itemId"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.style.item}">Style/Item</span></small></label>
 										<div class="input-group text-left">
-											<input type="hidden" th:field="*{itemPriceId}"></input> <input type="hidden" th:field="*{createdBy}"></input> <input type="hidden"
-												th:field="*{createdDate}"></input> <input type="text" th:field="*{itemId}" class="form-control input-sm"></input> <a data-toggle="modal"
-												data-target="#itemModal" class="nav-link" href="#"><i class="material-icons">search</i></a>
+											<input type="hidden" th:field="*{clearanceResetId}"></input> <input type="hidden" th:field="*{itemPriceId}"></input> <input type="hidden"
+												th:field="*{createdBy}"></input> <input type="hidden" th:field="*{createdDate}"></input> <input type="text" th:field="*{itemId}"
+												class="form-control input-sm"></input> <a data-toggle="modal" data-target="#itemModal" class="nav-link" href="#"><i
+												class="material-icons">search</i></a>
 										</div>
 										<small th:if="${#fields.hasErrors('itemId')}" th:errors="*{itemId}" class="text-danger align-top">Item Error </small>
 									</div>
@@ -87,13 +89,15 @@
 												<option value="1" th:text="#{commerce.screen.price.type.permanent}">Permanent</option>
 												<option value="2" th:text="#{commerce.screen.price.type.promotion}">Promotion</option>
 												<option value="3" th:text="#{commerce.screen.price.type.clearance}">Clearance</option>
+												<option value="4" th:text="#{commerce.screen.price.type.clearance.reset}">Clearance Reset</option>
 											</select>
 										</div>
-										<small th:if="${#fields.hasErrors('priceType')}" th:errors="*{priceType}" class="text-danger align-top">Price Type Error </small>
+										<small class="text-danger align-top d-none" id="priceTypeMsg"></small> <small th:if="${#fields.hasErrors('priceType')}"
+											th:errors="*{priceType}" class="text-danger align-top">Price Type Error </small>
 									</div>
 								</div>
 								<div class="col-6">
-									<div class="form-group">
+									<div th:class="${priceBean.priceType!=null and priceBean.priceType=='4'}?'form-group d-none':'form-group'" id="amtContainer">
 										<label for="itemPriceAmt"><small><span class="pos-mandatory" th:text="#{commerce.screen.price.item.price}">Item Price
 													Amount</span></small></label>
 										<div class="input-group text-left">
@@ -103,6 +107,33 @@
 											<input type="number" step="0.01" th:field="*{itemPriceAmt}" class="form-control input-sm pos-amount"></input>
 										</div>
 										<small th:if="${#fields.hasErrors('itemPriceAmt')}" th:errors="*{itemPriceAmt}" class="text-danger align-top">Item Price Error </small>
+									</div>
+									<div th:class="${priceBean.existingClearance!=null}?'row':'row d-none'" id="oldestClrContainer">
+										<div class="col">
+											<label><small><span th:text="#{commerce.screen.price.old.clearance.date}">Oldest Clearance Activation Date</span></small></label>
+											<div>
+												<h5>
+													<span id="oldClrDate" th:text="${priceBean.existingClearance.startDate}"> </span>
+												</h5>
+											</div>
+										</div>
+										<div class="col">
+											<label><small><span th:text="#{commerce.screen.price.old.clearance.amount}">Oldest Clearance Price</span></small></label>
+											<div>
+												<h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:text="' '"></span> <span id="oldClrPrice"
+														th:text="${priceBean.existingClearance.itemPriceAmt}">Oldest Clearance Price</span>
+												</h5>
+											</div>
+										</div>
+										<div class="col">
+											<label><small><span th:text="#{commerce.screen.price.old.clearance.created.by}">Oldest Clearance Created By</span></small></label>
+											<div>
+												<h5>
+													<span id="oldClrCreatedBy" th:text="${priceBean.existingClearance.createdBy}">Oldest Clearance Created By</span>
+												</h5>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -121,8 +152,9 @@
 									</div>
 								</div>
 								<div class="col-6">
-									<div class="form-group">
-										<label for="endDate"><small><span th:text="#{commerce.screen.common.date.end}">End Date</span></small></label>
+									<div th:class="${priceBean.priceType==null or priceBean.priceType=='' or priceBean.priceType=='2'}?'form-group':'form-group d-none'"
+										id="endDateContainer">
+										<label for="endDate"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.date.end}">End Date</span></small></label>
 										<div class="input-group text-left">
 											<input type="text" th:field="*{endDate}" class="form-control input-sm" data-input="data-input"
 												th:placeholder="#{commerce.screen.common.date.end.placeholder}"></input>

@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.money.MonetaryAmount;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.punj.app.ecommerce.models.common.LocationBean;
-import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -38,16 +36,19 @@ public class PriceBean {
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
 
+	private BigInteger clearanceResetId;
+	private PriceBean existingClearance;
+
 	private String createdBy;
 	private LocalDateTime createdDate;
 
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
-	
-	@NotNull(message = "{commerce.error.amount.empty}")
+
+/*	@NotNull(message = "{commerce.error.amount.empty}")
 	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}")
 	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}")
-	private BigDecimal itemPriceAmt;
+*/	private BigDecimal itemPriceAmt;
 
 	private String status;
 
@@ -188,8 +189,6 @@ public class PriceBean {
 		this.modifiedDate = modifiedDate;
 	}
 
-	
-
 	/**
 	 * @return the itemPriceAmt
 	 */
@@ -198,7 +197,8 @@ public class PriceBean {
 	}
 
 	/**
-	 * @param itemPriceAmt the itemPriceAmt to set
+	 * @param itemPriceAmt
+	 *            the itemPriceAmt to set
 	 */
 	public void setItemPriceAmt(BigDecimal itemPriceAmt) {
 		this.itemPriceAmt = itemPriceAmt;
@@ -262,6 +262,35 @@ public class PriceBean {
 	 */
 	public void setPriceType(String priceType) {
 		this.priceType = priceType;
+	}
+
+	/**
+	 * @return the clearanceResetId
+	 */
+	public BigInteger getClearanceResetId() {
+		return clearanceResetId;
+	}
+
+	/**
+	 * @param clearanceResetId
+	 *            the clearanceResetId to set
+	 */
+	public void setClearanceResetId(BigInteger clearanceResetId) {
+		this.clearanceResetId = clearanceResetId;
+	}
+
+	/**
+	 * @return the existingClearance
+	 */
+	public PriceBean getExistingClearance() {
+		return existingClearance;
+	}
+
+	/**
+	 * @param existingClearance the existingClearance to set
+	 */
+	public void setExistingClearance(PriceBean existingClearance) {
+		this.existingClearance = existingClearance;
 	}
 
 }

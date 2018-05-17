@@ -20,7 +20,13 @@ public interface PriceService {
 	public ItemPrice createItemPrice(ItemPrice itemPrice);
 
 	public ItemPrice saveAndApproveItemPrice(ItemPrice itemPrice);
-
+	
+	public ItemPrice getOldestClearance(BigInteger itemId, Integer locationId);
+	
+	public ItemPrice createClearanceReset(ItemPrice itemPrice, String username);
+	
+	public ItemPrice approveClearanceReset(ItemPrice itemPrice, String username);
+	
 	public ItemPriceDTO searchItemPrice(BigInteger itemId, Integer locationId, String priceType, Integer page);
 
 	public List<ItemPrice> approveItemPriceList(List<ItemPrice> itemPriceList);

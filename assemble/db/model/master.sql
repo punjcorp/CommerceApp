@@ -418,13 +418,15 @@ CREATE INDEX `fk_style_attribute_values_attribute_master1_idx` ON `commercedb`.`
 DROP TABLE IF EXISTS `commercedb`.`item_images` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_images` (
+  `item_image_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
-  `feature_name` VARCHAR(80) NOT NULL,
-  `image_url` VARCHAR(300) NOT NULL,
   `name` VARCHAR(80) NOT NULL,
+  `image_type` VARCHAR(120) NOT NULL,
+  `image_url` VARCHAR(300) NOT NULL,
+  `image_data` MEDIUMBLOB NOT NULL,
   `created_date` DATETIME NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`item_id`, `feature_name`),
+  PRIMARY KEY (`item_image_id`),
   CONSTRAINT `fk_item_images_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
@@ -566,7 +568,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order` (
   `modified_date` DATETIME NULL,
   `modified_by` VARCHAR(50) NULL,
   `comments` VARCHAR(200) NULL,
-  `acutal_sub_total_cost` DECIMAL(12,2) NULL,
+  `actual_sub_total_cost` DECIMAL(12,2) NULL,
   `actual_tax_amount` DECIMAL(12,2) NULL,
   `actual_total_amount` DECIMAL(12,2) NULL,
   PRIMARY KEY (`order_id`),
@@ -813,6 +815,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
+  `clearance_reset_id` BIGINT NULL,
   PRIMARY KEY (`item_price_id`),
   CONSTRAINT `fk_item_price_item1`
     FOREIGN KEY (`item_id`)
@@ -850,6 +853,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
+  `clearance_reset_id` BIGINT NULL,
   PRIMARY KEY (`item_price_id`, `archived_date`),
   CONSTRAINT `fk_item_price_history_location1`
     FOREIGN KEY (`location_id`)
@@ -857,20 +861,6 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `commercedb`.`style_generator`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`style_generator` ;
-
-
-CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
-  `style_id` BIGINT NOT NULL AUTO_INCREMENT,
-  `status` VARCHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`style_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1000000;
 
 
 -- -----------------------------------------------------
@@ -882,15 +872,21 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`sku_generator` (
   `style_id` BIGINT NOT NULL,
   `sku_id` BIGINT ZEROFILL NOT NULL,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`style_id`, `sku_id`),
-  CONSTRAINT `fk_sku_generator_style_generator1`
-    FOREIGN KEY (`style_id`)
-    REFERENCES `commercedb`.`style_generator` (`style_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`sku_id`, `style_id`))
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_sku_generator_style_generator1_idx` ON `commercedb`.`sku_generator` (`style_id` ASC);
+
+-- -----------------------------------------------------
+-- Table `commercedb`.`style_generator`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`style_generator` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
+  `style_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `status` VARCHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`style_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1000000;
 
 
 -- -----------------------------------------------------

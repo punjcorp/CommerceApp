@@ -40,6 +40,9 @@ public class ItemPrice implements Serializable {
 	@Column(name = "item_price")
 	private BigDecimal itemPriceAmt;
 
+	@Column(name = "clearance_reset_id")
+	private BigInteger clearanceResetId;	
+	
 	private String status;
 
 	@Column(name = "created_by")
@@ -236,6 +239,34 @@ public class ItemPrice implements Serializable {
 	 */
 	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
+	}
+
+	/**
+	 * @return the itemPriceAmt
+	 */
+	public BigDecimal getItemPriceAmt() {
+		return itemPriceAmt;
+	}
+
+	/**
+	 * @param itemPriceAmt the itemPriceAmt to set
+	 */
+	public void setItemPriceAmt(BigDecimal itemPriceAmt) {
+		this.itemPriceAmt = itemPriceAmt;
+	}
+
+	/**
+	 * @return the clearanceResetId
+	 */
+	public BigInteger getClearanceResetId() {
+		return clearanceResetId;
+	}
+
+	/**
+	 * @param clearanceResetId the clearanceResetId to set
+	 */
+	public void setClearanceResetId(BigInteger clearanceResetId) {
+		this.clearanceResetId = clearanceResetId;
 	}
 
 	/*

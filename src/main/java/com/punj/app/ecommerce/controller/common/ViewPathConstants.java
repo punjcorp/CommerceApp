@@ -185,6 +185,7 @@ public final class ViewPathConstants {
 	public static final String APPROVE_PRICE_URL ="/admin/approve_price";
 	
 	public static final String ADD_PRICE_URL ="/admin/add_price";
+	public static final String GET_OLDEST_CLEARANCE_URL="/admin/search_oldest_clearance";
 	public static final String GET_PRICE_URL ="/get_item_price";
 	public static final String ADD_PRICE_PAGE ="price/add_price";	
 	

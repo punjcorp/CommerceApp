@@ -27,9 +27,8 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
+  `clearance_reset_id` BIGINT NULL,
   PRIMARY KEY (`item_price_id`),
-  INDEX `fk_item_price_item1_idx` (`item_id` ASC),
-  INDEX `fk_item_price_location1_idx` (`location_id` ASC),
   CONSTRAINT `fk_item_price_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
@@ -42,6 +41,10 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_item_price_item1_idx` ON `commercedb`.`item_price` (`item_id` ASC);
+
+CREATE INDEX `fk_item_price_location1_idx` ON `commercedb`.`item_price` (`location_id` ASC);
+
 
 -- -----------------------------------------------------
 -- Table `commercedb`.`item_price_history`
@@ -50,6 +53,7 @@ DROP TABLE IF EXISTS `commercedb`.`item_price_history` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `item_price_id` BIGINT NOT NULL,
+  `archived_date` DATETIME NOT NULL,
   `item_id` BIGINT NOT NULL,
   `location_id` INT(4) NOT NULL,
   `price_change_type` VARCHAR(5) NOT NULL,
@@ -61,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  `archived_date` DATETIME NOT NULL,
+  `clearance_reset_id` BIGINT NULL,
   PRIMARY KEY (`item_price_id`, `archived_date`),
   CONSTRAINT `fk_item_price_history_location1`
     FOREIGN KEY (`location_id`)

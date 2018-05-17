@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
@@ -191,17 +192,16 @@ public class PriceServiceImpl implements PriceService {
 	public ItemPrice getCurrentItemPrice(BigInteger itemId, Integer locationId, LocalDateTime currentDate) {
 
 		ItemPrice itemPrice = null;
-		
-		BigInteger itemPriceId=	this.itemPriceRepository.findCurrentPrice(itemId, locationId);
-		
+
+		BigInteger itemPriceId = this.itemPriceRepository.findCurrentPrice(itemId, locationId);
+
 		if (itemPriceId != null) {
-			itemPrice=this.itemPriceRepository.findOne(itemPriceId);
+			itemPrice = this.itemPriceRepository.findOne(itemPriceId);
 			logger.info("The current item price for the item {} and location {} has been retrieved", itemId, locationId);
-		}	
-		else {
+		} else {
 			logger.info("There was no price  found for item {} at location {}", itemId, locationId);
 		}
-			
+
 		return itemPrice;
 	}
 
@@ -217,6 +217,59 @@ public class PriceServiceImpl implements PriceService {
 		logger.info("The price list for the provided item has been retrieved successfully");
 
 		return itemPriceList;
+	}
+
+	@Override
+	public ItemPrice getOldestClearance(BigInteger itemId, Integer locationId) {
+		ItemPrice itemPrice = null;
+
+		BigInteger itemPriceId = this.itemPriceRepository.findOldestClearance(itemId, locationId);
+
+		if (itemPriceId != null) {
+			itemPrice = this.itemPriceRepository.findOne(itemPriceId);
+			logger.info("The oldest clearance for the item {} and location {} has been retrieved", itemId, locationId);
+		} else {
+			logger.info("There was no clearance found for item {} at location {}", itemId, locationId);
+		}
+
+		return itemPrice;
+	}
+
+	@Override
+	@Transactional
+	public ItemPrice approveClearanceReset(ItemPrice itemPrice, String username) {
+		if (itemPrice != null && itemPrice.getClearanceResetId() != null) {
+			ItemPrice clearancePriceChange = this.itemPriceRepository.findOne(itemPrice.getClearanceResetId());
+			clearancePriceChange.setModifiedDate(LocalDateTime.now());
+			clearancePriceChange.setModifiedBy(username);
+			clearancePriceChange.setStatus(ServiceConstants.STATUS_RESET);
+			clearancePriceChange.setEndDate(LocalDateTime.now());
+
+			clearancePriceChange = this.itemPriceRepository.save(clearancePriceChange);
+			if (clearancePriceChange != null) {
+				itemPrice.setStatus(ServiceConstants.STATUS_APPROVED);
+				itemPrice = this.itemPriceRepository.save(itemPrice);
+			} else {
+				logger.info("There was no clearance to reset, hence the save process has failed");
+			}
+
+		} else {
+			logger.info("There was no clearance to reset, hence the save process has failed");
+		}
+
+		return itemPrice;
+	}
+
+	@Override
+	public ItemPrice createClearanceReset(ItemPrice itemPrice, String username) {
+		itemPrice.setStatus(ServiceConstants.STATUS_CREATED);
+		itemPrice = this.itemPriceRepository.save(itemPrice);
+		if (itemPrice != null) {
+			logger.info("The clearance record for item {} and location {} has been created successfully", itemPrice.getItem(), itemPrice.getLocationId());
+		} else {
+			logger.info("There was no clearance to reset, hence the save process has failed");
+		}
+		return itemPrice;
 	}
 
 }

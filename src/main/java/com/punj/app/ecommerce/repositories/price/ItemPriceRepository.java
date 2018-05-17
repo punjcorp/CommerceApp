@@ -19,5 +19,8 @@ public interface ItemPriceRepository extends JpaRepository<ItemPrice, BigInteger
 
 	@Procedure("p_get_current_item_price")
 	public BigInteger findCurrentPrice(@Param("i_item_id") BigInteger itemId, @Param("i_location_id") Integer locationId);
+	
+	@Procedure("p_get_oldest_clearance")
+	public BigInteger findOldestClearance(@Param("i_item_id") BigInteger itemId, @Param("i_location_id") Integer locationId);	
 
 }

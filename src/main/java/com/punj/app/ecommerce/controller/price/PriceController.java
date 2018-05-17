@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
@@ -34,6 +37,7 @@ import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.price.PriceBean;
 import com.punj.app.ecommerce.models.price.PriceBeanDTO;
+import com.punj.app.ecommerce.models.price.PriceBeanValidator;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.common.CommonService;
 
@@ -48,7 +52,18 @@ public class PriceController {
 	private PriceService priceService;
 	private CommonService commonService;
 	private MessageSource messageSource;
+	private PriceBeanValidator priceValidator;
 
+	
+	/**
+	 * @param priceValidator
+	 *            the priceValidator to set
+	 */
+	@Autowired
+	public void setPriceBeanValidator(PriceBeanValidator priceValidator) {
+		this.priceValidator = priceValidator;
+	}	
+	
 	/**
 	 * @param priceService
 	 *            the priceService to set
@@ -111,9 +126,14 @@ public class PriceController {
 		try {
 			BigInteger itemPriceId = new BigInteger(req.getParameter(MVCConstants.PRICE_ID_PARAM));
 			ItemPrice itemPrice = this.priceService.searchPrice(itemPriceId);
-			PriceBean priceBean = PriceTransformer.transformItemPriceDomain(itemPrice);
-			this.updatePriceBeans(priceBean, model, MVCConstants.ACTION_EDIT);
-			logger.info("The provided item price has been retrieved from database for modification");
+			if(itemPrice!=null) {
+				PriceBean priceBean = PriceTransformer.transformItemPriceDomain(itemPrice);
+				this.updatePriceBeans(priceBean, model, MVCConstants.ACTION_EDIT);
+				logger.info("The provided item price has been retrieved from database for modification");
+			}else {
+				logger.info("There was no item price existing for retrieval");
+			}
+			
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while showing item price for modification.", e);
 			return ViewPathConstants.PRICE_DETAIL_PAGE;
@@ -140,6 +160,17 @@ public class PriceController {
 	 * @param model
 	 */
 	private void updatePriceBeans(PriceBean priceBean, Model model, String action) {
+		
+		if(priceBean.getClearanceResetId()!=null) {
+			ItemPrice clearancePrice = this.priceService.searchPrice(priceBean.getClearanceResetId());
+			PriceBean clearancePriceBean = null;
+			if(clearancePrice!=null) {
+				clearancePriceBean = PriceTransformer.transformItemPriceDomain(clearancePrice);
+				priceBean.setExistingClearance(clearancePriceBean);
+				logger.info("The clearance has been retrieved successfully");
+			}
+		}		
+		
 		// This has to come from cache
 		List<Location> locationList = this.commonService.retrieveAllLocations();
 		this.updateLocations(priceBean, locationList);
@@ -159,7 +190,7 @@ public class PriceController {
 	private void updateLocations(PriceBean priceBean, List<Location> locationList) {
 		List<LocationBean> locations = null;
 		if (locationList != null && !locationList.isEmpty()) {
-			locations = CommonMVCTransformer.transformLocationList(locationList,MVCConstants.LOC_PARTIAL);
+			locations = CommonMVCTransformer.transformLocationList(locationList, MVCConstants.LOC_PARTIAL);
 			priceBean.setLocations(locations);
 		}
 		logger.info("The location details has been set in Price Bean object");
@@ -167,6 +198,10 @@ public class PriceController {
 
 	public String actionProcessing(PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale, Authentication authentication, String action) {
 		Boolean status = Boolean.FALSE;
+		
+		priceValidator.validate(priceBean, bindingResult);
+		logger.info("The price class level validation has been completed successfully");
+		
 		if (bindingResult.hasErrors()) {
 			this.updatePriceBeans(priceBean, model, action);
 			return ViewPathConstants.PRICE_DETAIL_PAGE;
@@ -176,10 +211,18 @@ public class PriceController {
 			if (userDetails != null) {
 				ItemPrice itemPrice = PriceTransformer.transformPriceBean(priceBean);
 				itemPrice = PriceTransformer.updatePrice(itemPrice, userDetails.getUsername(), action);
-				if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
-					itemPrice = this.priceService.createItemPrice(itemPrice);
-				} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
-					itemPrice = this.priceService.saveAndApproveItemPrice(itemPrice);
+				if (priceBean.getClearanceResetId() != null) {
+					if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
+						itemPrice = this.priceService.createClearanceReset(itemPrice, userDetails.getUsername());
+					} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
+						itemPrice = this.priceService.approveClearanceReset(itemPrice, userDetails.getUsername());
+					}
+				} else {
+					if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
+						itemPrice = this.priceService.createItemPrice(itemPrice);
+					} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
+						itemPrice = this.priceService.saveAndApproveItemPrice(itemPrice);
+					}
 				}
 				status = Boolean.TRUE;
 				priceBean = this.updateSuccess(itemPrice, model, locale, action, status);
@@ -310,10 +353,31 @@ public class PriceController {
 	private void updateLocations(PriceBeanDTO priceBeanDTO, List<Location> locationList) {
 		List<LocationBean> locations = null;
 		if (locationList != null && !locationList.isEmpty()) {
-			locations = CommonMVCTransformer.transformLocationList(locationList,MVCConstants.LOC_PARTIAL);
+			locations = CommonMVCTransformer.transformLocationList(locationList, MVCConstants.LOC_PARTIAL);
 			priceBeanDTO.setLocations(locations);
 		}
 		logger.info("The location details has been set in Price Bean DTO object");
+	}
+
+	@PostMapping(value = ViewPathConstants.GET_OLDEST_CLEARANCE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public PriceBean lookupOrderItems(@RequestBody PriceBean priceBean, Model model) {
+		PriceBean clearanceBean = null;
+		try {
+			ItemPrice clearanceRcd = this.priceService.getOldestClearance(priceBean.getItemId(), priceBean.getLocationId());
+			if (clearanceRcd != null) {
+				clearanceBean = PriceTransformer.transformItemPriceDomain(clearanceRcd);
+				logger.info("The clearance record has been retrieved successfully to be reset");
+			} else {
+				logger.info("There is no clearance existing for this item and location yet!!");
+			}
+
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving oldest clearance for provided item and location", e);
+			return clearanceBean;
+		}
+		return clearanceBean;
+
 	}
 
 }

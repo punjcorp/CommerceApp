@@ -23,6 +23,11 @@ public final class MVCConstants {
 	public static final String YES="Y";
 	public static final String NO="N";
 	
+	public static final String PRICE_TYPE_PERMANENT="1";
+	public static final String PRICE_TYPE_PROMOTION="2";
+	public static final String PRICE_TYPE_CLEARANCE="3";
+	public static final String PRICE_TYPE_CLEARANCE_RESET="4";
+	
 	public static final String NEXT_LEVEL_CREATED= "C";
 	public static final String NEXT_LEVEL_APPROVED= "A";	
 	public static final String NEXT_LEVEL_NOT_CREATED= "N";	
