@@ -92,7 +92,7 @@ public class TenderCountDTOConverter {
 
 		TenderDenominationId denominationId = new TenderDenominationId();
 		denominationId.setTenderCountId(tenderCountId);
-		denominationId.setDenomination(denominationDTO.getDenomination());
+		denominationId.setDenominationId(denominationDTO.getDenominationId());
 
 		denomination.setTenderDenominationId(denominationId);
 		denomination.setAmount(denominationDTO.getAmount());

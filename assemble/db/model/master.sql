@@ -1515,6 +1515,23 @@ CREATE INDEX `fk_txn_tndr_count_tender_master1_idx` ON `commercedb`.`txn_tender_
 
 
 -- -----------------------------------------------------
+-- Table `commercedb`.`denomination_master`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`denomination_master` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`denomination_master` (
+  `denomination_id` INT NOT NULL AUTO_INCREMENT,
+  `currency_code` VARCHAR(5) NOT NULL DEFAULT 'INR',
+  `code` VARCHAR(15) NOT NULL,
+  `value` DECIMAL NOT NULL,
+  `description` VARCHAR(45) NULL,
+  PRIMARY KEY (`denomination_id`))
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX `code_UNIQUE` ON `commercedb`.`denomination_master` (`code` ASC);
+
+
+-- -----------------------------------------------------
 -- Table `commercedb`.`txn_tender_denomination`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`txn_tender_denomination` ;
@@ -1525,7 +1542,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_denomination` (
   `register` INT(3) NOT NULL,
   `txn_no` INT(5) NOT NULL,
   `tender_id` INT(3) NOT NULL,
-  `denomination` DECIMAL(12,2) NOT NULL,
+  `denomination_id` INT NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
   `media_count` INT NOT NULL,
   `difference_amount` DECIMAL(12,2) NULL,
@@ -1534,13 +1551,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_denomination` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`, `denomination`),
+  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`, `denomination_id`),
   CONSTRAINT `fk_txn_tndr_denomination_txn_tndr_count1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
     REFERENCES `commercedb`.`txn_tender_count` (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_txn_tender_denomination_denomination_master1`
+    FOREIGN KEY (`denomination_id`)
+    REFERENCES `commercedb`.`denomination_master` (`denomination_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_txn_tender_denomination_denomination_master1_idx` ON `commercedb`.`txn_tender_denomination` (`denomination_id` ASC);
 
 
 -- -----------------------------------------------------

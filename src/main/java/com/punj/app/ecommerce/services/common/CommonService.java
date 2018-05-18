@@ -6,6 +6,7 @@ package com.punj.app.ecommerce.services.common;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
@@ -55,6 +56,8 @@ public interface CommonService {
 	public HierarchyDTO retrieveHierarchyByText(String searchText, Pager pager);
 
 	public List<UOM> retrieveAllUOMs();
+	
+	public List<Denomination> retrieveAllDenominations();
 
 	public UOM retrieveUOM(String uomCode);
 

@@ -44,6 +44,23 @@ INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `i
 INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Kilogram', 'kgs', 'This is UOM for measuring 1000 gm item weight', 'Weight', '0', 'admin', now());
 commit;
 
+-- -----------------------------------------------------
+-- Seed data for denomination_master
+-- -----------------------------------------------------
+truncate `commercedb`.`denomination_master`;
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`, `description`) VALUES ('INR', '0.50', '0.50', '50 paisa');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '1.00', '1');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '2.00', '2');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '5.00', '5');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '10.00', '10');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '20.00', '20');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '50.00', '50');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '100.00', '100');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '200.00', '200');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '500.00', '500');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '1000.00', '1000');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '2000.00', '2000');
+commit;
 
 -- -----------------------------------------------------
 -- Seed data for tender_master table

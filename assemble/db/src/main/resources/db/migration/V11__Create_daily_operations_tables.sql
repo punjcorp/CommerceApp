@@ -107,13 +107,18 @@ CREATE INDEX `fk_txn_tndr_count_tender_master1_idx` ON `commercedb`.`txn_tender_
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`txn_tender_denomination` ;
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`txn_tender_denomination`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`txn_tender_denomination` ;
+
 CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_denomination` (
   `location_id` INT(4) NOT NULL,
   `business_date` DATETIME NOT NULL,
   `register` INT(3) NOT NULL,
   `txn_no` INT(5) NOT NULL,
   `tender_id` INT(3) NOT NULL,
-  `denomination` DECIMAL(12,2) NOT NULL,
+  `denomination_id` INT NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
   `media_count` INT NOT NULL,
   `difference_amount` DECIMAL(12,2) NULL,
@@ -122,14 +127,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_denomination` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`, `denomination`),
+  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`, `denomination_id`),
   CONSTRAINT `fk_txn_tndr_denomination_txn_tndr_count1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
     REFERENCES `commercedb`.`txn_tender_count` (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_txn_tender_denomination_denomination_master1`
+    FOREIGN KEY (`denomination_id`)
+    REFERENCES `commercedb`.`denomination_master` (`denomination_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_txn_tender_denomination_denomination_master1_idx` ON `commercedb`.`txn_tender_denomination` (`denomination_id` ASC);
 
 -- -----------------------------------------------------
 -- Table `commercedb`.`txn_tender_control`

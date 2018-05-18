@@ -15,23 +15,23 @@ public class DenominationDTO implements Serializable {
 
 	private static final long serialVersionUID = 2221756121534912702L;
 
-	private BigDecimal denomination;
+	private Integer denominationId;
 	private BigDecimal amount;
 	private BigInteger mediaCount;
 
 	/**
-	 * @return the denomination
+	 * @return the denominationId
 	 */
-	public BigDecimal getDenomination() {
-		return denomination;
+	public Integer getDenominationId() {
+		return denominationId;
 	}
 
 	/**
-	 * @param denomination
-	 *            the denomination to set
+	 * @param denominationId
+	 *            the denominationId to set
 	 */
-	public void setDenomination(BigDecimal denomination) {
-		this.denomination = denomination;
+	public void setDenominationId(Integer denominationId) {
+		this.denominationId = denominationId;
 	}
 
 	/**

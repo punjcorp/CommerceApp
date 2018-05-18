@@ -19,6 +19,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
@@ -33,6 +34,7 @@ import com.punj.app.ecommerce.domains.supplier.ids.SupplierItemId;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.repositories.common.DenominationRepository;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
@@ -72,6 +74,7 @@ public class CommonServiceImpl implements CommonService {
 	private TaxGroupRepository taxGroupRepository;
 	private UOMRepository uomRepository;
 	private TransactionService txnService;
+	private DenominationRepository denominationRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -79,7 +82,18 @@ public class CommonServiceImpl implements CommonService {
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
 
-	
+	@Value("${app.default.currency.code}")
+	private String defaultCurrencyCode;
+
+	/**
+	 * @param denominationRepository
+	 *            the denominationRepository to set
+	 */
+	@Autowired
+	public void setDenominationRepository(DenominationRepository denominationRepository) {
+		this.denominationRepository = denominationRepository;
+	}
+
 	/**
 	 * @param uomRepository
 	 *            the uomRepository to set
@@ -87,8 +101,8 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	public void setUOMRepository(UOMRepository uomRepository) {
 		this.uomRepository = uomRepository;
-	}	
-	
+	}
+
 	/**
 	 * @param hierarchySearchRepository
 	 *            the hierarchySearchRepository to set
@@ -404,7 +418,7 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public List<UOM> retrieveAllUOMs() {
-		List<UOM> uomList=this.uomRepository.findAll();
+		List<UOM> uomList = this.uomRepository.findAll();
 		if (uomList != null && !uomList.isEmpty())
 			logger.info("The {} no of UOMs has been retrieved", uomList.size());
 		else
@@ -414,9 +428,9 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public Hierarchy retrieveHierarchy(String defaultHierarchyName) {
-		Hierarchy hierarchy=new Hierarchy();
+		Hierarchy hierarchy = new Hierarchy();
 		hierarchy.setName(defaultHierarchyName);
-		hierarchy=this.hierarchyRepository.findOne(Example.of(hierarchy));
+		hierarchy = this.hierarchyRepository.findOne(Example.of(hierarchy));
 		if (hierarchy != null)
 			logger.info("The {} hierarchy has been retrieved successfully", defaultHierarchyName);
 		else
@@ -426,14 +440,26 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public UOM retrieveUOM(String uomCode) {
-		UOM uom=new UOM();
+		UOM uom = new UOM();
 		uom.setCode(uomCode);
-		uom=this.uomRepository.findOne(Example.of(uom));
+		uom = this.uomRepository.findOne(Example.of(uom));
 		if (uom != null)
 			logger.info("The {} uom has been retrieved successfully", uomCode);
 		else
 			logger.info("There was no uom found for {} code", uomCode);
 		return uom;
+	}
+
+	@Override
+	public List<Denomination> retrieveAllDenominations() {
+		Denomination denomination = new Denomination();
+		denomination.setCurrencyCode(this.defaultCurrencyCode);
+		List<Denomination> denominations = this.denominationRepository.findAll(Example.of(denomination));
+		if (denominations != null && !denominations.isEmpty())
+			logger.info("All the denominations for {} currency has been retrieved successfully", this.defaultCurrencyCode);
+		else
+			logger.info("There is no denomination setup for the {} currency", this.defaultCurrencyCode);
+		return denominations;
 	}
 
 }

@@ -14,9 +14,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.common.web.CommerceConstants;
 import com.punj.app.ecommerce.common.web.CommerceContext;
@@ -60,9 +63,9 @@ public class SaleTransactionController {
 	}
 
 	@GetMapping(ViewPathConstants.POS_URL)
-	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req) {
+	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
 		try {
-			String forwardURL = this.updateBeans(model, session, req);
+			String forwardURL = this.updateBeans(model, session, req,redirectAttrs);
 			if (StringUtils.isNotEmpty(forwardURL))
 				return forwardURL;
 			logger.info("The sale screen is ready for display now");
@@ -77,7 +80,7 @@ public class SaleTransactionController {
 	 * This method is to set all the bean objects in model needed for the return screen functionalities
 	 * 
 	 */
-	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req) {
+	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 
@@ -93,13 +96,13 @@ public class SaleTransactionController {
 			String registerName = null;
 
 			if (StringUtils.isEmpty(registerIdValue)) {
-				registerId = (Integer) session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
-				registerName = (String) session.getAttribute(MVCConstants.REG_NAME_PARAM);
+				registerId = (Integer) session.getAttribute(openLocId+MVCConstants.REGISTER_ID_PARAM);
+				registerName = (String) session.getAttribute(openLocId+MVCConstants.REG_NAME_PARAM);
 			} else {
 				registerId = new Integer(registerIdValue);
 				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
-				session.setAttribute(MVCConstants.REGISTER_ID_PARAM, registerId);
-				session.setAttribute(MVCConstants.REG_NAME_PARAM, registerName);
+				session.setAttribute(openLocId+MVCConstants.REGISTER_ID_PARAM, registerId);
+				session.setAttribute(openLocId+MVCConstants.REG_NAME_PARAM, registerName);
 			}
 
 			if (registerId != null) {
@@ -123,10 +126,14 @@ public class SaleTransactionController {
 				logger.info("All the needed beans for return transaction screen has been set in the model");
 
 			} else {
+				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM,ViewPathConstants.POS_URL);
 				logger.info("There is no open store existing as per this session, routing to register open screen");
 				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
 			}
 		} else {
+			req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+			redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM,ViewPathConstants.POS_URL);
 			logger.info("There is no open store existing as per application context, routing to store open screen");
 			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 		}

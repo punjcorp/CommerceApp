@@ -1,8 +1,8 @@
 package com.punj.app.ecommerce.domains.transaction.tender.ids;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -11,7 +11,8 @@ public class TenderDenominationId implements Serializable {
 
 	private TenderCountId tenderCountId;
 
-	private BigDecimal denomination;
+	@Column(name = "denomination_id")
+	private Integer denominationId;
 
 	/**
 	 * @return the tenderCountId
@@ -29,18 +30,18 @@ public class TenderDenominationId implements Serializable {
 	}
 
 	/**
-	 * @return the denomination
+	 * @return the denominationId
 	 */
-	public BigDecimal getDenomination() {
-		return denomination;
+	public Integer getDenominationId() {
+		return denominationId;
 	}
 
 	/**
-	 * @param denomination
-	 *            the denomination to set
+	 * @param denominationId
+	 *            the denominationId to set
 	 */
-	public void setDenomination(BigDecimal denomination) {
-		this.denomination = denomination;
+	public void setDenominationId(Integer denominationId) {
+		this.denominationId = denominationId;
 	}
 
 }

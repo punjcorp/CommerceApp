@@ -147,6 +147,23 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`denomination_master`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`denomination_master` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`denomination_master` (
+  `denomination_id` INT NOT NULL AUTO_INCREMENT,
+  `currency_code` VARCHAR(5) NOT NULL DEFAULT 'INR',
+  `code` VARCHAR(15) NOT NULL,
+  `value` DECIMAL NOT NULL,
+  `description` VARCHAR(45) NULL,
+  PRIMARY KEY (`denomination_id`))
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX `code_UNIQUE` ON `commercedb`.`denomination_master` (`code` ASC);
+
+
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

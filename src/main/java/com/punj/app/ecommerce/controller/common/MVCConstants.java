@@ -62,12 +62,14 @@ public final class MVCConstants {
 	public static final String SAVE_APPROVE_SKU_PARAM="saveApproveSKU";
 	
 	
+	public static final String REFERRER_URL_PARAM="referrerURL";
 	public static final String ID_PARAM="id";
 	public static final String TENDER_ID_PARAM="tenderId";
 	public static final String PAGE_PARAM="page";
 	public static final String STYLE_ID_PARAM="styleId";
 	public static final String ITEM_ID_PARAM="itemId";
 	public static final String LOCATION_ID_PARAM="locationId";
+	
 	public static final String LOC_NAME_PARAM="locName";
 	public static final String REGISTER_ID_PARAM="registerId";
 	public static final String REG_NAME_PARAM="regName";	
@@ -155,6 +157,18 @@ public final class MVCConstants {
 	public static final String TAX_CGST="CGST";
 	public static final String TAX_IGST="IGST";
 	
+	
+	public static final String TXN_STATUS_STARTED = "STARTED";
+	public static final String TXN_STATUS_COMPLETED = "COMPLETED";
+	public static final String TXN_STATUS_SUSPEND = "SUSPENDED";
+	public static final String TXN_STATUS_CANCEL = "CANCELLED";	
+	
+	public static final String TXN_OPEN_STORE = "OPEN_STORE";
+	public static final String TXN_CLOSE_STORE = "CLOSE_STORE";
+	public static final String TXN_OPEN_REGISTER = "OPEN_REGISTER";
+	public static final String TXN_CLOSE_REGISTER = "CLOSE_REGISTER";
+	public static final String TXN_NOSALE= "NOSALE";
+
 	
 	public static final String SALE_ITEM_PARAM="SALE_ITEM";
 	public static final String TAX_ITEM_PARAM="TAX_ITEM";

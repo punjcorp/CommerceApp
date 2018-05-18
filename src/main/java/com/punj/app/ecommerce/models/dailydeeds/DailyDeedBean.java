@@ -7,13 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.money.MonetaryAmount;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.tender.TenderBean;
-import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -21,15 +20,15 @@ import com.punj.app.ecommerce.utils.Utils;
  */
 public class DailyDeedBean {
 
-	@NotNull(message = "{commerce.error.location.empty}", groups = {ValidationGroup.ValidationGroupStoreOpen.class})
+	@NotNull(message = "{commerce.error.location.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
 	private Integer locationId;
 	private String locationName;
 	private String defaultTender;
 
-	@NotNull(message = "{commerce.error.date.empty}", groups = {ValidationGroup.ValidationGroupStoreOpen.class})
+	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
 	private LocalDateTime businessDate;
-	
-	@NotNull(message = "{commerce.error.register.empty}", groups = {ValidationGroup.ValidationGroupRegOpen.class})
+
+	@NotNull(message = "{commerce.error.register.empty}", groups = { ValidationGroup.ValidationGroupRegOpen.class })
 	private Integer register;
 	private Integer txnNo;
 	private Integer selectedTenderId;
@@ -38,17 +37,18 @@ public class DailyDeedBean {
 	private Integer registerId;
 	private String registerName;
 
+	private String referrerURL;
+
 	@Valid
 	private List<TenderBean> tenders;
 
 	private List<TenderBean> availableTenders;
 
-	private List<MonetaryAmount> denominationList;
+	private List<BaseDenominationBean> denominationList;
 
 	public DailyDeedBean() {
 		tenders = new ArrayList<>();
 		tenders.add(new TenderBean());
-		denominationList = Utils.getDenominations();
 	}
 
 	/**
@@ -124,21 +124,6 @@ public class DailyDeedBean {
 	 */
 	public void setTenders(List<TenderBean> tenders) {
 		this.tenders = tenders;
-	}
-
-	/**
-	 * @return the denominationList
-	 */
-	public List<MonetaryAmount> getDenominationList() {
-		return denominationList;
-	}
-
-	/**
-	 * @param denominationList
-	 *            the denominationList to set
-	 */
-	public void setDenominationList(List<MonetaryAmount> denominationList) {
-		this.denominationList = denominationList;
 	}
 
 	/**
@@ -244,6 +229,36 @@ public class DailyDeedBean {
 	 */
 	public void setDefaultTender(String defaultTender) {
 		this.defaultTender = defaultTender;
+	}
+
+	/**
+	 * @return the denominationList
+	 */
+	public List<BaseDenominationBean> getDenominationList() {
+		return denominationList;
+	}
+
+	/**
+	 * @param denominationList
+	 *            the denominationList to set
+	 */
+	public void setDenominationList(List<BaseDenominationBean> denominationList) {
+		this.denominationList = denominationList;
+	}
+
+	/**
+	 * @return the referrerURL
+	 */
+	public String getReferrerURL() {
+		return referrerURL;
+	}
+
+	/**
+	 * @param referrerURL
+	 *            the referrerURL to set
+	 */
+	public void setReferrerURL(String referrerURL) {
+		this.referrerURL = referrerURL;
 	}
 
 }

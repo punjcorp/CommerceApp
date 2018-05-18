@@ -84,14 +84,14 @@
 								</label>
 							</th:block>
 						</div>
-						<div class="row d-none" id="businessDateContainer">
+						<div th:class="${dailyDeedBean.locationId!=null}?'row':'row d-none'" id="businessDateContainer">
 							<div class="col-6">
 								<div class="form-group">
 									<label for="businessDate"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.date.business}">Business
 												Date</span></small></label>
 									<div class="input-group text-left">
 										<input type="text" th:field="*{businessDate}" class="form-control input-sm" data-input="data-input"
-											th:placeholder="#{commerce.screen.common.date.select}"></input>
+											th:placeholder="#{commerce.screen.common.date.select}"></input> <input type="hidden" th:field="*{referrerURL}"></input>
 										<div class="input-group-append">
 											<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check"></i></a>
 										</div>
@@ -100,7 +100,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="tenderListContainer" class="d-none">
+						<div id="tenderListContainer" th:class="${dailyDeedBean.locationId!=null}?'':'d-none'">
 							<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
 							<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
 								<div class="border-box">
@@ -133,17 +133,17 @@
 																	Denominations</span></small></label>
 														<div class="input-group text-left">
 															<select th:onChange="'changedDenomination(\''+${itrStat.index} +'\',\''+ ${itrDenomination.index} +'\')'"
-																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
+																th:field="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denominationId}"
 																class="form-control input-sm">
 																<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.common.tender.denomination.select}">Select
 																	Denomination</option>
-																<th:block th:each="dnmnAmt,itrDnmnAmt:${dailyDeedBean.denominationList}">
-																	<option th:value="${dnmnAmt.number}" th:text="${dnmnAmt}"></option>
+																<th:block th:each="dnmnBean,itrDnmnAmt:${dailyDeedBean.denominationList}">
+																	<option th:value="${dnmnBean.denominationId}" th:text="#{commerce.screen.common.currency.inr}+' '+${dnmnBean.code}"></option>
 																</th:block>
 															</select>
 														</div>
-														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination')}"
-															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denomination}"
+														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denominationId')}"
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].denominationId}"
 															class="text-danger align-top">Denomination Error </small>
 													</div>
 												</div>

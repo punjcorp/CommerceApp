@@ -12,13 +12,14 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
@@ -36,6 +37,22 @@ public class CommonMVCTransformer {
 
 	private CommonMVCTransformer() {
 		throw new IllegalStateException("CommonBeanTransformer class");
+	}
+
+	public static List<BaseDenominationBean> transformDenominations(List<Denomination> denominations) {
+		List<BaseDenominationBean> denomBeans = new ArrayList<>(denominations.size());
+		BaseDenominationBean denomBean;
+		for (Denomination denomination : denominations) {
+			denomBean = new BaseDenominationBean();
+			denomBean.setDenominationId(denomination.getDenominationId());
+			denomBean.setCode(denomination.getCode());
+			denomBean.setDenomValue(denomination.getDenomValue());
+			denomBean.setDescription(denomination.getDescription());
+			denomBean.setCurrencyCode(denomination.getCurrencyCode());
+			denomBeans.add(denomBean);
+		}
+		logger.info("The denominations has been transformed successfully");
+		return denomBeans;
 	}
 
 	public static List<TenderBean> tranformTenders(List<Tender> tenders) {
@@ -198,8 +215,8 @@ public class CommonMVCTransformer {
 		addressBean.setState(address.getState());
 		addressBean.setCountry(address.getCountry());
 		addressBean.setPincode(address.getPincode());
-		addressBean.setAddressType(address.getAddressType());		
-		
+		addressBean.setAddressType(address.getAddressType());
+
 		logger.info("The address has been transformed into address bean successfully");
 		return addressBean;
 	}
@@ -220,51 +237,51 @@ public class CommonMVCTransformer {
 		logger.info("The address bean has been transformed into address object successfully");
 		return address;
 	}
-	
+
 	public static List<Address> transformAddressList(List<AddressBean> addressBeanList) {
-		List<Address> addressList=new ArrayList<>(addressBeanList.size());
+		List<Address> addressList = new ArrayList<>(addressBeanList.size());
 		Address address;
-		for(AddressBean addressBean: addressBeanList) {
-			address=CommonMVCTransformer.transformAddress(addressBean);
+		for (AddressBean addressBean : addressBeanList) {
+			address = CommonMVCTransformer.transformAddress(addressBean);
 			addressList.add(address);
 		}
-		
+
 		logger.info("The address beans list has been transformed into address list successfully");
 		return addressList;
 	}
-	
+
 	public static List<AddressBean> transformAddresses(List<Address> addressList) {
-		List<AddressBean> addressBeanList=new ArrayList<>(addressList.size());
+		List<AddressBean> addressBeanList = new ArrayList<>(addressList.size());
 		AddressBean addressBean;
-		for(Address address: addressList) {
-			addressBean=CommonMVCTransformer.transformAddress(address);
+		for (Address address : addressList) {
+			addressBean = CommonMVCTransformer.transformAddress(address);
 			addressBeanList.add(addressBean);
 		}
-		
+
 		logger.info("The address list has been transformed into address bean list successfully");
 		return addressBeanList;
 	}
-	
+
 	public static int getPrimaryAddressIndex(List<AddressBean> addressBeanList) {
-		int result=-1;
+		int result = -1;
 		for (int i = 0; i < addressBeanList.size(); i++) {
-		    if ("Y".equals(addressBeanList.get(i).getPrimary())) {
-		    	result=i;
-		    }
+			if ("Y".equals(addressBeanList.get(i).getPrimary())) {
+				result = i;
+			}
 		}
 		return result;
 
 	}
-	
+
 	public static AddressBean getPrimaryAddress(List<Address> addressList) {
-		AddressBean addressBean=null;
-		for (Address address:addressList) {
-		    if ("Y".equals(address.getPrimary())) {
-		    	addressBean=CommonMVCTransformer.transformAddress(address);
-		    }
+		AddressBean addressBean = null;
+		for (Address address : addressList) {
+			if ("Y".equals(address.getPrimary())) {
+				addressBean = CommonMVCTransformer.transformAddress(address);
+			}
 		}
 		return addressBean;
 
-	}	
+	}
 
 }

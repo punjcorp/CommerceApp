@@ -10,12 +10,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.punj.app.ecommerce.common.web.CommerceConstants;
-import com.punj.app.ecommerce.common.web.CommerceContext;
+import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
+import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
@@ -23,7 +23,6 @@ import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
 import com.punj.app.ecommerce.services.dtos.tender.DenominationDTO;
 import com.punj.app.ecommerce.services.dtos.tender.TenderDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
-import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -100,7 +99,7 @@ public class DailyDeedTransformer {
 	public static DenominationDTO transformDenomination(DenominationBean denominationBean) {
 		DenominationDTO denomination = new DenominationDTO();
 
-		denomination.setDenomination(denominationBean.getDenomination());
+		denomination.setDenominationId(denominationBean.getDenominationId());
 		denomination.setAmount(denominationBean.getAmount());
 		denomination.setMediaCount(denominationBean.getMediaCount());
 
@@ -149,7 +148,7 @@ public class DailyDeedTransformer {
 	public static DenominationBean cloneDenomination(DenominationBean orgDenominationBean) {
 		DenominationBean denomination = new DenominationBean();
 
-		denomination.setDenomination(orgDenominationBean.getDenomination());
+		denomination.setDenominationId(orgDenominationBean.getDenominationId());
 		denomination.setAmount(orgDenominationBean.getAmount());
 		denomination.setMediaCount(orgDenominationBean.getMediaCount());
 
@@ -157,10 +156,12 @@ public class DailyDeedTransformer {
 		return denomination;
 	}
 
-	public static DailyDeedBean transformDailyTxn(Transaction txnDetails, TenderCount tenderCountDetails) {
+	public static DailyDeedBean transformDailyTxn(Transaction txnDetails, TenderCount tenderCountDetails, List<Denomination> denominations) {
+
+		List<BaseDenominationBean> denominationBeans = CommonMVCTransformer.transformDenominations(denominations);
 
 		DailyDeedBean dailyDeedBean = new DailyDeedBean();
-		dailyDeedBean.setDenominationList(Utils.getDenominations());
+		dailyDeedBean.setDenominationList(denominationBeans);
 
 		TransactionId txnId = txnDetails.getTransactionId();
 		dailyDeedBean.setLocationId(txnId.getLocationId());
@@ -200,7 +201,7 @@ public class DailyDeedTransformer {
 			denomination = new DenominationBean();
 			denomination.setAmount(tenderDenomination.getAmount());
 			denomination.setMediaCount(tenderDenomination.getMediaCount());
-			denomination.setDenomination(tenderDenomination.getTenderDenominationId().getDenomination());
+			denomination.setDenominationId(tenderDenomination.getTenderDenominationId().getDenominationId());
 			denominations.add(denomination);
 		}
 		logger.info("The txn tender denominations has been transformed to denominations  bean successfully");
