@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.punj.app.ecommerce.domains.finance.TenderMovement;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
@@ -36,4 +37,6 @@ public interface TransactionService {
 	public SaleTransactionReceiptDTO generateTransactionReceipt(TransactionId txnId);
 
 	public Boolean saveTransactionReceipt(List<TransactionReceipt> txnReceipts);
+
+	public TenderMovement saveTenderMoveTxn(TenderMovement tenderMove);
 }

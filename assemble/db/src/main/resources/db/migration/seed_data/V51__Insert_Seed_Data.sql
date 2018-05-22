@@ -32,6 +32,10 @@ INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Snacks', 'Daily Use', 'This is for snacks', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Lease Rent', 'Bill', 'This is rent for the room', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Payment', 'General Expense', 'this is payment for anything which will be described in remarks', 'admin', now());
+INSERT INTO `commercedb`.`reason_Codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_Codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
+INSERT INTO `commercedb`.`reason_Codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
+
 commit;
 
 -- -----------------------------------------------------

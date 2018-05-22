@@ -3,8 +3,6 @@
  */
 package com.punj.app.ecommerce.services.converter;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
@@ -20,7 +19,6 @@ import com.punj.app.ecommerce.domains.transaction.tender.ids.TenderDenominationI
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.dtos.tender.DenominationDTO;
 import com.punj.app.ecommerce.services.dtos.tender.TenderDTO;
-import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 
 /**
  * @author admin
@@ -34,8 +32,7 @@ public class TenderCountDTOConverter {
 		throw new IllegalStateException("TenderCountDTOConverter class");
 	}
 
-	
-	public static List<TenderCount> transformTenderList(List<TenderDTO> tenderDTOs, TransactionId txnId, String username,Boolean isRegisterOpen) {
+	public static List<TenderCount> transformTenderList(List<TenderDTO> tenderDTOs, TransactionId txnId, String username, Boolean isRegisterOpen) {
 		List<TenderCount> tenders = new ArrayList<>(tenderDTOs.size());
 		TenderCount tender;
 		for (TenderDTO tenderDTO : tenderDTOs) {
@@ -46,7 +43,7 @@ public class TenderCountDTOConverter {
 		return tenders;
 	}
 
-	private static TenderCount transformTenderDTO(TenderDTO tenderDTO, TransactionId txnId, String username,Boolean isRegisterOpen) {
+	private static TenderCount transformTenderDTO(TenderDTO tenderDTO, TransactionId txnId, String username, Boolean isRegisterOpen) {
 		TenderCount tenderCount = new TenderCount();
 
 		TenderCountId tenderCountId = new TenderCountId();
@@ -54,14 +51,18 @@ public class TenderCountDTOConverter {
 		tenderCountId.setBusinessDate(txnId.getBusinessDate());
 		tenderCountId.setRegister(txnId.getRegister());
 		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
-		tenderCountId.setTenderId(tenderDTO.getTenderId());
+
+		Tender tender = new Tender();
+		tender.setTenderId(tenderDTO.getTenderId());
+
+		tenderCountId.setTender(tender);
 
 		tenderCount.setTenderCountId(tenderCountId);
-		if(isRegisterOpen)
+		if (isRegisterOpen)
 			tenderCount.setTxnType(ServiceConstants.TXN_OPEN_REGISTER);
 		else
 			tenderCount.setTxnType(ServiceConstants.TXN_OPEN_STORE);
-		
+
 		tenderCount.setAmount(tenderDTO.getAmount());
 		tenderCount.setMediaCount(tenderDTO.getMediaCount());
 

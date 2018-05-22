@@ -1,4 +1,4 @@
-package com.punj.app.ecommerce.models.price;
+package com.punj.app.ecommerce.models.price.validator;
 
 import java.math.BigDecimal;
 
@@ -9,6 +9,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.models.price.PriceBean;
 
 @Component
 public class PriceBeanValidator implements Validator {

@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.utils.Utils;
 
 @Embeddable
@@ -30,8 +33,9 @@ public class TenderCountId implements Serializable {
 	@Column(name = "txn_no")
 	private Integer transactionSeq;
 
-	@Column(name = "tender_id")
-	private Integer tenderId;
+	@ManyToOne
+	@JoinColumn(name = "tender_id")
+	private Tender tender;
 
 	/**
 	 * @return the locationId
@@ -94,18 +98,18 @@ public class TenderCountId implements Serializable {
 	}
 
 	/**
-	 * @return the tenderId
+	 * @return the tender
 	 */
-	public Integer getTenderId() {
-		return tenderId;
+	public Tender getTender() {
+		return tender;
 	}
 
 	/**
-	 * @param tenderId
-	 *            the tenderId to set
+	 * @param tender
+	 *            the tender to set
 	 */
-	public void setTenderId(Integer tenderId) {
-		this.tenderId = tenderId;
+	public void setTender(Tender tender) {
+		this.tender = tender;
 	}
 
 	/**

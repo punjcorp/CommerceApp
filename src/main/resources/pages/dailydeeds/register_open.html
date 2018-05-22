@@ -220,6 +220,9 @@
 											</h5>
 										</div>
 									</div>
+									<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].calTAmount')}"
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"
+															class="text-danger align-top">Tender Total Amount Error </small>
 								</div>
 							</th:block>
 						</div>

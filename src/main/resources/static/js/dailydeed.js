@@ -16,7 +16,7 @@ function submitForm(formName, actionParam) {
 function changedDenomination(tndrIndex, denomIndex) {
 	var denomVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId').val();
 	var denomText = $('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId  option:selected').text();
-	denomText=+denomText.replace(/[^0-9]/gi, '');
+	denomText=+denomText.replace(/[^0-9.]/gi, '');
 	
 	var mediaCountVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.mediaCount').val();
 	var amountVal = denomText * mediaCountVal;
@@ -29,7 +29,7 @@ function changedDenomination(tndrIndex, denomIndex) {
 function changedCount(tndrIndex, denomIndex) {
 	var denomVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId').val();
 	var denomText = $('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId  option:selected').text();
-	denomText=+denomText.replace(/[^0-9]/gi, '');
+	denomText=+denomText.replace(/[^0-9.]/gi, '');
 	
 	var mediaCountVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.mediaCount').val();
 	var amountVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.amount').val();
@@ -45,7 +45,7 @@ function changedCount(tndrIndex, denomIndex) {
 function changedAmount(tndrIndex, denomIndex) {
 	var denomVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId').val();
 	var denomText = $('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId  option:selected').text();
-	denomText=+denomText.replace(/[^0-9]/gi, '');
+	denomText=+denomText.replace(/[^0-9.]/gi, '');
 	
 	var mediaCountVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.mediaCount').val();
 	var amountVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.amount').val();

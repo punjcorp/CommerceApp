@@ -45,6 +45,7 @@ import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
+import com.punj.app.ecommerce.models.dailydeeds.validator.RegisterOpenValidator;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.DailyDeedService;
@@ -68,6 +69,16 @@ public class DailyDeedController {
 	private DailyDeedService dailyDeedService;
 	private CommerceContext commerceContext;
 	private TransactionService txnService;
+	private RegisterOpenValidator registerOpenValidator;
+
+	/**
+	 * @param registerOpenValidator
+	 *            the registerOpenValidator to set
+	 */
+	@Autowired
+	public void setRegisterOpenValidator(RegisterOpenValidator registerOpenValidator) {
+		this.registerOpenValidator = registerOpenValidator;
+	}
 
 	/**
 	 * @param commerceContext
@@ -229,10 +240,7 @@ public class DailyDeedController {
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
 
-		if (StringUtils.isBlank(dailyDeedBean.getReferrerURL()))
-			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
-		else
-			return ViewPathConstants.REDIRECT_URL + dailyDeedBean.getReferrerURL();
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
 
 	}
 
@@ -397,29 +405,32 @@ public class DailyDeedController {
 			if (businessDate != null) {
 
 				Transaction txnDetails = this.txnService.searchLocationOpenTxn(locationId, businessDate);
-				TenderCount tenderCount = this.dailyDeedService.searchTxnTenderCount(txnDetails.getTransactionId());
+				if(txnDetails!=null) {
+					TenderCount tenderCount = this.dailyDeedService.searchTxnTenderCount(txnDetails.getTransactionId());
 
-				List<Denomination> denominations = this.commonService.retrieveAllDenominations();
-				if (denominations != null) {
+					List<Denomination> denominations = this.commonService.retrieveAllDenominations();
+					if (denominations != null) {
 
-					DailyDeedBean dailyDeedBean = DailyDeedTransformer.transformDailyTxn(txnDetails, tenderCount, denominations);
-					if (dailyDeedBean != null) {
-						logger.info("The Store open transaction data has been retrieved successfully");
-						dailyDeedBean.setLocationName(locationName);
-						dailyDeedBean.setDefaultTender(defaultTender);
-						if (StringUtils.isNotBlank(referrerURL))
-							dailyDeedBean.setReferrerURL(referrerURL);
-						String result = this.updateBeansForRegisterOpen(dailyDeedBean, model, session);
-						this.updateCommerceContext(dailyDeedBean);
-						if (StringUtils.isNotBlank(result))
-							return result;
+						DailyDeedBean dailyDeedBean = DailyDeedTransformer.transformDailyTxn(txnDetails, tenderCount, denominations);
+						if (dailyDeedBean != null) {
+							logger.info("The Store open transaction data has been retrieved successfully");
+							dailyDeedBean.setLocationName(locationName);
+							dailyDeedBean.setDefaultTender(defaultTender);
+							if (StringUtils.isNotBlank(referrerURL))
+								dailyDeedBean.setReferrerURL(referrerURL);
+							String result = this.updateBeansForRegisterOpen(dailyDeedBean, model, session);
+							this.updateCommerceContext(dailyDeedBean);
+							if (StringUtils.isNotBlank(result))
+								return result;
 
-						logger.info("The Register open screen is ready for display");
-					} else {
-						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
-						logger.error("There was some error retrieving store open details for register open");
+							logger.info("The Register open screen is ready for display");
+						} else {
+							model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
+							logger.error("There was some error retrieving store open details for register open");
+						}
 					}
 				}
+				
 
 			} else {
 				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
@@ -491,9 +502,7 @@ public class DailyDeedController {
 			logger.error("There was some error while adding a new denomination during register open process", e);
 			return ViewPathConstants.REGISTER_OPEN_PAGE;
 		}
-
 		return ViewPathConstants.REGISTER_OPEN_PAGE;
-
 	}
 
 	private void deleteDenominationDetails(DailyDeedBean dailyDeedBean, Model model) {
@@ -533,6 +542,8 @@ public class DailyDeedController {
 	public String processOpenRegisterDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupRegOpen.class) DailyDeedBean dailyDeedBean,
 			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, HttpSession session) {
 		logger.info("The show store open screen method has been called");
+		registerOpenValidator.validate(dailyDeedBean, bindingResult);
+		logger.info("The price class level validation has been completed successfully");
 		if (bindingResult.hasErrors()) {
 			this.updateBeansForRegisterOpen(dailyDeedBean, model, session);
 			return ViewPathConstants.REGISTER_OPEN_PAGE;

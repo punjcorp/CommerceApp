@@ -29,15 +29,15 @@ public class Transaction implements Serializable {
 	private String sessionId;
 
 	@Column(name = "total")
-	private BigDecimal totalAmt = new BigDecimal("0");
+	private BigDecimal totalAmt;
 	@Column(name = "tax_total")
-	private BigDecimal taxTotalAmt = new BigDecimal("0");
+	private BigDecimal taxTotalAmt;
 	@Column(name = "discount_total")
-	private BigDecimal discountTotalAmt = new BigDecimal("0");
+	private BigDecimal discountTotalAmt;
 	@Column(name = "round_total")
-	private BigDecimal roundTotalAmt = new BigDecimal("0");
+	private BigDecimal roundTotalAmt;
 	@Column(name = "subtotal")
-	private BigDecimal subTotalAmt = new BigDecimal("0");
+	private BigDecimal subTotalAmt;
 
 	@Column(name = "cancel_reason_code")
 	private String cancelReason;

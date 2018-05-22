@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.finance.TenderMovement;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.item.Item;
@@ -33,6 +34,7 @@ import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
+import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TaxLineItemRepository;
@@ -40,6 +42,7 @@ import com.punj.app.ecommerce.repositories.transaction.TenderLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
+import com.punj.app.ecommerce.services.FinanceService;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -65,6 +68,26 @@ public class TransactionServiceImpl implements TransactionService {
 	private TenderLineItemRepository tenderLineItemRepository;
 	private ReceiptItemTaxRepository receiptItemTaxRepository;
 	private TransactionReceiptRepository txnReceiptRepository;
+	private TenderMovementRepository tenderMovementRepository;
+	private FinanceService financeService;
+
+	/**
+	 * @param financeService
+	 *            the financeService to set
+	 */
+	@Autowired
+	public void setFinanceService(FinanceService financeService) {
+		this.financeService = financeService;
+	}
+
+	/**
+	 * @param tenderMovementRepository
+	 *            the tenderMovementRepository to set
+	 */
+	@Autowired
+	public void setTenderMovementRepository(TenderMovementRepository tenderMovementRepository) {
+		this.tenderMovementRepository = tenderMovementRepository;
+	}
 
 	/**
 	 * @param txnReceiptRepository
@@ -396,7 +419,7 @@ public class TransactionServiceImpl implements TransactionService {
 		ItemStockJournal itemStockJournal = null;
 		Item item = null;
 
-		int itemQty=0;
+		int itemQty = 0;
 		for (SaleLineItem saleLineItem : saleLineItems) {
 			itemStockJournal = new ItemStockJournal();
 			itemStockJournal.setCreatedBy(username);
@@ -408,17 +431,16 @@ public class TransactionServiceImpl implements TransactionService {
 			item.setItemId(saleLineItem.getSaleLineItemId().getItemId());
 			itemStockJournal.setItemId(item.getItemId());
 
-			itemQty=saleLineItem.getQty().intValue();
+			itemQty = saleLineItem.getQty().intValue();
 			StockReason stockReason = new StockReason();
-			if(itemQty<0) {
+			if (itemQty < 0) {
 				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
 				itemStockJournal.setFunctionality(ServiceConstants.RETURN_TXN_FUNCTIONALITY);
-			}
-			else {
+			} else {
 				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKOUT);
 				itemStockJournal.setFunctionality(ServiceConstants.SALE_TXN_FUNCTIONALITY);
 			}
-			
+
 			itemStockJournal.setReasonCode(stockReason);
 			itemStockJournal.setQty(itemQty);
 
@@ -428,6 +450,19 @@ public class TransactionServiceImpl implements TransactionService {
 		logger.info("The stock details has been created from Sale Txn Line Item details");
 		return itemStockDetails;
 
+	}
+
+	@Override
+	public TenderMovement saveTenderMoveTxn(TenderMovement tenderMoveDetails) {
+
+		tenderMoveDetails=this.tenderMovementRepository.save(tenderMoveDetails);
+		
+		if (tenderMoveDetails != null)
+			logger.info("The tender move details has been saved successfully");
+		else
+			logger.info("The tender move details were not saved due to some issues");
+
+		return tenderMoveDetails;
 	}
 
 }

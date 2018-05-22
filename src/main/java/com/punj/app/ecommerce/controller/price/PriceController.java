@@ -37,7 +37,7 @@ import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.price.PriceBean;
 import com.punj.app.ecommerce.models.price.PriceBeanDTO;
-import com.punj.app.ecommerce.models.price.PriceBeanValidator;
+import com.punj.app.ecommerce.models.price.validator.PriceBeanValidator;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.common.CommonService;
 
@@ -54,7 +54,6 @@ public class PriceController {
 	private MessageSource messageSource;
 	private PriceBeanValidator priceValidator;
 
-	
 	/**
 	 * @param priceValidator
 	 *            the priceValidator to set
@@ -62,8 +61,8 @@ public class PriceController {
 	@Autowired
 	public void setPriceBeanValidator(PriceBeanValidator priceValidator) {
 		this.priceValidator = priceValidator;
-	}	
-	
+	}
+
 	/**
 	 * @param priceService
 	 *            the priceService to set
@@ -126,14 +125,14 @@ public class PriceController {
 		try {
 			BigInteger itemPriceId = new BigInteger(req.getParameter(MVCConstants.PRICE_ID_PARAM));
 			ItemPrice itemPrice = this.priceService.searchPrice(itemPriceId);
-			if(itemPrice!=null) {
+			if (itemPrice != null) {
 				PriceBean priceBean = PriceTransformer.transformItemPriceDomain(itemPrice);
 				this.updatePriceBeans(priceBean, model, MVCConstants.ACTION_EDIT);
 				logger.info("The provided item price has been retrieved from database for modification");
-			}else {
+			} else {
 				logger.info("There was no item price existing for retrieval");
 			}
-			
+
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while showing item price for modification.", e);
 			return ViewPathConstants.PRICE_DETAIL_PAGE;
@@ -160,17 +159,17 @@ public class PriceController {
 	 * @param model
 	 */
 	private void updatePriceBeans(PriceBean priceBean, Model model, String action) {
-		
-		if(priceBean.getClearanceResetId()!=null) {
+
+		if (priceBean.getClearanceResetId() != null) {
 			ItemPrice clearancePrice = this.priceService.searchPrice(priceBean.getClearanceResetId());
 			PriceBean clearancePriceBean = null;
-			if(clearancePrice!=null) {
+			if (clearancePrice != null) {
 				clearancePriceBean = PriceTransformer.transformItemPriceDomain(clearancePrice);
 				priceBean.setExistingClearance(clearancePriceBean);
 				logger.info("The clearance has been retrieved successfully");
 			}
-		}		
-		
+		}
+
 		// This has to come from cache
 		List<Location> locationList = this.commonService.retrieveAllLocations();
 		this.updateLocations(priceBean, locationList);
@@ -198,10 +197,10 @@ public class PriceController {
 
 	public String actionProcessing(PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale, Authentication authentication, String action) {
 		Boolean status = Boolean.FALSE;
-		
+
 		priceValidator.validate(priceBean, bindingResult);
 		logger.info("The price class level validation has been completed successfully");
-		
+
 		if (bindingResult.hasErrors()) {
 			this.updatePriceBeans(priceBean, model, action);
 			return ViewPathConstants.PRICE_DETAIL_PAGE;

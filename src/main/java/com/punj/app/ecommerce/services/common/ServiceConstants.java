@@ -17,6 +17,14 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
+	
+	public static final String REASON_REPO_TO_REGISTER="Repository To Register";
+	public static final String REASON_REGISTER_TO_REPO="Register To Repository";
+	public static final String REASON_REGISTER_TO_REGISTER="Register To Register";
+	
+	public static final String LEDGER_ACTION_ADD_TO_SAFE="1";
+	public static final String LEDGER_ACTION_SUBTRACT_FROM_SAFE="2";
+	
 	public static final Integer STYLE_LEVEL=1;
 	public static final Integer ITEM_LEVEL=2;
 	public static final Integer UPC_LEVEL=3;	

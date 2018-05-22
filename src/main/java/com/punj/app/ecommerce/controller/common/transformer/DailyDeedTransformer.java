@@ -181,7 +181,7 @@ public class DailyDeedTransformer {
 		List<TenderBean> tenders = new ArrayList<>(1);
 
 		TenderBean tenderBean = new TenderBean();
-		tenderBean.setTenderId(tenderCountDetails.getTenderCountId().getTenderId());
+		tenderBean.setTenderId(tenderCountDetails.getTenderCountId().getTender().getTenderId());
 		tenderBean.setCalTAmount(tenderCountDetails.getAmount());
 		tenderBean.setCalMCount(tenderCountDetails.getMediaCount());
 
