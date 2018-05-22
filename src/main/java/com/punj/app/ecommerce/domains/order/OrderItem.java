@@ -68,6 +68,11 @@ public class OrderItem implements Serializable {
 	@Column(name = "actual_unit_cost")
 	private BigDecimal actualUnitCost = BigDecimal.ZERO;
 
+	@Column(name = "actual_suggested_price")
+	private BigDecimal actualSuggestedPrice = BigDecimal.ZERO;
+	@Column(name = "actual_max_retail_price")
+	private BigDecimal actualMaxRetailPrice= BigDecimal.ZERO;	
+	
 	@Column(name = "delievered_qty")
 	private BigDecimal delieveredQty = BigDecimal.ZERO;
 	@Column(name = "delievered_date")
@@ -340,6 +345,34 @@ public class OrderItem implements Serializable {
 	 */
 	public void setItemId(BigInteger itemId) {
 		this.itemId = itemId;
+	}
+
+	/**
+	 * @return the actualSuggestedPrice
+	 */
+	public BigDecimal getActualSuggestedPrice() {
+		return actualSuggestedPrice;
+	}
+
+	/**
+	 * @param actualSuggestedPrice the actualSuggestedPrice to set
+	 */
+	public void setActualSuggestedPrice(BigDecimal actualSuggestedPrice) {
+		this.actualSuggestedPrice = actualSuggestedPrice;
+	}
+
+	/**
+	 * @return the actualMaxRetailPrice
+	 */
+	public BigDecimal getActualMaxRetailPrice() {
+		return actualMaxRetailPrice;
+	}
+
+	/**
+	 * @param actualMaxRetailPrice the actualMaxRetailPrice to set
+	 */
+	public void setActualMaxRetailPrice(BigDecimal actualMaxRetailPrice) {
+		this.actualMaxRetailPrice = actualMaxRetailPrice;
 	}
 
 }

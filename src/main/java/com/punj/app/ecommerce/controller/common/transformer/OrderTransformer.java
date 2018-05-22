@@ -316,6 +316,9 @@ public class OrderTransformer {
 		orderItemBean.setTaxAmount(orderItem.getTaxAmount());
 		orderItemBean.setTotalCost(orderItem.getTotalCost());
 
+		orderItemBean.setActualSuggestedPrice(orderItem.getActualSuggestedPrice());
+		orderItemBean.setActualMaxRetailPrice(orderItem.getActualMaxRetailPrice());
+		
 		orderItemBean.setActualCostAmount(orderItem.getActualCostAmount());
 		orderItemBean.setActualDiscountAmount(orderItem.getActualDiscountAmount());
 		orderItemBean.setActualTaxAmount(orderItem.getActualTaxAmount());
@@ -552,6 +555,9 @@ public class OrderTransformer {
 		orderItem.setDelieveredQty(orderItemBean.getDelieveredQty());
 		orderItem.setDelieveredDate(LocalDateTime.now());
 
+		orderItem.setActualSuggestedPrice(orderItemBean.getActualSuggestedPrice());
+		orderItem.setActualMaxRetailPrice(orderItemBean.getActualMaxRetailPrice());
+		
 		orderItem.setActualUnitCost(orderItemBean.getActualUnitCost());
 		orderItem.setActualCostAmount(orderItemBean.getActualCostAmount());
 		orderItem.setActualDiscountAmount(orderItemBean.getActualDiscountAmount());

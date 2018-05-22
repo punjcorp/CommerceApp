@@ -149,7 +149,7 @@
 															</label>
 														</div>
 													</div>
-													<div class="col-2 padding-sm text-center">
+													<div class="col-1 padding-sm text-center">
 														<div class="form-group">
 															<label><small> <span th:text="#{commerce.screen.order.item.tax}"></span></small> </label> <br /> <label><span
 																th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_sgstTaxAmount'"
@@ -190,10 +190,9 @@
 												</div>
 												<div class="row">
 													<div class="col col-width-sm"></div>
-													<div class="col-2"></div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<label><small> <span th:text="#{commerce.screen.order.qty.delievered}"></span></small> </label><br /> <input type="text"
+															<label><small> <span  class="pos-mandatory" th:text="#{commerce.screen.order.qty.delievered}"></span></small> </label><br /> <input type="number"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].delieveredQty}" onChange="actualDetailsChanged(this);"
 																class="form-control input-sm" th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input>
 															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].delieveredQty')}"
@@ -202,11 +201,46 @@
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<label><small> <span th:text="#{commerce.screen.order.cost.actual}"></span></small> </label> <br /> <input type="text"
-																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}" onChange="actualDetailsChanged(this);"
-																class="form-control input-sm" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
-															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualUnitCost')}"
-																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}" class="text-danger">Cost Error</div>
+															<label><small> <span  class="pos-mandatory" th:text="#{commerce.screen.order.cost.actual}"></span></small> </label>
+															<div class="input-group text-left">
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
+																</div>
+																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}"
+																	onChange="actualDetailsChanged(this);" class="form-control input-sm" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
+															</div>
+															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualUnitCost')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}" class="text-danger">Cost Error</small>
+														</div>
+													</div>
+													<div class="col padding-sm">
+														<div class="form-group">
+															<label><small> <span th:text="#{commerce.screen.order.suggested.price.actual}"></span></small> </label>
+															<div class="input-group text-left">
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
+																</div>
+																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualSuggestedPrice}"
+																	class="form-control input-sm" th:placeholder="#{commerce.screen.order.suggested.price}" maxlength="150"></input>
+															</div>
+															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualSuggestedPrice')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualSuggestedPrice}" class="text-danger">Suggested Price
+																Error</small>
+														</div>
+													</div>
+													<div class="col padding-sm">
+														<div class="form-group">
+															<label><small> <span th:text="#{commerce.screen.order.mrp.actual}"></span></small> </label>
+															<div class="input-group text-left">
+																<div class="input-group-prepend">
+																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
+																</div>
+																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualMaxRetailPrice}"
+																	class="form-control input-sm" th:placeholder="#{commerce.screen.order.mrp}" maxlength="150"></input>
+															</div>
+															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualMaxRetailPrice')}"
+																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualMaxRetailPrice}" class="text-danger">Max Retail Price
+																Error</small>
 														</div>
 													</div>
 													<div class="col padding-sm text-center">
@@ -218,7 +252,7 @@
 															</label>
 														</div>
 													</div>
-													<div class="col-2 padding-sm text-center">
+													<div class="col-1 padding-sm text-center">
 														<div class="form-group">
 															<label><small> <span th:text="#{commerce.screen.order.tax.actual}"></span></small> </label> <br /> <label><span
 																th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_'+${itrStat.index}+'_actualTaxAmount'"
@@ -379,7 +413,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-4">
+					<div class="col-3">
 						<div id="supplierDetails" th:class="${orderBeanDTO.order.supplier.supplierId==null}?'d-none':''">
 							<div class="card border-box-filled">
 								<input type="hidden" th:field="*{order.supplier.supplierId}"></input> <input type="hidden" th:field="*{order.supplier.name}"></input> <input
@@ -394,11 +428,6 @@
 								<div class="card-body">
 									<div class="row">
 										<div class="col-4">
-											<div class="card-text">
-												<h4>
-													<span th:text="#{commerce.screen.order.supplier.address}"></span>
-												</h4>
-											</div>
 											<div class="card-text my-3">
 												<div class="fa-3x">
 													<span class="fa-layers fa-fw"> <i class="fas fa-map-marker"></i> <i class="fas fa-circle color-blue"
@@ -462,6 +491,17 @@
 														<small><span id="supplierEmail" th:text="${orderBeanDTO.order.supplier.email}"></span></small>
 													</div>
 												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<div class="card-text text-center">
+												<br />
+												<br />
+												<h4>
+													<span th:text="#{commerce.screen.order.supplier.address}"></span>
+												</h4>
 											</div>
 										</div>
 									</div>

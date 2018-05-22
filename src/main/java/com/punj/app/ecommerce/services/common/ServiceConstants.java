@@ -17,6 +17,9 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
+	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
+	
 	
 	public static final String REASON_REPO_TO_REGISTER="Repository To Register";
 	public static final String REASON_REGISTER_TO_REPO="Register To Repository";

@@ -63,7 +63,11 @@ $(function() {
 			txnAction.processTender();
 		}
 	});
-
+	
+	$('#btnLastTxn').click(function() {
+		printLastxn();
+	});	
+	
 	$('#btnCompleteTxn').click(function() {
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		txnAction.processCompletedTxn();
@@ -293,4 +297,14 @@ function printTxnReceipt(){
 
 }
 
+
+function printLastxn(){
+	var lastTxnRcptURL="/pos/last_txn_rcpt";
+	lastTxnRcptURL+="?locationId="+txn_locationId+"&registerId="+txn_registerId+"&businessDate="+txn_businessDate;
+	
+	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+lastTxnRcptURL;
+	
+	window.open(pdfRcptUrl);
+	return false;
+}
 

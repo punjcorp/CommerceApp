@@ -207,6 +207,9 @@ public final class ViewPathConstants {
 	 * The sale screen section starts
 	 */
 
+	public static final String LAST_TXN_RCPT_URL="/pos/last_txn_rcpt";
+	public static final String LAST_TXN_RCPT_PAGE="/sale/receipt_print";
+	
 	public static final String POS_URL="/pos/sale";
 	public static final String SALES_URL="/pos/sales";
 	public static final String SALES_PAGE="sale/sales";

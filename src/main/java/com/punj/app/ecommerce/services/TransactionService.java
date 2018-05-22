@@ -39,4 +39,7 @@ public interface TransactionService {
 	public Boolean saveTransactionReceipt(List<TransactionReceipt> txnReceipts);
 
 	public TenderMovement saveTenderMoveTxn(TenderMovement tenderMove);
+
+	public TransactionReceipt retrieveLastTransaction(TransactionId txnIdCriteria);
+
 }

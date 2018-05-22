@@ -78,6 +78,8 @@ public class OrderItemBean {
 	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
 	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
 	private BigDecimal actualUnitCost = BigDecimal.ZERO;
+	private BigDecimal actualSuggestedPrice = BigDecimal.ZERO;
+	private BigDecimal actualMaxRetailPrice = BigDecimal.ZERO;
 	private BigDecimal actualCostAmount = BigDecimal.ZERO;
 	private BigDecimal actualTotalCost = BigDecimal.ZERO;
 	private BigDecimal actualDiscountAmount = BigDecimal.ZERO;
@@ -623,6 +625,36 @@ public class OrderItemBean {
 	 */
 	public void setIgstTaxId(BigInteger igstTaxId) {
 		this.igstTaxId = igstTaxId;
+	}
+
+	/**
+	 * @return the actualSuggestedPrice
+	 */
+	public BigDecimal getActualSuggestedPrice() {
+		return actualSuggestedPrice;
+	}
+
+	/**
+	 * @param actualSuggestedPrice
+	 *            the actualSuggestedPrice to set
+	 */
+	public void setActualSuggestedPrice(BigDecimal actualSuggestedPrice) {
+		this.actualSuggestedPrice = actualSuggestedPrice;
+	}
+
+	/**
+	 * @return the actualMaxRetailPrice
+	 */
+	public BigDecimal getActualMaxRetailPrice() {
+		return actualMaxRetailPrice;
+	}
+
+	/**
+	 * @param actualMaxRetailPrice
+	 *            the actualMaxRetailPrice to set
+	 */
+	public void setActualMaxRetailPrice(BigDecimal actualMaxRetailPrice) {
+		this.actualMaxRetailPrice = actualMaxRetailPrice;
 	}
 
 }

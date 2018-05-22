@@ -34,6 +34,7 @@ import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
@@ -455,14 +456,44 @@ public class TransactionServiceImpl implements TransactionService {
 	@Override
 	public TenderMovement saveTenderMoveTxn(TenderMovement tenderMoveDetails) {
 
-		tenderMoveDetails=this.tenderMovementRepository.save(tenderMoveDetails);
-		
+		tenderMoveDetails = this.tenderMovementRepository.save(tenderMoveDetails);
+
 		if (tenderMoveDetails != null)
 			logger.info("The tender move details has been saved successfully");
 		else
 			logger.info("The tender move details were not saved due to some issues");
 
 		return tenderMoveDetails;
+	}
+
+	@Override
+	public TransactionReceipt retrieveLastTransaction(TransactionId txnIdCriteria) {
+
+		TransactionReceipt txnReceipt = null;
+		Transaction txnDetails = null;
+		Integer txnNo = this.transactionRepository.getLastTransactionNo(txnIdCriteria.getLocationId(), txnIdCriteria.getRegister(),
+				txnIdCriteria.getBusinessDate());
+		if (txnNo != null) {
+			txnIdCriteria.setTransactionSeq(txnNo);
+			txnDetails = this.transactionRepository.findOne(txnIdCriteria);
+
+			if (txnDetails != null) {
+				logger.info("The transaction details has been retrieved successfully for last transaction");
+				TransactionReceiptId txnRcptIdCriteria = new TransactionReceiptId();
+				txnRcptIdCriteria.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
+				txnRcptIdCriteria.setBusinessDate(txnIdCriteria.getBusinessDate());
+				txnRcptIdCriteria.setLocationId(txnIdCriteria.getLocationId());
+				txnRcptIdCriteria.setRegister(txnIdCriteria.getRegister());
+				txnRcptIdCriteria.setTransactionSeq(txnNo);
+				txnReceipt = this.txnReceiptRepository.findOne(txnRcptIdCriteria);
+				logger.info("The transaction receipt details has been retrieved successfully");
+			} else {
+				logger.info("There was no transaction found for the day before now()");
+			}
+		}else {
+			logger.info("There was no transaction found for the day before now()");
+		}
+		return txnReceipt;
 	}
 
 }

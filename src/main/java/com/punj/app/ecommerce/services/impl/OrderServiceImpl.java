@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.item.Item;
+import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
@@ -337,7 +338,7 @@ public class OrderServiceImpl implements OrderService {
 	public Order searchOrder(BigInteger orderId) {
 
 		Order order = this.orderRepository.findOne(orderId);
-		if(order!=null)
+		if (order != null)
 			logger.info("The selected purchase order {} has been retrieved", order.getOrderId());
 		else
 			logger.info("The selected purchase order {} was not found!", orderId);
@@ -354,8 +355,7 @@ public class OrderServiceImpl implements OrderService {
 
 		this.orderItemRepository.delete(orderItem.getOrderItemId());
 
-		logger.info("The selected item {} has been deleted from order {} successfully", orderItem.getItemId(),
-				orderItem.getOrder().getOrderId());
+		logger.info("The selected item {} has been deleted from order {} successfully", orderItem.getItemId(), orderItem.getOrder().getOrderId());
 
 	}
 
@@ -490,37 +490,70 @@ public class OrderServiceImpl implements OrderService {
 			logger.info("The selected bill for id {} of type {} has been retrieved successfully", orderBillId, orderBill.getBillFileType());
 		else
 			logger.info("The selected bill for id {} was not found", orderBillId);
-		
+
 		return orderBill;
 	}
 
 	@Override
 	@Transactional
 	public Order receiveOrder(Order order, String username) {
-		BigInteger orderId=order.getOrderId();
-		
-		order=this.createOrder(order);
-		if(order!=null) {
+		BigInteger orderId = order.getOrderId();
+
+		order = this.createOrder(order);
+		if (order != null) {
 			logger.info("The order {} has been marked as received in order tables.", orderId);
-			
+
 			List<OrderItem> orderItems = order.getOrderItems();
 			List<ItemStockJournal> inventoryDetails = this.createStockDetails(order, orderItems, username);
 			this.inventoryService.updateInventory(inventoryDetails);
 			logger.debug("The order items inventory has been updated successfully", orderId);
 
-			logger.info("The order {} receive process is completed successfully.", orderId);
+			this.updateItemPriceUpdates(orderItems, orderId, username);
+			logger.info("The order item price updates has been completed successfully.");
 			
-		}else {
+			
+			logger.info("The order {} receive process is completed successfully.", orderId);
+
+		} else {
 			logger.error("The order {} was not marked as received due to some issue");
 		}
-		return order;		
+		return order;
+	}
+
+	private void updateItemPriceUpdates(List<OrderItem> orderItems,BigInteger orderId, String username) {
+		Item item = null;
+		ItemOptions itemOptions = null;
+		
+		BigDecimal suggestedPrice=null;
+		BigDecimal maxRetailPrice=null;
+		
+		for (OrderItem orderItem : orderItems) {
+			suggestedPrice=orderItem.getActualSuggestedPrice();
+			maxRetailPrice=orderItem.getActualMaxRetailPrice();
+			item = this.itemRepository.findOne(orderItem.getItemId());
+			if (( suggestedPrice!= null && suggestedPrice.doubleValue() > 0)
+					|| (maxRetailPrice != null && maxRetailPrice.doubleValue() > 0)) {
+				itemOptions = item.getItemOptions();
+				if (suggestedPrice.doubleValue() > 0)
+					itemOptions.setSuggestedPrice(suggestedPrice);
+				if (maxRetailPrice.doubleValue() > 0)
+					itemOptions.setMaxRetailPrice(maxRetailPrice);
+			}
+			itemOptions.setUnitCost(orderItem.getActualUnitCost());
+			
+			item.setModifiedBy(username);
+			item.setModifiedDate(LocalDateTime.now());
+			
+			this.itemRepository.save(item);
+			logger.info("The item {} prices has been updated successfully based on the details from order.",item.getItemId(), orderId);
+		}
 	}
 
 	@Override
 	@Transactional
 	public Order receiveAllOrder(Order order, String username) {
-		BigInteger orderId=order.getOrderId();
-		order=this.receiveOrder(order, username);
+		BigInteger orderId = order.getOrderId();
+		order = this.receiveOrder(order, username);
 		logger.info("The order {} receive all process is completed successfully.", orderId);
 		return order;
 	}
