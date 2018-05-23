@@ -76,6 +76,10 @@
 														type="hidden" th:field="*{order.createdDate}"></input> <input type="hidden" th:field="*{order.status}"></input> <input type="text"
 														th:field="*{supplierSearch.searchText}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.search.text}"
 														placeholder="Enter keyword to search" aria-describedby="searchHelp"></input>
+													<div class="input-group-append d-none" id="supplierSearchBusy">
+														<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
+														</span>
+													</div>	
 												</div>
 												<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.supplier.search.keywords}">Enter keywords like
 													id/Name/Email/Address/Phone#</small> <small th:if="${#fields.hasErrors('order.supplierId')}" th:errors="*{order.supplierId}" class="text-danger">Supplier
@@ -173,11 +177,16 @@
 																	</span>
 																	</span>
 																</div>
-																<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}" class="form-control input-sm"
-																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input><input type="hidden"
-																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
+																<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}" class="form-control input-sm"
+																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input> <input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}"></input> <input type="hidden"
 																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderItemId}"></input>
+																<div class="input-group-append d-none" th:id="'itemSearchBusy'+${itrStat.index}">
+																	<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
+																	</span>
+																</div>																	
 															</div>
+															<small th:id="'itemSearchErrorMsg'+${itrStat.index}" ></small>
 															<small id="itemSearchHelp" class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc==null}"
 																th:text="#{commerce.screen.item.search.keywords}">Enter keywords like Item#/Name/Description</small> <small id="itemSearchHelp"
 																class="form-text text-muted" th:if="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc!=null}"
@@ -273,11 +282,11 @@
 											<div class="form-group">
 												<label></label>
 												<div class="input-group text-left">
-													<button type="submit" name="saveOrder" value="Save" class="btn btn-info mx-2"
+													<button type="submit" id="btnSaveOrder" name="saveOrder" value="Save" class="btn btn-info mx-2"
 														th:if="${orderBeanDTO.order.status==null || orderBeanDTO.order.status=='C'}">
 														<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
 													</button>
-													<button type="submit" name="approveOrder" value="Approve" class="btn btn-info"
+													<button type="submit" id="btnApproveOrder" name="approveOrder" value="Approve" class="btn btn-info"
 														th:if="${orderBeanDTO.order.status==null || orderBeanDTO.order.status=='C'}">
 														<i class="fas fa-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
 													</button>
@@ -508,7 +517,7 @@
 							<span th:text="#{commerce.screen.order.report.generate}"></span>
 						</div>
 					</div>
-					<iframe id="reportPDFContainer" class="p-5" width="90%" height="80%" frameBorder="0"></iframe>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="85%" frameBorder="0"></iframe>
 				</div>
 			</div>
 		</div>

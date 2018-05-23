@@ -549,7 +549,7 @@ body {
 	height: auto;
 	max-height: 100%;
 }
-.modal-body{
+.modal-lg .modal-body{
 	height: 600px;
 }
 

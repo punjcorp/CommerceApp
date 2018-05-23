@@ -207,7 +207,7 @@
 																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
 																</div>
 																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}"
-																	onChange="actualDetailsChanged(this);" class="form-control input-sm" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
+																	onChange="actualDetailsChanged(this);" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
 															</div>
 															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualUnitCost')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}" class="text-danger">Cost Error</small>
@@ -221,7 +221,7 @@
 																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
 																</div>
 																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualSuggestedPrice}"
-																	class="form-control input-sm" th:placeholder="#{commerce.screen.order.suggested.price}" maxlength="150"></input>
+																	class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.suggested.price}" maxlength="150"></input>
 															</div>
 															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualSuggestedPrice')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualSuggestedPrice}" class="text-danger">Suggested Price
@@ -236,7 +236,7 @@
 																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
 																</div>
 																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualMaxRetailPrice}"
-																	class="form-control input-sm" th:placeholder="#{commerce.screen.order.mrp}" maxlength="150"></input>
+																	class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.mrp}" maxlength="150"></input>
 															</div>
 															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualMaxRetailPrice')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualMaxRetailPrice}" class="text-danger">Max Retail Price
@@ -389,13 +389,13 @@
 											<div class="form-group">
 												<label></label>
 												<div class="input-group text-left">
-													<button type="submit" name="saveOrder" value="Save" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
+													<button type="submit" id="btnSaveOrder" name="saveOrder" value="Save" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
 														<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
 													</button>
-													<button type="submit" name="receiveOrder" value="Receive" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
+													<button type="submit" id="btnReceiveOrder" name="receiveOrder" value="Receive" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
 														<i class="fas fa-arrow-left fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.receive}"></span>
 													</button>
-													<button type="submit" name="receiveAllOrder" value="Receive" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
+													<button type="submit" id="btnReceiveAllOrder" name="receiveAllOrder" value="Receive" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
 														<span class="fa-2x"> <span class="fa-layers fa-fw"> <i class="fas fa-arrow-left" data-fa-transform="shrink-8 up-4"></i> <i
 																class="fas fa-arrow-left" data-fa-transform="shrink-8 down-4"></i>
 														</span>
@@ -720,7 +720,7 @@
 							<span th:text="#{commerce.screen.order.report.generate}"></span>
 						</div>
 					</div>
-					<iframe id="reportPDFContainer" class="p-5" width="90%" height="90%" frameBorder="0"></iframe>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="85%" frameBorder="0"></iframe>
 				</div>
 			</div>
 		</div>

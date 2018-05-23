@@ -142,6 +142,8 @@ public class SaleItemServiceImpl implements SaleItemService {
 			saleItem.setImagePath(item.getImages().get(0).getImageURL());
 
 		saleItem.setUnitCostAmt(item.getItemOptions().getUnitCost());
+		saleItem.setSuggestedPrice(item.getItemOptions().getSuggestedPrice());
+		saleItem.setMaxRetailPrice(item.getItemOptions().getMaxRetailPrice());
 
 		BigDecimal itemPriceAmt = itemPrice.getItemPrice();
 		saleItem.setPriceAmt(itemPriceAmt);

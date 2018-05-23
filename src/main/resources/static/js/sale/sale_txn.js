@@ -83,16 +83,16 @@ $.extend(TxnAction.prototype, {
 				totalDiscount += +$(this).val();
 			}
 			if (this.id.indexOf("li_priceAmt") >= 0) {
-				totalPrice += +$(this).val();
+				totalPrice += +$(this).text();
 			}
 			if (this.id.indexOf("li_sgstAmt") >= 0) {
-				totalSGSTTax += +$(this).val();
+				totalSGSTTax += +$(this).text();
 			}
 			if (this.id.indexOf("li_cgstAmt") >= 0) {
-				totalCGSTTax += +$(this).val();
+				totalCGSTTax += +$(this).text();
 			}
 			if (this.id.indexOf("li_igstAmt") >= 0) {
-				totalIGSTTax += +$(this).val();
+				totalIGSTTax += +$(this).text();
 			}
 		});
 
@@ -107,8 +107,16 @@ $.extend(TxnAction.prototype, {
 		$('#hc_totalDiscountAmt').val(totalDiscount.toFixed(2));
 		$('#hc_totalTaxAmt').val(totalTax.toFixed(2));
 		$('#hc_totalDueAmt').val(totalAmt.toFixed(2));
+		
+		
+		var totalPaidAmount = g_nbr_zero;
+		$("[id^=tli_amt_").each(function() {
+			tliPaidAmt = +$(this).val();
+			totalPaidAmount += tliPaidAmt;
+		});
+		var remainingAmount = totalAmt.toFixed(2) - (totalPaidAmount.toFixed(2));
 
-		$('#dueAmt').val(totalAmt.toFixed(2));
+		$('#dueAmt').val(remainingAmount.toFixed(2));
 
 		// Setting the sales header object
 		this.txnHeader.locationId = txn_locationId;

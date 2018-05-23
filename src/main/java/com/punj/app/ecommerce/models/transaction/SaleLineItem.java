@@ -34,6 +34,9 @@ public class SaleLineItem {
 	private BigDecimal extendedAmount;
 	private BigDecimal taxAmount;
 
+	private BigDecimal suggestedPrice;
+	private BigDecimal maxRetailPrice;
+
 	private Boolean returnFlag;
 	private Boolean excludeFromSalesFlag;
 
@@ -787,7 +790,8 @@ public class SaleLineItem {
 	}
 
 	/**
-	 * @param taxLineItems the taxLineItems to set
+	 * @param taxLineItems
+	 *            the taxLineItems to set
 	 */
 	public void setTaxLineItems(List<TaxLineItem> taxLineItems) {
 		this.taxLineItems = taxLineItems;
@@ -801,10 +805,41 @@ public class SaleLineItem {
 	}
 
 	/**
-	 * @param itemTotal the itemTotal to set
+	 * @param itemTotal
+	 *            the itemTotal to set
 	 */
 	public void setItemTotal(BigDecimal itemTotal) {
 		this.itemTotal = itemTotal;
+	}
+
+	/**
+	 * @return the suggestedPrice
+	 */
+	public BigDecimal getSuggestedPrice() {
+		return suggestedPrice;
+	}
+
+	/**
+	 * @param suggestedPrice
+	 *            the suggestedPrice to set
+	 */
+	public void setSuggestedPrice(BigDecimal suggestedPrice) {
+		this.suggestedPrice = suggestedPrice;
+	}
+
+	/**
+	 * @return the maxRetailPrice
+	 */
+	public BigDecimal getMaxRetailPrice() {
+		return maxRetailPrice;
+	}
+
+	/**
+	 * @param maxRetailPrice
+	 *            the maxRetailPrice to set
+	 */
+	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
+		this.maxRetailPrice = maxRetailPrice;
 	}
 
 }

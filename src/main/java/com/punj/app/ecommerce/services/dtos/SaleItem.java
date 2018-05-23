@@ -21,6 +21,8 @@ public class SaleItem implements Serializable {
 	private String imagePath;
 
 	private BigDecimal unitCostAmt;
+	private BigDecimal suggestedPrice;
+	private BigDecimal maxRetailPrice;
 	private BigDecimal priceAmt;
 	private BigDecimal discountAmt;
 	private BigDecimal taxAmt;
@@ -30,11 +32,10 @@ public class SaleItem implements Serializable {
 	private SaleItemTax sgstTax;
 	private SaleItemTax cgstTax;
 	private SaleItemTax igstTax;
-	
+
 	private String imageData;
 	private String imageType;
 
-	
 	/**
 	 * @return the itemId
 	 */
@@ -223,7 +224,8 @@ public class SaleItem implements Serializable {
 	}
 
 	/**
-	 * @param unitCostAmt the unitCostAmt to set
+	 * @param unitCostAmt
+	 *            the unitCostAmt to set
 	 */
 	public void setUnitCostAmt(BigDecimal unitCostAmt) {
 		this.unitCostAmt = unitCostAmt;
@@ -237,7 +239,8 @@ public class SaleItem implements Serializable {
 	}
 
 	/**
-	 * @param imageData the imageData to set
+	 * @param imageData
+	 *            the imageData to set
 	 */
 	public void setImageData(String imageData) {
 		this.imageData = imageData;
@@ -251,10 +254,41 @@ public class SaleItem implements Serializable {
 	}
 
 	/**
-	 * @param imageType the imageType to set
+	 * @param imageType
+	 *            the imageType to set
 	 */
 	public void setImageType(String imageType) {
 		this.imageType = imageType;
+	}
+
+	/**
+	 * @return the suggestedPrice
+	 */
+	public BigDecimal getSuggestedPrice() {
+		return suggestedPrice;
+	}
+
+	/**
+	 * @param suggestedPrice
+	 *            the suggestedPrice to set
+	 */
+	public void setSuggestedPrice(BigDecimal suggestedPrice) {
+		this.suggestedPrice = suggestedPrice;
+	}
+
+	/**
+	 * @return the maxRetailPrice
+	 */
+	public BigDecimal getMaxRetailPrice() {
+		return maxRetailPrice;
+	}
+
+	/**
+	 * @param maxRetailPrice
+	 *            the maxRetailPrice to set
+	 */
+	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
+		this.maxRetailPrice = maxRetailPrice;
 	}
 
 }

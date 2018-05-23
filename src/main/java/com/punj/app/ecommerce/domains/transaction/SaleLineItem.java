@@ -24,6 +24,11 @@ public class SaleLineItem implements Serializable {
 	@Column(name = "gross_qty")
 	private BigDecimal grossQty;
 
+	@Column(name = "suggested_price")
+	private BigDecimal suggestedPrice;
+	@Column(name = "max_retail_price")
+	private BigDecimal maxRetailPrice;
+
 	@Column(name = "unit_price")
 	private BigDecimal unitPrice;
 	@Column(name = "extended_amount")
@@ -553,6 +558,36 @@ public class SaleLineItem implements Serializable {
 	 */
 	public void setDiscountAmt(BigDecimal discountAmt) {
 		this.discountAmt = discountAmt;
+	}
+
+	/**
+	 * @return the suggestedPrice
+	 */
+	public BigDecimal getSuggestedPrice() {
+		return suggestedPrice;
+	}
+
+	/**
+	 * @param suggestedPrice
+	 *            the suggestedPrice to set
+	 */
+	public void setSuggestedPrice(BigDecimal suggestedPrice) {
+		this.suggestedPrice = suggestedPrice;
+	}
+
+	/**
+	 * @return the maxRetailPrice
+	 */
+	public BigDecimal getMaxRetailPrice() {
+		return maxRetailPrice;
+	}
+
+	/**
+	 * @param maxRetailPrice
+	 *            the maxRetailPrice to set
+	 */
+	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
+		this.maxRetailPrice = maxRetailPrice;
 	}
 
 	/*

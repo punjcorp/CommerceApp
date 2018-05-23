@@ -24,33 +24,52 @@ $(function() {
 	$("#searchText").autocomplete({
 		minLength : 3,
 		source : function(request, response) {
+			$('#itemErrorMsg').hide();
+			$('#itemSearchBusy').removeClass('d-none');
 			$.post({
 				url : "/sku_lookup",
 				data : $('form[id=autoCompleteForm]').serialize(),
 				success : function(data) {
-					response($.map(data, function(item) {
-						var dataVal = "<small>" + item.itemId + "-" + item.name + "</small>";
-						var descVal = item.name;
-						
-						var finalItemPic='';
-						if(item.imageType && item.imageType.length>0)
-							finalItemPic='data:'+item.imageType+';base64,'+item.baseEncodedImage;
-						else
-							finalItemPic='/images/item_image_default_200.png';
-						
-						return {
-							label : dataVal,
-							value : item.itemId,
-							desc : descVal,
-							longDesc : item.longDesc,
-							pic : '/images/default_image.png',
-							skuImage: finalItemPic
-						}
-					}));
+					$('#itemSearchBusy').addClass('d-none');
+					if(!data.length){
+						$('#searchText').val('');						
+						$('#itemErrorMsg').addClass('invalid-feedback');
+						$('#itemErrorMsg').html('Item Not found!!');
+						$('#itemErrorMsg').show();
+					}else{
+						response($.map(data, function(item) {
+							var dataVal = "<small>" + item.itemId + "-" + item.name + "</small>";
+							var descVal = item.name;
+							
+							var finalItemPic='';
+							if(item.imageType && item.imageType.length>0)
+								finalItemPic='data:'+item.imageType+';base64,'+item.baseEncodedImage;
+							else
+								finalItemPic='/images/item_image_default_200.png';
+							
+							return {
+								label : dataVal,
+								value : item.itemId,
+								desc : descVal,
+								longDesc : item.longDesc,
+								pic : '/images/default_image.png',
+								skuImage: finalItemPic
+							}
+						}));
+					}
 				}
 			});
 		},
-
+		change: function (event, ui) {
+            if (ui.item == null || ui.item == undefined) {
+            	$('#searchText').val('');						
+				$('#itemErrorMsg').addClass('invalid-feedback');
+				$('#itemErrorMsg').html('Please select an valid item!!');
+				$('#itemErrorMsg').show();
+            } else {
+            	$('#itemErrorMsg').hide();
+            }
+        },
 		select : function(event, ui) {
 			event.preventDefault();
 			if (ui.item) {
@@ -71,13 +90,18 @@ $(function() {
 	
 	
 	$('#btnCompleteTxn').click(function() {
+		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		txnAction.processCompletedTxn();
 	});
 	
-	$('#btnNewTxn').click(function() {
-		startNewTxn();
-	});	
+	$('#btnNewSaleTxn').click(function() {
+		startNewSaleTxn();
+	});
+	
+	$('#btnNewReturnTxn').click(function() {
+		startNewReturnTxn();
+	});		
 
 	$('#btnPrintReceiptAndNewTxn').click(function() {
 		printTxnReceipt();
@@ -100,7 +124,19 @@ $(function() {
               sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
               sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
               sale_txn_validate_tender:'Please select tender for the payment',
-              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00'              
+              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00',
+              sale_txn_lbl_qty: 'Quantity',
+              sale_txn_lbl_unit_cost: 'Unit Price',
+              sale_txn_lbl_suggested_price: 'Suggested Price',
+              sale_txn_lbl_mrp: 'Max Retail Price',
+              sale_txn_lbl_discount: 'Discount',
+              sale_txn_lbl_item_price: 'Item Price',
+              sale_txn_lbl_tax: 'Tax',
+              sale_txn_lbl_sgst: 'SGST',
+              sale_txn_lbl_cgst: 'CGST',
+              sale_txn_lbl_igst: 'IGST',
+              sale_txn_lbl_item_total: 'Item Total'
+              
           }
         },
         hi: {
@@ -123,16 +159,16 @@ $(function() {
 	
 	
     /*
-     * This section will register the shortcut keys for various functions on sale screen
-     */
+	 * This section will register the shortcut keys for various functions on sale screen
+	 */
     
-    //item search selection
+    // item search selection
     Mousetrap.bind('enter', function() { $('#searchText').focus(); });
-    //item qty selection
+    // item qty selection
     Mousetrap.bind('ctrl+q', function() { });
-    //item discount selection
+    // item discount selection
     Mousetrap.bind('ctrl+d', function() { });
-    //tender due text selection
+    // tender due text selection
     Mousetrap.bind('ctrl+enter', function() { $('#dueAmt').focus();});            
     // First tender selection - CASH
     Mousetrap.bind('ctrl+1', function() { });
@@ -220,11 +256,12 @@ function deleteSaleItem(deleteItemId) {
 }
 
 function postTxnSave(data){
-	//Update the txn no after successful save
+	// Update the txn no after successful save
 	rcpt_txn_id= data.uniqueTxnNo;
 	rcpt_txn_no= data.txnNo;
 	rcpt_pdfBlob=data.pdfbytes;
 	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
+	$('#screenBusyModal').modal('hide');
 	
 }
 
@@ -236,10 +273,7 @@ function viewTxnReceipt(){
 	$('#progressDiv').addClass("d-none");
 }
 
-function startNewTxn(){
-	var newTxnURL=new_txn_prefix+'='+txn_registerId +'&regName='+txn_registerName;
-	window.location.href = newTxnURL;
-}
+
 
 function printTxnReceipt(){
 	var txnHeader = new TransactionHeader();
@@ -249,7 +283,7 @@ function printTxnReceipt(){
 	txnHeader.businessDate=txn_businessDate;
 	txnHeader.txnNo=rcpt_txn_no;
 
-	//The AJAX call for receipt printing
+	// The AJAX call for receipt printing
 	var token = $("meta[name='_csrf']").attr("content");
 	var formdata = JSON.stringify(txnHeader);
 	// AJAX call here and refresh the sell item page with receipt printing

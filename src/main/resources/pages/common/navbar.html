@@ -45,6 +45,33 @@
 				</form>
 			</div>
 		</nav>
+		
+<!-- Item Lookup Modal -->
+	<div class="modal fade " id="screenBusyModal" tabindex="-1" role="dialog" aria-labelledby="screenBusyModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="screenBusyModalLabel">
+						<span th:text="#{commerce.screen.common.busy.header}"> Work In Progress</span>
+					</h5>
+				</div>
+				<div class="modal-body text-center">
+					<div class="col-12 text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-9x"></i>
+						<div>
+							<span th:text="#{commerce.screen.common.busy.body.text}"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>		
+		
+		
 	</div>
+	
+	
+	
+	
 </body>
 </html>

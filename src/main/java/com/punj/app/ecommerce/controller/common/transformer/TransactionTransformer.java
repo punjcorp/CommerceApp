@@ -266,6 +266,9 @@ public class TransactionTransformer {
 		saleLI.setDiscountAmt(saleLineItem.getDiscount());
 		saleLI.setUnitPrice(saleLineItem.getPrice());
 		saleLI.setBaseUnitPrice(saleLI.getUnitPrice());
+		saleLI.setSuggestedPrice(saleLineItem.getSuggestedPrice());
+		saleLI.setMaxRetailPrice(saleLineItem.getMaxRetailPrice());
+		saleLI.setUnitPrice(saleLineItem.getPrice());
 
 		if (saleLineItem.getIgstTax() != null) {
 			saleLI.setTaxAmt(saleLineItem.getIgstTax());

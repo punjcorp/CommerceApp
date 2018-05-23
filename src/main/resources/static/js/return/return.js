@@ -24,10 +24,19 @@ $(function() {
 	$("#searchText").autocomplete({
 		minLength : 3,
 		source : function(request, response) {
+			$('#itemErrorMsg').hide();
+			$('#itemSearchBusy').removeClass('d-none');
 			$.post({
 				url : "/sku_lookup",
 				data : $('form[id=autoCompleteForm]').serialize(),
 				success : function(data) {
+					$('#itemSearchBusy').addClass('d-none');
+					if(!data.length){
+						$('#searchText').val('');						
+						$('#itemErrorMsg').addClass('invalid-feedback');
+						$('#itemErrorMsg').html('Item Not found!!');
+						$('#itemErrorMsg').show();
+					}else{
 					response($.map(data, function(item) {
 						var dataVal = "<small>" + item.itemId + "-" + item.name + "</small>";
 						var descVal = item.name;
@@ -46,10 +55,20 @@ $(function() {
 							skuImage: finalItemPic
 						}
 					}));
+					}
 				}
 			});
 		},
-
+		change: function (event, ui) {
+            if (ui.item == null || ui.item == undefined) {
+            	$('#searchText').val('');						
+				$('#itemErrorMsg').addClass('invalid-feedback');
+				$('#itemErrorMsg').html('Please select an valid item!!');
+				$('#itemErrorMsg').show();
+            } else {
+            	$('#itemErrorMsg').hide();
+            }
+        },
 		select : function(event, ui) {
 			event.preventDefault();
 			if (ui.item) {
@@ -69,13 +88,18 @@ $(function() {
 	});	
 	
 	$('#btnCompleteTxn').click(function() {
+		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		txnAction.processCompletedTxn();
 	});
 	
-	$('#btnNewTxn').click(function() {
-		startNewTxn();
-	});	
+	$('#btnNewSaleTxn').click(function() {
+		startNewSaleTxn();
+	});
+	
+	$('#btnNewReturnTxn').click(function() {
+		startNewReturnTxn();
+	});		
 
 	$('#btnPrintReceiptAndNewTxn').click(function() {
 		printTxnReceipt();
@@ -252,7 +276,7 @@ function postTxnSave(data){
 	rcpt_txn_no= data.txnNo;
 	rcpt_pdfBlob=data.pdfbytes;
 	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
-	
+	$('#screenBusyModal').modal('hide');
 }
 
 function viewTxnReceipt(){

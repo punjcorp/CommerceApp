@@ -43,48 +43,21 @@
 														<span class="input-group-text"><i class="fas fa-barcode fa-2x"></i></span>
 													</div>
 													<input type="text" th:field="*{searchText}" class="form-control input-sm"></input>
+													<div class="input-group-append d-none" id="itemSearchBusy">
+														<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
+														</span>
+													</div>
 												</div>
+												<small id="itemErrorMsg"></small>
 											</div>
 										</div>
 										<div class="col">
-											<button type="button" id="btnLastTxn" class="btn-success"><i class="fas fa-receipt fa-2x"></i></button>
+											<button type="button" id="btnLastTxn" class="btn-info"><i class="fas fa-receipt fa-2x"></i></button>
 										</div>
 									</div>
 								</form>
 								<div id="result" class="col-12">
-									<div class="row">
-										<div class="col-3">
-											<span th:text="#{commerce.screen.sale.item.details}"></span>
-										</div>
-										<div class="col padding-sm">
-											<span th:text="#{commerce.screen.sale.item.qty}"></span>
-										</div>
-										<div class="col">
-											<span th:text="#{commerce.screen.sale.item.price}"></span>
-										</div>
-										<div class="col">
-											<span th:text="#{commerce.screen.sale.item.discount}"></span>
-										</div>
-										<div class="col-2 text-center">
-											<span th:text="#{commerce.screen.sale.item.tax}"></span>
-										</div>
-										<div class="col-2">
-											<span th:text="#{commerce.screen.sale.item.total}"></span>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-3"></div>
-										<div class="col"></div>
-										<div class="col"></div>
-										<div class="col"></div>
-										<div class="col-1 padding-sm">
-											<span th:text="#{commerce.screen.sale.item.sgst}"></span>
-										</div>
-										<div class="col-1 padding-sm">
-											<span th:text="#{commerce.screen.sale.item.cgst}"></span>
-										</div>
-										<div class="col-2"></div>
-									</div>
+									<!-- The item scanned will appear here -->
 								</div>
 							</div>
 						</div>
@@ -261,7 +234,8 @@
 		var txn_businessDate = /*[[${{saleHeaderBean.businessDate}}]]*/;
 		var tndr_change_id=$('#hc_changeTenderId').val();
 		var receipt_file_prefix= /*[[@{/output/receipts/}]]*/;
-		var new_txn_prefix= /*[[@{/pos/sale(registerId)}]]*/;
+		var new_txn_prefix= /*[[@{/pos/sale}]]*/;
+		var new_return_txn_prefix= /*[[@{/pos/return_txn}]]*/;
 		
 		var print_rcpt_url= /*[[@{/pos/receipt_print}]]*/;
 		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
@@ -269,6 +243,8 @@
 		var rcpt_txn_id= '';
 		var rcpt_txn_no= '';
 		var current_locale= /*[[${#locale.language}]]*/;
+		
+		var txn_type='S';
 		
 		/*]]>*/
 	</script>
@@ -289,9 +265,16 @@
 						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewTxn">
 							<i class="fas fa-print fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-2" id="btnNewTxn">
-							<i class="far fa-plus-square fa-5x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewSaleTxn">
+							<i class="fas fa-cart-plus fa-5x" data-fa-transform="flip-h"></i>
 						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewReturnTxn">
+							<span class="fa-layers fa-fw fa-5x"> <i
+										class="fas fa-shopping-cart" data-fa-transform="flip-H"></i> <i class="fas fa-minus-circle icon-blue-theme"
+										data-fa-transform="shrink-10 right--2 up-2"></i>
+								</span>
+						</button>
+						
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">
 						<i class="fas fa-cog fa-spin fa-9x"></i>
