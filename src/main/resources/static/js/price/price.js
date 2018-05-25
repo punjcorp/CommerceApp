@@ -13,47 +13,160 @@ $.extend(ClearancePrice.prototype, {
 
 });
 
+var SearchBean= function() {
+	this.searchText;
+	this.pager;
+}
+
+$.extend(SearchBean.prototype, {
+
+	
+});
+
+
 var clearanceReset = new ClearancePrice();
+var searchBean = new SearchBean();
+var token = $("meta[name='_csrf']").attr("content");
 
 $(function() {
+
+	$('#itemDesc').autocomplete({
+		minLength : 3,
+		source : function(request, response) {
+			$('#itemSearchErrorMsg').hide();
+			$('#itemSearchBusy').removeClass('d-none');
+			var searchText = this.element[0].value;
+			searchBean.searchText = searchText;
+			var formdata = JSON.stringify(searchBean);
+			
+			// AJAX call here and refresh the Expense Screen after the save
+			$.ajax({
+				url : '/order_item_lookup',
+				type : 'POST',
+				cache : false,
+				data : formdata,
+				contentType : "application/json; charset=utf-8",
+				dataType : "json",
+				success : function(data) {
+					$('#itemSearchBusy').addClass('d-none');
+					if (!data.length) {
+						$('#itemDesc').val('');
+						$('#itemId').val('');
+						$('#itemSearchErrorMsg').addClass('invalid-feedback');
+						$('#itemSearchErrorMsg').html('Item Not found!!');
+						$('#itemSearchErrorMsg').show();
+					} else {
+						response($.map(data, function(item) {
+							var dataVal = "<small>" + item.itemId + "-" + item.name + "</small>";
+							var descVal = item.name;
+
+							var finalItemPic = '';
+							if (item.imageType && item.imageType.length > 0)
+								finalItemPic = 'data:' + item.imageType + ';base64,' + item.baseEncodedImage;
+							else
+								finalItemPic = '/images/item_image_default_200.png';
+
+							return {
+								label : dataVal,
+								value : item.itemId,
+								desc : descVal,
+								longDesc : item.longDesc,
+								pic : '/images/default_image.png',
+								skuImage : finalItemPic
+							}
+						}));
+					}
+				},
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader('X-CSRF-TOKEN', token)
+				}
+			});
+		},
+		change : function(event, ui) {
+			if (ui.item == null || ui.item == undefined) {
+				$('#itemDesc').val('');
+				$('#itemId').val('');
+				$('#itemSearchErrorMsg').addClass('invalid-feedback');
+				$('#itemSearchErrorMsg').html('Please select an valid item!!');
+				$('#itemSearchErrorMsg').show();
+			} else {
+				$('#itemSearchErrorMsg').hide();
+			}
+			controlValueChanged();
+		},
+		select : function(event, ui) {
+			event.preventDefault();
+			if (ui.item) {
+				updateItemDetails(event, ui);
+			}
+		}
+	});
 
 	$("#priceType").change(function() {
 
 		renderControls();
-		if (validateClrSearchInputs()) {
-			retreiveExistingClearance();
-		}
+		controlValueChanged();
+		
 	});
 
 	$("#itemId").change(function() {
-		if (validateClrSearchInputs()) {
-			retreiveExistingClearance();
-		}
+		controlValueChanged();
 	});
 
 	$("#locationId").change(function() {
-		if (validateClrSearchInputs()) {
-			retreiveExistingClearance();
-		}
+		controlValueChanged();
 	});
 
 });
+
+/* This section will allow the item listing to be in a specific format */
+$["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
+	
+
+	return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
+		'class' : 'row'
+	}).append($('<div/>', {
+		'class' : 'col-4'
+	}).append($('<div/>', {
+		'class' : 'preview-thumbnail-cart'
+	}).append($('<img/>', {
+		src : item.skuImage,
+		class: 'img-thumbnail'
+	})))).append($('<div/>', {
+		'class' : 'col-6'
+	}).append($('<span/>', {
+		html : "<b>" + item.value + "</b><br/>" + item.desc
+	})))).appendTo(ul);
+};
+
+function controlValueChanged(){
+	if (validateClrSearchInputs()) {
+		retreiveExistingClearance();
+	}
+	getItemDetails();
+}
+
+function updateItemDetails(event, ui) {
+
+	$('#itemDesc').val(ui.item.desc);
+	$('#itemId').val(ui.item.value);
+
+}
 
 function validateClrSearchInputs() {
 	var priceTypeVal = $("#priceType").val();
 	var locationIdVal = $("#locationId").val();
 	var itemIdVal = $("#itemId").val();
 
-	if (priceTypeVal && locationIdVal && itemIdVal && priceTypeVal == 4){
+	if (priceTypeVal && locationIdVal && itemIdVal && priceTypeVal == 4) {
 		clearanceReset.itemId = itemIdVal;
 		clearanceReset.locationId = locationIdVal;
 		clearanceReset.priceType = priceTypeVal;
 		return true;
-	}
-	else{
+	} else {
 		return false;
 	}
-		
+
 }
 
 function retreiveExistingClearance() {
@@ -77,7 +190,7 @@ function retreiveExistingClearance() {
 				$('#priceTypeMsg').removeClass('d-none');
 			}
 		},
-		error: function(){
+		error : function() {
 			clearClearanceContainer();
 			$('#priceTypeMsg').text('There is no clearance existing to reset!!');
 			$('#priceTypeMsg').removeClass('d-none');
@@ -131,4 +244,58 @@ function clearClearanceContainer() {
 	$('#oldClrDate').text('');
 	$('#oldClrPrice').text('');
 	$('#oldClrCreatedBy').text('');
+}
+
+
+
+/**
+ * This function will take the selected item and show the current price details
+ * 
+ * @param event
+ * @param ui
+ * @returns
+ */
+function getItemDetails(event, ui) {
+
+	var priceTypeVal = $("#priceType").val();
+	var locationIdVal = $("#locationId").val();
+	var itemIdVal = $("#itemId").val();
+
+	if (priceTypeVal && locationIdVal && itemIdVal && locationIdVal !='' && itemIdVal !='' && priceTypeVal != 4 && priceTypeVal != '') {
+		
+		$.get("/sale_item_lookup", {
+			itemId : itemIdVal,
+			locationId : locationIdVal
+		}, function(data, status) {
+			
+			if(!data.length>0){
+				updatePriceDetails(data);
+			}else{
+				clearPriceDetailsContainer();
+			}
+		});
+	} else {
+		clearPriceDetailsContainer();
+	}
+	
+}
+
+
+function updatePriceDetails(priceDetails) {
+
+	$('#priceDtlsContainer').removeClass('d-none');
+	$('#currentPrice').text(priceDetails.priceAmt.toFixed(2));
+	$('#unitCost').text(priceDetails.unitCostAmt.toFixed(2));
+	$('#suggestedPrice').text(priceDetails.suggestedPrice.toFixed(2));
+	$('#maxRetailPrice').text(priceDetails.maxRetailPrice.toFixed(2));
+	
+}
+
+
+function clearPriceDetailsContainer() {
+	$('#priceDtlsContainer').addClass('d-none');
+	$('#currentPrice').text('0.00');
+	$('#unitCost').text('0.00');
+	$('#suggestedPrice').text('0.00');
+	$('#maxRetailPrice').text('0.00');
 }

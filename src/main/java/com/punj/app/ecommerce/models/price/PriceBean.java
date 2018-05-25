@@ -8,13 +8,12 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -27,6 +26,8 @@ public class PriceBean {
 
 	@NotNull(message = "{commerce.error.item.empty}")
 	private BigInteger itemId;
+	@NotNull(message = "{commerce.error.item.empty}")
+	private String itemDesc;
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer locationId;
 	private List<LocationBean> locations;
@@ -38,6 +39,7 @@ public class PriceBean {
 
 	private BigInteger clearanceResetId;
 	private PriceBean existingClearance;
+	private SaleItem priceDtls;
 
 	private String createdBy;
 	private LocalDateTime createdDate;
@@ -45,10 +47,13 @@ public class PriceBean {
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
 
-/*	@NotNull(message = "{commerce.error.amount.empty}")
-	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}")
-	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}")
-*/	private BigDecimal itemPriceAmt;
+	/*
+	 * @NotNull(message = "{commerce.error.amount.empty}")
+	 * 
+	 * @DecimalMin(value = "0.01", message = "{commerce.error.amt.range}")
+	 * 
+	 * @DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}")
+	 */ private BigDecimal itemPriceAmt;
 
 	private String status;
 
@@ -287,10 +292,40 @@ public class PriceBean {
 	}
 
 	/**
-	 * @param existingClearance the existingClearance to set
+	 * @param existingClearance
+	 *            the existingClearance to set
 	 */
 	public void setExistingClearance(PriceBean existingClearance) {
 		this.existingClearance = existingClearance;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc
+	 *            the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
+	}
+
+	/**
+	 * @return the priceDtls
+	 */
+	public SaleItem getPriceDtls() {
+		return priceDtls;
+	}
+
+	/**
+	 * @param priceDtls the priceDtls to set
+	 */
+	public void setPriceDtls(SaleItem priceDtls) {
+		this.priceDtls = priceDtls;
 	}
 
 }

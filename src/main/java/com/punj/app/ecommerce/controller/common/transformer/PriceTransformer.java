@@ -82,6 +82,7 @@ public class PriceTransformer {
 		priceBean.setClearanceResetId(itemPrice.getClearanceResetId());
 
 		priceBean.setItemId(itemPrice.getItem().getItemId());
+		priceBean.setItemDesc(itemPrice.getItem().getName());
 
 		priceBean.setStartDate(itemPrice.getStartDate());
 		priceBean.setEndDate(itemPrice.getEndDate());

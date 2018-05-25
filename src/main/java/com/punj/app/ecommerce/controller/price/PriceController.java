@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.price;
  * 
  */
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +11,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,9 @@ import com.punj.app.ecommerce.models.price.PriceBean;
 import com.punj.app.ecommerce.models.price.PriceBeanDTO;
 import com.punj.app.ecommerce.models.price.validator.PriceBeanValidator;
 import com.punj.app.ecommerce.services.PriceService;
+import com.punj.app.ecommerce.services.SaleItemService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.dtos.SaleItem;
 
 /**
  * @author admin
@@ -50,6 +54,7 @@ import com.punj.app.ecommerce.services.common.CommonService;
 public class PriceController {
 	private static final Logger logger = LogManager.getLogger();
 	private PriceService priceService;
+	private SaleItemService saleItemService;
 	private CommonService commonService;
 	private MessageSource messageSource;
 	private PriceBeanValidator priceValidator;
@@ -70,6 +75,15 @@ public class PriceController {
 	@Autowired
 	public void setPriceService(PriceService priceService) {
 		this.priceService = priceService;
+	}
+
+	/**
+	 * @param saleItemService
+	 *            the saleItemService to set
+	 */
+	@Autowired
+	public void setSaleItemService(SaleItemService saleItemService) {
+		this.saleItemService = saleItemService;
 	}
 
 	/**
@@ -168,6 +182,25 @@ public class PriceController {
 				priceBean.setExistingClearance(clearancePriceBean);
 				logger.info("The clearance has been retrieved successfully");
 			}
+		}
+
+		if (StringUtils.isNotBlank(priceBean.getPriceType()) && !priceBean.getPriceType().equals(MVCConstants.PRICE_TYPE_CLEARANCE_RESET)) {
+			SaleItem saleItem = null;
+			try {
+				saleItem = this.saleItemService.getItem(priceBean.getItemId(), priceBean.getLocationId());
+				if(saleItem !=null) {
+					logger.info("the {} item details for sale item has been retrieved successfully", priceBean.getItemId());
+					priceBean.setPriceDtls(saleItem);
+				}else {
+					logger.error("the {} item details were not retrieved due to some issue", priceBean.getItemId());
+				}
+			} catch (UnsupportedEncodingException e) {
+				logger.error("There is an error while retrieving skus for price event screen", e);
+			}
+		}
+		
+		if(StringUtils.isBlank(priceBean.getItemDesc()) && priceBean.getPriceDtls()!=null) {
+			priceBean.setItemDesc(priceBean.getPriceDtls().getName());
 		}
 
 		// This has to come from cache
