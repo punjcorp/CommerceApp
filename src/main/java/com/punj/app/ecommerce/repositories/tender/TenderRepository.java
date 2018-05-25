@@ -16,11 +16,11 @@ import com.punj.app.ecommerce.domains.tender.Tender;
  */
 public interface TenderRepository extends JpaRepository<Tender, Integer> {
 
-	@Query(value = "select tndr.* from commercedb.tender_master tndr, `commercedb`.`location_repository` loc_tndr\r\n" + 
+	@Query(value = "select tndr.* from commercedb.tender_master tndr, `commercedb`.`location_repo` loc_tndr\r\n" + 
 			" where tndr.tender_id=loc_tndr.tender_id and loc_tndr.location_id= ?1", nativeQuery = true)
 	List<Tender> getTendersByLocation(Integer locationId);	
 	
-	@Query(value = "select tndr.* from commercedb.tender_master tndr, `commercedb`.`location_repository` loc_tndr\r\n" + 
+	@Query(value = "select tndr.* from commercedb.tender_master tndr, `commercedb`.`location_repo` loc_tndr\r\n" + 
 			" where tndr.tender_id=loc_tndr.tender_id and loc_tndr.location_id= ?1 and loc_tndr.reconcilation_flag=1", nativeQuery = true)
 	List<Tender> getTendersForReconcilation(Integer locationId);		
 	

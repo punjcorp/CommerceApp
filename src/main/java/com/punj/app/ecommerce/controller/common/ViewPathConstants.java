@@ -116,7 +116,7 @@ public final class ViewPathConstants {
 	public static final String BULK_SUPPLIER_URL ="/admin/bulk_supplier_action";
 	
 	public static final String SUPPLIER_PAYMENT_URL ="/admin/supplier/payment";
-	public static final String SUPPLIER_PAYMENT_PAGE ="/supplier/supplier_payments";
+	public static final String SUPPLIER_PAYMENT_PAGE ="supplier/supplier_payments";
 	
 	/**
 	 * The supplier pages section ends
@@ -167,7 +167,7 @@ public final class ViewPathConstants {
 	 * The lookup pages section starts
 	 */
 	public static final String LOOKUP_ITEM_URL = "/item_lookup";
-	public static final String LOOKUP_ITEM_PAGE= "/lookup/item_lookup";
+	public static final String LOOKUP_ITEM_PAGE= "lookup/item_lookup";
 	/**
 	 * The lookup pages section ends
 	 */	

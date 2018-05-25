@@ -108,7 +108,8 @@ public class ExpenseController {
 
 		if (openLocationId!=null) {
 			
-			Integer registerId = (Integer) session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
+
+			Integer registerId = (Integer) session.getAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM);
 			
 			if (registerId!=null) {
 				
@@ -118,7 +119,7 @@ public class ExpenseController {
 				LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 				
 				String defaultTender = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-				String registerName = (String) session.getAttribute(MVCConstants.REG_NAME_PARAM);
+				String registerName = (String) session.getAttribute(openLocationId + MVCConstants.REG_NAME_PARAM);
 				
 				expenseBean.setDefaultTender(defaultTender);
 				expenseBean.setBusinessDate(openBusinessDate);

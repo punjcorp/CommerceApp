@@ -115,44 +115,6 @@ ENGINE = InnoDB;
 CREATE INDEX `fk_repository_master_tender_master1_idx` ON `commercedb`.`repository_master` (`tender_id` ASC);
 
 
--- -----------------------------------------------------
--- Table `commercedb`.`location_repository`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`location_repository` ;
-
-CREATE TABLE IF NOT EXISTS `commercedb`.`location_repository` (
-  `location_repository_id` BIGINT NOT NULL AUTO_INCREMENT,
-  `repository_id` INT NOT NULL,
-  `location_id` INT(4) NOT NULL,
-  `tender_id` INT(3) NOT NULL,
-  `reconcilation_flag` TINYINT NOT NULL,
-  `created_by` VARCHAR(50) NOT NULL,
-  `created_date` DATETIME NOT NULL,
-  `modified_by` VARCHAR(50) NULL,
-  `modified_date` DATETIME NULL,
-  PRIMARY KEY (`location_repository_id`),
-  CONSTRAINT `fk_location_repository_repository_master1`
-    FOREIGN KEY (`repository_id`)
-    REFERENCES `commercedb`.`repository_master` (`repository_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_location_repository_location1`
-    FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_location_repository_tender_master1`
-    FOREIGN KEY (`tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_location_repository_location1_idx` ON `commercedb`.`location_repository` (`location_id` ASC);
-
-CREATE INDEX `fk_location_repository_tender_master1_idx` ON `commercedb`.`location_repository` (`tender_id` ASC);
-
-
 
 -- -----------------------------------------------------
 -- Table `commercedb`.`daily_totals`
@@ -196,12 +158,52 @@ CREATE UNIQUE INDEX `business_date_UNIQUE` ON `commercedb`.`ledger_journal` (`bu
 
 
 -- -----------------------------------------------------
+-- Table `commercedb`.`location_repo`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`location_repo` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`location_repo` (
+  `location_repository_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `repository_id` INT NOT NULL,
+  `location_id` INT(4) NOT NULL,
+  `tender_id` INT(3) NOT NULL,
+  `reconcilation_flag` TINYINT NOT NULL,
+  `created_by` VARCHAR(50) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,
+  PRIMARY KEY (`location_repository_id`),
+  CONSTRAINT `fk_location_repository_repository_master1`
+    FOREIGN KEY (`repository_id`)
+    REFERENCES `commercedb`.`repository_master` (`repository_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_location_repository_location1`
+    FOREIGN KEY (`location_id`)
+    REFERENCES `commercedb`.`location` (`location_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_location_repository_tender_master1`
+    FOREIGN KEY (`tender_id`)
+    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_location_repository_location1_idx` ON `commercedb`.`location_repo` (`location_id` ASC);
+
+CREATE INDEX `fk_location_repository_tender_master1_idx` ON `commercedb`.`location_repo` (`tender_id` ASC);
+
+
+
+
+-- -----------------------------------------------------
 -- Table `commercedb`.`daily_repository`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`daily_repository` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`daily_repository` (
-  `daily_repository_id` BIGINT NOT NULL,
+  `daily_repository_id` BIGINT NOT NULL AUTO_INCREMENT,
   `location_repository_id` BIGINT NOT NULL,
   `business_date` DATETIME NOT NULL,
   `amount` DECIMAL NOT NULL,
@@ -212,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`daily_repository` (
   PRIMARY KEY (`daily_repository_id`),
   CONSTRAINT `fk_location_repository_daily_location_repository1`
     FOREIGN KEY (`location_repository_id`)
-    REFERENCES `commercedb`.`location_repository` (`location_repository_id`)
+    REFERENCES `commercedb`.`location_repo` (`location_repository_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

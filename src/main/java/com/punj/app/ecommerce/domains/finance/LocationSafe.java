@@ -18,7 +18,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "location_repository")
+@Table(name = "location_repo")
 public class LocationSafe implements Serializable {
 
 	private static final long serialVersionUID = 1160918226526628107L;

@@ -113,7 +113,7 @@
 											<label><small><span th:text="#{commerce.screen.price.old.clearance.date}">Oldest Clearance Activation Date</span></small></label>
 											<div>
 												<h5>
-													<span id="oldClrDate" th:text="${priceBean.existingClearance.startDate}"> </span>
+													<span id="oldClrDate" th:text="${priceBean.existingClearance!=null}?${priceBean.existingClearance.startDate}:''"> </span>
 												</h5>
 											</div>
 										</div>
@@ -122,7 +122,7 @@
 											<div>
 												<h5>
 													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:text="' '"></span> <span id="oldClrPrice"
-														th:text="${priceBean.existingClearance.itemPriceAmt}">Oldest Clearance Price</span>
+														th:text="${priceBean.existingClearance!=null}?${priceBean.existingClearance.itemPriceAmt}:''">Oldest Clearance Price</span>
 												</h5>
 											</div>
 										</div>
@@ -130,7 +130,7 @@
 											<label><small><span th:text="#{commerce.screen.price.old.clearance.created.by}">Oldest Clearance Created By</span></small></label>
 											<div>
 												<h5>
-													<span id="oldClrCreatedBy" th:text="${priceBean.existingClearance.createdBy}">Oldest Clearance Created By</span>
+													<span id="oldClrCreatedBy" th:text="${priceBean.existingClearance!=null}?${priceBean.existingClearance.createdBy}:''">Oldest Clearance Created By</span>
 												</h5>
 											</div>
 										</div>

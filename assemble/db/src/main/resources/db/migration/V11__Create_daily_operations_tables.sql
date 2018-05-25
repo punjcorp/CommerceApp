@@ -147,24 +147,10 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tender_movement` (
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
     REFERENCES `commercedb`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_txn_tender_control_location_repository1`
-    FOREIGN KEY (`from_id`)
-    REFERENCES `commercedb`.`location_repository` (`repository_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_txn_tender_control_location_repository2`
-    FOREIGN KEY (`to_id`)
-    REFERENCES `commercedb`.`location_repository` (`repository_id`)
-    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_txn_tender_control_txn_master1_idx` ON `commercedb`.`tender_movement` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC);
-
-CREATE INDEX `fk_txn_tender_control_location_repository1_idx` ON `commercedb`.`tender_movement` (`from_id` ASC);
-
-CREATE INDEX `fk_txn_tender_control_location_repository2_idx` ON `commercedb`.`tender_movement` (`to_id` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

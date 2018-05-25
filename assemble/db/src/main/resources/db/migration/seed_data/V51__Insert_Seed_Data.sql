@@ -32,9 +32,9 @@ INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Snacks', 'Daily Use', 'This is for snacks', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Lease Rent', 'Bill', 'This is rent for the room', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Payment', 'General Expense', 'this is payment for anything which will be described in remarks', 'admin', now());
-INSERT INTO `commercedb`.`reason_Codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
-INSERT INTO `commercedb`.`reason_Codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
-INSERT INTO `commercedb`.`reason_Codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
 
 commit;
 
@@ -82,20 +82,25 @@ commit;
 -- -----------------------------------------------------
 -- Seed data for repository and tenders
 -- -----------------------------------------------------
-truncate `commercedb`.`location_repository`;
+truncate `commercedb`.`location_repo`;
 truncate `commercedb`.`repository_master`;
-INSERT INTO `commercedb`.`repository_master` (`name`, `description`, `begin_date_time`, `status`, `created_by`, `created_date`) VALUES ('Main Safe', 'This is main safe in the store', now(), 'A', 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '5', '0', 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '6', '0', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (1, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (2, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (3, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (4, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (5, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (6, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '5', '0', 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '6', '0', 'admin', now());
 
 
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repository` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
 
 commit;
 
