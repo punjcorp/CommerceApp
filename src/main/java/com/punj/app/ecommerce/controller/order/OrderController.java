@@ -243,20 +243,38 @@ public class OrderController {
 		try {
 			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
-			Order order = this.orderService.searchOrder(orderId);
+			if (orderId.compareTo(BigInteger.ZERO) > 0) {
 
-			OrderBeanDTO orderBeanDTO = new OrderBeanDTO();
-			OrderBean orderBean = OrderTransformer.transformOrder(order);
-			orderBeanDTO.setOrder(orderBean);
+				Order order = this.orderService.searchOrder(orderId);
+				if (order != null) {
+					if (order.getStatus().equals(MVCConstants.STATUS_CREATED)) {
+						OrderBeanDTO orderBeanDTO = new OrderBeanDTO();
+						OrderBean orderBean = OrderTransformer.transformOrder(order);
+						orderBeanDTO.setOrder(orderBean);
 
-			SupplierBean supplierBean = orderBean.getSupplier();
-			SearchBean supplierSearch = new SearchBean();
-			supplierSearch.setSearchText(supplierBean.getName());
-			orderBeanDTO.setSupplierSearch(supplierSearch);
+						SupplierBean supplierBean = orderBean.getSupplier();
+						SearchBean supplierSearch = new SearchBean();
+						supplierSearch.setSearchText(supplierBean.getName());
+						orderBeanDTO.setSupplierSearch(supplierSearch);
 
-			this.updateOrderModelDetails(model, orderBeanDTO);
+						this.updateOrderModelDetails(model, orderBeanDTO);
 
-			logger.info("The selected purchase order has been updated successfully");
+						logger.info("The selected purchase order has been updated successfully");
+					} else {
+						this.emptyOrderBeanDTO(model);
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.edit.status", null, locale));
+						logger.info("There order is not eligible for the editing!!");
+					}
+				} else {
+					this.emptyOrderBeanDTO(model);
+					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.not.found", null, locale));
+					logger.info("There order is not eligible for editing!!");
+				}
+			} else {
+				this.emptyOrderBeanDTO(model);
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.edit.noorder", null, locale));
+				logger.info("There is no order number specified for editing");
+			}
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving purchase order for updation", e);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));

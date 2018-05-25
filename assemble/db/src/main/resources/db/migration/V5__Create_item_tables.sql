@@ -161,17 +161,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_images` (
   `name` VARCHAR(80) NOT NULL,
   `image_type` VARCHAR(120) NOT NULL,
   `image_url` VARCHAR(300) NOT NULL,
-  `image_data` BLOB NOT NULL,
+  `image_data` MEDIUMBLOB NOT NULL,
   `created_date` DATETIME NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`item_image_id`),
-  INDEX `fk_item_images_item1_idx` (`item_id` ASC),
   CONSTRAINT `fk_item_images_item1`
     FOREIGN KEY (`item_id`)
     REFERENCES `commercedb`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_item_images_item1_idx` ON `commercedb`.`item_images` (`item_id` ASC);
 
 
 -- -----------------------------------------------------

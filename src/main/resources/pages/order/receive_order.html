@@ -24,7 +24,23 @@
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<form class="form" id="addForm" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data" method="post">
+			<div class="resultMsgContainer" th:if="${orderBeanDTO.order==null or orderBeanDTO.order.orderId==null}">
+				<div th:if="${ success!=null }" th:text="${success}" class="alert alert-success " role="alert"></div>
+				<div th:if="${ alert!=null }" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+				<div id="orderActions" class="col-12 p-4" th:if="${ alert!=null}">
+					<a th:href="@{/admin/add_order}" class="btn btn-sm btn-success"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+								class="far fa-file-powerpoint"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+						</span>
+					</span> <span th:text="#{commerce.home.menu.add.order}"></span></a> <a th:href="@{/admin/manage_order}" class="btn btn-sm btn-success"> <span
+						class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-cog"
+								data-fa-transform="shrink-10 right-10 up-4"></i>
+						</span>
+					</span> <span th:text="#{commerce.home.menu.search.order}"></span>
+					</a>
+				</div>
+			</div>
+			<form class="form" id="addForm" th:action="@{/admin/receive_order}" th:object="${orderBeanDTO}" enctype="multipart/form-data" method="post"
+				th:if="${orderBeanDTO.order!=null and orderBeanDTO.order.orderId!=null}">
 				<div class="row m-3">
 					<div class="col">
 						<div class="card">
@@ -33,8 +49,10 @@
 							</div>
 							<div class="card-body">
 								<div class="card-text">
-									<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
-									<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+									<div th:if="${ success!=null and (orderBeanDTO.orderBean==null or orderBeanDTO.orderBean.orderId==null)}" th:text="${success}"
+										class="alert alert-success " role="alert"></div>
+									<div th:if="${ alert!=null and (orderBeanDTO.orderBean==null or orderBeanDTO.orderBean.orderId==null)}" th:text="${alert}"
+										class="alert alert-danger " role="alert"></div>
 									<div id="orderActions" class="col-12 p-4" th:if="${ alert!=null}">
 										<a th:href="@{/admin/edit_order(orderId=${orderBeanDTO.order.orderId})}" class="btn btn-sm btn-info"
 											th:if="${orderBeanDTO.order.status=='C'}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
@@ -192,8 +210,8 @@
 													<div class="col col-width-sm"></div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<label><small> <span  class="pos-mandatory" th:text="#{commerce.screen.order.qty.delievered}"></span></small> </label><br /> <input type="number"
-																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].delieveredQty}" onChange="actualDetailsChanged(this);"
+															<label><small> <span class="pos-mandatory" th:text="#{commerce.screen.order.qty.delievered}"></span></small> </label><br /> <input
+																type="number" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].delieveredQty}" onChange="actualDetailsChanged(this);"
 																class="form-control input-sm" th:placeholder="#{commerce.screen.order.qty}" maxlength="150"></input>
 															<div th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].delieveredQty')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].delieveredQty}" class="text-danger">Quantity Error</div>
@@ -201,13 +219,14 @@
 													</div>
 													<div class="col padding-sm">
 														<div class="form-group">
-															<label><small> <span  class="pos-mandatory" th:text="#{commerce.screen.order.cost.actual}"></span></small> </label>
+															<label><small> <span class="pos-mandatory" th:text="#{commerce.screen.order.cost.actual}"></span></small> </label>
 															<div class="input-group text-left">
 																<div class="input-group-prepend">
 																	<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr.short}"></span></span>
 																</div>
 																<input type="number" step="0.01" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}"
-																	onChange="actualDetailsChanged(this);" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.cost}" maxlength="150"></input>
+																	onChange="actualDetailsChanged(this);" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.order.cost}"
+																	maxlength="150"></input>
 															</div>
 															<small th:if="${#fields.hasErrors('order.orderItems[__${itrStat.index}__].actualUnitCost')}"
 																th:errors="${orderBeanDTO.order.orderItems[__${itrStat.index}__].actualUnitCost}" class="text-danger">Cost Error</small>
@@ -392,10 +411,12 @@
 													<button type="submit" id="btnSaveOrder" name="saveOrder" value="Save" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
 														<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
 													</button>
-													<button type="submit" id="btnReceiveOrder" name="receiveOrder" value="Receive" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
+													<button type="submit" id="btnReceiveOrder" name="receiveOrder" value="Receive" class="btn btn-info mx-2"
+														th:if="${orderBeanDTO.order.status=='A'}">
 														<i class="fas fa-arrow-left fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.receive}"></span>
 													</button>
-													<button type="submit" id="btnReceiveAllOrder" name="receiveAllOrder" value="Receive" class="btn btn-info mx-2" th:if="${orderBeanDTO.order.status=='A'}">
+													<button type="submit" id="btnReceiveAllOrder" name="receiveAllOrder" value="Receive" class="btn btn-info mx-2"
+														th:if="${orderBeanDTO.order.status=='A'}">
 														<span class="fa-2x"> <span class="fa-layers fa-fw"> <i class="fas fa-arrow-left" data-fa-transform="shrink-8 up-4"></i> <i
 																class="fas fa-arrow-left" data-fa-transform="shrink-8 down-4"></i>
 														</span>
@@ -497,8 +518,7 @@
 									<div class="row">
 										<div class="col">
 											<div class="card-text text-center">
-												<br />
-												<br />
+												<br /> <br />
 												<h4>
 													<span th:text="#{commerce.screen.order.supplier.address}"></span>
 												</h4>

@@ -95,12 +95,22 @@ public class OrderPhaseController {
 			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			if (orderId.compareTo(BigInteger.ZERO) > 0) {
-				this.orderService.approveOrder(orderId);
-				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS,
-						messageSource.getMessage("commerce.screen.order.manage.approve.success", new Object[] { orderId }, locale));
-				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+				Order order = this.orderService.searchOrder(orderId);
+				if (order != null) {
+					if (order.getStatus().equals(MVCConstants.STATUS_CREATED)) {
+					this.orderService.approveOrder(orderId);
+					redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS,
+							messageSource.getMessage("commerce.screen.order.manage.approve.success", new Object[] { orderId }, locale));
 
-				logger.info("The selected purchase order has been approved successfully");
+					logger.info("The selected purchase order has been approved successfully");
+					}else {
+						redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.approve.status", null, locale));
+						logger.info("There order is not eligible for the approval as status is not 'created'!!");
+					}
+				} else {
+					redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.not.found", null, locale));
+					logger.info("There order was not found in the database!!");
+				}
 
 			} else {
 				redirectAttrs.addFlashAttribute(MVCConstants.ALERT,
@@ -111,6 +121,7 @@ public class OrderPhaseController {
 			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			logger.error("There is an error while approving purchase order", e);
 		}
+		req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_ORDER_URL;
 	}
 
@@ -161,21 +172,27 @@ public class OrderPhaseController {
 
 			if (orderId.compareTo(BigInteger.ZERO) > 0) {
 				Order order = this.orderService.searchOrder(orderId);
-				if (order != null && order.getStatus().equals(MVCConstants.STATUS_APPROVED)) {
-					OrderBeanDTO orderBeanDTO = new OrderBeanDTO();
-					OrderBean orderBean = OrderTransformer.transformOrder(order);
-					orderBeanDTO.setOrder(orderBean);
-					this.updateOrderModelDetails(model, orderBeanDTO);
-					logger.info("The selected purchase order has been retrieved for receival successfully");
+				if (order != null) {
+					if (order.getStatus().equals(MVCConstants.STATUS_APPROVED)) {
+						OrderBeanDTO orderBeanDTO = new OrderBeanDTO();
+						OrderBean orderBean = OrderTransformer.transformOrder(order);
+						orderBeanDTO.setOrder(orderBean);
+						this.updateOrderModelDetails(model, orderBeanDTO);
+						logger.info("The selected purchase order has been retrieved for receival successfully");
+					} else {
+						this.emptyOrderBeanDTO(model);
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.manage.receive.status", null, locale));
+						logger.info("There order is not eligible for the receipt!!");
+					}
 				} else {
 					this.emptyOrderBeanDTO(model);
-					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.manage.receive.status", null, locale));
+					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.not.found", null, locale));
 					logger.info("There order is not eligible for the receipt!!");
 				}
 			} else {
 				this.emptyOrderBeanDTO(model);
 				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.manage.receive.noorder", null, locale));
-				logger.info("There is no order number specified for deletion");
+				logger.info("There is no order number specified for receival");
 			}
 
 		} catch (Exception e) {
@@ -303,7 +320,7 @@ public class OrderPhaseController {
 			order = this.orderService.receiveOrder(order, userDetails.getUsername());
 
 			orderBeanDTO.getOrder().setStatus(order.getStatus());
-			
+
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.receive.success", new Object[] { order.getOrderId() }, locale));
 			this.updateOrderModelDetails(model, orderBeanDTO);
@@ -330,7 +347,7 @@ public class OrderPhaseController {
 			Order order = OrderTransformer.transformOrderBeanAsReceivedAll(orderBeanDTO.getOrder(), userDetails.getUsername());
 			order = this.orderService.receiveAllOrder(order, userDetails.getUsername());
 			orderBeanDTO.getOrder().setStatus(order.getStatus());
-			
+
 			logger.info("All the purchase order items has been marked as received all successfully");
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.all.success", new Object[] { order.getOrderId() }, locale));

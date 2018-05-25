@@ -323,14 +323,18 @@ public class OrderServiceImpl implements OrderService {
 	public Order approveOrder(BigInteger orderId) {
 
 		Order actualOrder = null;
-		actualOrder = orderRepository.findOne(orderId);
-		actualOrder.setStatus("A");
-		orderRepository.save(actualOrder);
+		actualOrder = this.orderRepository.findOne(orderId);
+		if(actualOrder !=null) {
+			actualOrder.setStatus("A");
+			this.orderRepository.save(actualOrder);
+			logger.info("The selected purchase order {} has been approved now ", orderId);
+		}else {
+			logger.info("There was no order found with {} order id", orderId);
+		}
 
 		/**
 		 * P-STORY - Add email to supplier functionality here if possible
 		 */
-		logger.info("The selected purchase order {} has been approved now ", orderId);
 
 		return actualOrder;
 	}
