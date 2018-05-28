@@ -70,9 +70,13 @@
 											</div>
 										</div>
 										<div class="col-6">
-										
-										
-										
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.expense.payee.phone}">Payee Phone</span></small></label>
+												<div class="input-group text-left">
+													<input type="number" th:field="*{toPayeePhone}" class="form-control input-sm"></input>
+												</div>
+												<div id="phoneMsg"></div>
+											</div>
 										</div>
 									</div>
 									<div class="row">
@@ -159,15 +163,6 @@
 													<input type="text" th:field="*{toAccountNo}" class="form-control input-sm"></input>
 												</div>
 												<div id="accountNoMsg"></div>
-											</div>
-										</div>
-										<div class="col-6">
-											<div class="form-group d-none" id="payeePhoneDiv">
-												<label><small><span th:text="#{commerce.screen.expense.payee.phone}">Payee Phone</span></small></label>
-												<div class="input-group text-left">
-													<input type="number" th:field="*{toPayeePhone}" class="form-control input-sm"></input>
-												</div>
-												<div id="phoneMsg"></div>
 											</div>
 										</div>
 									</div>
@@ -288,11 +283,56 @@
 		var txn_locationId = /*[[${expenseBean.locationId}]]*/;
 		var txn_registerId = /*[[${expenseBean.registerId}]]*/;
 		var txn_businessDate = /*[[${{expenseBean.businessDate}}]]*/;
+		var txn_txnNo= /*[[${{expenseBean.txnNo}}]]*/;
 		var txn_user = /*[[${#authentication.getPrincipal().getUsername()}]]*/;
 		
+		var newExpenseURL = /*[[@{/pos/expenses}]]*/;
+		var print_rcpt_url= /*[[@{/pos/print_expense_receipt(txnId)}]]*/;
+		var view_rcpt_url= /*[[@{/pos/view_expense_receipt(txnId)}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
 
 		
 		/*]]>*/
 	</script>
+	<!-- Order Report Lookup Modal-->
+	<div class="modal fade " id="expenseReceiptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.expense.popup.title}">Expense Receipt</span>
+					</h5>
+				</div>
+				<div class="modal-body text-center">
+					<div id="receiptActions" class="col-12 text-center">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewExpenseReceipt">
+							<div class="fa-5x">
+								<i class="fas fa-file-alt"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewExpense">
+							<div class="fa-5x">
+								<i class="fas fa-print"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewExpense">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="fas fa-hand-holding" data-fa-transform="rotate-180"></i> <i class="fas fa-money-bill-alt"
+									data-fa-transform="shrink-6 left-6 down-5 rotate-90"></i> <i class="fas fa-money-bill-alt" data-fa-transform="shrink-6 down-5 rotate-45"></i>
+								</span>
+							</div>
+						</button>
+					</div>
+					<div class="col-12 d-none text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-5x"></i>
+						<div>
+							<span th:text="#{commerce.screen.expense.popup.rcpt.progress}"></span>
+						</div>
+					</div>
+					<iframe id="receiptPDFContainer" class="p-5" width="90%" height="85%" frameBorder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

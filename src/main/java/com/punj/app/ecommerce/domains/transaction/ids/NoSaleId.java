@@ -3,8 +3,13 @@ package com.punj.app.ecommerce.domains.transaction.ids;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.punj.app.ecommerce.domains.tender.Tender;
 
 @Embeddable
 public class NoSaleId implements Serializable {
@@ -57,11 +62,11 @@ public class NoSaleId implements Serializable {
 	}
 
 	/**
-	 * @param tenderId
-	 *            the tenderId to set
+	 * @param tenderId the tenderId to set
 	 */
 	public void setTenderId(Integer tenderId) {
 		this.tenderId = tenderId;
 	}
 
+	
 }

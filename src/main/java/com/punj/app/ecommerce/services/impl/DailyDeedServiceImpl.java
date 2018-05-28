@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +174,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		storeTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
 		storeTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
 		storeTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
+		storeTotals.setTotalTxnCount(BigInteger.ONE.intValue());
 
 		this.financeService.upsertStoreTotals(storeTotals);
 		logger.info("The store total details has been updated successfully");
@@ -208,21 +210,20 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 
 				BigDecimal totalTxnAmount = BigDecimal.ZERO;
-				Integer tenderId=null;
+				Integer tenderId = null;
 				for (TenderCount tenderCount : tenderCountList) {
 					totalTxnAmount = totalTxnAmount.add(tenderCount.getAmount());
-					tenderId=tenderCount.getTenderCountId().getTender().getTenderId();
+					tenderId = tenderCount.getTenderCountId().getTender().getTenderId();
 				}
 				txnDetails.setTotalAmt(totalTxnAmount);
 
-				
-				LocationSafe locationSafe=this.retrieveStoreSafe(txnDetails.getTransactionId().getLocationId(), tenderId);
-				
-				this.postTenderMovementTxn(txnDetails, locationSafe,username);
+				LocationSafe locationSafe = this.retrieveStoreSafe(txnDetails.getTransactionId().getLocationId(), tenderId);
+
+				this.postTenderMovementTxn(txnDetails, locationSafe, username);
 				this.updateRegisterTotals(txnDetails);
-				
-				//This is not needed for register as no new tender added or removed
-				//this.updateLedgerJournal(txnDetails, username);
+
+				// This is not needed for register as no new tender added or removed
+				// this.updateLedgerJournal(txnDetails, username);
 
 				result = Boolean.TRUE;
 				logger.info("The register open process has been successfully processed and saved.");
@@ -236,23 +237,21 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		return result;
 	}
 
-	
 	private LocationSafe retrieveStoreSafe(Integer locationId, Integer tenderId) {
-		List<LocationSafe> locationSafeList=this.financeService.retrieveAllSafes(locationId);
-		LocationSafe locationSafeResult=null;
-		for(LocationSafe locationSafe: locationSafeList) {
-			if(tenderId.equals(locationSafe.getTenderId())) {
-				locationSafeResult=locationSafe;
+		List<LocationSafe> locationSafeList = this.financeService.retrieveAllSafes(locationId);
+		LocationSafe locationSafeResult = null;
+		for (LocationSafe locationSafe : locationSafeList) {
+			if (tenderId.equals(locationSafe.getTenderId())) {
+				locationSafeResult = locationSafe;
 				break;
 			}
-				
+
 		}
 		logger.info("The location safe for {} tender has been retrieved successfully ", tenderId);
 		return locationSafeResult;
 	}
-	
-	
-	private void postTenderMovementTxn(Transaction txnDetails,LocationSafe locationSafe, String username) {
+
+	private void postTenderMovementTxn(Transaction txnDetails, LocationSafe locationSafe, String username) {
 
 		TenderMovement tenderMovement = new TenderMovement();
 
@@ -264,7 +263,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		tenderMovement.setToId(txnDetails.getTransactionId().getRegister().toString());
 		tenderMovement.setTransactionId(txnDetails.getTransactionId());
 		tenderMovement.setTxnType(ServiceConstants.TXN_OPEN_REGISTER);
-		
+
 		this.financeService.saveTenderMovement(tenderMovement);
 		logger.info("The register total details has been updated successfully");
 
@@ -280,6 +279,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		registerTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
 		registerTotals.setRegisterId(txnDetails.getTransactionId().getRegister());
 		registerTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
+		registerTotals.setTotalTxnCount(BigInteger.ONE.intValue());
 
 		this.financeService.upsertRegisterTotals(registerTotals);
 		logger.info("The register total details has been updated successfully");

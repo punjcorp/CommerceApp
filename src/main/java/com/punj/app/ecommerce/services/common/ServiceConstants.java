@@ -20,13 +20,18 @@ public final class ServiceConstants {
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 	
+	public static final String ACTION_EXPENSE="Expense";
+	
 	
 	public static final String REASON_REPO_TO_REGISTER="Repository To Register";
 	public static final String REASON_REGISTER_TO_REPO="Register To Repository";
 	public static final String REASON_REGISTER_TO_REGISTER="Register To Register";
+	public static final String REASON_EXPENSE_FROM_REGISTER="Expense From Register";
 	
 	public static final String LEDGER_ACTION_ADD_TO_SAFE="1";
 	public static final String LEDGER_ACTION_SUBTRACT_FROM_SAFE="2";
+	public static final String LEDGER_ACTION_RECEIVE_MONEY_TO_REGISTER="3";
+	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER="4";
 	
 	public static final Integer STYLE_LEVEL=1;
 	public static final Integer ITEM_LEVEL=2;

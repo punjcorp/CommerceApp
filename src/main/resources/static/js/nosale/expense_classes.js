@@ -6,6 +6,21 @@
 /**
  * Class definition for Transaction Id Starts
  */
+var TransactionId = function() {
+	this.txnNo;
+	this.locationId;
+	this.registerId;
+	this.businessDate;
+	this.username;
+	this.uniqueTxnNo;
+}
+
+$.extend(TransactionId.prototype, {
+
+});
+/**
+ * Class definition for Transaction Id Ends
+ */
 
 /**
  * Class definition for Expense Header Details Starts
@@ -122,7 +137,18 @@ $.extend(ExpenseHeader.prototype, {
 	expenseValidated: function(){
 		return true;
 	},
+	addTxnSeqs : function() {
+		var seqVal = 1;
+
+		$.each(this.expenseTenders, function() {
+			this.seqNo = seqVal;
+			seqVal = seqVal + 1;
+
+		});
+	},
 	saveExpense: function(){
+		this.addTxnSeqs();
+		
 		var token = $("meta[name='_csrf']").attr("content");
 		var formdata = JSON.stringify(this);
 		// AJAX call here and refresh the Expense Screen after the save
@@ -156,6 +182,7 @@ var ExpenseTender = function() {
 	this.typeCode;
 	this.name;
 	this.tenderAmount = 0.00;
+	this.seqNo;
 
 	this.payeeName;
 	this.payeePhone;

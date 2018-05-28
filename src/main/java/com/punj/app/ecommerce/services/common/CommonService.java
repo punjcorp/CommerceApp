@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.services.common;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
@@ -35,6 +36,8 @@ public interface CommonService {
 
 	public List<Tender> retrieveAllTenders(Integer locationId);
 
+	public Map<Integer, Tender> retrieveAllTendersAsMap(Integer locationId);
+
 	public List<Tender> retrieveTendersForReconcilation(Integer locationId);
 
 	public BigInteger getId(String name);
@@ -56,7 +59,7 @@ public interface CommonService {
 	public HierarchyDTO retrieveHierarchyByText(String searchText, Pager pager);
 
 	public List<UOM> retrieveAllUOMs();
-	
+
 	public List<Denomination> retrieveAllDenominations();
 
 	public UOM retrieveUOM(String uomCode);

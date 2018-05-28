@@ -16,6 +16,7 @@ public class ExpenseTenderBean {
 	private String typeCode;
 
 	private BigDecimal tenderAmount;
+	private Integer seqNo;
 
 	private String payeeName;
 	private String payeePhone;
@@ -205,6 +206,21 @@ public class ExpenseTenderBean {
 	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the seqNo
+	 */
+	public Integer getSeqNo() {
+		return seqNo;
+	}
+
+	/**
+	 * @param seqNo
+	 *            the seqNo to set
+	 */
+	public void setSeqNo(Integer seqNo) {
+		this.seqNo = seqNo;
 	}
 
 }

@@ -9,11 +9,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import com.punj.app.ecommerce.domains.common.ReasonCode;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 
 @Entity
@@ -25,8 +28,10 @@ public class NoSaleTransaction implements Serializable {
 	@EmbeddedId
 	private TransactionId transactionId;
 
-	@Column(name = "reason_code")
-	private String reasonCode;
+	@ManyToOne
+	@JoinColumn(name = "reason_code_id")
+	private ReasonCode reasonCode;
+
 	private BigDecimal amount;
 
 	@Column(name = "type")
@@ -64,7 +69,7 @@ public class NoSaleTransaction implements Serializable {
 	/**
 	 * @return the reasonCode
 	 */
-	public String getReasonCode() {
+	public ReasonCode getReasonCode() {
 		return reasonCode;
 	}
 
@@ -72,7 +77,7 @@ public class NoSaleTransaction implements Serializable {
 	 * @param reasonCode
 	 *            the reasonCode to set
 	 */
-	public void setReasonCode(String reasonCode) {
+	public void setReasonCode(ReasonCode reasonCode) {
 		this.reasonCode = reasonCode;
 	}
 

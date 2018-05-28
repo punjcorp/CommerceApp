@@ -33,6 +33,7 @@ public final class MVCConstants {
 	public static final String NEXT_LEVEL_NOT_CREATED= "N";	
 
 	public static final String LAST_TXN_NO="LAST_TXN_NO";
+	public static final String TXN_ID_PARAM="txnId";
 	public static final String RCPT_PARAM="_RCPT";
 	public static final String RCPT_JASPER_PARAM="_JASPER";
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
@@ -135,6 +136,11 @@ public final class MVCConstants {
 	
 	public static final String ORDERS_REPORT_NAME="order_list_report.pdf";
 
+	public static final String EXPENSE_RECEIPT_REPORT="/reports/expenses/expense_receipt.jasper";
+	public static final String EXPENSE_RECEIPT_TENDERS_REPORT="/reports/expenses/expense_tenders.jasper";
+	public static final String EXPENSE_TENDER_REPORT_PARAM="EXPENSE_TENDER_REPORT";	
+	
+	
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";

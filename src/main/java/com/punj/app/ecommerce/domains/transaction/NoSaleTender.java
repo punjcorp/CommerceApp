@@ -2,7 +2,6 @@ package com.punj.app.ecommerce.domains.transaction;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -22,6 +21,9 @@ public class NoSaleTender implements Serializable {
 
 	private BigDecimal amount;
 
+	@Column(name = "seq_no")
+	private Integer seqNo;
+
 	@Column(name = "to_account_no")
 	private String toAccountNo;
 	@Column(name = "to_bank_name")
@@ -32,6 +34,9 @@ public class NoSaleTender implements Serializable {
 	private String toPayeeName;
 	@Column(name = "to_payee_phone")
 	private String toPayeePhone;
+
+	@Column(name = "to_details")
+	private String toDetails;
 
 	@Column(name = "created_by")
 	private String createdBy;
@@ -156,5 +161,34 @@ public class NoSaleTender implements Serializable {
 		this.createdBy = createdBy;
 	}
 
+	/**
+	 * @return the toDetails
+	 */
+	public String getToDetails() {
+		return toDetails;
+	}
+
+	/**
+	 * @param toDetails
+	 *            the toDetails to set
+	 */
+	public void setToDetails(String toDetails) {
+		this.toDetails = toDetails;
+	}
+
+	/**
+	 * @return the seqNo
+	 */
+	public Integer getSeqNo() {
+		return seqNo;
+	}
+
+	/**
+	 * @param seqNo
+	 *            the seqNo to set
+	 */
+	public void setSeqNo(Integer seqNo) {
+		this.seqNo = seqNo;
+	}
 
 }

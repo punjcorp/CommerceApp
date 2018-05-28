@@ -462,4 +462,20 @@ public class CommonServiceImpl implements CommonService {
 		return denominations;
 	}
 
+	@Override
+	public Map<Integer, Tender> retrieveAllTendersAsMap(Integer locationId) {
+		Map<Integer, Tender> tenderMap = null;
+
+		List<Tender> tenders = this.retrieveAllTenders(locationId);
+		if (tenders != null && !tenders.isEmpty()) {
+			tenderMap = new HashMap<>();
+			for (Tender tender : tenders) {
+				tenderMap.put(tender.getTenderId(), tender);
+			}
+
+			logger.info("The tender details has been converted into a map successfully ");
+		}
+		return tenderMap;
+	}
+
 }

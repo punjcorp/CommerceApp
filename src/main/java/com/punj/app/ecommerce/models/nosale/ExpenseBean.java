@@ -10,6 +10,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.punj.app.ecommerce.models.common.LocationBean;
 
 /**
  * @author admin
@@ -17,15 +18,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 public class ExpenseBean {
 
+	private LocationBean locationBean;
+
 	private Integer locationId;
 	private Integer registerId;
 	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
 	private LocalDateTime businessDate;
 	@NotNull(message = "{commerce.error.item.empty}")
 	private Integer txnNo;
-	
+
 	private String locationName;
-	private String registerName;	
+	private String registerName;
 
 	private Integer expenseId;
 	private String expenseType;
@@ -33,6 +36,7 @@ public class ExpenseBean {
 
 	private String remarks;
 	private String createdBy;
+	private String printedBy;
 	private LocalDateTime createdDate;
 
 	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
@@ -443,7 +447,8 @@ public class ExpenseBean {
 	}
 
 	/**
-	 * @param locationName the locationName to set
+	 * @param locationName
+	 *            the locationName to set
 	 */
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
@@ -457,10 +462,41 @@ public class ExpenseBean {
 	}
 
 	/**
-	 * @param registerName the registerName to set
+	 * @param registerName
+	 *            the registerName to set
 	 */
 	public void setRegisterName(String registerName) {
 		this.registerName = registerName;
+	}
+
+	/**
+	 * @return the locationBean
+	 */
+	public LocationBean getLocationBean() {
+		return locationBean;
+	}
+
+	/**
+	 * @param locationBean
+	 *            the locationBean to set
+	 */
+	public void setLocationBean(LocationBean locationBean) {
+		this.locationBean = locationBean;
+	}
+
+	/**
+	 * @return the printedBy
+	 */
+	public String getPrintedBy() {
+		return printedBy;
+	}
+
+	/**
+	 * @param printedBy
+	 *            the printedBy to set
+	 */
+	public void setPrintedBy(String printedBy) {
+		this.printedBy = printedBy;
 	}
 
 }

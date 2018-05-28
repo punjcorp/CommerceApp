@@ -23,6 +23,12 @@ public interface FinanceService {
 
 	public DailyTotals upsertRegisterTotals(DailyTotals registerTotals);
 
+	public DailyTotals updateDailyTotals(DailyTotals storeTotals, String action);
+	
+	public DailyTotals updateStoreTotals(DailyTotals storeTotals, String action);
+
+	public DailyTotals updateRegisterTotals(DailyTotals registerTotals, String action);
+	
 	public TenderMovement saveTenderMovement(TenderMovement moveDetails);
 
 	public List<DailySafe> createDailySafe(List<DailySafe> safeDetailList);

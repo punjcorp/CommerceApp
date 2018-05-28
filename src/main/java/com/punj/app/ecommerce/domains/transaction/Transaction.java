@@ -45,6 +45,7 @@ public class Transaction implements Serializable {
 	@Column(name = "txn_type")
 	private String txnType;
 	private String status;
+	private String comments;
 
 	@Column(name = "start_time")
 	private LocalDateTime startTime;
@@ -328,6 +329,21 @@ public class Transaction implements Serializable {
 	 */
 	public void setDiscountTotalAmt(BigDecimal discountTotalAmt) {
 		this.discountTotalAmt = discountTotalAmt;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 	/*

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt_items" pageWidth="584" pageHeight="394" columnWidth="584" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="58e7f647-fbb4-4d62-9e41-b45f40e96ab4">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceReportBeans"/>
+	<property name="com.jaspersoft.studio.unit." value="inch"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="payeePhone" class="java.lang.String">
+		<fieldDescription><![CDATA[payeePhone]]></fieldDescription>
+	</field>
+	<field name="bankBranch" class="java.lang.String">
+		<fieldDescription><![CDATA[bankBranch]]></fieldDescription>
+	</field>
+	<field name="bankName" class="java.lang.String">
+		<fieldDescription><![CDATA[bankName]]></fieldDescription>
+	</field>
+	<field name="tenderId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[tenderId]]></fieldDescription>
+	</field>
+	<field name="tenderDetails" class="java.lang.String">
+		<fieldDescription><![CDATA[tenderDetails]]></fieldDescription>
+	</field>
+	<field name="typeCode" class="java.lang.String">
+		<fieldDescription><![CDATA[typeCode]]></fieldDescription>
+	</field>
+	<field name="payeeName" class="java.lang.String">
+		<fieldDescription><![CDATA[payeeName]]></fieldDescription>
+	</field>
+	<field name="createdDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[createdDate]]></fieldDescription>
+	</field>
+	<field name="tenderAmount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[tenderAmount]]></fieldDescription>
+	</field>
+	<field name="createdBy" class="java.lang.String">
+		<fieldDescription><![CDATA[createdBy]]></fieldDescription>
+	</field>
+	<field name="accountNo" class="java.lang.String">
+		<fieldDescription><![CDATA[accountNo]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<field name="seqNo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[seqNo]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="28" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="2" width="20" height="11" uuid="e3e9dc15-446b-4850-8dc5-496d276ce1c6"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{seqNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="25" y="2" width="100" height="11" uuid="e3e9dc15-446b-4850-8dc5-496d276ce1c6"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="130" y="2" width="140" height="11" uuid="582f2e66-4d57-4f9c-a67e-65d83de3b33e"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountNo}==null?" - ":$F{accountNo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement x="275" y="2" width="200" height="11" uuid="9a326ea7-65f9-4914-87b9-fd087cd4b0cd"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tenderDetails}==null?" - ":$F{tenderDetails}]]></textFieldExpression>
+			</textField>
+			<textField pattern="INR  ##########.00">
+				<reportElement x="480" y="2" width="80" height="11" uuid="43fe7390-500d-4a32-af0a-a665b11db42d"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tenderAmount}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="15" width="139" height="11" uuid="3092e02e-b770-422e-909f-a6793e7e9bf9"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bankName}==null?"":"( Bank : "+$F{bankName}+" - "+$F{bankBranch}+" )"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

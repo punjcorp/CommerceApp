@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_master` (
   `cancel_reason_code` VARCHAR(20) NULL,
   `txn_type` VARCHAR(50) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
+  `comments` VARCHAR(300) NULL,
   `post_void_flag` TINYINT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,

@@ -17,6 +17,7 @@
  * The expense related global variables
  */
 var expense = new ExpenseHeader();
+var txnId = new TransactionId();
 var txnStartTime;
 var txnEndTime;
 
@@ -63,6 +64,7 @@ $(function() {
 	});
 
 	$('#btnSaveExpense').click(function() {
+		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		if (validateExpenseDetails()) {
 			readExpenseDetails();
@@ -70,6 +72,19 @@ $(function() {
 		} 
 	});
 
+	$('#btnViewExpenseReceipt').click(function() {
+		viewExpenseReceipt();
+	});
+
+	$('#btnPrintReceiptAndNewExpense').click(function() {
+		printExpenseReceipt();
+	});	
+	
+	$('#btnNewExpense').click(function() {
+		startNewExpense();
+	});	
+	
+	
 });
 
 /* This section will allow the item listing to be in a specific format */
@@ -128,32 +143,27 @@ function displayTenderControls() {
 
 	if (tenderType && tenderType == 'CASH') {
 		$('#payeeAccountDiv').addClass('d-none');
-		$('#payeePhoneDiv').addClass('d-none');
 		$('#payeeBankDiv').addClass('d-none');
 		$('#payeeBranchDiv').addClass('d-none');
 	}
 
 	if (tenderType && tenderType == 'CC') {
 		$('#payeeAccountDiv').removeClass('d-none');
-		$('#payeePhoneDiv').removeClass('d-none');
 		$('#payeeBankDiv').addClass('d-none');
 		$('#payeeBranchDiv').addClass('d-none');
 	}
 	if (tenderType && tenderType == 'PAYPAL') {
 		$('#payeeAccountDiv').removeClass('d-none');
-		$('#payeePhoneDiv').removeClass('d-none');
 		$('#payeeBankDiv').addClass('d-none');
 		$('#payeeBranchDiv').addClass('d-none');
 	}
 	if (tenderType && tenderType == 'PAYTM') {
 		$('#payeeAccountDiv').removeClass('d-none');
-		$('#payeePhoneDiv').removeClass('d-none');
 		$('#payeeBankDiv').addClass('d-none');
 		$('#payeeBranchDiv').addClass('d-none');
 	}
 	if (tenderType && tenderType == 'CHEQUE') {
 		$('#payeeAccountDiv').removeClass('d-none');
-		$('#payeePhoneDiv').removeClass('d-none');
 		$('#payeeBankDiv').removeClass('d-none');
 		$('#payeeBranchDiv').removeClass('d-none');
 	}
@@ -270,10 +280,6 @@ function clearTenderErrors() {
 	$('#toAccountNo').val('');
 	$('#toAccountNo').removeClass('is-invalid');
 	$('#accountNoMsg').hide();
-	
-	$('#toPayeePhone').val('');
-	$('#toPayeePhone').removeClass('is-invalid');
-	$('#phoneMsg').hide();
 	
 	$('#toBankName').val('');
 	$('#toBankName').removeClass('is-invalid');
@@ -426,5 +432,60 @@ function calculateTotal() {
 }
 
 function postExpenseSave(data) {
-	alert('We are validating your expense data to confirm the successful save');
+	$('#screenBusyModal').modal('hide');
+	this.txnId.txnNo=data.transactionSeq;
+	this.txnId.uniqueTxnNo=data.uniqueTxnNo;
+	$('#expenseReceiptModal').modal({backdrop: 'static', keyboard: false});
+	$('#screenBusyModal').modal('hide');
+	
+}
+
+
+function viewExpenseReceipt() {
+	$('#progressDiv').removeClass("d-none");
+	updateTxnIdDetails();
+	view_rcpt_url = encodeURIComponent(view_rcpt_url + '=' + this.txnId.uniqueTxnNo);
+	var pdfRcptUrl = view_rcpt_viewer_url + '?file=' + view_rcpt_url;
+	$('#receiptPDFContainer').attr("src", pdfRcptUrl);
+	$('#progressDiv').addClass("d-none");
+
+}
+
+function updateTxnIdDetails(){
+	this.txnId.locationId = txn_locationId;
+	this.txnId.businessDate = txn_businessDate;
+	this.txnId.registerId = txn_registerId;
+	this.txnId.username = txn_user;
+	
+}
+
+function printExpenseReceipt() {
+
+	updateTxnIdDetails();
+	executePrintReceipt();
+}
+
+function executePrintReceipt() {
+	var token = $("meta[name='_csrf']").attr("content");
+	var formdata = JSON.stringify(txnId);
+	// AJAX call here and refresh the sell item page with receipt printing
+	$.ajax({
+		url : print_rcpt_url,
+		type : 'POST',
+		cache : false,
+		data : formdata,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			startNewExpense();
+		},
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});
+
+}
+
+function startNewExpense() {
+	window.location.href = newExpenseURL;
 }
