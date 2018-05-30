@@ -31,6 +31,7 @@ import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.models.item.ItemOptionsBean;
+import com.punj.app.ecommerce.models.lookup.ItemLookupBean;
 
 /**
  * @author admin
@@ -42,6 +43,68 @@ public class ItemTransformer {
 
 	private ItemTransformer() {
 		throw new IllegalStateException("ItemTransformer class");
+	}
+
+	public static List<ItemLookupBean> transformItemsForLookup(List<Item> items) {
+		List<ItemLookupBean> itemLookupBeans = new ArrayList<>(items.size());
+		ItemLookupBean itemLookupBean = null;
+		for (Item item : items) {
+			itemLookupBean = ItemTransformer.transformItemForLookup(item);
+			itemLookupBeans.add(itemLookupBean);
+		}
+
+		logger.info("The item list has been transformed to item lookup beans successfully.");
+		return itemLookupBeans;
+	}
+
+	public static ItemLookupBean transformItemForLookup(Item item) {
+		ItemLookupBean itemLookupBean = new ItemLookupBean();
+
+		itemLookupBean.setItemId(item.getItemId());
+
+		itemLookupBean.setLongDesc(item.getDescription());
+		itemLookupBean.setName(item.getName());
+
+		itemLookupBean.setCreatedBy(item.getCreatedBy());
+		itemLookupBean.setCreatedDate(item.getCreatedDate());
+		itemLookupBean.setModifiedBy(item.getModifiedBy());
+		itemLookupBean.setModifiedDate(item.getModifiedDate());
+		logger.info("The item base data has been transformed to bean successfully.");
+
+		if (item.getItemOptions() != null) {
+			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions());
+			itemLookupBean.setItemOptions(itemOptionsBean);
+			logger.info("The item options details has been transformed in item details lookup item options bean successfully.");
+		}
+
+		if (item.getHierarchy() != null) {
+			HierarchyBean hierarchyBean = HierarchyTransformer.transformHierarchy(item.getHierarchy());
+			itemLookupBean.setHierarchy(hierarchyBean);
+			logger.info("The item details lookup bean has updated with transformed hierarchy object successfully.");
+		}
+
+		if (item.getImages() != null && !item.getImages().isEmpty()) {
+			ItemImage itemImage = item.getImages().get(0);
+			ItemImageBean itemImageBean;
+			try {
+				itemImageBean = ItemTransformer.transformItemImage(itemImage);
+				itemLookupBean.setItemImage(itemImageBean);
+				logger.info("The item image has updated with transformed image bean objects successfully.");
+			} catch (IOException e) {
+				logger.info("There was some problem transforming image for the item");
+			}
+		}
+
+		if (item.getItemAttributes() != null && !item.getItemAttributes().isEmpty()) {
+
+			List<AttributeBean> itemAttributes = ItemTransformer.transformItemAttributes(item.getItemAttributes());
+			itemLookupBean.setItemAttributes(itemAttributes);
+			logger.info("The item attributes has been transformed successfully.");
+		}
+
+		logger.info("The item lookup details has been transformed successfully.");
+
+		return itemLookupBean;
 	}
 
 	public static List<ItemBean> transformItems(List<Item> items) throws IOException {
@@ -405,6 +468,20 @@ public class ItemTransformer {
 		}
 		logger.info("The item attribute has been transformed to item attribute beans successfully");
 		return itemAttributes;
+	}
+
+	public static List<AttributeBean> transformItemAttributes(List<ItemAttribute> itemAttributes) {
+		List<AttributeBean> attributeBeanList = new ArrayList<>(itemAttributes.size());
+		AttributeBean attributeBean = null;
+		Attribute attribute = null;
+		for (ItemAttribute itemAttribute : itemAttributes) {
+			attribute = itemAttribute.getItemAttributeId().getAttribute();
+			attributeBean = ItemTransformer.transformItemAttribute(attribute);
+			attributeBeanList.add(attributeBean);
+		}
+
+		logger.info("The item attribute has been transformed to item attribute bean successfully");
+		return attributeBeanList;
 	}
 
 	public static AttributeBean transformItemAttribute(Attribute attribute) {

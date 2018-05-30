@@ -624,4 +624,6 @@ a.ui-button:active,
 	padding: 12px;	
 }
 
-
+.item-row-action{
+	cursor: pointer;
+}

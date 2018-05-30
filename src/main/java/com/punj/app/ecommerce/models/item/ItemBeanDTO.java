@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.punj.app.ecommerce.models.lookup.ItemLookupBean;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -15,6 +16,7 @@ import com.punj.app.ecommerce.utils.Pager;
  */
 public class ItemBeanDTO {
 
+	private List<ItemLookupBean> itemLookupList;
 	private List<ItemBean> items;
 	@Valid
 	private List<ItemBean> skus;
@@ -97,6 +99,20 @@ public class ItemBeanDTO {
 	 */
 	public void setStyle(ItemBean style) {
 		this.style = style;
+	}
+
+	/**
+	 * @return the itemLookupList
+	 */
+	public List<ItemLookupBean> getItemLookupList() {
+		return itemLookupList;
+	}
+
+	/**
+	 * @param itemLookupList the itemLookupList to set
+	 */
+	public void setItemLookupList(List<ItemLookupBean> itemLookupList) {
+		this.itemLookupList = itemLookupList;
 	}
 
 }

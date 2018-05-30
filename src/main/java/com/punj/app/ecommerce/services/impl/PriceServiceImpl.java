@@ -236,23 +236,24 @@ public class PriceServiceImpl implements PriceService {
 	}
 
 	@Override
-	@Transactional
 	public ItemPrice approveClearanceReset(ItemPrice itemPrice, String username) {
 		if (itemPrice != null && itemPrice.getClearanceResetId() != null) {
-			ItemPrice clearancePriceChange = this.itemPriceRepository.findOne(itemPrice.getClearanceResetId());
-			clearancePriceChange.setModifiedDate(LocalDateTime.now());
-			clearancePriceChange.setModifiedBy(username);
-			clearancePriceChange.setStatus(ServiceConstants.STATUS_RESET);
-			clearancePriceChange.setEndDate(LocalDateTime.now());
+			itemPrice.setStatus(ServiceConstants.STATUS_APPROVED);
+			itemPrice = this.itemPriceRepository.save(itemPrice);
+			if(itemPrice!=null) {
+				ItemPrice clearancePriceChange = this.itemPriceRepository.findOne(itemPrice.getClearanceResetId());
+				clearancePriceChange.setModifiedDate(LocalDateTime.now());
+				clearancePriceChange.setModifiedBy(username);
+				clearancePriceChange.setStatus(ServiceConstants.STATUS_RESET);
+				clearancePriceChange.setEndDate(LocalDateTime.now());
 
-			clearancePriceChange = this.itemPriceRepository.save(clearancePriceChange);
-			if (clearancePriceChange != null) {
-				itemPrice.setStatus(ServiceConstants.STATUS_APPROVED);
-				itemPrice = this.itemPriceRepository.save(itemPrice);
-			} else {
-				logger.info("There was no clearance to reset, hence the save process has failed");
+				clearancePriceChange = this.itemPriceRepository.save(clearancePriceChange);
+				if (clearancePriceChange != null) {
+					logger.info("The clearance reset was successful.");
+				} else {
+					logger.info("There was no clearance to reset, hence the save process has failed");
+				}
 			}
-
 		} else {
 			logger.info("There was no clearance to reset, hence the save process has failed");
 		}
@@ -270,6 +271,18 @@ public class PriceServiceImpl implements PriceService {
 			logger.info("There was no clearance to reset, hence the save process has failed");
 		}
 		return itemPrice;
+	}
+
+	@Override
+	public List<ItemPrice> getFutureItemPrices(BigInteger itemId, Integer locationId, LocalDateTime searchDate) {
+		
+		List<ItemPrice> itemPrices=this.itemPriceRepository.getItemPricesByDate(itemId, locationId);
+		if(itemPrices!=null && !itemPrices.isEmpty()) {
+			logger.info("The future item prices were retrieved successfully");
+		} else {
+			logger.info("There was no future price existing for the provided item and location");
+		}
+		return itemPrices;
 	}
 
 }

@@ -33,6 +33,7 @@ public class PriceBean {
 	private List<LocationBean> locations;
 	@NotEmpty(message = "{commerce.error.select.empty}")
 	private String priceType;
+	private String priceTypeDesc;
 	@NotNull(message = "{commerce.error.date.empty}")
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
@@ -326,6 +327,20 @@ public class PriceBean {
 	 */
 	public void setPriceDtls(SaleItem priceDtls) {
 		this.priceDtls = priceDtls;
+	}
+
+	/**
+	 * @return the priceTypeDesc
+	 */
+	public String getPriceTypeDesc() {
+		return priceTypeDesc;
+	}
+
+	/**
+	 * @param priceTypeDesc the priceTypeDesc to set
+	 */
+	public void setPriceTypeDesc(String priceTypeDesc) {
+		this.priceTypeDesc = priceTypeDesc;
 	}
 
 }

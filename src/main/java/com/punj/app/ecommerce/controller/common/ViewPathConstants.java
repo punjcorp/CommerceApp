@@ -168,6 +168,8 @@ public final class ViewPathConstants {
 	 */
 	public static final String LOOKUP_ITEM_URL = "/item_lookup";
 	public static final String LOOKUP_ITEM_PAGE= "lookup/item_lookup";
+	public static final String LOOKUP_ITEM_DETAILS_URL= "/item_details_lookup";
+	public static final String LOOKUP_ITEM_DETAILS_PAGE= "item/item_details_lookup";
 	/**
 	 * The lookup pages section ends
 	 */	

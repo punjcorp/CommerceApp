@@ -44,5 +44,7 @@ public interface PriceService {
 	public ItemPriceHistory createItemPrice(ItemPriceHistory itemPriceHistory);
 
 	public ItemPrice getCurrentItemPrice(BigInteger itemId, Integer locationId, LocalDateTime currentDate);
+	
+	public List<ItemPrice> getFutureItemPrices(BigInteger itemId, Integer locationId, LocalDateTime businessDate);
 
 }

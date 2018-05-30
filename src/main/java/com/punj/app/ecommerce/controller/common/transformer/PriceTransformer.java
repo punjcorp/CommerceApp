@@ -77,6 +77,7 @@ public class PriceTransformer {
 		priceBean.setLocationId(itemPrice.getLocationId());
 		priceBean.setStatus(itemPrice.getStatus());
 		priceBean.setPriceType(itemPrice.getType());
+		priceBean.setPriceTypeDesc(Utils.showPriceType(itemPrice.getType()));
 
 		priceBean.setItemPriceAmt(itemPrice.getItemPrice());
 		priceBean.setClearanceResetId(itemPrice.getClearanceResetId());

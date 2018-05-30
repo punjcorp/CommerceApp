@@ -52,6 +52,26 @@ public class Utils {
 		}
 
 	}
+	
+	public static String showPriceType(String priceType) {
+
+		switch (priceType) {
+		case MVCConstants.PRICE_TYPE_PERMANENT:
+			return MVCConstants.PRICE_TYPE_PERMANENT_DESC;
+		case MVCConstants.PRICE_TYPE_PROMOTION:
+			return MVCConstants.PRICE_TYPE_PROMOTION_DESC;
+		case MVCConstants.PRICE_TYPE_CLEARANCE:
+			return MVCConstants.PRICE_TYPE_CLEARANCE_DESC;
+		case MVCConstants.PRICE_TYPE_CLEARANCE_RESET:
+			return MVCConstants.PRICE_TYPE_CLEARANCE_RESET_DESC;
+			
+		default:
+			return "";
+		}
+
+	}
+	
+	
 
 	public static LocalDateTime parseDate(String date) {
 		return LocalDateTime.parse(date, dateFormatter);

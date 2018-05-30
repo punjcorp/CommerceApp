@@ -28,6 +28,13 @@ public final class MVCConstants {
 	public static final String PRICE_TYPE_CLEARANCE="3";
 	public static final String PRICE_TYPE_CLEARANCE_RESET="4";
 	
+	public static final String PRICE_TYPE_PERMANENT_DESC="Permanent";
+	public static final String PRICE_TYPE_PROMOTION_DESC="Promotion";
+	public static final String PRICE_TYPE_CLEARANCE_DESC="Clearance";
+	public static final String PRICE_TYPE_CLEARANCE_RESET_DESC="Clearance Reset";
+	
+	
+	
 	public static final String NEXT_LEVEL_CREATED= "C";
 	public static final String NEXT_LEVEL_APPROVED= "A";	
 	public static final String NEXT_LEVEL_NOT_CREATED= "N";	

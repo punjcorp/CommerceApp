@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.item.search}">Item Lookup Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<script src="../../static/js/lookup/item_lookup.js" th:src="@{/js/lookup/item_lookup.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/pos_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card content-container">
+				<div class="card-header">
+					<h3>
+						<span th:text="#{commerce.screen.lookup.item.details.header}"></span>
+					</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<!-- Item Basic Information Starts-->
+						<div class="row">
+							<div class="col-2">
+								<img th:src="'data:'+${itemBean.itemImage.imageType}+';base64,'+${itemBean.itemImage.baseEncodedImage}" class="img-fluid img-thumbnail"
+									th:if="${itemBean.itemImage.imageType!=null}" /> <img th:src="@{/images/item_image_default_200.png}" class="img-fluid img-thumbnail"
+									th:if="${itemBean.itemImage.imageType==null}" />
+							</div>
+							<div class="col-6">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.no}">Item No</span></small></label>
+									<div class="input-group text-left">
+										<h5>
+											<span th:text="${itemBean.itemId}"></span>
+										</h5>
+									</div>
+								</div>
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.name}">Item Name</span></small></label>
+									<div class="input-group text-left">
+										<h5>
+											<span th:text="${itemBean.name}"></span>
+										</h5>
+									</div>
+								</div>
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.description}">Item Description</span></small></label>
+									<div class="input-group text-left">
+										<em><span class="text-muted" th:text="${itemBean.longDesc}"></span></em>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.hsn}">HSN No</span></small></label>
+									<div class="input-group text-left">
+										<h5>
+											<span th:text="${itemBean.itemOptions.hsnNo}"></span>
+										</h5>
+									</div>
+								</div>
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.tax.group}">Tax Group</span></small></label>
+									<div class="input-group text-left">
+										<h5>
+											<span th:text="${itemBean.itemOptions.taxGroupId}"></span>
+										</h5>
+									</div>
+								</div>
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.uom}">UOM</span></small></label>
+									<div class="input-group text-left">
+										<span th:text="${itemBean.itemOptions.uom}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Item Basic Information Ends -->
+						<!-- Item Attribute Information Starts-->
+						<div class="row">
+							<div class="col-8"></div>
+							<div class="col">
+								<div class="form-group">
+									<div class="input-group text-left">
+										<label><small><span th:text="#{commerce.screen.item.attribute.caption}"></span></small></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<th:block th:each="itemAttribute,itrStat:${itemBean.itemAttributes}">
+							<div class="row">
+								<div class="col-8"></div>
+								<div class="col">
+									<div class="form-group">
+										<div class="input-group text-left">
+											<span th:text="${itemAttribute.code}"></span> <span th:text="' - '"></span><span th:text="${itemAttribute.name}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="form-group">
+										<div class="input-group text-left">
+											<span th:text="${itemAttribute.valCode}"></span> <span th:text="' - '"></span><span th:text="${itemAttribute.valName}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="col"></div>
+							</div>
+						</th:block>
+						<!-- Item Attribute Information Ends-->
+						<!-- Item Stock Information Starts-->
+						<div class="card form-group">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-11 text-left">
+										<div class="form-group">
+											<div class="input-group text-left">
+												<h5>
+													<span th:text="#{commerce.screen.lookup.item.details.stock.label}"></span>
+												</h5>
+											</div>
+										</div>
+									</div>
+									<div class="col-1 text-right">
+										<a data-toggle="collapse" href="#itemStockInfo" aria-expanded="false" aria-controls="itemStockInfo"><i class="fas fa-angle-down"></i></a>
+									</div>
+								</div>
+							</div>
+							<div id="itemStockInfo" class="collapse show">
+								<div class="card-body">
+									<div class="row">
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.stock.status}">Stock Status</span></small></label>
+												<div class="input-group text-left">
+													<h5>
+														<span th:text="${itemBean.itemOptions.stockStatus}"></span>
+													</h5>
+												</div>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.stock.total.qty}">Total Qty</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="${itemBean.itemInventory.totalQty}+'  '+${itemBean.itemOptions.uom}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.stock.soh}">Stock On Hand</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="${itemBean.itemInventory.sohQty}+'  '+${itemBean.itemOptions.uom}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.stock.reserved}">Reserved Qty</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="${itemBean.itemInventory.reservedQty}+'  '+${itemBean.itemOptions.uom}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.stock.nonsellable}">Nonsellable Qty</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="${itemBean.itemInventory.nonSellableQty}+'  '+${itemBean.itemOptions.uom}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Item Stock Information Ends-->
+						<!-- Item Price Information Starts-->
+						<div class="card form-group">
+							<div class="card-header">
+								<div class="row">
+									<div class="col-11 text-left">
+										<div class="form-group">
+											<div class="input-group text-left">
+												<h5>
+													<span th:text="#{commerce.screen.lookup.item.details.price.label}"></span>
+												</h5>
+											</div>
+										</div>
+									</div>
+									<div class="col-1 text-right">
+										<a data-toggle="collapse" href="#itemPriceInfo" aria-expanded="false" aria-controls="itemPriceInfo"><i class="fas fa-angle-down"></i></a>
+									</div>
+								</div>
+							</div>
+							<div id="itemPriceInfo" class="collapse show">
+								<div class="card-body">
+									<div class="row">
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.unit.cost}">Unit Cost</span></small></label>
+												<div class="input-group text-left">
+													<h5>
+														<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.itemOptions.unitCost}"></span>
+													</h5>
+												</div>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.suggested.price}">Suggested Price</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.itemOptions.suggestedPrice}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.compareat.price}">Compare At Price</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.itemOptions.compareAtPrice}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.current.price}">Current Price</span></small></label>
+												<div class="input-group text-left">
+													<h5>
+														<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.itemOptions.currentPrice}+'   ('+${itemBean.currentPriceType}+')'"></span>
+													</h5>
+												</div>
+												<small><span th:text="#{commerce.screen.common.date.start}+' : '+${itemBean.currentPriceStartDate}"></span></small> <br /> <small
+													th:if="${itemBean.currentPriceEndDate!=null}"><span
+													th:text="#{commerce.screen.common.date.end}+' : '+${itemBean.currentPriceEndDate}"></span></small>
+											</div>
+										</div>
+										<div class="col">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.item.mrp}">Max Retail Price</span></small></label>
+												<div class="input-group text-left">
+													<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.itemOptions.maxRetailPrice}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="col"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Item Price Information Ends-->
+						<!-- Future Item Price Information Starts-->
+						<table class="table table-striped table-hover table-bordered"
+							th:if="${itemBean.itemFuturePrices!=null and #lists.size(itemBean.itemFuturePrices)>0}">
+							<thead class="thead-light">
+								<tr>
+									<th><span th:text="#{commerce.screen.order.item.serial}"></span></th>
+									<th><span th:text="#{commerce.screen.price.type}"></span></th>
+									<th><span th:text="#{commerce.screen.price.item.price}"></span></th>
+									<th><span th:text="#{commerce.screen.common.date.start}"></span></th>
+									<th><span th:text="#{commerce.screen.common.date.end}"></span></th>
+									<th><span th:text="#{commerce.screen.common.created.by}"></span></th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="itemPrice,itrStat:${itemBean.itemFuturePrices}">
+									<tr>
+										<td><span th:text="${itrStat.index+1}"></span></td>
+										<td><span th:text="${itemPrice.priceTypeDesc}"></span></td>
+										<td><span th:text="${itemPrice.itemPriceAmt}"></span></td>
+										<td><span th:text="${itemPrice.startDate}"></span></td>
+										<td><span th:text="${itemPrice.endDate!=null?itemPrice.endDate:' - '}"></span></td>
+										<td><span th:text="${itemPrice.createdBy}"></span></td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+						<!-- Future Item Price Information Ends-->
+					</div>
+					<div class="card-text"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+</body>
+</html>

@@ -45,8 +45,8 @@ begin
 SET @prev_value = NULL;
 SET @rank_count = 0;
 select item_price_id into o_clearane_id from (select *, CASE
-    WHEN @prev_value = price_change_type then  @rank_count
-    WHEN @prev_value := price_change_type THEN @rank_count := @rank_count + 1
+    WHEN @prev_value = start_date then  @rank_count
+    WHEN @prev_value := start_date THEN @rank_count := @rank_count + 1
 END AS rank  from `commercedb`.`item_price` where 
 item_id = i_item_id
         AND location_id = i_location_id  and status='A' and price_change_type=3 order by start_date asc)itm_price where rank=1;
