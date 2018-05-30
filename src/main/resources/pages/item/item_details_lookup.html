@@ -54,6 +54,12 @@
 										<em><span class="text-muted" th:text="${itemBean.longDesc}"></span></em>
 									</div>
 								</div>
+								<div class="form-group">
+									<label><small><span th:text="#{commerce.screen.item.hierarchy}">Item Hierarchy</span></small></label>
+									<div class="input-group text-left">
+										<span class="text-muted" th:text="${itemBean.hierarchy.name}+' ('+${itemBean.hierarchy.code} +')'"></span>
+									</div>
+								</div>
 							</div>
 							<div class="col">
 								<div class="form-group">
@@ -78,13 +84,6 @@
 										<span th:text="${itemBean.itemOptions.uom}"></span>
 									</div>
 								</div>
-							</div>
-						</div>
-						<!-- Item Basic Information Ends -->
-						<!-- Item Attribute Information Starts-->
-						<div class="row">
-							<div class="col-8"></div>
-							<div class="col">
 								<div class="form-group">
 									<div class="input-group text-left">
 										<label><small><span th:text="#{commerce.screen.item.attribute.caption}"></span></small></label>
@@ -92,6 +91,8 @@
 								</div>
 							</div>
 						</div>
+						<!-- Item Basic Information Ends -->
+						<!-- Item Attribute Information Starts-->
 						<th:block th:each="itemAttribute,itrStat:${itemBean.itemAttributes}">
 							<div class="row">
 								<div class="col-8"></div>

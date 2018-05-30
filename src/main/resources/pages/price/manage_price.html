@@ -24,17 +24,16 @@
 						<!-- SEARCH SECTION FOR PRICE STARTS -->
 						<div class="card-text">
 							<div class="row">
-								<div class="col-4">
+								<div class="col">
 									<div class="form-group text-left">
 										<label for="itemId"><small><span th:text="#{commerce.screen.common.style.item}"></span></small></label>
 										<div class="input-group text-left">
-											<input type="text" th:field="*{itemId}" class="form-control input-sm"></input> <a data-toggle="modal" data-target="#itemModal"
-												class="nav-link" href="#"><i class="material-icons">search</i></a>
+											<input type="text" th:field="*{itemId}" class="form-control input-sm"></input>
 										</div>
 										<small th:if="${#fields.hasErrors('itemId')}" th:errors="*{itemId}" class="text-danger align-top">Item Error </small>
 									</div>
 								</div>
-								<div class="col-4">
+								<div class="col">
 									<div class="form-group text-left">
 										<label for="locationId"><small><span th:text="#{commerce.screen.common.location}"></span></small></label>
 										<div class="input-group text-left">
@@ -47,7 +46,7 @@
 										<small th:if="${#fields.hasErrors('locationId')}" th:errors="*{locationId}" class="text-danger align-top">Location Error </small>
 									</div>
 								</div>
-								<div class="col-4">
+								<div class="col">
 									<div class="form-group text-left">
 										<label for="type"><small><span th:text="#{commerce.screen.price.type}">Price Type</span></small></label>
 										<div class="input-group text-left">
@@ -56,21 +55,25 @@
 												<option value="1" th:text="#{commerce.screen.price.type.permanent}">Permanent</option>
 												<option value="2" th:text="#{commerce.screen.price.type.promotion}">Promotion</option>
 												<option value="3" th:text="#{commerce.screen.price.type.clearance}">Clearance</option>
+												<option value="4" th:text="#{commerce.screen.price.type.clearance.reset}">Clearance Reset</option>
 											</select>
 										</div>
 										<small th:if="${#fields.hasErrors('priceType')}" th:errors="*{priceType}" class="text-danger align-top">Price Type Error </small>
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-6">
+								<div class="col-5">
 									<div class="form-group text-left">
+										<label><small></small></label>
 										<div class="input-group">
-											<input type="button" th:onclick="'submitForm(\'/admin/manage_price?search=\')'" id="btnSearch" value="Search"
-												th:value="#{commerce.screen.btn.search}" class="btn btn-info btn-sm"></input> <a
-												th:if="${priceBeanDTO==null or priceBeanDTO.priceBeans==null or #lists.size(priceBeanDTO.priceBeans)&lt;1}" href="add_price.html"
-												th:href="@{/admin/add_price}" class="btn btn-success btn-sm"> <span th:text="#{commerce.screen.btn.submit.add.price}">New Price</span>
-											</a>
+											<button type="button" th:onclick="'submitForm(\'/admin/manage_price?search=\')'" id="btnSearch" value="Search" class="btn btn-info ">
+												<i class="fas fa-search fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.search}"></span>
+											</button>
+											<a th:if="${priceBeanDTO==null or priceBeanDTO.priceBeans==null or #lists.size(priceBeanDTO.priceBeans)&lt;1}" href="add_price.html"
+												th:href="@{/admin/add_price}" class="btn btn-success btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+														class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i><i
+														class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+												</span>
+											</span> <span th:text="#{commerce.screen.btn.submit.add.price}">New Price</span> </a>
 										</div>
 									</div>
 								</div>
@@ -139,12 +142,12 @@
 												disabled="disabled"></input> <input type="hidden" th:field="${priceBeanDTO.priceBeans[__${itrStat.index}__].createdBy}"></input></td>
 											<td>
 												<div class="btn-group" th:if="${priceBeanDTO.priceBeans[__${itrStat.index}__].status=='C'}">
-													<a th:href="@{/admin/edit_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/edit_price.html"
-														class="btn btn-info btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
-														th:href="@{/admin/approve_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
-														class="btn btn-success btn-sm"><span th:text="#{commerce.screen.actions.approve}">Approve</span></a> <a
-														th:href="@{/admin/delete_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}" href="../price/manage_price.html"
-														class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a>
+													<a th:href="@{/admin/edit_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}"
+														href="../price/edit_price.html" class="btn btn-info btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
+														th:href="@{/admin/approve_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}"
+														href="../price/manage_price.html" class="btn btn-success btn-sm"><span th:text="#{commerce.screen.actions.approve}">Approve</span></a> <a
+														th:href="@{/admin/delete_price(itemPriceId=${priceBeanDTO.priceBeans[__${itrStat.index}__].itemPriceId})}"
+														href="../price/manage_price.html" class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a>
 												</div>
 											</td>
 										</tr>

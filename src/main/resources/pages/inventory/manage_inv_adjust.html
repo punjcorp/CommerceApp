@@ -29,10 +29,14 @@
 											<input type="text" th:field="*{searchText}" class="form-control form-control-sm" th:placeholder="#{commerce.screen.search.text}"
 												placeholder="Enter keyword to search" aria-describedby="searchHelp"></input>
 											<div class="input-group-append">
-												<input type="submit" value="Search" th:value="#{commerce.screen.btn.search}" class="form-control btn btn-info btn-block btn-sm"></input> <a
-													th:if="${invAdjusts==null or invAdjusts.invAdjusts==null or #lists.size(invAdjusts.invAdjusts)&lt;1}" href="add_inv_adjust.html"
-													th:href="@{/admin/add_inv_adjust}" class="btn btn-success btn-sm"><span th:text="#{commerce.screen.btn.submit.add.inv.adjust}">Add
-														Inventory Adjustment</span></a>
+												<button type="submit" value="Search" class="btn btn-info">
+													<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.search}"></span>
+												</button>
+												<a th:if="${invAdjusts==null or invAdjusts.invAdjusts==null or #lists.size(invAdjusts.invAdjusts)&lt;1}" href="add_inv_adjust.html"
+													th:href="@{/admin/add_inv_adjust}" class="btn btn-success btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw">
+															<i class="fas fa-clipboard"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+													</span>
+												</span><span th:text="#{commerce.screen.btn.submit.add.inv.adjust}">Add Inventory Adjustment</span></a>
 											</div>
 										</div>
 										<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.inventory.search.keywords}">Enter keywords like
@@ -122,9 +126,7 @@
 							<div class="row">
 								<div class="col-8">
 									<div class="form-group">
-										<input type="button" th:onclick="'submitForm(\'/admin/bulk_inv_adjust_action?saveInvAdjusts=\')'" id="btnSave" value="Save"
-											th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
-											type="button" th:onclick="'submitForm(\'/admin/bulk_inv_adjust_action?approveInvAdjusts=\')'" id="btnApprove" value="Approve"
+										<input type="button" th:onclick="'submitForm(\'/admin/bulk_inv_adjust_action?approveInvAdjusts=\')'" id="btnApprove" value="Approve"
 											th:value="#{commerce.screen.btn.submit.approve}" class="btn btn-success btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
 											type="button" th:onclick="'submitForm(\'/admin/bulk_inv_adjust_action?deleteInvAdjusts=\')'" id="btnDelete" value="Delete"
 											th:value="#{commerce.screen.btn.submit.delete}" class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <a

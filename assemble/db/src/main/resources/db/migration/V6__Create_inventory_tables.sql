@@ -196,6 +196,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`stock_adjustment_items` (
   `stock_adjust_id` BIGINT NOT NULL,
   `reason_code_id` INT NOT NULL,
   `item_id` BIGINT NOT NULL,
+  `item_desc` VARCHAR(150) NOT NULL,
   `qty` INT NOT NULL,
   PRIMARY KEY (`stock_adjust_li_id`),
   CONSTRAINT `fk_stock_adjustment_items_stock_adjustment1`

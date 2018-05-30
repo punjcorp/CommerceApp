@@ -46,6 +46,9 @@ public class StockAdjustmentItem implements Serializable {
 	@Field
 	@Column(name = "item_id")
 	private BigInteger itemId;
+	
+	@Column(name = "item_desc")
+	private String itemDesc;
 
 	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
@@ -127,6 +130,20 @@ public class StockAdjustmentItem implements Serializable {
 	 */
 	public void setQty(Integer qty) {
 		this.qty = qty;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
 	}
 
 	/*

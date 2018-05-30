@@ -21,6 +21,7 @@ import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
@@ -39,7 +40,7 @@ public class Item implements Serializable, Cloneable {
 	@DocumentId
 	@Column(name = "item_id")
 	private BigInteger itemId;
-	@Field(analyzer=@Analyzer(definition="edgeNgram"))
+	@Field(analyzer = @Analyzer(definition = "edgeNgram"))
 	private String name;
 	@Field
 	@Column(name = "long_desc")
@@ -67,7 +68,7 @@ public class Item implements Serializable, Cloneable {
 	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
 	private List<ItemImage> images;
 
-	// @IndexedEmbedded
+	@IndexedEmbedded
 	@OneToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "hierarchy_id")
 	private Hierarchy hierarchy;
@@ -76,7 +77,7 @@ public class Item implements Serializable, Cloneable {
 	private List<ItemAttribute> itemAttributes;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="item_id")
+	@JoinColumn(name = "item_id")
 	private ItemOptions itemOptions;
 
 	public Item() {

@@ -35,6 +35,7 @@
 										<div class="input-group">
 											<input type="text" th:field="*{searchText}" class="form-control input-sm" th:placeholder="#{commerce.screen.order.search.text}"
 												placeholder="Enter keyword to search" aria-describedby="searchHelp"> </input>
+												<div class="input-group-append">
 											<button type="submit" value="Search" class="btn btn-info">
 												<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.search}"></span>
 											</button>
@@ -43,6 +44,7 @@
 														class="far fa-file-powerpoint"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
 											</span><span th:text="#{commerce.screen.order.add}">Add</span></a>
+											</div>
 										</div>
 										<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.order.search.keywords}">Enter keywords like Purchase
 											Order id/Supplier Id/Item Id/Location Id</small>
@@ -58,6 +60,22 @@
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 						<form class="form" id="bulkForm" action="#" th:action="@{/admin/bulk_order_action}" th:object="${orders}" method="post"
 							th:if="${orders!=null and orders.orders!=null and #lists.size(orders.orders)>0}">
+							<div class="row">
+								<div class="col-12 text-right">
+									<nav aria-label="Pagination" th:if="${pager!=null}">
+										<ul class="pagination pagination-sm justify-content-end">
+											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
+												th:onclick="'searchResults(\'/search_item?page=1\')'">First</a></li>
+											<th:block th:each="page,itrStat:${pager.displayPages}">
+												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
+													th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+											</th:block>
+											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
+												th:onclick="'searchResults(\'/search_item?page='+${pager.lastPageNo}+'\')'">Last</a></li>
+										</ul>
+									</nav>
+								</div>
+							</div>
 							<div class="table-responsive">
 								<table class="table table-striped table-hover table-bordered">
 									<thead class="thead-light">
@@ -122,20 +140,27 @@
 											<td class="text-left"><a th:href="'javascript:deselectAll()'" href="#" class="badge badge-secondary"><span
 													th:text="#{commerce.screen.actions.deselectall}">Deselect All</span></a></td>
 											<td colspan="6">
-												<nav aria-label="Pagination" th:if="${pager!=null}">
-													<ul class="pagination justify-content-end">
-														<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1">First</a></li>
-														<th:block th:each="page,itrStat:${pager.displayPages}">
-															<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
-																th:onclick="'searchResults(\'/search_supplier?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
-														</th:block>
-														<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#">Last</a></li>
-													</ul>
-												</nav>
+										
 											</td>
 										</tr>
 									</tbody>
 								</table>
+							</div>
+							<div class="row">
+								<div class="col-12 text-right">
+									<nav aria-label="Pagination" th:if="${pager!=null}">
+										<ul class="pagination pagination-sm justify-content-end">
+											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
+												th:onclick="'searchResults(\'/search_item?page=1\')'">First</a></li>
+											<th:block th:each="page,itrStat:${pager.displayPages}">
+												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
+													th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+											</th:block>
+											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
+												th:onclick="'searchResults(\'/search_item?page='+${pager.lastPageNo}+'\')'">Last</a></li>
+										</ul>
+									</nav>
+								</div>
 							</div>
 							<div class="row">
 								<div class="col-8">

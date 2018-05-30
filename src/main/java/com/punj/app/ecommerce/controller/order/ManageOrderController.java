@@ -111,6 +111,7 @@ public class ManageOrderController {
 
 	private void updateModelBeans(Model model, OrderBeansDTO orderBeanDTO, SearchBean searchBean) {
 		model.addAttribute(MVCConstants.ORDERS_BEAN, orderBeanDTO);
+		model.addAttribute(MVCConstants.PAGER, orderBeanDTO.getPager());
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 		logger.info("All the needed details has been updated in the model for display.");
 	}

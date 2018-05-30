@@ -53,7 +53,7 @@ public class ItemSearchRepository {
 		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
 
 		// a very basic query by keywords
-		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("itemId", "name", "description","createdBy").matching(text).createQuery();
+		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("itemId", "name", "description","createdBy","hierarchy.name","hierarchy.description").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
 		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Item.class);

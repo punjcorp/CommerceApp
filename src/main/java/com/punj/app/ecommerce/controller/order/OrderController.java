@@ -279,7 +279,6 @@ public class OrderController {
 			logger.error("There is an error while retrieving purchase order for updation", e);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
 			this.emptyOrderBeanDTO(model);
-			return ViewPathConstants.EDIT_ORDER_PAGE;
 		}
 		return ViewPathConstants.EDIT_ORDER_PAGE;
 

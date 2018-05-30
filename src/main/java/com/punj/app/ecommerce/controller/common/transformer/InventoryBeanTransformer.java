@@ -92,6 +92,7 @@ public class InventoryBeanTransformer {
 
 			stockAdjItem.setLineItemId(invAdjustItem.getInvAdjustLineItemId());
 			stockAdjItem.setItemId(invAdjustItem.getItemId());
+			stockAdjItem.setItemDesc(invAdjustItem.getItemDesc());
 			stockAdjItem.setStockReason(stockReason);
 			stockAdjItem.setStockAdjustment(stockAdjustment);
 			stockAdjItem.setQty(invAdjustItem.getQty());
@@ -148,6 +149,7 @@ public class InventoryBeanTransformer {
 		invAdjustItemBean.setInvAdjustLineItemId(stockAdjustmentItem.getLineItemId());
 		invAdjustItemBean.setInvAdjustId(stockAdjustmentItem.getStockAdjustment().getStockAdjustId());
 		invAdjustItemBean.setItemId(stockAdjustmentItem.getItemId());
+		invAdjustItemBean.setItemDesc(stockAdjustmentItem.getItemDesc());
 		invAdjustItemBean.setReasonCodeId(stockAdjustmentItem.getStockReason().getReasonCodeId());
 		invAdjustItemBean.setQty(stockAdjustmentItem.getQty());
 		logger.info("The stock adjustment item details has been transformed into inventory adjustment successfully");

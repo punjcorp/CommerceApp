@@ -9,8 +9,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
-
 /**
  * @author admin
  *
@@ -20,6 +18,7 @@ public class InvAdjustItemBean {
 	private BigInteger invAdjustLineItemId;
 	@NotNull(message = "{commerce.error.item.empty}")
 	private BigInteger itemId;
+	private String itemDesc;
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer reasonCodeId;
 	@NotNull(message = "{commerce.error.qty.min.small}")
@@ -132,6 +131,21 @@ public class InvAdjustItemBean {
 	 */
 	public void setInvAdjustLineItemId(BigInteger invAdjustLineItemId) {
 		this.invAdjustLineItemId = invAdjustLineItemId;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc
+	 *            the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
 	}
 
 }
