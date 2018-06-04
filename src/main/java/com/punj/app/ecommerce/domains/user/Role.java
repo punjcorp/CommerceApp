@@ -27,8 +27,6 @@ public class Role implements Serializable {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-	@ManyToMany(mappedBy = "roles")
-	private List<User> users;
 
 	/**
 	 * @return the roleId
@@ -105,59 +103,6 @@ public class Role implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	/**
-	 * @return the users
-	 */
-	public List<User> getUsers() {
-		return users;
-	}
 
-	/**
-	 * @param users
-	 *            the users to set
-	 */
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Role other = (Role) obj;
-		if (roleId == null) {
-			if (other.roleId != null) {
-				return false;
-			}
-		} else if (!roleId.equals(other.roleId)) {
-			return false;
-		}
-		return true;
-	}
 
 }

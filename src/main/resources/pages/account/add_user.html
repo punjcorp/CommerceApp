@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.register.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../js/account/account.js" th:src="@{/js/account/account.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/pos_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<form class="form" action="#" th:action="@{/admin/create_account}" enctype="multipart/form-data" th:object="${accountBean}" method="post">
+				<div class="row">
+					<div class="col m-3">
+						<div class="card">
+							<div class="card-header">
+								<h3 th:text="#{commerce.screen.register.header}">Create Account</h3>
+							</div>
+							<div class="card-body">
+								<div class="card-text">
+									<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+									<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+									<div class="row">
+										<div class="col-xs-3 col-sm-3 col-md-3 text-center">
+											<div class="card-text preview-thumbnail text-center" id="previewPhoto">
+												<img th:src="@{/images/no_photo.jpg}" class="img-thumbnail" th:if="${accountBean.photoURL==null or accountBean.photoURL==''}" /> <img
+													th:src="'data:'+${accountBean.photoType}+';base64,'+${accountBean.baseEncodedImage}" class="img-thumbnail"
+													th:if="${accountBean.photoURL!=null and accountBean.photoURL!=''}" />
+											</div>
+											<div class="form-group">
+												<div class="input-group">
+													<input type="file" th:placeholder="#{commerce.screen.register.photo.placeholder}" th:field="*{imageData}" accept="image/*"
+														th:class="${(accountBean.photoURL==null or accountBean.photoURL=='')?'form-control input-sm':'form-control input-sm d-none'}" />
+												</div>
+											</div>
+											<a href="#" th:class="${accountBean.photoURL!=null and accountBean.photoURL!=''?'btn btn-danger':'btn btn-danger d-none'}"
+												class="btn btn-danger d-none" id="btnDeletePhoto"><i class="far fa-times-circle fa-2x mx-2"></i> <span
+												th:text="#{commerce.screen.register.photo.delete}"></span></a>
+										</div>
+										<div class="col-xs-4 col-sm-4 col-md-4">
+											<div class="form-group text-left">
+												<label for="firstName"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.firstname}">First
+															Name</span></small></label>
+												<div class="input-group">
+													<input type="hidden" th:field="*{createdBy}"></input> <input type="hidden" th:field="*{createdDate}"></input> <input type="hidden"
+														th:field="*{status}"></input> <input type="text" th:field="*{firstName}" class="form-control"
+														th:placeholder="#{commerce.screen.register.firstname.placeholder}"></input>
+												</div>
+												<small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger">First Name Error</small>
+											</div>
+											<div class="form-group text-left">
+												<input type="hidden" th:field="*{orgUsername}"></input> <label for="username"><small><span class="pos-mandatory"
+														th:text="#{commerce.screen.register.username}">Username</span></small></label>
+												<div class="input-group" th:if="${accountBean.status!=null}">
+													<h5>
+														<span th:text="${accountBean.username}"></span>
+													</h5>
+													<input type="hidden" th:field="*{isUserExisting}"></input> <input type="hidden" th:field="*{username}"></input>
+												</div>
+												<div class="input-group" th:if="${accountBean.status==null}">
+													<div class="input-group-prepend">
+														<span class="input-group-text"> <i class="fas fa-user"></i>
+														</span>
+													</div>
+													<input type="hidden" th:field="*{isUserExisting}"></input> <input type="text" th:field="*{username}" class="form-control input-sm"
+														th:placeholder="#{commerce.screen.register.username.placeholder}"></input>
+													<div class="input-group-append d-none" id="userSearchBusy">
+														<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
+														</span>
+													</div>
+												</div>
+												<small id="userSearchErrorMsg"></small> <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">Username
+													Error</small>
+											</div>
+											<div class="form-group text-left">
+												<label for="password"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.password}">Password</span></small></label>
+												<div class="input-group">
+													<input type="password" th:field="*{password}" class="form-control input-sm" placeholder="Password"
+														th:placeholder="#{commerce.screen.register.password.placeholder}"></input>
+												</div>
+												<small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">Password Error</small>
+											</div>
+											<div class="form-group text-left">
+												<label for="email"><small><span th:text="#{commerce.screen.register.email}">Email Address</span></small></label>
+												<div class="input-group">
+													<input type="email" th:field="*{email}" class="form-control input-sm" placeholder="Email Address"
+														th:placeholder="#{commerce.screen.register.email.placeholder}"></input>
+												</div>
+												<small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Error</small>
+											</div>
+										</div>
+										<div class="col-xs-4 col-sm-4 col-md-4">
+											<div class="form-group text-left">
+												<label for="lastName"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.lastname}">Last Name</span></small></label>
+												<div class="input-group">
+													<input type="text" th:field="*{lastName}" class="form-control input-sm" placeholder="Last Name"
+														th:placeholder="#{commerce.screen.register.lastname.placeholder}"></input>
+												</div>
+												<small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger">Last Name Error</small>
+											</div>
+											<div class="form-group text-left" th:if="${roles!=null and #lists.size(roles)>0}">
+												<label for="roleId"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.role}">Role</span></small></label>
+												<div class="input-group">
+													<select th:field="*{roleId}" class="form-control input-sm">
+														<option class="form-text text-muted" value="" th:selected="${accountBean.roleId==null}"
+															th:text="#{commerce.screen.register.role.placeholder}">Select User Role</option>
+														<option th:each="role: ${roles}" th:selected="${accountBean.roleId==role.roleId}" th:value="${role.roleId}" th:text="${role.name}"></option>
+													</select>
+												</div>
+												<small th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}" class="text-danger">Role Id Error</small>
+											</div>
+											<div class="form-group text-left">
+												<label for="confirmPassword"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.confirm.password}">Confirm
+															Password</span></small></label>
+												<div class="input-group">
+													<input type="password" th:field="*{confirmPassword}" class="form-control input-sm" placeholder="Confirm Password"
+														th:placeholder="#{commerce.screen.register.confirm.password.placeholder}"></input>
+												</div>
+												<small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger">Confirm Password Error</small>
+											</div>
+											<div class="form-group text-left">
+												<label for="phone"><small><span th:text="#{commerce.screen.register.phone}">User Phone</span></small></label>
+												<div class="input-group">
+													<input type="text" th:field="*{phone}" class="form-control input-sm" placeholder="User Phone"
+														th:placeholder="#{commerce.screen.register.phone.placeholder}"></input>
+												</div>
+												<small th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger">User Phone Error</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-3"></div>
+										<div class="col-4">
+											<div class="form-group text-left" th:if="${locations!=null and #lists.size(locations)>0}">
+												<label for="selectedLocationIds"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.role}">Locations</span></small></label>
+												<div class="input-group">
+													<select th:field="*{selectedLocationIds}" class="custom-select" multiple="multiple" size="4">
+														<option class="form-text text-muted" value="" th:text="#{commerce.screen.register.location.placeholder}">Select Locations for
+															Account</option>
+														<option th:each="location: ${locations}" th:value="${location.locationId}" th:text="${location.locationId+' - '+ location.name}"></option>
+													</select>
+												</div>
+												<small th:if="${#fields.hasErrors('selectedLocationIds')}" th:errors="*{selectedLocationIds}" class="text-danger">Location Id
+													Error</small>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-8 col-sm-8 col-md-8">
+											<div class="form-group text-left">
+												<button type="submit" class="btn btn-info mx-2" id="btnSaveAccount" name="saveAccount" value="Save"
+													th:if="${accountBean.status==null || accountBean.status=='C'}">
+													<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
+												</button>
+												<button type="submit" id="btnApproveAccount" name="approveAccount" value="Approve" class="btn btn-info mx-2"
+													th:if="${accountBean.status==null || accountBean.status=='C'}">
+													<i class="fas fa-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
+												</button>
+												<a th:href="@{/admin/create_account}" class="btn btn-success mx-2"> <i class="fas fa-user-plus fa-2x mx-1"></i> <span
+													th:text="#{commerce.home.menu.create.account}"></span></a> 
+												
+												<a th:href="@{/admin/manage_accounts}" class="btn btn-success mx-2"> <i
+													class="fas fa-users-cog fa-2x mx-1"></i> <span th:text="#{commerce.home.menu.manage.accounts}"></span>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

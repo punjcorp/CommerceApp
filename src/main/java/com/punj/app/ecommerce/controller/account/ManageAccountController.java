@@ -72,8 +72,7 @@ public class ManageAccountController {
 	}
 
 	@PostMapping("/manage_user")
-	public String saveUser(@ModelAttribute RegisterUserBean registerUserBean, Model model, HttpSession session,
-			Locale locale, Authentication authentication) {
+	public String saveUser(@ModelAttribute RegisterUserBean registerUserBean, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		logger.info("Captured the updated details for the user");
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -82,8 +81,7 @@ public class ManageAccountController {
 		newUser = this.updateUserDomain(registerUserBean, newUser);
 
 		newUser = userService.saveUser(newUser);
-		model.addAttribute(MVCConstants.SUCCESS,
-				messageSource.getMessage("commerce.screen.manage.account.success", null, locale));
+		model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.manage.account.success", null, locale));
 
 		logger.info("The user details has been successfully updated");
 
@@ -100,24 +98,20 @@ public class ManageAccountController {
 	}
 
 	@PostMapping("/manage_password")
-	public String savePassword(@ModelAttribute LoginBean passwordBean, Model model, HttpSession session, Locale locale,
-			Authentication authentication) {
+	public String savePassword(@ModelAttribute LoginBean passwordBean, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		logger.info("Captured the updated password for the user");
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		try {
-			if (StringUtils.isNotEmpty(passwordBean.getNewPassword())
-					&& StringUtils.isNotEmpty(passwordBean.getConfirmPassword())
+			if (StringUtils.isNotEmpty(passwordBean.getNewPassword()) && StringUtils.isNotEmpty(passwordBean.getConfirmPassword())
 					&& passwordBean.getConfirmPassword().equals(passwordBean.getNewPassword())) {
 				Password pwd = new Password();
 				pwd = userService.updatePassword(userDetails, pwd, passwordBean.getNewPassword(), null);
 				session.setAttribute("userDetails", pwd);
 				model.addAttribute("passwordBean", passwordBean);
-				model.addAttribute(MVCConstants.SUCCESS,
-						messageSource.getMessage("commerce.screen.manage.password.success", null, locale));
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.manage.password.success", null, locale));
 			} else {
 				model.addAttribute("passwordBean", passwordBean);
-				model.addAttribute("alert",
-						messageSource.getMessage("commerce.screen.manage.password.matching.failed", null, locale));
+				model.addAttribute("alert", messageSource.getMessage("commerce.screen.manage.password.matching.failed", null, locale));
 			}
 		} catch (Exception e) {
 			model.addAttribute("alert", "Unexpected error occured.");

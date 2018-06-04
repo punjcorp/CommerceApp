@@ -1,13 +1,15 @@
 package com.punj.app.ecommerce.domains.user;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.punj.app.ecommerce.domains.user.ids.PasswordId;
 
 @Entity
 @Table(name = "user_password")
@@ -15,26 +17,25 @@ public class Password implements Serializable {
 
 	private static final long serialVersionUID = 5614292601323207689L;
 
-	@EmbeddedId
-	private PasswordId passwordId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "password_id", updatable = false, nullable = false)
+	private BigInteger passwordId;
+
+	private String username;
+	private String password;
+
+	@Column(name = "modified_date")
+	private LocalDateTime modifiedDate;
 	@Column(name = "modified_by")
 	private String modifiedBy;
+
 	private String status;
-
-	public Password() {
-		this.passwordId = new PasswordId();
-	}
-
-	public Password(PasswordId passwordId, String modifiedBy, String status) {
-		this.passwordId = passwordId;
-		this.modifiedBy = modifiedBy;
-		this.status = status;
-	}
 
 	/**
 	 * @return the passwordId
 	 */
-	public PasswordId getPasswordId() {
+	public BigInteger getPasswordId() {
 		return passwordId;
 	}
 
@@ -42,8 +43,53 @@ public class Password implements Serializable {
 	 * @param passwordId
 	 *            the passwordId to set
 	 */
-	public void setPasswordId(PasswordId passwordId) {
+	public void setPasswordId(BigInteger passwordId) {
 		this.passwordId = passwordId;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @param username
+	 *            the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password
+	 *            the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @return the modifiedDate
+	 */
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	/**
+	 * @param modifiedDate
+	 *            the modifiedDate to set
+	 */
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 
 	/**
@@ -74,46 +120,6 @@ public class Password implements Serializable {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((passwordId == null) ? 0 : passwordId.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Password other = (Password) obj;
-		if (passwordId == null) {
-			if (other.passwordId != null) {
-				return false;
-			}
-		} else if (!passwordId.equals(other.passwordId)) {
-			return false;
-		}
-		return true;
 	}
 
 }

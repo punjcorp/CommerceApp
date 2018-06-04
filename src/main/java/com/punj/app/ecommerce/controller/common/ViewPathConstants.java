@@ -202,6 +202,27 @@ public final class ViewPathConstants {
 	public static final String LOGIN_URL="/login";
 	public static final String MANAGE_USER_PAGE="account/manage_user";
 	
+	
+	public static final String SEARCH_ACCOUNT_URL="/admin/search_account";
+	
+	public static final String CREATE_ACCOUNT_URL="/admin/create_account";
+	public static final String CREATE_ACCOUNT_PAGE="account/add_user";
+	
+	public static final String MANAGE_ACCOUNTS_URL="/admin/manage_accounts";
+	public static final String MANAGE_ACCOUNTS_PAGE="account/manage_users";
+	
+	
+	public static final String EDIT_ACCOUNT_URL="/admin/edit_account";
+	public static final String EDIT_ACCOUNT_PAGE="account/edit_user";
+	
+	public static final String APPROVE_ACCOUNT_URL="/admin/approve_account";
+	public static final String DELETE_ACCOUNT_URL="/admin/delete_account";
+	public static final String DISABLE_ACCOUNT_URL="/admin/disable_account";
+	public static final String ACTIVATE_ACCOUNT_URL="/admin/activate_account";
+	
+	
+	public static final String BULK_ACCOUNTS_URL="/admin/bulk_account_action";
+	
 	public static final String REGISTER_USER_URL="/register";
 	public static final String REGISTER_USER_PAGE="login/user_register";
 

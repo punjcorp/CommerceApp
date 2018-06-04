@@ -44,6 +44,9 @@ public class Utils {
 		case MVCConstants.STATUS_APPROVED:
 			return MVCConstants.STATUS_APPROVED_DESC;
 
+		case MVCConstants.STATUS_DISABLED:
+			return MVCConstants.STATUS_DISABLED_DESC;
+
 		case MVCConstants.STATUS_RECEIVED:
 			return MVCConstants.STATUS_RECEIVED_DESC;
 
@@ -52,7 +55,7 @@ public class Utils {
 		}
 
 	}
-	
+
 	public static String showPriceType(String priceType) {
 
 		switch (priceType) {
@@ -64,14 +67,12 @@ public class Utils {
 			return MVCConstants.PRICE_TYPE_CLEARANCE_DESC;
 		case MVCConstants.PRICE_TYPE_CLEARANCE_RESET:
 			return MVCConstants.PRICE_TYPE_CLEARANCE_RESET_DESC;
-			
+
 		default:
 			return "";
 		}
 
 	}
-	
-	
 
 	public static LocalDateTime parseDate(String date) {
 		return LocalDateTime.parse(date, dateFormatter);

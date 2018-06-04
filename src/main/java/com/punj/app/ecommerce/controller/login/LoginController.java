@@ -28,7 +28,6 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.User;
-import com.punj.app.ecommerce.domains.user.ids.PasswordId;
 import com.punj.app.ecommerce.models.LoginBean;
 import com.punj.app.ecommerce.models.RegisterUserBean;
 import com.punj.app.ecommerce.services.UserService;
@@ -78,12 +77,11 @@ public class LoginController {
 		if (passwords != null && !passwords.isEmpty()) {
 
 			for (Password pwd : passwords) {
-				logger.info("The user login username is {} and password is {} with status {}", pwd.getPasswordId().getUsername(),
-						pwd.getPasswordId().getPassword(), pwd.getStatus());
+				logger.info("The user login username is {} and password is {} with status {}", pwd.getUsername(), pwd.getPassword(), pwd.getStatus());
 
-				if (loginBean.getPassword().equals(pwd.getPasswordId().getPassword()) && pwd.getStatus().equals("A")) {
+				if (loginBean.getPassword().equals(pwd.getPassword()) && pwd.getStatus().equals("A")) {
 					session.setAttribute("userDetails", pwd);
-					User loggedInUser = userService.getUserByUsername(pwd.getPasswordId().getUsername());
+					User loggedInUser = userService.getUserByUsername(pwd.getUsername());
 					RegisterUserBean userBean = this.updateUserBean(loggedInUser);
 					model.addAttribute("registerUserBean", userBean);
 
@@ -132,15 +130,13 @@ public class LoginController {
 		logger.info("The current time is -> " + LocalDate.now());
 
 		Password newPassword = new Password();
-		PasswordId newPasswordId = new PasswordId();
 		List passwords = new ArrayList<>();
 		newPassword.setModifiedBy("admin");
 		newPassword.setStatus("A");
 
-		newPasswordId.setPassword(Utils.encodePassword(registerUserBean.getPassword()));
-		newPasswordId.setUsername(registerUserBean.getEmail());
-		newPasswordId.setModifiedDate(LocalDateTime.now());
-		newPassword.setPasswordId(newPasswordId);
+		newPassword.setPassword(Utils.encodePassword(registerUserBean.getPassword()));
+		newPassword.setUsername(registerUserBean.getEmail());
+		newPassword.setModifiedDate(LocalDateTime.now());
 
 		passwords.add(newPassword);
 		newUser.setPasswords(passwords);

@@ -32,46 +32,59 @@
 				<form class="form-inline my-2 my-lg-0 navbar-nav">
 					<input class="form-control input-sm ml-2" type="search" placeholder="Search" aria-label="Search" th:placeholder="#{commerce.home.label.search}"></input>
 					<a class="nav-link" href="#"><i class="material-icons">search</i></a> <select id="langSelect" name="langSelect" class="form-control input-sm">
-						<option class="form-text" value="en_US" th:selected="${(#locale.language+'_'+#locale.country)=='en_US'}"><span th:text="#{commerce.lang.us.en}"></span></option>
-						<option class="form-text" value="en_IN" th:selected="${(#locale.language+'_'+#locale.country)=='en_IN'}"><span th:text="#{commerce.lang.in.en}"></span></option>
-						<option class="form-text" value="hi_IN"  th:selected="${(#locale.language+'_'+#locale.country)=='hi_IN'}"><span th:text="#{commerce.lang.in.hi}"></span></option>
-						<option class="form-text" value="pa_IN"  th:selected="${(#locale.language+'_'+#locale.country)=='pa_IN'}"><span th:text="#{commerce.lang.in.pa}"></span></option>
+						<option class="form-text" value="en_US" th:selected="${(#locale.language+'_'+#locale.country)=='en_US'}"><span
+								th:text="#{commerce.lang.us.en}"></span></option>
+						<option class="form-text" value="en_IN" th:selected="${(#locale.language+'_'+#locale.country)=='en_IN'}"><span
+								th:text="#{commerce.lang.in.en}"></span></option>
+						<option class="form-text" value="hi_IN" th:selected="${(#locale.language+'_'+#locale.country)=='hi_IN'}"><span
+								th:text="#{commerce.lang.in.hi}"></span></option>
+						<option class="form-text" value="pa_IN" th:selected="${(#locale.language+'_'+#locale.country)=='pa_IN'}"><span
+								th:text="#{commerce.lang.in.pa}"></span></option>
 					</select> <a class="nav-link" href="../manage_cart.html" th:href="@{/manage_cart}"><i class="material-icons">shopping_cart</i></a> <a class="nav-link"
-						href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="material-icons rotate-180">exit_to_app</i></a> <a href="#"
-						th:href="@{/manage_account}" class="nav-link" sec:authorize="isAuthenticated()"><i class="material-icons">account_box</i><span
-						th:text="#{commerce.home.link.account}">Your Account</span></a> <a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()">
-						<i class="material-icons">exit_to_app</i>
+						href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="material-icons rotate-180">exit_to_app</i></a>
+					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false"> <i class="fas fa-user-cog"></i> <span th:text="#{commerce.home.link.account}">Your
+								Account</span>
+					</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" id="manageaccount" th:href="@{/manage_user}"><span class="mr-2"> <span class="fa-layers fa-fw"> <i
+										class="far fa-user"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</span><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a> <a class="dropdown-item" id="changepassword"
+								th:href="@{/manage_password}"><i class="fas fa-key mr-2"></i><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a>
+							<a class="dropdown-item" id="manageaddress" th:href="@{/manage_address}"><span class="mr-2"> <span class="fa-layers fa-fw">
+										<i class="far fa-address-book"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</span><span th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a> <a class="dropdown-item" id="managecard" th:href="@{/manage_card}"><span
+								class="mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-credit-card"></i> <i class="fas fa-cog"
+										data-fa-transform="shrink-10 right-11 up-4"></i>
+								</span>
+							</span><span th:text="#{commerce.home.menu.manage.card}">Manage Cards</span></a>
+						</div></li> <a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()"> <i class="material-icons">exit_to_app</i>
 					</a>
 				</form>
 			</div>
 		</nav>
-		
-<!-- Item Lookup Modal -->
-	<div class="modal fade " id="screenBusyModal" tabindex="-1" role="dialog" aria-labelledby="screenBusyModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="screenBusyModalLabel">
-						<span th:text="#{commerce.screen.common.busy.header}"> Work In Progress</span>
-					</h5>
-				</div>
-				<div class="modal-body text-center">
-					<div class="col-12 text-center" id="progressDiv">
-						<i class="fas fa-cog fa-spin fa-9x"></i>
-						<div>
-							<span th:text="#{commerce.screen.common.busy.body.text}"></span>
+		<!-- Item Lookup Modal -->
+		<div class="modal fade " id="screenBusyModal" tabindex="-1" role="dialog" aria-labelledby="screenBusyModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="screenBusyModalLabel">
+							<span th:text="#{commerce.screen.common.busy.header}"> Work In Progress</span>
+						</h5>
+					</div>
+					<div class="modal-body text-center">
+						<div class="col-12 text-center" id="progressDiv">
+							<i class="fas fa-cog fa-spin fa-9x"></i>
+							<div>
+								<span th:text="#{commerce.screen.common.busy.body.text}"></span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>		
-		
-		
 	</div>
-	
-	
-	
-	
 </body>
 </html>

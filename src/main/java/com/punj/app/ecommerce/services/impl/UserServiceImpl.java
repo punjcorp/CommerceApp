@@ -12,10 +12,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +26,20 @@ import com.punj.app.ecommerce.domains.user.Card;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.Role;
 import com.punj.app.ecommerce.domains.user.User;
+import com.punj.app.ecommerce.domains.user.UserDTO;
+import com.punj.app.ecommerce.domains.user.UserRole;
 import com.punj.app.ecommerce.domains.user.ids.CardId;
-import com.punj.app.ecommerce.domains.user.ids.PasswordId;
+import com.punj.app.ecommerce.domains.user.ids.UserRoleId;
 import com.punj.app.ecommerce.repositories.AddressRepository;
 import com.punj.app.ecommerce.repositories.CardRepository;
 import com.punj.app.ecommerce.repositories.PasswordRepository;
 import com.punj.app.ecommerce.repositories.UserRepository;
+import com.punj.app.ecommerce.repositories.user.RoleRepository;
+import com.punj.app.ecommerce.repositories.user.UserRoleRepository;
+import com.punj.app.ecommerce.repositories.user.UserSearchRepository;
 import com.punj.app.ecommerce.services.UserService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.utils.Pager;
 import com.punj.app.ecommerce.utils.Utils;
 
 /**
@@ -42,9 +51,45 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private UserRepository userRepository;
+	private UserSearchRepository userSearchRepository;
 	private PasswordRepository passwordRepository;
 	private AddressRepository addressRepository;
 	private CardRepository cardRepository;
+	private RoleRepository roleRepository;
+	private UserRoleRepository userRoleRepository;
+
+	@Value("${commerce.list.max.perpage}")
+	private Integer maxResultPerPage;
+
+	@Value("${commerce.list.max.pageno}")
+	private Integer maxPageBtns;
+
+	/**
+	 * @param roleRepository
+	 *            the roleRepository to set
+	 */
+	@Autowired
+	public void setUserRoleRepository(UserRoleRepository userRoleRepository) {
+		this.userRoleRepository = userRoleRepository;
+	}
+
+	/**
+	 * @param roleRepository
+	 *            the roleRepository to set
+	 */
+	@Autowired
+	public void setRoleRepository(RoleRepository roleRepository) {
+		this.roleRepository = roleRepository;
+	}
+
+	/**
+	 * @param userSearchRepository
+	 *            the userSearchRepository to set
+	 */
+	@Autowired
+	public void setUserSearchRepository(UserSearchRepository userSearchRepository) {
+		this.userSearchRepository = userSearchRepository;
+	}
 
 	/**
 	 * @param userRepository
@@ -94,10 +139,10 @@ public class UserServiceImpl implements UserService {
 
 		User user = new User();
 		user.setUsername(username);
-		user.setEmail(username);
+		user.setStatus(ServiceConstants.STATUS_APPROVED);
 
 		Password password = new Password();
-		password.setStatus("A");
+		password.setStatus(ServiceConstants.STATUS_APPROVED);
 
 		List<Password> passwordList = new ArrayList<>();
 
@@ -111,8 +156,45 @@ public class UserServiceImpl implements UserService {
 		return true;
 	}
 
+	@Transactional
+	private void deleteExistingRecords(String username) {
+
+		Password passwordCriteria=new Password();
+		passwordCriteria.setStatus(ServiceConstants.STATUS_APPROVED);
+		passwordCriteria.setUsername(username);
+		
+		List<Password> passwords=this.passwordRepository.findAll(Example.of(passwordCriteria));
+		if(passwords!=null && !passwords.isEmpty()) {
+			
+			this.passwordRepository.delete(passwords);
+			logger.info("The user passwords has been cleared successfully");
+			
+		}
+		
+		UserRole userRoleCriteria=new UserRole();
+		UserRoleId userRoleIdCriteria=new UserRoleId();
+		userRoleIdCriteria.setUsername(username);
+		userRoleCriteria.setUserRoleId(userRoleIdCriteria);
+		
+		List<UserRole> userRoles=this.userRoleRepository.findAll(Example.of(userRoleCriteria));
+		if(userRoles!=null && !userRoles.isEmpty()) {
+			this.userRoleRepository.delete(userRoles);
+			logger.info("The user roles has been cleared successfully");
+		}
+
+		
+	}
+	
+	
+	
 	public User saveUser(User user) {
-		return userRepository.save(user);
+		
+		this.deleteExistingRecords(user.getUsername());
+		
+		user=this.userRepository.save(user);
+		logger.info("The user has been saved successfully");
+		
+		return user;
 	}
 
 	public Card saveCard(Card card) {
@@ -122,49 +204,40 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<Password> getAllPasswordsByUsername(String username) {
 		Password newPassword = new Password();
-		PasswordId newPasswordId = new PasswordId();
-		newPasswordId.setUsername(username);
-		newPassword.setPasswordId(newPasswordId);
+		newPassword.setUsername(username);
 		return passwordRepository.findAll(Example.of(newPassword));
 	}
 
 	public Password updatePassword(UserDetails userDetails, Password pwd, String newPassword, String changedBy) {
 
-		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}",
-				pwd.getStatus(), pwd.getModifiedBy(), pwd.getPasswordId().getUsername(),
-				pwd.getPasswordId().getPassword(), pwd.getPasswordId().getModifiedDate());
-		PasswordId passwordId = new PasswordId();
-		passwordId.setPassword(userDetails.getPassword());
-		passwordId.setUsername(userDetails.getUsername());
+		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}", pwd.getStatus(), pwd.getModifiedBy(),
+				pwd.getUsername(), pwd.getPassword(), pwd.getModifiedDate());
+		pwd.setPassword(userDetails.getPassword());
+		pwd.setUsername(userDetails.getUsername());
 		pwd.setStatus("A");
-		pwd.setPasswordId(passwordId);
 		pwd = passwordRepository.findOne(Example.of(pwd));
 
 		pwd.setStatus("E");
 		if (StringUtils.isNotEmpty(changedBy))
 			pwd.setModifiedBy(changedBy);
 		else
-			pwd.setModifiedBy(pwd.getPasswordId().getUsername());
+			pwd.setModifiedBy(pwd.getUsername());
 
 		pwd = passwordRepository.save(pwd);
 
 		Password changedPassword = new Password();
-		PasswordId changedPasswordId = new PasswordId();
 
-		changedPasswordId.setPassword(Utils.getPassEncoder().encode(newPassword));
-		changedPasswordId.setModifiedDate(LocalDateTime.now());
-		changedPasswordId.setUsername(pwd.getPasswordId().getUsername());
+		changedPassword.setPassword(Utils.getPassEncoder().encode(newPassword));
+		changedPassword.setModifiedDate(LocalDateTime.now());
+		changedPassword.setUsername(pwd.getUsername());
 		if (StringUtils.isNotEmpty(changedBy))
 			changedPassword.setModifiedBy(changedBy);
 		else
-			changedPassword.setModifiedBy(pwd.getPasswordId().getUsername());
+			changedPassword.setModifiedBy(pwd.getUsername());
 
 		changedPassword.setStatus("A");
-		changedPassword.setPasswordId(changedPasswordId);
-		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}",
-				changedPassword.getStatus(), changedPassword.getModifiedBy(),
-				changedPassword.getPasswordId().getUsername(), changedPassword.getPasswordId().getPassword(),
-				changedPassword.getPasswordId().getModifiedDate());
+		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}", changedPassword.getStatus(),
+				changedPassword.getModifiedBy(), changedPassword.getUsername(), changedPassword.getPassword(), changedPassword.getModifiedDate());
 		passwordRepository.save(changedPassword);
 		return changedPassword;
 	}
@@ -255,27 +328,159 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public UserDetails loadUserByUsername(String username) {
 		User user = this.getUserDetails(username);
+		if (user != null) {
+			String password = null;
+			List<Password> passwords = user.getPasswords();
+			if (passwords != null && !passwords.isEmpty()) {
+				for (Password passwd : passwords) {
+					if (passwd.getStatus().equals(ServiceConstants.STATUS_APPROVED)) {
+						password = passwd.getPassword();
+						break;
+					}
+				}
 
-		String password = null;
-		List<Password> passwords = user.getPasswords();
+				List<UserRole> userRoles = user.getUserRoles();
 
-		for (Password passwd : passwords) {
-			if (passwd.getStatus().equals("A")) {
-				password = passwd.getPasswordId().getPassword();
-				break;
+				if (userRoles != null && !userRoles.isEmpty()) {
+
+					List<GrantedAuthority> authorities = new ArrayList<>();
+					GrantedAuthority authority = null;
+					for (UserRole userRole : userRoles) {
+						authority = new SimpleGrantedAuthority(userRole.getUserRoleId().getRole().getName());
+						authorities.add(authority);
+					}
+
+					return new org.springframework.security.core.userdetails.User(username, password, authorities);
+				} else {
+					logger.info("The user roles were not retrieved.");
+					throw new UsernameNotFoundException(username);
+				}
+
+			} else {
+				logger.info("The user passwords were not retrieved.");
+				throw new UsernameNotFoundException(username);
 			}
+
+		} else {
+			logger.info("The user basic details were not retrieved.");
+			throw new UsernameNotFoundException(username);
 		}
+	}
 
-		List<Role> roles = user.getRoles();
+	@Override
+	public List<Role> getAllUserRoles() {
 
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		GrantedAuthority authority = null;
-		for (Role role : roles) {
-			authority = new SimpleGrantedAuthority(role.getName());
-			authorities.add(authority);
+		List<Role> roles = this.roleRepository.findAll();
+		if (roles != null && !roles.isEmpty())
+			logger.info("The user roles has been retrieved successfully.");
+		else
+			logger.info("There are no user roles existing");
+		return roles;
+	}
+
+	@Override
+	public UserDTO searchUsers(String text, Pager pager) {
+
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+
+		UserDTO userDTO = this.userSearchRepository.search(text, pager);
+		if (userDTO != null && userDTO.getUsers() != null && !userDTO.getUsers().isEmpty())
+			logger.info("The user details has been retrieved successfully.");
+		else
+			logger.info("There are no matching users existing");
+		return userDTO;
+	}
+
+	@Override
+	public UserDTO searchApprovedUsers(String text, Pager pager) {
+		UserDTO userDTO = this.userSearchRepository.search(text, pager);
+		if (userDTO != null && userDTO.getUsers() != null && !userDTO.getUsers().isEmpty())
+			logger.info("The user details has been retrieved successfully.");
+		else
+			logger.info("There are no matching users existing");
+		return userDTO;
+	}
+
+	@Override
+	public User approveUser(String username, String actionBy) {
+		User user = this.userRepository.findOne(username);
+		if (user != null) {
+			user.setModifiedBy(actionBy);
+			user.setModifiedDate(LocalDateTime.now());
+			user.setStatus(ServiceConstants.STATUS_APPROVED);
+			user = this.userRepository.save(user);
+			if (user != null)
+				logger.info("The approval for '{}' user account was successful", user.getUsername());
+		} else {
+			logger.info("The user was not found in database based on the provided details");
 		}
+		return user;
+	}
 
-		return new org.springframework.security.core.userdetails.User(username, password, authorities);
+	@Override
+	public User disableUser(String username, String actionBy) {
+		User user = this.userRepository.findOne(username);
+		if (user != null) {
+			user.setModifiedBy(actionBy);
+			user.setModifiedDate(LocalDateTime.now());
+			user.setStatus(ServiceConstants.STATUS_DISABLE);
+			user = this.userRepository.save(user);
+			if (user != null)
+				logger.info("The '{}' user account was successfully disabled", user.getUsername());
+		} else {
+			logger.info("The user was not found in database based on the provided details");
+		}
+		return user;
+	}
+
+	@Override
+	public User activateUser(String username, String actionBy) {
+		return this.approveUser(username, actionBy);
+	}
+
+	@Override
+	public void deleteUser(String username, String actionBy) {
+		this.userRepository.delete(username);
+		logger.info("The deletion for '{}' user account was successful", username);
+	}
+
+	@Override
+	@Transactional
+	public List<User> approveAllUsers(List<String> usernameList, String actionBy) {
+		List<User> userList = new ArrayList<>(usernameList.size());
+		User user = null;
+
+		for (String username : usernameList) {
+			user = this.approveUser(username, actionBy);
+			userList.add(user);
+		}
+		logger.info("The approval for all the provided user accounts was successful");
+		return userList;
+	}
+
+	@Override
+	@Transactional
+	public List<User> disableAllUsers(List<String> usernameList, String actionBy) {
+		List<User> userList = new ArrayList<>(usernameList.size());
+		User user = null;
+		for (String username : usernameList) {
+			user = this.disableUser(username, actionBy);
+			userList.add(user);
+		}
+		logger.info("The provided user accounts has been disabled successfully");
+		return userList;
+	}
+
+	@Override
+	@Transactional
+	public void deleteAllUsers(List<String> usernameList, String actionBy) {
+		for (String username : usernameList) {
+			this.deleteUser(username, actionBy);
+		}
+		logger.info("The deletion for all the provided user accounts was successful");
 	}
 
 }

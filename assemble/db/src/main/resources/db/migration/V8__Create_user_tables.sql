@@ -20,16 +20,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user` (
   `last_name` VARCHAR(50) NULL,
   `phone1` VARCHAR(15) NULL,
   `phone2` VARCHAR(15) NULL,
-  `email` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(100) NULL,
   `login_count` INT NOT NULL DEFAULT 0,
   `status` VARCHAR(2) NOT NULL,
-  `photo` BLOB(2000) NULL,
+  `photo` MEDIUMBLOB NULL,
+  `photo_type` VARCHAR(120) NULL,
+  `photo_url` VARCHAR(300) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
+  `modified_by` VARCHAR(50) NULL,
+  `modified_date` DATETIME NULL,  
   PRIMARY KEY (`username`))
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `email_UNIQUE` ON `commercedb`.`user` (`email` ASC);
 
 
 -- -----------------------------------------------------
@@ -38,12 +40,13 @@ CREATE UNIQUE INDEX `email_UNIQUE` ON `commercedb`.`user` (`email` ASC);
 DROP TABLE IF EXISTS `commercedb`.`user_password` ;
 
 CREATE TABLE IF NOT EXISTS `commercedb`.`user_password` (
+  `password_id` BIGINT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
   `password` VARCHAR(150) NOT NULL,
   `modified_by` VARCHAR(50) NOT NULL,
   `modified_date` DATETIME NOT NULL,
   `status` VARCHAR(2) NOT NULL DEFAULT 'A',
-  PRIMARY KEY (`username`, `modified_date`, `password`),
+  PRIMARY KEY (`password_id`),
   CONSTRAINT `fk_user_password_user`
     FOREIGN KEY (`username`)
     REFERENCES `commercedb`.`user` (`username`)

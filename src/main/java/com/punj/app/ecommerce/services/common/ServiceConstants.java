@@ -84,6 +84,7 @@ public final class ServiceConstants {
 
 	public static final String STATUS_CREATED = "C";
 	public static final String STATUS_APPROVED = "A";
+	public static final String STATUS_DISABLE = "I";
 	public static final String STATUS_DELETED = "D";
 	public static final String STATUS_RESET = "R";
 

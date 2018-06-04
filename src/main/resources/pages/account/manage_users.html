@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<title th:text="#{commerce.screen.manage.accounts.title}">Account Management Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/pos_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card m-5">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.manage.accounts.search}">Search User Account</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<form class="form" id="searchForm" action="#" th:action="@{/admin/manage_accounts}" th:object="${searchBean}" method="post">
+							<div class="row">
+								<div class="col-7">
+									<div class="form-group text-left">
+										<div class="input-group">
+											<input type="text" th:field="*{searchText}" class="form-control input-sm" th:placeholder="#{commerce.screen.search.text}"
+												placeholder="Enter keyword to search" aria-describedby="searchHelp"> </input>
+											<div class="input-group-append">
+												<button type="submit" value="Search" class="btn btn-info">
+													<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.search}"></span>
+												</button>
+												<a th:if="${users==null or users.users==null or #lists.size(users.users)&lt;1}" href="create_account.html"
+													th:href="@{/admin/create_account}" class="btn btn-success"><i class="fas fa-user-plus fa-2x mx-2"></i> <span
+													th:text="#{commerce.home.menu.create.account}"></span></a>
+											</div>
+										</div>
+										<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.manage.accounts.search.keywords}">Enter keywords like
+											Username/First Name/Last Name/Email/Phone#/Created By</small>
+										<div th:if="${#fields.hasErrors('searchText')}" th:errors="*{searchText}" class="text-danger">Search Text Error</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="card-text">
+						<div id="manageMsgs" class="alert alert-success d-none" role="alert"></div>
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form class="form" id="bulkForm" action="#" th:action="@{/admin/bulk_accounts_action}" th:object="${users}" method="post"
+							th:if="${users!=null and users.users!=null and #lists.size(users.users)>0}">
+							<div class="row">
+								<div class="col-12 text-right">
+									<nav aria-label="Pagination" th:if="${pager!=null}">
+										<ul class="pagination pagination-sm justify-content-end">
+											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
+												th:onclick="'searchResults(\'/manage_accounts?page=1\')'">First</a></li>
+											<th:block th:each="page,itrStat:${pager.displayPages}">
+												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
+													th:onclick="'searchResults(\'/manage_accounts?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+											</th:block>
+											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
+												th:onclick="'searchResults(\'/manage_accounts?page='+${pager.lastPageNo}+'\')'">Last</a></li>
+										</ul>
+									</nav>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped table-hover table-bordered">
+									<thead class="thead-light">
+										<tr>
+											<th></th>
+											<th th:text="#{commerce.screen.register.username}">Username</th>
+											<th th:text="#{commerce.screen.register.name}">Name</th>
+											<th th:text="#{commerce.screen.register.email}">Email</th>
+											<th th:text="#{commerce.screen.register.phone}">Phone</th>
+											<th th:text="#{commerce.screen.order.status}">Status</th>
+											<th th:text="#{commerce.screen.order.user}">Created By</th>
+											<th scope="col-2" th:text="#{commerce.screen.actions}">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										<th:block th:each="user,itrStat:${users.users}">
+											<tr>
+												<td><input type="checkbox" th:onclick="'javascript:selectFunc(\''+${itrStat.index}+'\',this)'"
+													class="form-control form-control-sm usernameSel" th:field="*{usernames}"
+													th:value="${users.users[__${itrStat.index}__].username}+'_'+${itrStat.index}"></input></td>
+												<td><input type="hidden" th:field="${users.users[__${itrStat.index}__].username}"></input>
+												<span th:text="${users.users[__${itrStat.index}__].username}"></span></td>
+												<td class="text-nowrap"><span th:text="${users.users[__${itrStat.index}__].firstName+' '+users.users[__${itrStat.index}__].lastName}"></span></td>
+												<td><span th:text="${users.users[__${itrStat.index}__].email}"></span></td>
+												<td><span th:text="${users.users[__${itrStat.index}__].phone}"></span></td>
+												<td><input type="hidden" th:field="${users.users[__${itrStat.index}__].status}"></input>
+												<span th:text="${users.users[__${itrStat.index}__].displayStatus}"></span></td>
+												<td><span th:text="${users.users[__${itrStat.index}__].createdBy}"></span></td>
+												<td>
+													<div class="btn-group">
+														<a th:if="${users.users[__${itrStat.index}__].status=='C'}"
+															th:href="@{/admin/approve_account(username=${users.users[__${itrStat.index}__].username})}" href="../admin/approve_account.html"
+															class="btn btn-success btn-sm"><i class="fas fa-user-check fa-2x mx-2"></i><span th:text="#{commerce.screen.actions.approve}">Approve</span></a> 
+															
+															<a th:if="${users.users[__${itrStat.index}__].status=='A'}"
+															th:href="@{/admin/disable_account(username=${users.users[__${itrStat.index}__].username})}" href="../admin/disable_account.html"
+															class="btn btn-warning btn-sm"><i class="fas fa-user-slash fa-2x mx-2"></i><span th:text="#{commerce.screen.actions.disable}">Disable</span></a>
+														
+														<a th:if="${users.users[__${itrStat.index}__].status=='I'}"
+															th:href="@{/admin/activate_account(username=${users.users[__${itrStat.index}__].username})}" href="../admin/activate_account.html"
+															class="btn btn-success btn-sm"><i class="fas fa-user-check fa-2x mx-2"></i><span th:text="#{commerce.screen.actions.activate}">Activate</span></a>
+														
+														<a th:if="${users.users[__${itrStat.index}__].status=='C'}"
+															th:href="@{/admin/delete_account(username=${users.users[__${itrStat.index}__].username})}" href="../admin/delete_account.html"
+															class="btn btn-danger btn-sm"><i class="fas fa-user-times fa-2x mx-2"></i><span th:text="#{commerce.screen.actions.delete}">Delete</span></a> 
+														<a th:if="${users.users[__${itrStat.index}__].status=='C'}"
+															th:href="@{/admin/edit_account(username=${users.users[__${itrStat.index}__].username})}" href="../admin/edit_account.html"
+															class="btn btn-secondary btn-sm">
+															<i class="fas fa-user-edit fa-2x mx-2"></i>
+															<span th:text="#{commerce.screen.actions.edit}">Edit</span></a>
+													</div>
+												</td>
+											</tr>
+										</th:block>
+										<tr>
+											<td><a th:href="'javascript:selectAll()'" href="#" class="badge badge-secondary"><span
+													th:text="#{commerce.screen.actions.selectall}">Select All</span></a></td>
+											<td class="text-left"><a th:href="'javascript:deselectAll()'" href="#" class="badge badge-secondary"><span
+													th:text="#{commerce.screen.actions.deselectall}">Deselect All</span></a></td>
+											<td colspan="6"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="row">
+								<div class="col-12 text-right">
+									<nav aria-label="Pagination" th:if="${pager!=null}">
+										<ul class="pagination pagination-sm justify-content-end">
+											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
+												th:onclick="'searchResults(\'/manage_accounts?page=1\')'">First</a></li>
+											<th:block th:each="page,itrStat:${pager.displayPages}">
+												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
+													th:onclick="'searchResults(\'/manage_accounts?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+											</th:block>
+											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
+												th:onclick="'searchResults(\'/manage_accounts?page='+${pager.lastPageNo}+'\')'">Last</a></li>
+										</ul>
+									</nav>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-8">
+									<div class="form-group">
+										<button type="button" th:onclick="'submitForm(\'/admin/bulk_account_action?approveAccounts=\')'" id="btnApprove" value="Approve"
+											class="btn btn-success btn-sm" aria-describedby="bulkHelp" disabled="disabled">
+											<i class="fas fa-user-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
+										</button>
+										<button type="button" th:onclick="'submitForm(\'/admin/bulk_account_action?deleteAccounts=\')'" id="btnDelete" value="Delete"
+											class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled">
+											<i class="fas fa-user-times fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.delete}"></span>
+										</button>
+										<button type="button" th:onclick="'submitForm(\'/admin/bulk_account_action?disableAccounts=\')'" id="btnDisable" value="Disable"
+											class="btn btn-warning btn-sm" aria-describedby="bulkHelp" disabled="disabled">
+											<i class="fas fa-user-slash fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.disable}"></span>
+										</button>
+										<a href="create_account.html" th:href="@{/admin/create_account}" class="btn btn-success btn-sm">
+										<i class="fas fa-user-plus fa-2x mx-2"></i><span th:text="#{commerce.home.menu.create.account}">Add</span></a>
+									</div>
+								</div>
+							</div>
+							<div class="row text-left">
+								<div class="col-4">
+									<small id="btnActions" class="form-text text-muted" th:text="#{commerce.screen.search.action.bulk}">Please select records for the
+										actions</small>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<script th:inline="javascript" th:if="${users!=null and users.users!=null and #lists.size(users.users)>0}">
+	/*<![CDATA[*/
+	
+	    var totalRecords = [[${#lists.size(users.users)}]];
+	
+	
+		var newAccountURL = /*[[@{/admin/create_account}]]*/;
+		var editAccountURL = /*[[@{/admin/edit_account(username)}]]*/;
+		var approveAccountURL = /*[[@{/admin/approve_account(username)}]]*/;
+		var disableAccountURL = /*[[@{/admin/disable_account(username)}]]*/;
+	
+	/*]]>*/
+	</script>
+	<script>
+	
+	
+		function searchResults(action) {
+	
+			$("#searchForm").attr("action", action);
+			$('#searchForm').submit();
+		}
+	
+	
+		var cbCounter = 0;
+
+		function selectAll() {
+
+			$(".usernameSel").prop('checked', true);
+			
+			$("#btnApprove").removeAttr("disabled");
+			$("#btnDelete").removeAttr("disabled");
+			$("#btnDisable").removeAttr("disabled");
+
+			cbCounter = totalRecords;
+
+		}
+
+		function deselectAll() {
+
+			$(".usernameSel").prop('checked', false);
+			$("#btnApprove").attr("disabled", "disabled");
+			$("#btnDelete").attr("disabled", "disabled");
+			$("#btnDisable").attr("disabled", "disabled");
+			cbCounter = 0;
+
+		}
+
+		function submitForm(action) {
+
+			$("#bulkForm").attr("action", action);
+
+			$('#bulkForm').submit();
+		}
+
+		function selectFunc(index, cb) {
+
+			if (cb.checked) {
+				if (cbCounter == 0) {
+					$("#btnApprove").removeAttr("disabled");
+					$("#btnDelete").removeAttr("disabled");
+					$("#btnDisable").removeAttr("disabled");
+				}
+				cbCounter++;
+			} else {
+				if (cbCounter == 1 || cbCounter == 0) {
+					$("#btnApprove").attr("disabled", "disabled");
+					$("#btnDelete").attr("disabled", "disabled");
+					$("#btnDisable").attr("disabled", "disabled");
+				}
+				cbCounter--;
+
+			}
+		}
+	</script>
+</body>
+</html>

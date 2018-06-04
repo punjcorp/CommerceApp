@@ -33,12 +33,20 @@ public final class MVCConstants {
 	public static final String PRICE_TYPE_CLEARANCE_DESC="Clearance";
 	public static final String PRICE_TYPE_CLEARANCE_RESET_DESC="Clearance Reset";
 	
-	
-	
 	public static final String NEXT_LEVEL_CREATED= "C";
 	public static final String NEXT_LEVEL_APPROVED= "A";	
 	public static final String NEXT_LEVEL_NOT_CREATED= "N";	
 
+	
+	public static final String SCREEN_MANAGE_ACCOUNTS_SEARCH_CRITERIA="ManageAccountsSearchCriteria";
+	public static final String SCREEN_MANAGE_ACCOUNTS_SEARCH_CRITERIA_PAGE=SCREEN_MANAGE_ACCOUNTS_SEARCH_CRITERIA+"Page";
+	
+	
+	
+	
+	
+	
+	
 	public static final String LAST_TXN_NO="LAST_TXN_NO";
 	public static final String TXN_ID_PARAM="txnId";
 	public static final String RCPT_PARAM="_RCPT";
@@ -48,6 +56,7 @@ public final class MVCConstants {
 	public static final String RCPT_SALE_GIFT="Gift Receipt";
 	public static final String RCPT_NO_SALE="No Sale Receipt";
 	
+	public static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
 	public static final String TXN_SALE_PARAM="SALE";
 	public static final String TXN_RETURN_PARAM="RETURN";
@@ -87,11 +96,13 @@ public final class MVCConstants {
 
 	public static final String STATUS_RECEIVED_DESC="Received";
 	public static final String STATUS_APPROVED_DESC="Approved";
+	public static final String STATUS_DISABLED_DESC="Disabled";
 	public static final String STATUS_CREATED_DESC="Created";
 	public static final String STATUS_ACTIVE_DESC="Active";	
 	
 	public static final String STATUS_RECEIVED="R";
 	public static final String STATUS_APPROVED="A";
+	public static final String STATUS_DISABLED="I";
 	public static final String STATUS_CREATED="C";
 	public static final String STATUS_ACTIVE="A";
 
@@ -102,6 +113,10 @@ public final class MVCConstants {
 	public static final String ACTION_EDIT="EDIT";
 	public static final String ACTION_EDIT_SAVE="EDIT_SAVE";
 	public static final String ACTION_EDIT_APPROVE="EDIT_APPROVE";
+	
+	public static final String ACTION_APPROVE_ALL="APPROVEALL";
+	public static final String ACTION_DISABLE_ALL="DISABLEALL";
+	public static final String ACTION_DELETE_ALL="DELETEALL";
 
 	
 	public static final String REPORT_OUTPUT_PDF="application/pdf";
@@ -114,6 +129,11 @@ public final class MVCConstants {
 	public static final String REMOVE_ITEM_IMAGE_PARAM= "removeItemImage";
 	public static final String SAVE_ITEM_PARAM= "saveItem";
 	
+	public static final String SAVE_ACCOUNT_PARAM= "saveAccount";
+	public static final String APPROVE_ACCOUNT_PARAM= "approveAccount";
+	public static final String APPROVE_ACCOUNTS_PARAM= "approveAccounts";
+	public static final String DELETE_ACCOUNTS_PARAM= "deleteAccounts";
+	public static final String DISABLE_ACCOUNTS_PARAM= "disableAccounts";
 	
 	public static final String ORDER_BILL_PARAM= "billId";
 	public static final String ADD_ORDER_ITEM_PARAM= "addOrderItem";
@@ -128,6 +148,7 @@ public final class MVCConstants {
 	public static final String RECEIVE_ORDER_PARAM= "receiveOrder";
 	public static final String RECEIVE_ALL_ORDERS_PARAM="receiveAllOrder";
 	public static final String ORDER_ID_PARAM= "orderId";
+	public static final String USERNAME_PARAM= "username";
 		
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";
@@ -203,11 +224,15 @@ public final class MVCConstants {
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
+	public static final String ROLE_BEANS= "roles";
 	public static final String TENDER_BEANS= "tenders";
 	public static final String REASON_CODES= "reasonCodes";
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
+	public static final String USERS_BEAN= "users";
+	
+	
 	
 	public static final String REPORT_ORDER_PRINT= "P";
 	public static final String REPORT_ORDER_VIEW= "V";
@@ -282,4 +307,8 @@ public final class MVCConstants {
 	public static final String ADDRESS_PARAM="addressBean";
 	
 	public static final String ERROR_MSG="commerce.screen.common.error";
+	
+
+	public static final String ACCOUNT_BEAN_PARAM= "accountBean";
+	
 }
