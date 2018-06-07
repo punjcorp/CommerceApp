@@ -25,6 +25,8 @@ public interface ItemService {
 
 	public BigInteger generateNewStyle();
 	
+	public List<Item> updateSKUs(List<Item> skuList);
+	
 	public BigInteger generateNewSKU(BigInteger styleNo, BigInteger skuNo);
 
 	public Item saveNewItem(Item item);

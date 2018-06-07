@@ -4,8 +4,10 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -153,6 +155,16 @@ public class ItemTransformer {
 			List<ItemImageBean> itemImageBeans = ItemTransformer.tranformItemImages(item.getImages());
 			itemBean.setItemImages(itemImageBeans);
 			logger.info("The item images has updated with transformed image bean objects successfully.");
+		}else {
+			List<ItemImageBean> itemImageBeans =new ArrayList<>();
+			itemImageBeans.add(new ItemImageBean());
+			itemBean.setItemImages(itemImageBeans);
+		}
+
+		if (item.getItemAttributes() != null && !item.getItemAttributes().isEmpty()) {
+			List<AttributeBean> itemAttributeBeans = ItemTransformer.transformItemAttributes(item.getItemAttributes());
+			itemBean.setSelectedAttributes(itemAttributeBeans);
+			logger.info("The item attributes has updated with transformed attribute bean objects successfully.");
 		}
 
 		logger.info("The item has been transformed successfully.");
@@ -435,6 +447,8 @@ public class ItemTransformer {
 			itemImage.setImageData(multipartFile.getBytes());
 			itemImage.setImageType(multipartFile.getContentType());
 			itemImage.setImageURL(multipartFile.getOriginalFilename());
+			if(StringUtils.isBlank(itemImageBean.getName()))
+				itemImage.setName(multipartFile.getOriginalFilename());
 
 		}
 
@@ -526,6 +540,30 @@ public class ItemTransformer {
 
 		logger.info("The item attribute bean has been transformed to item attribute object successfully");
 		return itemAttribute;
+	}
+
+	public static List<Item> updateSKUs(List<Item> existingSKUs, ItemBeanDTO itemDTO, String username) throws IOException {
+		Map<BigInteger, Item> existingSKUMap = new HashMap<>(existingSKUs.size());
+		List<Item> updatedSKUs = new ArrayList<>(existingSKUs.size());
+		for (Item sku : existingSKUs) {
+			existingSKUMap.put(sku.getItemId(), sku);
+		}
+		Item sku=null;
+		List<ItemImage> itemImages=null;
+		for(ItemBean skuBean:itemDTO.getSkus()) {
+			sku=existingSKUMap.get(skuBean.getItemId());
+			sku.setName(skuBean.getName());
+			if(StringUtils.isNotBlank(skuBean.getIsImageUpdated()) && skuBean.getIsImageUpdated().equals(MVCConstants.YES)) {
+				itemImages=ItemTransformer.transformItemImageBeans(skuBean.getItemImages(), username, sku);
+				sku.setImages(itemImages);
+			}
+			sku.setModifiedBy(username);
+			sku.setModifiedDate(LocalDateTime.now());
+			updatedSKUs.add(sku);
+		}
+		logger.info("The sku details has been updated in existing skus successfully");
+		return updatedSKUs;
+
 	}
 
 	public static List<Item> createSKUs(Item style, ItemBeanDTO itemDTO, String username, String action) {

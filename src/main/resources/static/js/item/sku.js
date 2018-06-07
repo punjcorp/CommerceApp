@@ -23,10 +23,49 @@ var selectedAttributes = new Array();
 var skuCombinations = new Array();
 var attrCount = -1;
 
-var attrAction=new AttributeBean();
-
+var attrAction = new AttributeBean();
 
 $(function() {
+
+	//The event for file upload starts
+	//*
+	$('[id^=skus][id$=itemImages0\\.imageData]').change(function() {
+		var idSubStr=this.id.substring(1, 8);
+		var index = idSubStr.replace(/[^0-9]/gi, '');
+
+		if (typeof (FileReader) != "undefined") {
+
+			if (this.files.length > 1) {
+				alert("Please select max 1 photo to upload.");
+				this.preventDefault();
+			} else {
+
+				var image_holder = $('#skuImage' + index);
+				image_holder.empty();
+
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$("<img />", {
+						"src" : e.target.result,
+						"class" : "img-fluid img-thumbnail"
+					}).appendTo(image_holder);
+
+					$('#btnDeleteImage' + index).removeClass('d-none');
+					$('#skus' + index + '\\.itemImages0\\.imageData').addClass('d-none');
+				}
+				image_holder.show();
+				reader.readAsDataURL($(this)[0].files[0]);
+				$('#lblImageName' + index).text($(this)[0].files[0].name);
+				$('#skus'+index+'\\.isImageUpdated').val('Y');
+			}
+
+		} else {
+			alert("This browser does not support FileReader.");
+		}
+	});
+	//*
+
+	//The event for file upload ends	
 
 	// The auto complete for item attributes starts
 	$('#style\\.attrName').autocomplete({
@@ -73,6 +112,24 @@ $(function() {
 	});
 
 	// The auto complete for item attributes ends
+
+	$('[id^=btnDeleteImage]').click(function() {
+		var index = this.id.replace(/[^0-9]/gi, '');
+
+		var image_holder = $('#skuImage' + index);
+		image_holder.empty();
+		$("<img />", {
+			"src" : '/images/item_image_default_200.png',
+			"class" : "img-fluid img-thumbnail"
+		}).appendTo(image_holder);
+		image_holder.show();
+
+		$('#' + this.id).addClass('d-none');
+		$('#skus' + index + '\\.itemImages0\\.imageData').removeClass('d-none');
+		$('#skus' + index + '\\.itemImages0\\.imageData').val('');
+		$('#skus'+index+'\\.isImageUpdated').val('Y');
+		$('#lblImageName' + index).text('');
+	});
 
 });
 
@@ -167,11 +224,10 @@ function addAttributeList(data) {
 
 	}
 
-	var finalSKUCombinationList=attrAction.generateSKUCombinations(selectedAttributes);
-	attrAction.renderSKUs(selectedAttributes,finalSKUCombinationList);
+	var finalSKUCombinationList = attrAction.generateSKUCombinations(selectedAttributes);
+	attrAction.renderSKUs(selectedAttributes, finalSKUCombinationList);
 
 }
-
 
 function selectAttr(customInput, index) {
 	var cntrlId = customInput.id;
@@ -186,17 +242,15 @@ function deleteAttr(attrCode) {
 		return attribute.code != attrCode;
 	});
 	attrAction.renderSelectedAttribute(selectedAttributes);
-	var finalSKUCombinationList=attrAction.generateSKUCombinations(selectedAttributes);
-	attrAction.renderSKUs(selectedAttributes,finalSKUCombinationList);	
+	var finalSKUCombinationList = attrAction.generateSKUCombinations(selectedAttributes);
+	attrAction.renderSKUs(selectedAttributes, finalSKUCombinationList);
 }
 
-
-
-function initializeSKUsAfterCreation(){
-	selectedAttributes=item_bean_dto.style.selectedAttributes;
-	if(selectedAttributes && selectedAttributes.length>0){
-		var finalSKUCombinationList=attrAction.generateSKUCombinations(selectedAttributes);
-		attrAction.renderSKUs(selectedAttributes,finalSKUCombinationList);
+function initializeSKUsAfterCreation() {
+	selectedAttributes = item_bean_dto.style.selectedAttributes;
+	if (selectedAttributes && selectedAttributes.length > 0) {
+		var finalSKUCombinationList = attrAction.generateSKUCombinations(selectedAttributes);
+		attrAction.renderSKUs(selectedAttributes, finalSKUCombinationList);
 	}
-	
+
 }

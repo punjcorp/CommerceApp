@@ -30,7 +30,7 @@
 					<div class="card-text">
 						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-						<form class="form" id="addItem" th:action="@{/admin/add_sku}" th:object="${itemBean}" enctype="multipart/form-data" method="post"
+						<form class="form" id="addItem" th:action="@{/admin/edit_sku}" th:object="${itemBean}" enctype="multipart/form-data" method="post"
 							th:if="${itemBean!=null}">
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
@@ -98,15 +98,6 @@
 											<div class="card-body">
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">
-														<div class="form-group">
-															<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.attribute}">Select Item Attribute</span></small></label>
-															<div class="input-group">
-																<input type="text" class="form-control input-sm" th:field="*{style.attrName}"
-																	th:placeholder="#{commerce.screen.item.attribute.placeholder}"></input>
-															</div>
-														</div>
-													</div>
-													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="col-12 d-none text-center" id="progressDiv">
 															<i class="fas fa-cog fa-spin fa-5x"></i>
 															<div>
@@ -129,13 +120,6 @@
 																								<input type="hidden" th:field="${itemBean.style.selectedAttributes[__${itrStat.index}__].attributeId}"></input>
 																							</div> <span class="mx-4" th:text="${itemBean.style.selectedAttributes[__${itrStat.index}__].name}"></span>
 																						</a>
-																					</div>
-																					<div class="col-1">
-																						<button type="button" id="btnDeleteAttr"
-																							th:onClick="'deleteAttr(\''+${itemBean.style.selectedAttributes[__${itrStat.index}__].code}+'\')'"
-																							class="btn btn-danger btn-sm mx-1">
-																							<i class="far fa-trash-alt fa-2x"></i>
-																						</button>
 																					</div>
 																				</div>
 																			</div>
@@ -172,20 +156,32 @@
 															<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemId}"></input> <input type="hidden"
 																th:field="${itemBean.skus[__${itrStat.index}__].status}"></input>
 															<div class="col-2">
-																<div class="card-text preview-thumbnail-sku text-center">
+																<div class="card-text preview-thumbnail-sku text-center" th:id="'skuImage'+${itrStat.index}">
 																	<img th:src="@{/images/item_image_default_200.png}" class="img-thumbnail"
 																		th:if="${itemBean.skus[__${itrStat.index}__].itemImages==null or itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL==null or itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL==''}" />
 																	<img
 																		th:src="'data:'+${itemBean.skus[__${itrStat.index}__].itemImages[0].imageType}+';base64,'+${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}"
 																		class="img-thumbnail"
 																		th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null and #lists.size(itemBean.skus[__${itrStat.index}__].itemImages)>0 and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=''}" />
-																	<br /> <label><small><span th:text="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}"
-																			th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=''}"></span></small></label>
-																	<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL}"></input> <input type="hidden"
-																		th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}"></input> <input type="hidden"
-																		th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}"></input> <input type="hidden"
-																		th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageType}"></input>
 																</div>
+																<div class="form-group text-center">
+																	<a href="#"
+																		th:class="${itemBean.skus[__${itrStat.index}__].itemImages!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=''?'btn btn-danger btn-sm':'btn btn-danger btn-sm d-none'}"
+																		th:id="'btnDeleteImage'+${itrStat.index}"><i class="far fa-times-circle mx-2"></i> <span
+																		th:text="#{commerce.screen.btn.submit.delete}"></span></a>
+																	<div class="input-group">
+																		<input type="file" class="form-control input-sm" th:placeholder="#{commerce.screen.item.image.placeholder}"
+																			th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageData}" accept="image/*" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}" 
+																			th:class="${(itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL==null or itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL=='')?'form-control input-sm':'form-control input-sm d-none'}" />
+																	</div>
+																	<label><small><span th:id="'lblImageName'+${itrStat.index}" th:text="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}"
+																			th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=''}"></span></small></label>
+																</div>
+																<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].isImageUpdated}"></input>
+																<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL}"></input> <input type="hidden"
+																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input> <input type="hidden"
+																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input> <input type="hidden"
+																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageType}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input>
 															</div>
 															<div class="col">
 																<div class="form-group">
@@ -198,13 +194,8 @@
 																<div class="form-group">
 																	<label><small><span th:text="#{commerce.screen.sku.current.price}"></span></small></label>
 																	<div class="input-group">
-																		<input type="number" step="0.01" class="form-control input-sm"
-																			th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.currentPrice}"
-																			th:placeholder="#{commerce.screen.sku.current.price.placeholder}" th:if="${itemBean.skus[__${itrStat.index}__].status!='A'}"></input>
-																		<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.skus[__${itrStat.index}__].itemOptions.currentPrice}"
-																			th:if="${itemBean.skus[__${itrStat.index}__].status=='A'}"></span> <input type="hidden"
-																			th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.currentPrice}"
-																			th:if="${itemBean.skus[__${itrStat.index}__].status=='A'}"></input>
+																		<span th:text="#{commerce.screen.common.currency.inr}+' '+${itemBean.skus[__${itrStat.index}__].itemOptions.currentPrice}"></span> <input
+																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.currentPrice}"></input>
 																	</div>
 																</div>
 															</div>
@@ -212,12 +203,8 @@
 																<div class="form-group">
 																	<label><small><span th:text="#{commerce.screen.sku.initial.stock}"></span></small></label>
 																	<div class="input-group">
-																		<input type="number" class="form-control input-sm" th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.stockStatus}"
-																			th:placeholder="#{commerce.screen.sku.initial.stock.placeholder}" th:if="${itemBean.skus[__${itrStat.index}__].status!='A'}"></input>
-																		<span th:text="${itemBean.skus[__${itrStat.index}__].itemOptions.stockStatus}"
-																			th:if="${itemBean.skus[__${itrStat.index}__].status=='A'}"></span> <input type="hidden"
-																			th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.stockStatus}"
-																			th:if="${itemBean.skus[__${itrStat.index}__].status=='A'}"></input>
+																		<span th:text="${itemBean.skus[__${itrStat.index}__].itemOptions.stockStatus}"></span> <input type="hidden"
+																			th:field="${itemBean.skus[__${itrStat.index}__].itemOptions.stockStatus}"></input>
 																	</div>
 																</div>
 																<div class="row">
@@ -254,12 +241,7 @@
 									<div class="form-group">
 										<label></label>
 										<div class="input-group text-left">
-											<button type="submit" name="saveSKU" value="saveSKU" class="btn btn-info mx-2"
-												th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
-												<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
-											</button>
-											<button type="submit" name="saveApproveSKU" value="saveApproveSKU" class="btn btn-info  mx-2"
-												th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
+											<button type="submit" name="saveApproveSKU" value="saveApproveSKU" class="btn btn-info  mx-2">
 												<i class="far fa-save fa-2x mx-1"></i><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
 														data-fa-transform="rotate-180"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
@@ -286,43 +268,5 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
-	<script type="text/javascript" th:inline="javascript" th:if="${itemBean!=null}">
-		/*<![CDATA[*/
-
-		var style_price = /*[[${itemBean.style.itemOptions.currentPrice}]]*/;
-		var style_name = /*[[${itemBean.style.name}]]*/;
-		/*]]>*/
-	</script>
-	<script type="text/javascript" th:inline="javascript"
-		th:if="${itemBean!=null and itemBean.style!=null and itemBean.style.itemImages!=null and itemBean.style.itemImages[0].name!=null and itemBean.style.itemImages[0].name!=''}">		
-		/*<![CDATA[*/
-
-			var style_image_name = /*[[${itemBean.style.itemImages[0].name}]]*/;
-			var style_image_url = /*[['data:'+${itemBean.style.itemImages[0].imageType}+';base64,'+${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
-			
-			var style_image_url_actual = /*[[${itemBean.style.itemImages[0].imageURL}]]*/;
-			var style_image_type = /*[[${itemBean.style.itemImages[0].imageType}]]*/;
-			var style_encoded_image = /*[[${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
-		
-		/*]]>*/
-	</script>
-	<script type="text/javascript" th:inline="javascript"
-		th:if="${itemBean!=null and itemBean.style!=null and itemBean.style.itemImages!=null and (itemBean.style.itemImages[0].name==null or itemBean.style.itemImages[0].name=='')}">
-		/*<![CDATA[*/
-			
-			var style_image_name = 'Default Image';
-			var style_image_url = /*[[@{/images/item_image_default_200.png}]]*/;		
-		
-		/*]]>*/
-	</script>
-	<script type="text/javascript" th:inline="javascript"
-		th:if="${itemBean!=null and itemBean.skus!=null and (itemBean.skus[0].status=='C' or itemBean.skus[0].status=='A')}">
-		/*<![CDATA[*/
-
-		var item_bean_dto = /*[[${itemBean}]]*/;
-		initializeSKUsAfterCreation();
-		
-		/*]]>*/
-	</script>
 </body>
 </html>

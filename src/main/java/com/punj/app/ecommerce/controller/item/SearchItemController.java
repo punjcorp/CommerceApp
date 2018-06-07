@@ -149,6 +149,7 @@ public class SearchItemController {
 	private void setItemList(List<Item> itemsList, ItemBeanDTO items) {
 		List<ItemBean> itemBeanList = new ArrayList<>();
 		ItemBean itemBean = null;
+		ItemOptionsBean itemOptionsBean = null;
 		HierarchyBean hierarchyBean = null;
 		for (Item item : itemsList) {
 			itemBean = new ItemBean();
@@ -160,6 +161,11 @@ public class SearchItemController {
 			itemBean.setItemId(item.getItemId());
 			itemBean.setParentItemId(item.getParentItemId());
 
+			itemOptionsBean = new ItemOptionsBean();
+			itemOptionsBean.setNextLevelCreated(item.getItemOptions().getNextLevelCreated());
+			itemBean.setItemOptions(itemOptionsBean);
+			
+			
 			// Setting the hierarchy information
 			Hierarchy hierarchy = item.getHierarchy();
 			hierarchyBean = new HierarchyBean();

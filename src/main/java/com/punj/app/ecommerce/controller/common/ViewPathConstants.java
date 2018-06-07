@@ -55,7 +55,7 @@ public final class ViewPathConstants {
 	public static final String ADD_SKU_PAGE = "item/add_sku";
 		
 	public static final String EDIT_SKU_URL = "/admin/edit_sku";
-	public static final String EDIT_SKU_PAGE = "item/edit_sku";	
+	public static final String EDIT_SKU_PAGE = "item/sku/edit_sku";	
 	
 	public static final String GET_HIERARCHY_URL = "/admin/search_hierarchy";
 	public static final String SEARCH_HIERARCHIES_URL = "/admin/search_hierarchy";

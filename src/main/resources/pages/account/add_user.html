@@ -33,7 +33,8 @@
 									<div class="row">
 										<div class="col-xs-3 col-sm-3 col-md-3 text-center">
 											<div class="card-text preview-thumbnail text-center" id="previewPhoto">
-												<img th:src="@{/images/no_photo.jpg}" class="img-thumbnail" th:if="${accountBean.photoURL==null or accountBean.photoURL==''}" /> <img
+												<img th:src="@{/images/no_photo.jpg}" class="img-thumbnail" th:if="${accountBean.photoURL==null or accountBean.photoURL==''}" /> 
+												<img
 													th:src="'data:'+${accountBean.photoType}+';base64,'+${accountBean.baseEncodedImage}" class="img-thumbnail"
 													th:if="${accountBean.photoURL!=null and accountBean.photoURL!=''}" />
 											</div>

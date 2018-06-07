@@ -90,12 +90,21 @@
 											<td>
 												<div class="btn-group">
 													<a th:href="@{/admin/edit_sku(styleId=${items.items[__${itrStat.index}__].itemId})}" href="../item/add_item.html"
-														class="btn btn-secondary btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
+														class="btn btn-secondary btn-sm"><span th:text="#{commerce.screen.actions.edit}">Edit</span></a> 
+														
+														<a
 														th:href="@{/admin/delete_item(itemId=${items.items[__${itrStat.index}__].itemId})}" href="../item/manage_item.html"
-														class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a> <a
+														class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a> 
+														
+														<a
 														th:href="@{/admin/add_sku(styleId=${items.items[__${itrStat.index}__].itemId})}" href="../item/add_item.html"
-														class="btn btn-info btn-sm" th:if="${items.items[__${itrStat.index}__].parentItemId==null}"><span
-														th:text="#{commerce.screen.actions.add.sku}">Add SKU(s)</span></a>
+														class="btn btn-info btn-sm" th:if="${items.items[__${itrStat.index}__].parentItemId==null and items.items[__${itrStat.index}__].itemOptions.nextLevelCreated!='A'}"><span
+														th:text="#{commerce.screen.actions.add.sku}">Add SKU(s)</span></a> 
+														
+														<a
+														th:href="@{/admin/edit_sku(styleId=${items.items[__${itrStat.index}__].itemId})}" class="btn btn-info btn-sm"
+														th:if="${items.items[__${itrStat.index}__].parentItemId==null and items.items[__${itrStat.index}__].itemOptions!=null and items.items[__${itrStat.index}__].itemOptions.nextLevelCreated=='A'}"><span
+														th:text="#{commerce.screen.actions.edit.sku}">Edit SKU(s)</span></a>
 												</div>
 											</td>
 										</tr>

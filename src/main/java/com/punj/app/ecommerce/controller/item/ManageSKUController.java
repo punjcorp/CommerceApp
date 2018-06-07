@@ -135,7 +135,6 @@ public class ManageSKUController {
 						logger.info("The attribute value list has been successfully retrieved");
 
 						skuList = ItemTransformer.transformItems(skuItemList);
-						
 
 					}
 
@@ -251,7 +250,7 @@ public class ManageSKUController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			Item style = this.itemService.getStyle(itemBean.getStyle().getItemId());
-			if (style != null && itemBean.getSkus()!=null && !itemBean.getSkus().isEmpty()) {
+			if (style != null && itemBean.getSkus() != null && !itemBean.getSkus().isEmpty()) {
 
 				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW);
 
@@ -329,6 +328,158 @@ public class ManageSKUController {
 		}
 
 		return ViewPathConstants.ADD_SKU_PAGE;
+	}
+
+	@GetMapping(ViewPathConstants.EDIT_SKU_URL)
+	public String showSKUForEdit(Model model, final HttpServletRequest req, Locale locale) {
+
+		logger.info("The edit method for item has been called");
+		ItemBean itemBean = null;
+		List<AttributeBean> attributeBeans = null;
+		ItemBeanDTO itemDTO = null;
+		try {
+			BigInteger styleNumber = new BigInteger(req.getParameter(MVCConstants.STYLE_ID_PARAM));
+			List<ItemBean> skuList = null;
+			Item item = null;
+			if (BigInteger.ZERO.compareTo(styleNumber) < 0) {
+				item = this.itemService.getItem(styleNumber);
+			}
+			if (item != null) {
+
+				itemBean = ItemTransformer.transformItem(item);
+
+				if (item.getItemOptions().getNextLevelCreated() != null
+						&& item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_APPROVED)) {
+					Item itemCriteria = new Item();
+					itemCriteria.setParentItemId(styleNumber);
+					List<Item> skuItemList = this.itemService.retrieveItems(itemCriteria);
+					if (skuItemList != null && !skuItemList.isEmpty()) {
+						List<ItemAttribute> itemAttributes = skuItemList.get(0).getItemAttributes();
+
+						List<Attribute> attributes = new ArrayList<>(itemAttributes.size());
+						Attribute attr = null;
+						for (ItemAttribute itemAttribute : itemAttributes) {
+							attr = itemAttribute.getItemAttributeId().getAttribute();
+							attributes.add(attr);
+						}
+						attributeBeans = ItemTransformer.transformAttributes(attributes);
+
+						List<String> attrCodeList = ItemTransformer.retrieveSelectedAttributes(skuItemList);
+						Map<String, List<Attribute>> attrValueMap = this.itemService.retrieveAttrListValues(attrCodeList);
+						if (attrValueMap != null && attrValueMap.size() > 0)
+							ItemTransformer.updateAttrValues(attributeBeans, attrValueMap);
+						logger.info("The attribute value list has been successfully retrieved");
+
+						skuList = ItemTransformer.transformItems(skuItemList);
+
+						itemDTO = new ItemBeanDTO();
+						itemDTO.setSkus(skuList);
+						itemBean.setSelectedAttributes(attributeBeans);
+						itemDTO.setStyle(itemBean);
+
+						logger.info("The selected style details has been retrieved successfully for sku creation");
+
+					} else {
+						logger.info("The SKU does not exist for the provided style details");
+					}
+
+				} else {
+					logger.info("The SKU does not exist in approved status to be edited for this style.");
+				}
+
+			} else {
+				logger.info("There was some issue while retrieving style details for sku creation");
+			}
+			this.updateModelWithEssentialScreenData(itemDTO, model, locale, Boolean.FALSE);
+
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving item for updation", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateModelWithEssentialScreenData(itemDTO, model, locale, Boolean.FALSE);
+			return ViewPathConstants.EDIT_SKU_PAGE;
+		}
+		return ViewPathConstants.EDIT_SKU_PAGE;
+	}
+	
+	
+	private ItemBeanDTO updateSKUDetailsForEditScreen(List<Item> skuItemList, ItemBean itemBean) throws IOException {
+		List<AttributeBean> attributeBeans = null;
+		ItemBeanDTO itemDTO=null;
+		List<ItemBean> skuList = null;
+		if (skuItemList != null && !skuItemList.isEmpty()) {
+			List<ItemAttribute> itemAttributes = skuItemList.get(0).getItemAttributes();
+
+			List<Attribute> attributes = new ArrayList<>(itemAttributes.size());
+			Attribute attr = null;
+			for (ItemAttribute itemAttribute : itemAttributes) {
+				attr = itemAttribute.getItemAttributeId().getAttribute();
+				attributes.add(attr);
+			}
+			attributeBeans = ItemTransformer.transformAttributes(attributes);
+
+			List<String> attrCodeList = ItemTransformer.retrieveSelectedAttributes(skuItemList);
+			Map<String, List<Attribute>> attrValueMap = this.itemService.retrieveAttrListValues(attrCodeList);
+			if (attrValueMap != null && attrValueMap.size() > 0)
+				ItemTransformer.updateAttrValues(attributeBeans, attrValueMap);
+			logger.info("The attribute value list has been successfully retrieved");
+
+			skuList = ItemTransformer.transformItems(skuItemList);
+
+			itemDTO = new ItemBeanDTO();
+			itemDTO.setSkus(skuList);
+			itemBean.setSelectedAttributes(attributeBeans);
+			itemDTO.setStyle(itemBean);
+
+			logger.info("The selected style details has been retrieved successfully for sku creation");
+
+		} else {
+			logger.info("The SKU does not exist for the provided style details");
+		}
+		return itemDTO;
+	}
+	
+	
+
+	@PostMapping(value = ViewPathConstants.EDIT_SKU_URL, params = { MVCConstants.SAVE_APPROVE_SKU_PARAM })
+	public String approveSKUsAfterEditing(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean,
+			BindingResult bindingResult, Model model, HttpSession session, Authentication authentication, Locale locale) {
+
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+			Item skuRetrievalCriteria = new Item();
+			skuRetrievalCriteria.setParentItemId(itemBean.getStyle().getItemId());
+			List<Item> skuList = this.itemService.retrieveItems(skuRetrievalCriteria);
+			if (skuList != null && !skuList.isEmpty()) {
+				List<Item> updatedSKUs = ItemTransformer.updateSKUs(skuList, itemBean, userDetails.getUsername());
+				updatedSKUs = this.itemService.updateSKUs(updatedSKUs);
+
+				List<ItemBean> skuBeanList = ItemTransformer.transformItems(updatedSKUs);
+				itemBean.setSkus(skuBeanList);
+				
+				
+				Item style=this.itemService.getItem(itemBean.getStyle().getItemId());
+				ItemBean styleDetails=ItemTransformer.transformItem(style);
+				
+				itemBean=this.updateSKUDetailsForEditScreen(updatedSKUs, styleDetails);
+				this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+				
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.sku.approve.success", null, locale));
+
+				logger.info("All the SKUs has been updated successfully");
+			} else {
+				this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.item.edit.sku.notfound", null, locale));
+				logger.info("There were no SKUs found for the editing");
+			}
+
+		} catch (Exception e) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the sku save and approval related tasks", e);
+		}
+
+		return ViewPathConstants.EDIT_SKU_PAGE;
 	}
 
 }

@@ -35,6 +35,7 @@ import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
+import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.SKUCounter;
@@ -47,6 +48,7 @@ import com.punj.app.ecommerce.repositories.item.AttributeRepository;
 import com.punj.app.ecommerce.repositories.item.AttributeSearchRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
 import com.punj.app.ecommerce.repositories.item.ItemAttributeRepository;
+import com.punj.app.ecommerce.repositories.item.ItemImageRepository;
 import com.punj.app.ecommerce.repositories.item.ItemOptionsRepository;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.item.ItemSearchRepository;
@@ -72,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
 
 	private static final Logger logger = LogManager.getLogger();
 	private ItemRepository itemRepository;
+	private ItemImageRepository itemImageRepository;
 	private ItemSearchRepository itemSearchRepository;
 	private ItemOptionsRepository itemOptionsRepository;
 	private AttributeRepository attributeRepository;
@@ -89,6 +92,15 @@ public class ItemServiceImpl implements ItemService {
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @param itemImageRepository
+	 *            the itemImageRepository to set
+	 */
+	@Autowired
+	public void setItemImageRepository(ItemImageRepository itemImageRepository) {
+		this.itemImageRepository = itemImageRepository;
+	}
 
 	/**
 	 * @return the attributeSearchRepository
@@ -718,7 +730,7 @@ public class ItemServiceImpl implements ItemService {
 
 		List<Location> locations = this.commonService.retrieveAllLocations();
 		this.updateItemPrices(locations, item, item.getModifiedBy());
-		
+
 		return item;
 
 	}
@@ -808,10 +820,10 @@ public class ItemServiceImpl implements ItemService {
 			if (!finalSKUs.isEmpty()) {
 				List<Location> locations = this.commonService.retrieveAllLocations();
 				logger.info("The skus were created successfully");
-				
+
 				this.inventoryService.rangeSKUs(finalSKUs);
 				logger.info("The skus have been ranged successfully");
-				
+
 				for (Item sku : finalSKUs) {
 					this.updateItemPrices(locations, sku, username);
 					logger.info("The sku {} price has been updated successfully", sku.getItemId());
@@ -847,12 +859,12 @@ public class ItemServiceImpl implements ItemService {
 			stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
 			itemStockJournal.setReasonCode(stockReason);
 			itemStockJournal.setFunctionality(ServiceConstants.SKU_CREATION_FUNCTIONALITY);
-			
-			String stockStatus=item.getItemOptions().getStockStatus();
-			if(stockStatus!=null && StringUtils.isNotEmpty(stockStatus)){
-				stockStatus=stockStatus.replace(".00","");
+
+			String stockStatus = item.getItemOptions().getStockStatus();
+			if (stockStatus != null && StringUtils.isNotEmpty(stockStatus)) {
+				stockStatus = stockStatus.replace(".00", "");
 			}
-			
+
 			itemStockJournal.setQty(new Integer(stockStatus));
 
 			itemStockDetails.add(itemStockJournal);
@@ -911,6 +923,47 @@ public class ItemServiceImpl implements ItemService {
 			logger.error("There was some issue while retrieveing the items");
 
 		return itemList;
+	}
+
+	@Transactional
+	private void deleteSKUImages(List<Item> skuList) {
+		List<ItemImage> finalImageList=new ArrayList<>();
+		List<ItemImage> itemImageList=null;
+		ItemImage imageCriteria=null;
+		Item itemCriteria=null;
+		for(Item item:skuList) {
+			imageCriteria=new ItemImage();
+			itemCriteria=new Item();
+			itemCriteria.setItemId(item.getItemId());
+			imageCriteria.setItem(itemCriteria);
+			itemImageList=this.itemImageRepository.findAll(Example.of(imageCriteria));
+			if(itemImageList!=null && !itemImageList.isEmpty()) {
+				finalImageList.addAll(itemImageList);
+				logger.info("The images for SKU {} has been found successfully",item.getItemId());
+			}
+				
+		}
+
+		if(!finalImageList.isEmpty()) {
+			this.itemImageRepository.delete(finalImageList);
+			logger.info("All the selected SKU images has been deleted successfully");
+		}else {
+			logger.info("There was no images found for deletion");
+		}
+			
+	}
+
+	@Override
+	public List<Item> updateSKUs(List<Item> skuList) {
+
+		this.deleteSKUImages(skuList);
+		
+		List<Item> updatedSKUs = this.itemRepository.save(skuList);
+		if (updatedSKUs != null && !updatedSKUs.isEmpty())
+			logger.info("The skus were updated successfully");
+		else
+			logger.error("There was some issue while updating the skus");
+		return updatedSKUs;
 	}
 
 }
