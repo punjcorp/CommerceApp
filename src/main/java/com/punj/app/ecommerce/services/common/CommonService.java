@@ -37,6 +37,8 @@ public interface CommonService {
 	public List<Tender> retrieveAllTenders(Integer locationId);
 
 	public Map<Integer, Tender> retrieveAllTendersAsMap(Integer locationId);
+	
+	public Map<String, Tender> retrieveAllTenderNamesAsMap(Integer locationId);
 
 	public List<Tender> retrieveTendersForReconcilation(Integer locationId);
 

@@ -83,19 +83,19 @@ $.extend(TxnAction.prototype, {
 				totalDiscount += +$(this).val();
 			}
 			if (this.id.indexOf("li_priceAmt") >= 0) {
-				var tmp_totalPrice = +$(this).val();
+				var tmp_totalPrice = +$(this).text();
 				if(txn_type=='R')
 					tmp_totalPrice =tmp_totalPrice  * -1;
 				totalPrice += tmp_totalPrice;
 			}
 			if (this.id.indexOf("li_sgstAmt") >= 0) {
-				totalSGSTTax += +$(this).val();
+				totalSGSTTax += +$(this).text();
 			}
 			if (this.id.indexOf("li_cgstAmt") >= 0) {
-				totalCGSTTax += +$(this).val();
+				totalCGSTTax += +$(this).text();
 			}
 			if (this.id.indexOf("li_igstAmt") >= 0) {
-				totalIGSTTax += +$(this).val();
+				totalIGSTTax += +$(this).text();
 			}
 		});
 

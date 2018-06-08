@@ -142,34 +142,53 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 	@Override
 	@Transactional
 	public List<AccountHead> updateAccountsDue(List<AccountHead> accountHeads, String username) {
-		List<AccountHead> updatedAccounts=new ArrayList<>(accountHeads.size());
-		for(AccountHead accountHead:accountHeads) {
-			accountHead=this.updateAccountDue(accountHead, username);
+		List<AccountHead> updatedAccounts = new ArrayList<>(accountHeads.size());
+		for (AccountHead accountHead : accountHeads) {
+			accountHead = this.updateAccountDue(accountHead, username);
 			updatedAccounts.add(accountHead);
 		}
 		logger.info("All the order account due amounts has been updated successfully");
 		return updatedAccounts;
 	}
-	
+
 	public AccountHead updateAccountDue(AccountHead accountHead, String username) {
-		BigDecimal dueAmount=accountHead.getDueAmount();
+		BigDecimal dueAmount = accountHead.getDueAmount();
 		accountHead.setDueAmount(null);
-		accountHead=this.accountHeadRepository.findOne(Example.of(accountHead));
-		if(accountHead!=null) {
+		accountHead = this.accountHeadRepository.findOne(Example.of(accountHead));
+		if (accountHead != null) {
 			logger.info("The account for the provided details has been retrieved successfully");
 			accountHead.setDueAmount(accountHead.getDueAmount().add(dueAmount));
 			accountHead.setModifiedBy(username);
 			accountHead.setModifiedDate(LocalDateTime.now());
-			accountHead=this.accountHeadRepository.save(accountHead);
-			if(accountHead!=null) {
+			accountHead = this.accountHeadRepository.save(accountHead);
+			if (accountHead != null) {
 				logger.info("The due amount in account for the provided order has been updated successfully");
 			}
-		}else {
+		} else {
 			logger.info("There is some problem while retrieving order account with provided details");
 		}
-		
+
 		return accountHead;
+
+	}
+
+	@Override
+	@Transactional
+	public AccountHead recordOrderAmount(AccountJournal journalDetails, BigInteger supplierId, Integer locationId, String username) {
+		journalDetails = this.accountJournalRepository.save(journalDetails);
+
+		AccountHead accountHead = this.retrievePaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER, supplierId, locationId);
+		accountHead.setDueAmount(accountHead.getDueAmount().add(journalDetails.getAmount()));
+		accountHead.setModifiedBy(username);
+		accountHead.setModifiedDate(LocalDateTime.now());
 		
+		accountHead=this.accountHeadRepository.save(accountHead);
+		if(accountHead!=null)
+			logger.info("The order amount for the supplier {} has been added to the account successfully", journalDetails.getAccountId());
+		else
+			logger.info("There was some issue while updating order details in Supplier's account");
+
+		return accountHead;
 	}
 
 }

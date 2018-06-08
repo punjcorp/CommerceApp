@@ -256,7 +256,6 @@ public class TransactionTransformer {
 			saleLI.setInvAction(MVCConstants.ADD);
 		}
 			
-
 		
 		saleLI.setUpc(saleLineItem.getItemId().toString());
 
@@ -264,11 +263,10 @@ public class TransactionTransformer {
 		// Change this to multiply with pack item later on
 		saleLI.setGrossQty(saleLineItem.getQty());
 		saleLI.setDiscountAmt(saleLineItem.getDiscount());
-		saleLI.setUnitPrice(saleLineItem.getPrice());
+		saleLI.setUnitPrice(saleLineItem.getUnitPrice());
 		saleLI.setBaseUnitPrice(saleLI.getUnitPrice());
 		saleLI.setSuggestedPrice(saleLineItem.getSuggestedPrice());
 		saleLI.setMaxRetailPrice(saleLineItem.getMaxRetailPrice());
-		saleLI.setUnitPrice(saleLineItem.getPrice());
 
 		if (saleLineItem.getIgstTax() != null) {
 			saleLI.setTaxAmt(saleLineItem.getIgstTax());

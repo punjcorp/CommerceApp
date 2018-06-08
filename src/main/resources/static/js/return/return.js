@@ -117,7 +117,7 @@ $(function() {
 		}				
 	});	
 	
-	 // use plugins and options as needed, for options, detail see
+	// use plugins and options as needed, for options, detail see
     // http://i18next.com/docs/
     i18next.init({
       lng: current_locale, // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
@@ -130,8 +130,19 @@ $(function() {
               sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
               sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
               sale_txn_validate_tender:'Please select tender for the payment',
-              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00',              
-              return_txn_validate_amount_refund:'The refund amount should be more than 0.00'
+              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00',
+              sale_txn_lbl_qty: 'Quantity',
+              sale_txn_lbl_unit_cost: 'Unit Price',
+              sale_txn_lbl_suggested_price: 'Suggested Price',
+              sale_txn_lbl_mrp: 'Max Retail Price',
+              sale_txn_lbl_discount: 'Discount',
+              sale_txn_lbl_item_price: 'Item Price',
+              sale_txn_lbl_tax: 'Tax',
+              sale_txn_lbl_sgst: 'SGST',
+              sale_txn_lbl_cgst: 'CGST',
+              sale_txn_lbl_igst: 'IGST',
+              sale_txn_lbl_item_total: 'Item Total'
+              
           }
         },
         hi: {
@@ -151,6 +162,7 @@ $(function() {
       jqueryI18next.init(i18next, $);
       
     });	
+	
 	
 	
     /*

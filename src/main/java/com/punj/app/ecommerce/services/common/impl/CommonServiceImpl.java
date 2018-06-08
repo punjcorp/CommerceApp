@@ -477,5 +477,22 @@ public class CommonServiceImpl implements CommonService {
 		}
 		return tenderMap;
 	}
+	
+	@Override
+	public Map<String, Tender> retrieveAllTenderNamesAsMap(Integer locationId) {
+		Map<String, Tender> tenderMap = null;
+
+		List<Tender> tenders = this.retrieveAllTenders(locationId);
+		if (tenders != null && !tenders.isEmpty()) {
+			tenderMap = new HashMap<>();
+			for (Tender tender : tenders) {
+				tenderMap.put(tender.getName(), tender);
+			}
+
+			logger.info("The tender details has been converted into a map successfully ");
+		}
+		return tenderMap;
+	}	
+	
 
 }

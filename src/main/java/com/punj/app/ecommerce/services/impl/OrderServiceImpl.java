@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +27,9 @@ import com.punj.app.ecommerce.domains.order.OrderBill;
 import com.punj.app.ecommerce.domains.order.OrderDTO;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
+import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.order.OrderBillRepository;
 import com.punj.app.ecommerce.repositories.order.OrderItemRepository;
@@ -37,7 +40,9 @@ import com.punj.app.ecommerce.repositories.supplier.SupplierRepository;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.services.PaymentAccountService;
+import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.converter.TxnToAJConverter;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -56,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
 	private OrderSearchRepository orderSearchRepository;
 	private PaymentAccountService paymentService;
 	private InventoryService inventoryService;
+	private CommonService commonService;
 	private OrderItemTaxRepository orderItemTaxRepository;
 
 	@Value("${commerce.list.max.perpage}")
@@ -71,6 +77,15 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	public void setPaymentService(PaymentAccountService paymentService) {
 		this.paymentService = paymentService;
+	}
+
+	/**
+	 * @param commonService
+	 *            the commonService to set
+	 */
+	@Autowired
+	public void setCommonService(CommonService commonService) {
+		this.commonService = commonService;
 	}
 
 	/**
@@ -283,13 +298,13 @@ public class OrderServiceImpl implements OrderService {
 		finalOrders = this.orderRepository.save(finalOrders);
 		if (finalOrders != null && !finalOrders.isEmpty()) {
 			logger.info("All the {} purchase orders has been approved now", finalOrders.size());
-			List<AccountHead> accountHeads = this.getOrderAccounts(finalOrders);
+			/*List<AccountHead> accountHeads = this.getOrderAccounts(finalOrders);
 			accountHeads = this.paymentService.updateAccountsDue(accountHeads, username);
 			if (accountHeads != null && !accountHeads.isEmpty()) {
 				logger.info("All the order accounts has been updated for the due amounts");
 			} else {
 				logger.info("There was some errors while updating order accounts for the due amounts");
-			}
+			}*/
 		}
 
 		return finalOrders;
@@ -324,11 +339,11 @@ public class OrderServiceImpl implements OrderService {
 
 		Order actualOrder = null;
 		actualOrder = this.orderRepository.findOne(orderId);
-		if(actualOrder !=null) {
+		if (actualOrder != null) {
 			actualOrder.setStatus("A");
 			this.orderRepository.save(actualOrder);
 			logger.info("The selected purchase order {} has been approved now ", orderId);
-		}else {
+		} else {
 			logger.info("There was no order found with {} order id", orderId);
 		}
 
@@ -418,9 +433,31 @@ public class OrderServiceImpl implements OrderService {
 
 		this.inventoryService.updateInventory(inventoryDetails);
 		logger.debug("The order items inventory has been updated successfully", orderId);
-
+		
+		AccountJournal accountJournal=this.createAccountJournalUpdates(order);
+		AccountHead accountHead=this.paymentService.recordOrderAmount(accountJournal, new BigInteger(order.getSupplier().getSupplierId().toString()), order.getLocation().getLocationId(), username);
+		if(accountHead!=null)
+			logger.info("The order receive amount has been updated in supplier account successfully.");
+		
 		logger.info("The order {} has been marked as received successfully.", orderId);
 		return order;
+	}
+
+	private AccountJournal createAccountJournalUpdates(Order order) {
+
+		AccountJournal accountJournal = null;
+
+		AccountHead accountHead = this.paymentService.retrievePaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER,
+				new BigInteger(order.getSupplier().getSupplierId().toString()), order.getLocation().getLocationId());
+
+		if (accountHead != null) {
+			Map<String, Tender> tenderDetails = this.commonService.retrieveAllTenderNamesAsMap(order.getLocation().getLocationId());
+			Tender cashTender = tenderDetails.get(ServiceConstants.TENDER_CASH);
+			accountJournal = TxnToAJConverter.convertReceiveOrderAmounts(order, accountHead.getAccountId(), cashTender.getTenderId());
+			logger.info("The order {} has been transformed into account journal details.", order.getOrderId());
+		}
+
+		return accountJournal;
 	}
 
 	private List<ItemStockJournal> createStockDetails(Order order, List<OrderItem> orderItems, String username) {
@@ -514,6 +551,11 @@ public class OrderServiceImpl implements OrderService {
 
 			this.updateItemPriceUpdates(orderItems, orderId, username);
 			logger.info("The order item price updates has been completed successfully.");
+
+			AccountJournal accountJournal=this.createAccountJournalUpdates(order);
+			AccountHead accountHead=this.paymentService.recordOrderAmount(accountJournal, new BigInteger(order.getSupplier().getSupplierId().toString()), order.getLocation().getLocationId(), username);
+			if(accountHead!=null)
+				logger.info("The order receive amount has been updated in supplier account successfully.");			
 			
 			
 			logger.info("The order {} receive process is completed successfully.", orderId);
@@ -524,19 +566,18 @@ public class OrderServiceImpl implements OrderService {
 		return order;
 	}
 
-	private void updateItemPriceUpdates(List<OrderItem> orderItems,BigInteger orderId, String username) {
+	private void updateItemPriceUpdates(List<OrderItem> orderItems, BigInteger orderId, String username) {
 		Item item = null;
 		ItemOptions itemOptions = null;
-		
-		BigDecimal suggestedPrice=null;
-		BigDecimal maxRetailPrice=null;
-		
+
+		BigDecimal suggestedPrice = null;
+		BigDecimal maxRetailPrice = null;
+
 		for (OrderItem orderItem : orderItems) {
-			suggestedPrice=orderItem.getActualSuggestedPrice();
-			maxRetailPrice=orderItem.getActualMaxRetailPrice();
+			suggestedPrice = orderItem.getActualSuggestedPrice();
+			maxRetailPrice = orderItem.getActualMaxRetailPrice();
 			item = this.itemRepository.findOne(orderItem.getItemId());
-			if (( suggestedPrice!= null && suggestedPrice.doubleValue() > 0)
-					|| (maxRetailPrice != null && maxRetailPrice.doubleValue() > 0)) {
+			if ((suggestedPrice != null && suggestedPrice.doubleValue() > 0) || (maxRetailPrice != null && maxRetailPrice.doubleValue() > 0)) {
 				itemOptions = item.getItemOptions();
 				if (suggestedPrice.doubleValue() > 0)
 					itemOptions.setSuggestedPrice(suggestedPrice);
@@ -544,12 +585,12 @@ public class OrderServiceImpl implements OrderService {
 					itemOptions.setMaxRetailPrice(maxRetailPrice);
 			}
 			itemOptions.setUnitCost(orderItem.getActualUnitCost());
-			
+
 			item.setModifiedBy(username);
 			item.setModifiedDate(LocalDateTime.now());
-			
+
 			this.itemRepository.save(item);
-			logger.info("The item {} prices has been updated successfully based on the details from order.",item.getItemId(), orderId);
+			logger.info("The item {} prices has been updated successfully based on the details from order.", item.getItemId(), orderId);
 		}
 	}
 

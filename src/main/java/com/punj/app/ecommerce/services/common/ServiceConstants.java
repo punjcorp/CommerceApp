@@ -3,8 +3,6 @@
  */
 package com.punj.app.ecommerce.services.common;
 
-import java.math.BigDecimal;
-
 /**
  * @author admin
  *
@@ -17,35 +15,36 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
-	public static final String RCPT_SALE_STORE="Sale Store Copy";
-	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
-	
-	public static final String ACTION_EXPENSE="Expense";
-	
-	
-	public static final String REASON_REPO_TO_REGISTER="Repository To Register";
-	public static final String REASON_REGISTER_TO_REPO="Register To Repository";
-	public static final String REASON_REGISTER_TO_REGISTER="Register To Register";
-	public static final String REASON_EXPENSE_FROM_REGISTER="Expense From Register";
-	
-	public static final String LEDGER_ACTION_ADD_TO_SAFE="1";
-	public static final String LEDGER_ACTION_SUBTRACT_FROM_SAFE="2";
-	public static final String LEDGER_ACTION_RECEIVE_MONEY_TO_REGISTER="3";
-	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER="4";
-	
-	public static final Integer STYLE_LEVEL=1;
-	public static final Integer ITEM_LEVEL=2;
-	public static final Integer UPC_LEVEL=3;	
-	
+	public static final String RCPT_SALE_STORE = "Sale Store Copy";
+	public static final String RCPT_SALE_CUSTOMER = "Sale Customer Copy";
+
+	public static final String ACTION_EXPENSE = "Expense";
+
+	public static final String TENDER_CASH = "Cash";
+
+	public static final String REASON_REPO_TO_REGISTER = "Repository To Register";
+	public static final String REASON_REGISTER_TO_REPO = "Register To Repository";
+	public static final String REASON_REGISTER_TO_REGISTER = "Register To Register";
+	public static final String REASON_EXPENSE_FROM_REGISTER = "Expense From Register";
+
+	public static final String LEDGER_ACTION_ADD_TO_SAFE = "1";
+	public static final String LEDGER_ACTION_SUBTRACT_FROM_SAFE = "2";
+	public static final String LEDGER_ACTION_RECEIVE_MONEY_TO_REGISTER = "3";
+	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER = "4";
+
+	public static final Integer STYLE_LEVEL = 1;
+	public static final Integer ITEM_LEVEL = 2;
+	public static final Integer UPC_LEVEL = 3;
+
 	public static final String TXN_SEQ = "TX_SEQ";
-	
+
 	public static final String YES_PARAM = "Y";
 	public static final String NO_PARAM = "N";
 
-	public static final String NEXT_LEVEL_CREATED= "C";
-	public static final String NEXT_LEVEL_APPROVED= "A";	
-	public static final String NEXT_LEVEL_NOT_CREATED= "N";
-	
+	public static final String NEXT_LEVEL_CREATED = "C";
+	public static final String NEXT_LEVEL_APPROVED = "A";
+	public static final String NEXT_LEVEL_NOT_CREATED = "N";
+
 	public static final String TXN_STATUS_STARTED = "STARTED";
 	public static final String TXN_STATUS_COMPLETED = "COMPLETED";
 	public static final String TXN_STATUS_SUSPEND = "SUSPENDED";
@@ -55,14 +54,13 @@ public final class ServiceConstants {
 	public static final String TXN_CLOSE_STORE = "CLOSE_STORE";
 	public static final String TXN_OPEN_REGISTER = "OPEN_REGISTER";
 	public static final String TXN_CLOSE_REGISTER = "CLOSE_REGISTER";
-	public static final String TXN_NOSALE= "NOSALE";
+	public static final String TXN_NOSALE = "NOSALE";
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";
 	public static final String TAX_SGST = "SGST";
 	public static final String TAX_CGST = "CGST";
-	public static final String TAX_IGST= "IGST";
-	
+	public static final String TAX_IGST = "IGST";
 
 	public static final String INV_REASON_STKIN = "STKIN";
 	public static final String INV_REASON_STKOUT = "STKOUT";
@@ -93,13 +91,13 @@ public final class ServiceConstants {
 
 	public static final String PAYMENT_FULL = "full";
 	public static final String PAYMENT_PART = "part";
-	public static final String PAYMENT_ADVANCE= "advance";
-	
-	public static final String ACCOUNT_TYPE_SUPPLIER= "SUPPLIER";
-	
-	
-	public static final String PRICE_TYPE_PERMANENT= "1";
-	public static final String PRICE_TYPE_PROMOTION= "2";
-	public static final String PRICE_TYPE_CLEARANCE= "3";
-	
+	public static final String PAYMENT_ADVANCE = "advance";
+	public static final String PAYMENT_DUE = "payment_due";
+
+	public static final String ACCOUNT_TYPE_SUPPLIER = "SUPPLIER";
+
+	public static final String PRICE_TYPE_PERMANENT = "1";
+	public static final String PRICE_TYPE_PROMOTION = "2";
+	public static final String PRICE_TYPE_CLEARANCE = "3";
+
 }

@@ -188,7 +188,9 @@ function getPaymentAccountDetails(event, ui) {
 		success : function(accountDTO) {
 			
 			$('#lbl_dueAmt').text(accountDTO.dueAmt.toFixed(2));
+			$('#dueAmt').val(accountDTO.dueAmt.toFixed(2));
 			$('#lbl_advanceAmt').text(accountDTO.advanceAmt.toFixed(2));
+			$('#advanceAmt').val(accountDTO.advanceAmt.toFixed(2));
 			
 			if(accountDTO.dueAmt> 0 && accountDTO.advanceAmt>0){
 				$('#dueSettleDiv').removeClass('d-none');

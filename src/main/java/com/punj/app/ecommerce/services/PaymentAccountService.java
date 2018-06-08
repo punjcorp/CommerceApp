@@ -24,5 +24,6 @@ public interface PaymentAccountService {
 	public List<AccountHead> updateAccountsDue(List<AccountHead> accountHead, String username);
 	
 	public AccountHead updateAccountDue(AccountHead accountHead, String username);
-	
+
+	public AccountHead recordOrderAmount(AccountJournal journalDetails, BigInteger supplierId, Integer locationId, String username);
 }

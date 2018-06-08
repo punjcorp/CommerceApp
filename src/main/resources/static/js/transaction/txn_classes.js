@@ -62,6 +62,7 @@ var SaleLineItem = function(
 		itemDesc,
 		qty,
 		price,
+		unitPrice,
 		suggestedPrice,
 		maxRetailPrice,
 		discount,
@@ -78,6 +79,7 @@ var SaleLineItem = function(
 		this.itemName = itemName;
 		this.itemDesc = itemDesc;
 		this.qty = qty;
+		this.unitPrice = unitPrice;
 		this.price = price;
 		this.suggestedPrice = suggestedPrice;
 		this.maxRetailPrice = maxRetailPrice;
@@ -95,6 +97,7 @@ var SaleLineItem = function(
 		this.itemName;
 		this.itemDesc;
 		this.qty;
+		this.unitPrice;
 		this.price;
 		this.suggestedPrice;
 		this.maxRetailPrice;
@@ -394,7 +397,7 @@ $.extend(SaleLineItem.prototype, {
 	},
 	renderReturnLineItem : function(saleLineItem) {
 
-		var saleLineItemHtml = '<div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
+		var saleLineItemHtml = '<div id="' + saleLineItem.itemId + 'Container"><div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
 		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
@@ -402,54 +405,139 @@ $.extend(SaleLineItem.prototype, {
 		saleLineItemHtml += saleLineItem.itemName;
 		saleLineItemHtml += '</span></div>';
 
-		var qty = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
+		
+		var qty = '<div class="col-1 padding-sm">';
+		qty += '<label><small> <span>' + i18next.t('sale_txn_lbl_qty') + '</span></small> </label><br />';
+		qty += '<input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
 		qty += saleLineItem.itemId + '" type="number" min="0" value="';
 		qty += saleLineItem.qty;
 		qty += '"></input></div>';
+		
+		
+		var unitPriceAmt = '<div class="col padding-sm">';
+		unitPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_unit_cost') + '</span></small> </label><br />';
+		unitPriceAmt += '<div class="input-group text-left">';
+		unitPriceAmt += '<div class="input-group-prepend">';
+		unitPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
+		unitPriceAmt += '</div>';
+		unitPriceAmt += '<input class="form-control pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		unitPriceAmt += saleLineItem.price.toFixed(2);
+		unitPriceAmt += '"></input></div></div>';
+		unitPriceAmt += '<input id="li_uh_unitPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		unitPriceAmt += saleLineItem.price.toFixed(2);
+		unitPriceAmt += '"></input>';
+		
 
-		var priceAmt = '<div class="col padding-sm"><input class="form-control" id="li_priceAmt' + saleLineItem.itemId
-				+ '" type="number" min="0" step="0.01" value="';
+		var priceAmt = '<div class="row"> <div class="col-4"></div> <div class="col padding-sm text-center">';
+		priceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_item_price') + '</span></small> </label><br />';
+		priceAmt += '<span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span>';
+		priceAmt += '<span id="li_priceAmt' + saleLineItem.itemId + '">';
 		priceAmt += saleLineItem.price.toFixed(2);
-		priceAmt += '" disabled></input></div>';
+		priceAmt += '</span></div>';
 		priceAmt += '<input id="li_uh_priceAmt' + saleLineItem.itemId + '" type="hidden" value="';
 		priceAmt += saleLineItem.price.toFixed(2);
 		priceAmt += '"></input>';
+		
+		
+		
+		var suggestedPriceAmt = '<div class="col padding-sm">';
+		suggestedPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_suggested_price') + '</span></small> </label><br />';
+		suggestedPriceAmt += '<div class="input-group text-left">';
+		suggestedPriceAmt += '<div class="input-group-prepend">';
+		suggestedPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
+		suggestedPriceAmt += '</div>';
+		suggestedPriceAmt += '<input class="form-control pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		suggestedPriceAmt += saleLineItem.suggestedPrice.toFixed(2);
+		suggestedPriceAmt += '" ></input></div></div>';
+		suggestedPriceAmt += '<input id="li_uh_suggestedPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		suggestedPriceAmt += saleLineItem.suggestedPrice.toFixed(2);
+		suggestedPriceAmt += '"></input>';
 
-		var discountAmt = '<div class="col padding-sm"><input class="form-control" onChange="saleItemChanged(this);" id="li_discountAmt';
+		var maxRetailPriceAmt = '<div class="col padding-sm">';
+		maxRetailPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_mrp') + '</span></small> </label><br />';
+		maxRetailPriceAmt += '<div class="input-group text-left">';
+		maxRetailPriceAmt += '<div class="input-group-prepend">';
+		maxRetailPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
+		maxRetailPriceAmt += '</div>';
+		maxRetailPriceAmt += '<input class="form-control pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		maxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
+		maxRetailPriceAmt += '"></input></div></div>';
+		maxRetailPriceAmt += '<input id="li_uh_maxRetailPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		maxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
+		maxRetailPriceAmt += '"></input>';
+		
+		
+		
+		
+		
+		var discountAmt = '<div class="col padding-sm">';
+		discountAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_discount') + '</span></small> </label><br />';
+		discountAmt += '<div class="input-group text-left">';
+		discountAmt += '<div class="input-group-prepend">';
+		discountAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
+		discountAmt += '</div>';
+		discountAmt += '<input class="form-control pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
 		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
-		discountAmt += '"></input></div>';
+		discountAmt += '"></input></div></div>';
 		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
 		discountAmt += '"></input>';
-
-		var sgstTaxAmt = '<div class="col-1 padding-sm">';
-		sgstTaxAmt += '<input class="form-control" id="li_sgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		
+		
+		var sgstTaxAmt = '<div class="col-1 padding-sm text-center">';
+		sgstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_sgst') + '</span></small> </label><br />';
+		sgstTaxAmt += '<span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span>';
+		sgstTaxAmt += '<span id="li_sgstAmt' + saleLineItem.itemId + '">';
 		sgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
-		sgstTaxAmt += '" disabled></input>';
+		sgstTaxAmt += '</span><br/>';
 		sgstTaxAmt += '<label><small><span>(' + saleLineItem.sgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
 		sgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
 		sgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
 		sgstTaxAmt += '"></input>';
 
-		var cgstTaxAmt = '<div class="col-1 padding-sm">';
-		cgstTaxAmt += '<input class="form-control" id="li_cgstAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		var cgstTaxAmt = '<div class="col-1 padding-sm text-center">';
+		cgstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_cgst') + '</span></small> </label><br />';
+		cgstTaxAmt += '<span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span>';
+		cgstTaxAmt += '<span id="li_cgstAmt' + saleLineItem.itemId + '">';
 		cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
-		cgstTaxAmt += '" disabled></input>';
+		cgstTaxAmt += '</span> <br/>';
 		cgstTaxAmt += '<label><small><span>(' + saleLineItem.cgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
 		cgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
 		cgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
-		cgstTaxAmt += '"></input>';
+		cgstTaxAmt += '"></input></div>';	
 
-		var total = '<div class="col-2 form-group padding-sm"><h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
+		
+		var totalTaxRateVal = saleLineItem.sgstTaxRate + saleLineItem.cgstTaxRate;
+		var totalTaxAmtVal = saleLineItem.sgstTax + saleLineItem.cgstTax;
+
+		var itemTaxAmt = '<div class="col padding-sm text-center">';
+		itemTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_tax') + '</span></small> </label><br />';
+		itemTaxAmt += '<span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span>';
+		itemTaxAmt += '<span id="li_itemTaxAmt' + saleLineItem.itemId + '">';
+		itemTaxAmt += totalTaxAmtVal.toFixed(2);
+		itemTaxAmt += '</span> <br/>';
+		itemTaxAmt += '<label><small><span>(' + totalTaxRateVal.toFixed(2) + '%)</span></small></label></div>';
+		itemTaxAmt += '<input id="li_uh_itemTaxRate' + saleLineItem.itemId + '" type="hidden" value="';
+		itemTaxAmt += totalTaxRateVal.toFixed(2);
+		itemTaxAmt += '"></input>';		
+		
+		
+		
+		var total = '<div class="col-2 form-group padding-sm text-center">';
+		total += '<label><small> <span>' + i18next.t('sale_txn_lbl_item_total') + '</span></small> </label><br />';
+		total += '<h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
 		total += i18next.t('common_currency_sign_inr') + ' ' + saleLineItem.itemTotal.toFixed(2);
 		total += '</span><button type="button" id="btnDeleteSLI"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
 		total += '</h5>';
-		total += '</div></div>';
+		total += '</div></div></div>';
 
-		var finalReturnItemHtml = saleLineItemHtml + qty + priceAmt + discountAmt + sgstTaxAmt + cgstTaxAmt + total;
+		
+		
+		var finalReturnItemHtml = saleLineItemHtml + qty + unitPriceAmt + suggestedPriceAmt + maxRetailPriceAmt + sgstTaxAmt + cgstTaxAmt;
+		finalReturnItemHtml += priceAmt + discountAmt + itemTaxAmt + total;
 
 		$('#result').append(finalReturnItemHtml);
 	},
@@ -483,6 +571,7 @@ $.extend(SaleLineItem.prototype, {
 		var itemName = data.name;
 		var itemDesc = data.longDesc;
 		var qty = data.qty;
+		var unitPrice = data.priceAmt;
 		var price = data.priceAmt;
 		var suggestedPrice = data.suggestedPrice;
 		var maxRetailPrice = data.maxRetailPrice;
@@ -523,7 +612,7 @@ $.extend(SaleLineItem.prototype, {
 
 		// calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
-		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, price, suggestedPrice, maxRetailPrice, discount, cgstTax, sgstTax, igstTax,
+		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstTax, sgstTax, igstTax,
 				cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
 
 		/**

@@ -19,7 +19,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class AccountDTO {
 
 	private Integer locationId;
+	private String locationName;
 	private Integer registerId;
+	private String registerName;
 	@JsonFormat(pattern = "dd-MMM-yy HH:mm:ss")
 	private LocalDateTime businessDate;
 	@NotNull(message = "{commerce.error.item.empty}")
@@ -412,6 +414,34 @@ public class AccountDTO {
 	 */
 	public void setPaymentAmt(BigDecimal paymentAmt) {
 		this.paymentAmt = paymentAmt;
+	}
+
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+	/**
+	 * @param locationName the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
+
+	/**
+	 * @return the registerName
+	 */
+	public String getRegisterName() {
+		return registerName;
+	}
+
+	/**
+	 * @param registerName the registerName to set
+	 */
+	public void setRegisterName(String registerName) {
+		this.registerName = registerName;
 	}
 
 }

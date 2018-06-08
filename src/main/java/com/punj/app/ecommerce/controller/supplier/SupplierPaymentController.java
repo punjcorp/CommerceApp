@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.common.web.CommerceConstants;
 import com.punj.app.ecommerce.common.web.CommerceContext;
@@ -106,29 +107,51 @@ public class SupplierPaymentController {
 	}
 
 	@GetMapping(value = ViewPathConstants.SUPPLIER_PAYMENT_URL)
-	public String addSupplier(Model model, HttpSession session) {
+	public String addSupplier(Model model, HttpSession session, RedirectAttributes redirectAttrs) {
 		logger.info("The supplier payment screen pre tasks are in progress");
 		AccountDTO accountDTO = new AccountDTO();
 
 		Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-		LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
-		Integer registerId = (Integer) session.getAttribute(MVCConstants.REGISTER_ID_PARAM);
+		
+		
+		if(openLocationId!=null && openLocationId>0) {
+			LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+			String locationName = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_LOC_NAME);
+			Integer registerId = (Integer) session.getAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM);
+			
+			if(registerId!=null && registerId>0) {
+				String registerName = (String) session.getAttribute(openLocationId + MVCConstants.REG_NAME_PARAM);
+				
+				accountDTO.setBusinessDate(openBusinessDate);
+				accountDTO.setLocationId(openLocationId);
+				accountDTO.setLocationName(locationName);
+				accountDTO.setRegisterId(registerId);
+				accountDTO.setRegisterName(registerName);
+				
+				List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
 
-		accountDTO.setBusinessDate(openBusinessDate);
-		accountDTO.setLocationId(openLocationId);
-		accountDTO.setRegisterId(registerId);
+				String defaultTender = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+				accountDTO.setDefaultTender(defaultTender);
 
-		List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
+				model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
 
-		String defaultTender = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-		accountDTO.setDefaultTender(defaultTender);
+				model.addAttribute(MVCConstants.ACCOUNT_PAYMENT_DTO, accountDTO);
+				logger.info("The supplier payment screen is ready for display");
 
-		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+				return ViewPathConstants.SUPPLIER_PAYMENT_PAGE;
+			}else {
+				logger.info("There is no open register existing as per this session, routing to register open screen");
+				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.SUPPLIER_PAYMENT_URL);
+				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
+			}
 
-		model.addAttribute(MVCConstants.ACCOUNT_PAYMENT_DTO, accountDTO);
-		logger.info("The supplier payment screen is ready for display");
-
-		return ViewPathConstants.SUPPLIER_PAYMENT_PAGE;
+			
+		}else {
+			logger.info("There is no open store existing as per application context, routing to store open screen");
+			redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.SUPPLIER_PAYMENT_URL);
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
+		}
+		
 
 	}
 
