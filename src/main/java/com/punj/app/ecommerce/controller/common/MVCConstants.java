@@ -46,15 +46,18 @@ public final class MVCConstants {
 	
 	
 	
-	
+	public static final String LAST_PAYMENT_NO="LAST_PAYMENT_NO";
 	public static final String LAST_TXN_NO="LAST_TXN_NO";
 	public static final String TXN_ID_PARAM="txnId";
 	public static final String RCPT_PARAM="_RCPT";
+	public static final String PAYMENT_RCPT_PARAM="PAYMENT_RCPT";
+	public static final String PAYMENT_JASPER_PARAM="PAYMENT_JASPER";
 	public static final String RCPT_JASPER_PARAM="_JASPER";
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 	public static final String RCPT_SALE_GIFT="Gift Receipt";
 	public static final String RCPT_NO_SALE="No Sale Receipt";
+	public static final String PAYMENT_ID_PARAM="paymentId";
 	
 	public static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
@@ -168,6 +171,10 @@ public final class MVCConstants {
 	public static final String EXPENSE_RECEIPT_TENDERS_REPORT="/reports/expenses/expense_tenders.jasper";
 	public static final String EXPENSE_TENDER_REPORT_PARAM="EXPENSE_TENDER_REPORT";	
 	
+	public static final String PAYMENT_RECEIPT_REPORT="/reports/supplier/supplier_payment_receipt.jasper";
+	public static final String PAYMENT_RECEIPT_TENDERS_REPORT="/reports/supplier/supplier_payment_tenders.jasper";
+	public static final String PAYMENT_TENDER_REPORT_PARAM="PAYMENT_TENDER_REPORT";
+	
 	
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
@@ -211,7 +218,7 @@ public final class MVCConstants {
 	public static final String MANUAL="MANUAL";
 	public static final String ADD="ADD";
 	public static final String SUBTRACT="SUBTRACT";
-	
+	public static final String SUPPLIER= "SUPPLIER";
 	
 	
 	public static final String PRIMARY_ADDRESS_PARAM="primaryAddress";

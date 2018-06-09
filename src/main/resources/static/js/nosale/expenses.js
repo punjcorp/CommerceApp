@@ -432,7 +432,6 @@ function calculateTotal() {
 }
 
 function postExpenseSave(data) {
-	$('#screenBusyModal').modal('hide');
 	this.txnId.txnNo=data.transactionSeq;
 	this.txnId.uniqueTxnNo=data.uniqueTxnNo;
 	$('#expenseReceiptModal').modal({backdrop: 'static', keyboard: false});

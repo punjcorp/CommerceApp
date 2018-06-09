@@ -117,7 +117,7 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 
 	@Override
 	@Transactional
-	public AccountJournal savePayment(AccountJournal journalDetails, Integer locationId) {
+	public AccountJournal savePayment(AccountJournal journalDetails, Integer locationId, String username) {
 		AccountHead accountHead = this.retrievePaymentAccount("SUPPLIER", new BigInteger(journalDetails.getAccountId().toString()), locationId);
 		journalDetails.setAccountId(accountHead.getAccountId());
 		journalDetails = this.accountJournalRepository.save(journalDetails);
@@ -125,14 +125,16 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 			logger.info("The payment journal details has been successfully saved.");
 			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE)) {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
-				accountHead = this.accountHeadRepository.save(accountHead);
-				logger.info("The payment details has been updated in the account header");
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
-
+				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)) {
-
+				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
 			}
 
+			accountHead.setModifiedBy(username);
+			accountHead.setModifiedDate(LocalDateTime.now());
+			accountHead = this.accountHeadRepository.save(accountHead);
+			logger.info("The payment details has been updated in the account header");
 		} else {
 			logger.info("There was some issue while saving payment details");
 		}
@@ -188,6 +190,16 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		else
 			logger.info("There was some issue while updating order details in Supplier's account");
 
+		return accountHead;
+	}
+
+	@Override
+	public AccountHead retrievePaymentAccount(Integer accountId) {
+		AccountHead accountHead=this.accountHeadRepository.findOne(accountId);
+		if(accountHead!=null)
+			logger.info("The account head details has been retrieved successfully");
+		else
+			logger.info("There was some issue while retrieving Supplier's account");
 		return accountHead;
 	}
 

@@ -3,23 +3,24 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.domains.payment.JournalTender;
 import com.punj.app.ecommerce.domains.payment.ids.JournalTenderId;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.financials.AccountDTO;
+import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.models.financials.AccountJournalBean;
 import com.punj.app.ecommerce.models.financials.JournalTenderBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
@@ -110,6 +111,58 @@ public class SupplierTransformer {
 		return accountDTO;
 	}
 
+	public static AccountJournalBean transformAccountJournalBean(AccountJournal accountJournal, String username, Map<Integer, Tender> tenderMap) {
+		AccountJournalBean journalBean = new AccountJournalBean();
+		journalBean.setAccountId(accountJournal.getAccountId());
+		journalBean.setAmount(accountJournal.getAmount());
+		journalBean.setRemarks(accountJournal.getComments());
+		journalBean.setCreatedBy(accountJournal.getCreatedBy());
+		journalBean.setPrintedBy(journalBean.getCreatedBy());
+		journalBean.setCreatedDate(accountJournal.getCreatedDate());
+		journalBean.setJournalId(accountJournal.getJournalId());
+		journalBean.setJournalType(accountJournal.getJournalType());
+
+		List<JournalTenderBean> journalTenders = SupplierTransformer.transformJournalTender(accountJournal.getJournalTenders(), tenderMap);
+		journalBean.setPaymentTenders(journalTenders);
+
+		logger.info("The account journal details has been transformed successfully");
+
+		return journalBean;
+	}
+
+	public static List<JournalTenderBean> transformJournalTender(List<JournalTender> tenders, Map<Integer, Tender> tenderMap) {
+		List<JournalTenderBean> journalTenderBeans = new ArrayList<>();
+		JournalTenderBean journalTenderBean = null;
+		Tender tender = null;
+		
+		int counter=1;
+		
+		for (JournalTender journalTender : tenders) {
+			journalTenderBean = new JournalTenderBean();
+			tender = tenderMap.get(journalTender.getJournalTenderId().getTenderId());
+			if (tender != null) {
+				journalTenderBean.setTenderId(tender.getTenderId());
+				journalTenderBean.setTenderName(tender.getName());
+			}
+			journalTenderBean.setSeqNo(counter);
+			counter++;
+			
+			journalTenderBean.setAccountNo(journalTender.getAccountNo());
+			journalTenderBean.setTenderAmount(journalTender.getAmount());
+			journalTenderBean.setBankBranch(journalTender.getBankBranch());
+			journalTenderBean.setBankName(journalTender.getBankName());
+			journalTenderBean.setCreatedBy(journalTender.getCreatedBy());
+			journalTenderBean.setCreatedDate(journalTender.getCreatedDate());
+			journalTenderBean.setDescription(journalTender.getDescription());
+
+			journalTenderBeans.add(journalTenderBean);
+
+		}
+
+		logger.info("The journal tender details has been transformed successfully");
+		return journalTenderBeans;
+	}
+
 	public static AccountJournal transformAccountJournal(AccountJournalBean journalBean, String username) {
 		AccountJournal accountJournal = new AccountJournal();
 		accountJournal.setAccountId(journalBean.getAccountId());
@@ -126,6 +179,25 @@ public class SupplierTransformer {
 		logger.info("The account journal details has been transformed successfully");
 
 		return accountJournal;
+	}
+
+	public static AccountHeadBean transformAccountHead(AccountHead accountHead, String entityName) {
+		AccountHeadBean accountHeadBean = new AccountHeadBean();
+		accountHeadBean.setAccountId(accountHead.getAccountId());
+		accountHeadBean.setAdvanceAmt(accountHead.getAdvanceAmount());
+		accountHeadBean.setCreatedBy(accountHead.getCreatedBy());
+		accountHeadBean.setCreatedDate(accountHead.getCreatedDate());
+		accountHeadBean.setDueAmt(accountHead.getDueAmount());
+		accountHeadBean.setEntityId(accountHead.getEntityId());
+		accountHeadBean.setEntityName(entityName);
+		accountHeadBean.setEntityType(accountHead.getEntityType());
+		accountHeadBean.setLocationId(accountHead.getLocationId());
+		accountHeadBean.setModifiedBy(accountHead.getModifiedBy());
+		accountHeadBean.setModifiedDate(accountHead.getModifiedDate());
+
+		logger.info("The account head details has been transformed successfully");
+
+		return accountHeadBean;
 	}
 
 	public static List<JournalTender> transformJournalTender(List<JournalTenderBean> tenderBeans, String username, AccountJournal accountJournal) {

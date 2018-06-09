@@ -287,6 +287,8 @@ public final class ViewPathConstants {
 	 */
 	public static final String PAYMENT_ACCOUNT_DTLS_URL ="/admin/payment_account";
 	public static final String SAVE_PAYMENT_DTLS_URL="admin/save_payment";
+	public static final String PAYMENT_ACCOUNT_VIEW_RECEIPT_URL="/admin/view_payment_receipt";
+	public static final String PAYMENT_ACCOUNT_PRINT_RECEIPT_URL="/admin/print_payment_receipt";
 	
 }
 

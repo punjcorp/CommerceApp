@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.models.financials;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 /**
  * @author admin
@@ -12,8 +13,10 @@ import java.math.BigInteger;
  */
 public class JournalTenderBean {
 
+	private Integer seqNo;
 	private BigInteger journalId;
 	private Integer tenderId;
+	private String tenderName;
 
 	private String name;
 	private BigDecimal tenderAmount;
@@ -24,9 +27,9 @@ public class JournalTenderBean {
 	private String description;
 
 	private String createdBy;
-	private String createdDate;
+	private LocalDateTime createdDate;
 	private String modifiedBy;
-	private String modifiedDate;
+	private LocalDateTime modifiedDate;
 
 	/**
 	 * @return the journalId
@@ -134,21 +137,6 @@ public class JournalTenderBean {
 	}
 
 	/**
-	 * @return the createdDate
-	 */
-	public String getCreatedDate() {
-		return createdDate;
-	}
-
-	/**
-	 * @param createdDate
-	 *            the createdDate to set
-	 */
-	public void setCreatedDate(String createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	/**
 	 * @return the modifiedBy
 	 */
 	public String getModifiedBy() {
@@ -164,21 +152,6 @@ public class JournalTenderBean {
 	}
 
 	/**
-	 * @return the modifiedDate
-	 */
-	public String getModifiedDate() {
-		return modifiedDate;
-	}
-
-	/**
-	 * @param modifiedDate
-	 *            the modifiedDate to set
-	 */
-	public void setModifiedDate(String modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-
-	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -186,7 +159,8 @@ public class JournalTenderBean {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -200,10 +174,71 @@ public class JournalTenderBean {
 	}
 
 	/**
-	 * @param tenderAmount the tenderAmount to set
+	 * @param tenderAmount
+	 *            the tenderAmount to set
 	 */
 	public void setTenderAmount(BigDecimal tenderAmount) {
 		this.tenderAmount = tenderAmount;
+	}
+
+	/**
+	 * @return the seqNo
+	 */
+	public Integer getSeqNo() {
+		return seqNo;
+	}
+
+	/**
+	 * @param seqNo
+	 *            the seqNo to set
+	 */
+	public void setSeqNo(Integer seqNo) {
+		this.seqNo = seqNo;
+	}
+
+	/**
+	 * @return the tenderName
+	 */
+	public String getTenderName() {
+		return tenderName;
+	}
+
+	/**
+	 * @param tenderName
+	 *            the tenderName to set
+	 */
+	public void setTenderName(String tenderName) {
+		this.tenderName = tenderName;
+	}
+
+	/**
+	 * @return the createdDate
+	 */
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	/**
+	 * @param createdDate
+	 *            the createdDate to set
+	 */
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the modifiedDate
+	 */
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	/**
+	 * @param modifiedDate
+	 *            the modifiedDate to set
+	 */
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 
 }

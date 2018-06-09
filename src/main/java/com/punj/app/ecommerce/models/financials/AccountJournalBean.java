@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.models.financials;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,11 +20,12 @@ public class AccountJournalBean {
 
 	private BigDecimal amount;
 
+	private String printedBy;
 	private String createdBy;
-	private String createdDate;
+	private LocalDateTime createdDate;
 	private String modifiedBy;
-	private String modifiedDate;
-	
+	private LocalDateTime modifiedDate;
+
 	private String remarks;
 
 	private List<JournalTenderBean> paymentTenders;
@@ -104,21 +106,6 @@ public class AccountJournalBean {
 	}
 
 	/**
-	 * @return the createdDate
-	 */
-	public String getCreatedDate() {
-		return createdDate;
-	}
-
-	/**
-	 * @param createdDate
-	 *            the createdDate to set
-	 */
-	public void setCreatedDate(String createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	/**
 	 * @return the modifiedBy
 	 */
 	public String getModifiedBy() {
@@ -134,21 +121,6 @@ public class AccountJournalBean {
 	}
 
 	/**
-	 * @return the modifiedDate
-	 */
-	public String getModifiedDate() {
-		return modifiedDate;
-	}
-
-	/**
-	 * @param modifiedDate
-	 *            the modifiedDate to set
-	 */
-	public void setModifiedDate(String modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-
-	/**
 	 * @return the remarks
 	 */
 	public String getRemarks() {
@@ -156,7 +128,8 @@ public class AccountJournalBean {
 	}
 
 	/**
-	 * @param remarks the remarks to set
+	 * @param remarks
+	 *            the remarks to set
 	 */
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
@@ -170,10 +143,56 @@ public class AccountJournalBean {
 	}
 
 	/**
-	 * @param paymentTenders the paymentTenders to set
+	 * @param paymentTenders
+	 *            the paymentTenders to set
 	 */
 	public void setPaymentTenders(List<JournalTenderBean> paymentTenders) {
 		this.paymentTenders = paymentTenders;
+	}
+
+	/**
+	 * @return the printedBy
+	 */
+	public String getPrintedBy() {
+		return printedBy;
+	}
+
+	/**
+	 * @param printedBy
+	 *            the printedBy to set
+	 */
+	public void setPrintedBy(String printedBy) {
+		this.printedBy = printedBy;
+	}
+
+	/**
+	 * @return the createdDate
+	 */
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	/**
+	 * @param createdDate
+	 *            the createdDate to set
+	 */
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the modifiedDate
+	 */
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	/**
+	 * @param modifiedDate
+	 *            the modifiedDate to set
+	 */
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 
 }

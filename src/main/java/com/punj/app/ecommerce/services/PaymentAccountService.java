@@ -16,10 +16,12 @@ import com.punj.app.ecommerce.domains.payment.AccountJournal;
 public interface PaymentAccountService {
 
 	public AccountHead retrievePaymentAccount(String accountType, BigInteger accountId, Integer locationId);
+	
+	public AccountHead retrievePaymentAccount(Integer accountId);
 
 	public List<AccountHead> setupPaymentAccount(String accountType, BigInteger accountId, String username);
 
-	public AccountJournal savePayment(AccountJournal journalDetails, Integer locationId);
+	public AccountJournal savePayment(AccountJournal journalDetails, Integer locationId, String username);
 
 	public List<AccountHead> updateAccountsDue(List<AccountHead> accountHead, String username);
 	

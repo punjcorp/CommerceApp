@@ -32,7 +32,7 @@
 												<button type="submit" value="Search" class="btn btn-info">
 													<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.search}"></span>
 												</button>
-												<a th:if="${items==null or items.items==null or #lists.size(items.items)&lt;1}" href="add_style.html" th:href="@{/add_style}"
+												<a th:if="${items==null or items.items==null or #lists.size(items.items)&lt;1}" href="add_style.html" th:href="@{/admin/add_style}"
 													class="btn btn-success btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
 															data-fa-transform="rotate-180"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 													</span>
@@ -143,7 +143,7 @@
 											th:value="#{commerce.screen.btn.submit.save}" class="btn btn-info btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <input
 											type="button" th:onclick="'submitForm(\'/bulk_item_action?deleteItems=\')'" id="btnDelete" value="Delete"
 											th:value="#{commerce.screen.btn.submit.delete}" class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled"></input> <a
-											href="add_style.html" th:href="@{/add_style}" class="btn btn-success btn-sm"><span th:text="#{commerce.screen.btn.submit.add.style}">Add
+											href="add_style.html" th:href="@{/admin/add_style}" class="btn btn-success btn-sm"><span th:text="#{commerce.screen.btn.submit.add.style}">Add
 												Style</span></a>
 									</div>
 								</div>

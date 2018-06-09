@@ -98,6 +98,7 @@ $(function() {
 	});
 
 	$('#btnSavePayment').click(function() {
+		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		if (validatePaymentDetails()) {
 			readPaymentDetails();
@@ -135,7 +136,25 @@ function viewPaymentReceipt() {
 
 
 function printPaymentReceipt() {
-	window.location.href = newOrderURL;
+	var token = $("meta[name='_csrf']").attr("content");
+	var formdata = JSON.stringify(txnId);
+	// AJAX call here and refresh the sell item page with receipt printing
+	$.ajax({
+		url : print_rcpt_url,
+		type : 'POST',
+		cache : false,
+		data : formdata,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			startNewPayment();
+		},
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});
+	
+	
 }
 
 
@@ -510,9 +529,17 @@ function readPaymentDetails() {
 
 }
 
-function postPaymentSave(){
-	$('#paymentReceiptModal').modal({
-		backdrop : 'static',
-		keyboard : false
-	});
+function postPaymentSave(data){
+	if(data!='undefined' && data.journalId!='undefined' && data.journalId>0){
+		
+		txn_paymentId=data.journalId;
+		$('#paymentReceiptModal').modal({
+			backdrop : 'static',
+			keyboard : false
+		});	
+		$('#screenBusyModal').modal('hide');
+	}else{
+		alert('There is some error while saving the payment details');
+	}
+
 }
