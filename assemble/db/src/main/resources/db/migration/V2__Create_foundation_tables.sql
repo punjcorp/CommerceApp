@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`location` (
   `created_by` VARCHAR(50) NOT NULL,
   `modified_date` DATETIME NULL,
   `modified_by` VARCHAR(50) NULL,
+  `gst_no` VARCHAR(20) NULL,
   PRIMARY KEY (`location_id`))
 ENGINE = InnoDB;
 

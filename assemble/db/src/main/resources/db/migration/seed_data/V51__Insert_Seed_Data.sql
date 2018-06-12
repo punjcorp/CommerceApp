@@ -312,24 +312,24 @@ INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `crea
 -- Seed data for user
 -- -----------------------------------------------------
 insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
-values('admin@gmail.com', 'admin', 'admin', '8847523677', '8968834880', 'admin@gmail.com', '0', 'A', 'admin', '2018-01-16 20:19:09');
+values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 'A', 'admin', '2018-01-16 20:19:09');
 insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
-values('cashier@gmail.com', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier@gmail.com', '0', 'A', 'admin', '2018-01-16 20:19:09');
+values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 'A', 'admin', '2018-01-16 20:19:09');
 
 
 -- -----------------------------------------------------
 -- Seed data for user_password
 -- -----------------------------------------------------
 insert into commercedb.user_password( username, password, modified_by, modified_date, `status`)
-values('admin@gmail.com', '$2a$10$IWjH12W2tgjFRcfEGWgFBekSZwfiFnJTkCk9vwct05CoTU5ZArOrO', 'admin', '2018-01-22 19:40:52', 'A');
+values('admin', '$2a$10$IWjH12W2tgjFRcfEGWgFBekSZwfiFnJTkCk9vwct05CoTU5ZArOrO', 'admin', '2018-01-22 19:40:52', 'A');
 insert into commercedb.user_password( username, password, modified_by, modified_date, `status`)
-values('cashier@gmail.com', '$2a$10$iHH8hs7bMG.7ud5.DdCMteuxwXZRNikGUYuySm4r5drTBkTsVC7B2', 'admin', '2018-01-22 19:40:52', 'A');
+values('cashier', '$2a$10$iHH8hs7bMG.7ud5.DdCMteuxwXZRNikGUYuySm4r5drTBkTsVC7B2', 'admin', '2018-01-22 19:40:52', 'A');
 
 -- -----------------------------------------------------
 -- Seed data for user role
 -- -----------------------------------------------------
-INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin@gmail.com', '1', '7997', 'admin', now(), now(), now());
-INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier@gmail.com', '2', '7997', 'admin', now(), now(), now());
+INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', '7997', 'admin', now(), now(), now());
+INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', '7997', 'admin', now(), now(), now());
 
 -- -----------------------------------------------------
 -- Seed data for user addresses
@@ -340,10 +340,10 @@ insert into commercedb.address_master ( `primary`, address_type, address1, addre
 values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
 
 insert into commercedb.user_address ( username, address_id)
-values('admin@gmail.com', '1');
+values('admin', '1');
 
 insert into commercedb.user_address ( username, address_id)
-values('cashier@gmail.com', '2');
+values('cashier', '2');
 
 
 

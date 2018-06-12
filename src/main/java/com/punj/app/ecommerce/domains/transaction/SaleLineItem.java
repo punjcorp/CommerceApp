@@ -52,6 +52,9 @@ public class SaleLineItem implements Serializable {
 
 	@Column(name = "upc_no")
 	private String upc;
+	@Column(name = "hsn_no")
+	private String hsnNo;
+
 	@Column(name = "txn_type")
 	private String txnType;
 	@Column(name = "inv_action_code")
@@ -588,6 +591,21 @@ public class SaleLineItem implements Serializable {
 	 */
 	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
 		this.maxRetailPrice = maxRetailPrice;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 	/*

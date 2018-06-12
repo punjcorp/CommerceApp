@@ -64,6 +64,13 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Phone: "+$F{locationDetails}.getTelephone1()+", Email: " +$F{locationDetails}.getEmail()]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="-8" y="33" width="150" height="11" uuid="56642454-8dd1-4ae0-b433-2a7e05a11f05"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["GSTIN: "+$F{locationDetails}.getGstNo()]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

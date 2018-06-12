@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_item` (
   `gross_amount` DECIMAL(12,2) NULL,
   `returned_qty` INT(5) NULL,
   `upc_no` VARCHAR(20) NULL,
+  `hsn_no` VARCHAR(20) NULL,
   `txn_type` VARCHAR(20) NULL,
   `inv_action_code` VARCHAR(20) NULL,
   `org_location_id` INT(4) NULL,

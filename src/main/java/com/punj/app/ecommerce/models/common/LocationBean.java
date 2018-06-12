@@ -33,6 +33,8 @@ public class LocationBean {
 
 	private String defaultTender;
 
+	private String gstNo;
+
 	private LocalDateTime lastBusinessDate;
 	private LocalDateTime lastCreatedDate;
 	private String lastStatus;
@@ -321,6 +323,21 @@ public class LocationBean {
 	 */
 	public void setDefaultTender(String defaultTender) {
 		this.defaultTender = defaultTender;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 }

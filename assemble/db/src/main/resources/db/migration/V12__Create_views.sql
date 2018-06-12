@@ -143,7 +143,7 @@ VIEW `commercedb`.`v_receipt_li_item` AS
         `itm`.`long_desc` AS `long_desc`,
         `li_itm`.`seq_no` AS `seq_no`,
         `li_itm`.`upc_no` AS `upc_no`,
-        `li_itm`.`upc_no` AS `hsn_no`,
+        `itmopt`.`hsn_no` AS `hsn_no`,
         `li_itm`.`qty` AS `qty`,
         `li_itm`.`unit_price` AS `unit_price`,
         `li_itm`.`extended_amount` AS `extended_amount`,
@@ -168,8 +168,9 @@ VIEW `commercedb`.`v_receipt_li_item` AS
         `tax_dtl`.`IGST_percentage` AS `IGST_percentage`,
         `tax_dtl`.`IGST_amount` AS `IGST_amount`
     FROM
-        ((`commercedb`.`txn_li_item` `li_itm`
+        (((`commercedb`.`txn_li_item` `li_itm`
         JOIN `commercedb`.`item` `itm`)
+        JOIN `commercedb`.`item_options` `itmopt`)
         JOIN (SELECT 
             `li_tax`.`location_id` AS `location_id`,
                 `li_tax`.`register` AS `register`,
@@ -222,6 +223,7 @@ VIEW `commercedb`.`v_receipt_li_item` AS
         ((`li_itm`.`item_id` = `itm`.`item_id`)
             AND (`li_itm`.`location_id` = `tax_dtl`.`location_id`)
             AND (`li_itm`.`register` = `tax_dtl`.`register`)
+            AND (`itm`.`item_id` = `itmopt`.`item_id`)
             AND (`li_itm`.`business_date` = `tax_dtl`.`business_date`)
             AND (`li_itm`.`txn_no` = `tax_dtl`.`txn_no`)
             AND (`li_itm`.`item_id` = `tax_dtl`.`item_id`));

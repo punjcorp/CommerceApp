@@ -86,7 +86,7 @@
 				<textElement markup="html">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{itemId}+" - "+$F{itemName}+"<br>"+$F{upcNo}+" - "+$F{longDesc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{itemId}+" - "+$F{itemName}+"<br>"+$F{hsnNo}+" - "+$F{longDesc}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="213" y="2" width="54" height="11" uuid="ea8e9dce-3df0-44b8-ade5-eae75aca5933"/>

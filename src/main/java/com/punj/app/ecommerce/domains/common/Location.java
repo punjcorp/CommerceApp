@@ -64,6 +64,9 @@ public class Location implements Serializable {
 	@Column(name = "email_address")
 	private String email;
 
+	@Column(name = "gst_no")
+	private String gstNo;
+
 	/**
 	 * @return the locationId
 	 */
@@ -392,6 +395,21 @@ public class Location implements Serializable {
 	 */
 	public void setDefaultTender(String defaultTender) {
 		this.defaultTender = defaultTender;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 	/*

@@ -274,7 +274,7 @@ public final class ViewPathConstants {
 	public static final String TXN_EXPENSE_URL="/pos/expenses";
 	public static final String TXN_EXPENSE_VIEW_RECEIPT_URL="/pos/view_expense_receipt";
 	public static final String TXN_EXPENSE_PRINT_RECEIPT_URL="/pos/print_expense_receipt";
-	public static final String TXN_EXPENSE_PAGE="/nosale/expenses";
+	public static final String TXN_EXPENSE_PAGE="nosale/expenses";
 	
 
 	
