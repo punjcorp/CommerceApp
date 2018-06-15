@@ -112,6 +112,7 @@ var SaleLineItem = function(
 		this.itemImage;
 	}
 	this.seqNo;
+	this.discountPct;
 	this.taxLineItems = new Array();
 }
 
@@ -196,42 +197,62 @@ $.extend(SaleLineItem.prototype, {
 		$('#li_uh_priceAmt' + itemId).val(itemPrice);
 	},
 	calculateSaleLineItemDiscount : function(itemId) {
+		
+		var discountType= $('#discountType' + itemId).val();
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
 		var itemPrice = +$('#li_uh_priceAmt' + itemId).val();
 		if (txn_type == 'R')
 			itemPrice = itemPrice * -1;
-		if (discountAmt < itemPrice && txn_type == 'R') {
-			$('#li_discountAmt' + itemId).val(0.00);
-			alert(i18next.t('sale_txn_validate_exceed_discount'));
-		} else if (discountAmt > itemPrice && txn_type != 'R') {
-			$('#li_discountAmt' + itemId).val(0.00);
-			alert(i18next.t('sale_txn_validate_exceed_discount'));
-		} else {
-			$('#li_discountAmt' + itemId).val(discountAmt.toFixed(2));
+		
+		if(discountType=='percent'){
+			var calculatedDiscountAmt=(itemPrice * discountAmt)/100;
+			if (txn_type == 'R')
+				calculatedDiscountAmt = calculatedDiscountAmt * -1;
+			calculatedDiscountAmt=calculatedDiscountAmt.toFixed(2);
+			$('#li_uh_discountAmt' + itemId).val(calculatedDiscountAmt);
+		}else if(discountType=='amount') {
+			if (discountAmt < itemPrice && txn_type == 'R') {
+				$('#li_discountAmt' + itemId).val(0.00);
+				alert(i18next.t('sale_txn_validate_exceed_discount'));
+			} else if (discountAmt > itemPrice && txn_type != 'R') {
+				$('#li_discountAmt' + itemId).val(0.00);
+				alert(i18next.t('sale_txn_validate_exceed_discount'));
+			} else {
+				$('#li_discountAmt' + itemId).val(discountAmt.toFixed(2));
+				$('#li_uh_discountAmt' + itemId).val(discountAmt.toFixed(2));
+			}
 		}
-
+		
 	},
 	calculateSaleLineItemTax : function(itemId) {
-		var qty = +$('#li_qty' + itemId).val();
-		this.qty = qty;
 
-		var discountAmt = +$('#li_discountAmt' + itemId).val();
+		var discountAmt = +$('#li_uh_discountAmt' + itemId).val();
 
 		var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
 		var itemPrice = +$('#li_uh_priceAmt' + itemId).val();
 
-		var sgstTaxAmt = (itemPrice - discountAmt) * sgstUnitTax / 100;
-		if (txn_type == 'R')
+		var sgstTaxAmt = 0;
+		if (txn_type == 'R'){
+			sgstTaxAmt = (itemPrice + discountAmt) * sgstUnitTax / 100;
 			sgstTaxAmt = sgstTaxAmt * -1;
+		}else{
+			sgstTaxAmt = (itemPrice - discountAmt) * sgstUnitTax / 100;
+		}
+			
 
 		sgstTaxAmt = sgstTaxAmt.toFixed(2);
 		$('#li_sgstAmt' + itemId).text(sgstTaxAmt);
 
 		var cgstUnitTax = $('#li_uh_cgstRate' + itemId).val();
-		var cgstTaxAmt = (itemPrice - discountAmt) * cgstUnitTax / 100;
+		var cgstTaxAmt = 0;
 
-		if (txn_type == 'R')
+		if (txn_type == 'R'){
+			cgstTaxAmt = (itemPrice + discountAmt) * cgstUnitTax / 100;
 			cgstTaxAmt = cgstTaxAmt * -1;
+		}else{
+			cgstTaxAmt = (itemPrice - discountAmt) * cgstUnitTax / 100;
+		}
+			
 		cgstTaxAmt = cgstTaxAmt.toFixed(2);
 		$('#li_cgstAmt' + itemId).text(cgstTaxAmt);
 		
@@ -242,7 +263,19 @@ $.extend(SaleLineItem.prototype, {
 		
 	},
 	calculateSaleLineItemTotal : function(itemId) {
-		var discountAmt = +$('#li_discountAmt' + itemId).val();
+		var qty = +$('#li_qty' + itemId).val();
+		this.qty = qty;
+		
+		var unitPrice = $('#li_unitPriceAmt' + itemId).val();
+		this.unitPrice=unitPrice;
+		
+		var discountType = $('#li_discountType' + itemId).val();
+		if(discountType=='percent'){
+			var discountPct = +$('#li_discountAmt' + itemId).val();
+			this.discountPct = discountPct;
+		}
+		
+		var discountAmt = +$('#li_uh_discountAmt' + itemId).val();
 		this.discount = discountAmt;
 
 		var sgstTaxAmt = +$('#li_sgstAmt' + itemId).text();
@@ -276,7 +309,7 @@ $.extend(SaleLineItem.prototype, {
 
 		var qty = '<div class="col-1 padding-sm">';
 		qty += '<label><small> <span>' + i18next.t('sale_txn_lbl_qty') + '</span></small> </label><br />';
-		qty += '<input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
+		qty += '<input class="form-control form-control-sm " onChange="saleItemChanged(this);" id="li_qty';
 		qty += saleLineItem.itemId + '" type="number" min="0" value="';
 		qty += saleLineItem.qty;
 		qty += '"></input></div>';
@@ -284,10 +317,7 @@ $.extend(SaleLineItem.prototype, {
 		var unitPriceAmt = '<div class="col padding-sm">';
 		unitPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_unit_cost') + '</span></small> </label><br />';
 		unitPriceAmt += '<div class="input-group text-left">';
-		unitPriceAmt += '<div class="input-group-prepend">';
-		unitPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		unitPriceAmt += '</div>';
-		unitPriceAmt += '<input class="form-control pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		unitPriceAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		unitPriceAmt += saleLineItem.price.toFixed(2);
 		unitPriceAmt += '"></input></div></div>';
 		unitPriceAmt += '<input id="li_uh_unitPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -307,10 +337,7 @@ $.extend(SaleLineItem.prototype, {
 		var suggestedPriceAmt = '<div class="col padding-sm">';
 		suggestedPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_suggested_price') + '</span></small> </label><br />';
 		suggestedPriceAmt += '<div class="input-group text-left">';
-		suggestedPriceAmt += '<div class="input-group-prepend">';
-		suggestedPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		suggestedPriceAmt += '</div>';
-		suggestedPriceAmt += '<input class="form-control pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		suggestedPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		suggestedPriceAmt += saleLineItem.suggestedPrice.toFixed(2);
 		suggestedPriceAmt += '" ></input></div></div>';
 		suggestedPriceAmt += '<input id="li_uh_suggestedPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -320,10 +347,7 @@ $.extend(SaleLineItem.prototype, {
 		var maxRetailPriceAmt = '<div class="col padding-sm">';
 		maxRetailPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_mrp') + '</span></small> </label><br />';
 		maxRetailPriceAmt += '<div class="input-group text-left">';
-		maxRetailPriceAmt += '<div class="input-group-prepend">';
-		maxRetailPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		maxRetailPriceAmt += '</div>';
-		maxRetailPriceAmt += '<input class="form-control pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		maxRetailPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		maxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
 		maxRetailPriceAmt += '"></input></div></div>';
 		maxRetailPriceAmt += '<input id="li_uh_maxRetailPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -333,13 +357,17 @@ $.extend(SaleLineItem.prototype, {
 		var discountAmt = '<div class="col padding-sm">';
 		discountAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_discount') + '</span></small> </label><br />';
 		discountAmt += '<div class="input-group text-left">';
-		discountAmt += '<div class="input-group-prepend">';
-		discountAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		discountAmt += '</div>';
-		discountAmt += '<input class="form-control pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
+		discountAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
 		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
-		discountAmt += '"></input></div></div>';
+		discountAmt += '"></input>';
+		
+		discountAmt += '<select class="form-control form-control-sm" onChange="saleItemChanged(this);" id="discountType'+saleLineItem.itemId + '">';
+		discountAmt += '<option value="percent" selected>'+i18next.t('sale_txn_lbl_discount_percent')+'</option>';
+		discountAmt += '<option value="amount">'+i18next.t('sale_txn_lbl_discount_amount')+'</option>';
+		discountAmt += '</select>';
+		
+		discountAmt += '</div></div>';
 		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
 		discountAmt += '"></input>';
@@ -408,7 +436,7 @@ $.extend(SaleLineItem.prototype, {
 		
 		var qty = '<div class="col-1 padding-sm">';
 		qty += '<label><small> <span>' + i18next.t('sale_txn_lbl_qty') + '</span></small> </label><br />';
-		qty += '<input class="form-control" onChange="saleItemChanged(this);" id="li_qty';
+		qty += '<input class="form-control form-control-sm " onChange="saleItemChanged(this);" id="li_qty';
 		qty += saleLineItem.itemId + '" type="number" min="0" value="';
 		qty += saleLineItem.qty;
 		qty += '"></input></div>';
@@ -417,10 +445,7 @@ $.extend(SaleLineItem.prototype, {
 		var unitPriceAmt = '<div class="col padding-sm">';
 		unitPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_unit_cost') + '</span></small> </label><br />';
 		unitPriceAmt += '<div class="input-group text-left">';
-		unitPriceAmt += '<div class="input-group-prepend">';
-		unitPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		unitPriceAmt += '</div>';
-		unitPriceAmt += '<input class="form-control pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		unitPriceAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		unitPriceAmt += saleLineItem.price.toFixed(2);
 		unitPriceAmt += '"></input></div></div>';
 		unitPriceAmt += '<input id="li_uh_unitPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -443,10 +468,7 @@ $.extend(SaleLineItem.prototype, {
 		var suggestedPriceAmt = '<div class="col padding-sm">';
 		suggestedPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_suggested_price') + '</span></small> </label><br />';
 		suggestedPriceAmt += '<div class="input-group text-left">';
-		suggestedPriceAmt += '<div class="input-group-prepend">';
-		suggestedPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		suggestedPriceAmt += '</div>';
-		suggestedPriceAmt += '<input class="form-control pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		suggestedPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		suggestedPriceAmt += saleLineItem.suggestedPrice.toFixed(2);
 		suggestedPriceAmt += '" ></input></div></div>';
 		suggestedPriceAmt += '<input id="li_uh_suggestedPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -456,10 +478,7 @@ $.extend(SaleLineItem.prototype, {
 		var maxRetailPriceAmt = '<div class="col padding-sm">';
 		maxRetailPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_mrp') + '</span></small> </label><br />';
 		maxRetailPriceAmt += '<div class="input-group text-left">';
-		maxRetailPriceAmt += '<div class="input-group-prepend">';
-		maxRetailPriceAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		maxRetailPriceAmt += '</div>';
-		maxRetailPriceAmt += '<input class="form-control pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		maxRetailPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		maxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
 		maxRetailPriceAmt += '"></input></div></div>';
 		maxRetailPriceAmt += '<input id="li_uh_maxRetailPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -473,13 +492,17 @@ $.extend(SaleLineItem.prototype, {
 		var discountAmt = '<div class="col padding-sm">';
 		discountAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_discount') + '</span></small> </label><br />';
 		discountAmt += '<div class="input-group text-left">';
-		discountAmt += '<div class="input-group-prepend">';
-		discountAmt += '<span class="input-group-text"><span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span></span>';
-		discountAmt += '</div>';
-		discountAmt += '<input class="form-control pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
+		discountAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
 		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
-		discountAmt += '"></input></div></div>';
+		discountAmt += '"></input>';
+		
+		discountAmt += '<select class="form-control form-control-sm" onChange="saleItemChanged(this);" id="discountType'+saleLineItem.itemId + '">';
+		discountAmt += '<option value="percent" selected>'+i18next.t('sale_txn_lbl_discount_percent')+'</option>';
+		discountAmt += '<option value="amount">'+i18next.t('sale_txn_lbl_discount_amount')+'</option>';
+		discountAmt += '</select>';
+		
+		discountAmt += '</div></div>';
 		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
 		discountAmt += '"></input>';

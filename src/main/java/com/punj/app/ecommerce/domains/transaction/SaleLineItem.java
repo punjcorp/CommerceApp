@@ -35,6 +35,8 @@ public class SaleLineItem implements Serializable {
 	private BigDecimal extendedAmt;
 	@Column(name = "discount_amount")
 	private BigDecimal discountAmt;
+	@Column(name = "discount_percentage")
+	private BigDecimal discountPct;
 	@Column(name = "tax_amount")
 	private BigDecimal taxAmt;
 
@@ -606,6 +608,20 @@ public class SaleLineItem implements Serializable {
 	 */
 	public void setHsnNo(String hsnNo) {
 		this.hsnNo = hsnNo;
+	}
+
+	/**
+	 * @return the discountPct
+	 */
+	public BigDecimal getDiscountPct() {
+		return discountPct;
+	}
+
+	/**
+	 * @param discountPct the discountPct to set
+	 */
+	public void setDiscountPct(BigDecimal discountPct) {
+		this.discountPct = discountPct;
 	}
 
 	/*

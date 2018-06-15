@@ -124,7 +124,7 @@ $(function() {
       resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
         en: {
           translation: {
-              common_currency_sign_inr: 'INR',
+              common_currency_sign_inr: '₹',
               sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
               sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
               sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
@@ -141,7 +141,9 @@ $(function() {
               sale_txn_lbl_sgst: 'SGST',
               sale_txn_lbl_cgst: 'CGST',
               sale_txn_lbl_igst: 'IGST',
-              sale_txn_lbl_item_total: 'Item Total'
+              sale_txn_lbl_item_total: 'Item Total',
+              sale_txn_lbl_discount_percent: '%',
+              sale_txn_lbl_discount_amount: '₹'
               
           }
         },

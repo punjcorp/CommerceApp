@@ -85,6 +85,7 @@ public class SaleLineItem {
 	 * This section is for tax and discount information this might be changes to different classes later on
 	 */
 	private BigDecimal discount;
+	private BigDecimal discountPct;
 	private BigDecimal sgstTax;
 	private BigDecimal cgstTax;
 	private BigDecimal igstTax;
@@ -840,6 +841,20 @@ public class SaleLineItem {
 	 */
 	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
 		this.maxRetailPrice = maxRetailPrice;
+	}
+
+	/**
+	 * @return the discountPct
+	 */
+	public BigDecimal getDiscountPct() {
+		return discountPct;
+	}
+
+	/**
+	 * @param discountPct the discountPct to set
+	 */
+	public void setDiscountPct(BigDecimal discountPct) {
+		this.discountPct = discountPct;
 	}
 
 }

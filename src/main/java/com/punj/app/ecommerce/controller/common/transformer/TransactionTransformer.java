@@ -263,6 +263,7 @@ public class TransactionTransformer {
 		// Change this to multiply with pack item later on
 		saleLI.setGrossQty(saleLineItem.getQty());
 		saleLI.setDiscountAmt(saleLineItem.getDiscount());
+		saleLI.setDiscountPct(saleLineItem.getDiscountPct());
 		saleLI.setUnitPrice(saleLineItem.getUnitPrice());
 		saleLI.setBaseUnitPrice(saleLI.getUnitPrice());
 		saleLI.setSuggestedPrice(saleLineItem.getSuggestedPrice());

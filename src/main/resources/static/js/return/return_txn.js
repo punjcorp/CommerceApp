@@ -79,7 +79,7 @@ $.extend(TxnAction.prototype, {
 				totalAmtText = +totalAmtText.replace(i18next.t('common_currency_sign_inr')+' ', '');
 				totalAmt += totalAmtText;
 			}
-			if (this.id.indexOf("li_discountAmt") >= 0) {
+			if (this.id.indexOf("li_uh_discountAmt") >= 0) {
 				totalDiscount += +$(this).val();
 			}
 			if (this.id.indexOf("li_priceAmt") >= 0) {
