@@ -229,6 +229,7 @@ public final class MVCConstants {
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
+	public static final String CUSTOMER_BEAN= "customerBean";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
 	public static final String ROLE_BEANS= "roles";

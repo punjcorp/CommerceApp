@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_li_item` (
   `suggested_price` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `max_retail_price` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `discount_amount` DECIMAL(12,2) NOT NULL,
+  `discount_percentage` DECIMAL(12,2) NULL,
   `extended_amount` DECIMAL(12,2) NOT NULL,
   `tax_amount` DECIMAL(12,2) NOT NULL,
   `return_flag` TINYINT NOT NULL,

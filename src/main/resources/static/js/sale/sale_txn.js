@@ -11,6 +11,7 @@ var TxnAction = function() {
 	this.txnHeader = new TransactionHeader();
 	this.saleLineItem = new SaleLineItem();
 	this.tenderLineItem = new TenderLineItem();
+	this.customer = new Customer();
 	
 	this.saleItemList = new Array();
 	this.tenderLineItems = new Array();
@@ -38,6 +39,12 @@ $.extend(TxnAction.prototype, {
 			// Check when we need to add this to list it should be after successful render as per my understanding
 			this.saleItemList.push(actualSaleItem);
 			this.renderHeaderTotals();
+			
+			if(this.saleItemList.length>0)
+				$('#tenderOptionsContainer').removeClass('d-none');
+			else
+				$('#tenderOptionsContainer').addClass('d-none');
+			
 		}
 	},
 	deleteSaleItemInList : function(removeItemId, totalDueAmt) {
@@ -48,6 +55,11 @@ $.extend(TxnAction.prototype, {
 		this.saleLineItem.obscureSaleLineItem(removeItemId);
 		this.removeAllTenderItems(totalDueAmt);
 		this.renderHeaderTotals();
+		if(this.saleItemList.length>0)
+			$('#tenderOptionsContainer').removeClass('d-none');
+		else
+			$('#tenderOptionsContainer').addClass('d-none');
+		
 	},
 	reCalculateSaleItemAmounts: function(cntl, itemId) {
 		if (this.saleLineItem.validateSaleLineItem(cntl, itemId)){
@@ -62,7 +74,19 @@ $.extend(TxnAction.prototype, {
 		}
 
 	},	
-	
+	associateCustomer: function(customerId,customerType,customerName,customerPhone,customerEmail){
+		this.customer.customerId=customerId;
+		this.customer.name=customerName;
+		this.customer.phone=customerPhone;
+		this.customer.email=customerEmail;
+		this.customer.customerType=customerType;
+		
+		if(customerName!='undefined' && customerName!=''){
+			$('#salesHeaderCustomer').text(customerName);
+			$('#customerHeader').removeClass('d-none');
+		}
+		
+	},
 	renderHeaderTotals : function() {
 		var totalAmt = 0.00;
 		var totalDiscount = 0.00;
@@ -177,6 +201,27 @@ $.extend(TxnAction.prototype, {
 		}
 
 	},
+	validateCreditTender : function(){
+		
+		var tenderRadio = $('input[name="tenderRadio"]');
+		var tenderId = tenderRadio.filter(':checked').val();
+		var tenderName=$('#'+tenderId+'tenderName').val();
+		
+		if(tenderName!=undefined && tenderName=='Credit'){
+			if(this.customer.name==undefined || this.customer.name==''){
+				alert('The customer details are needed for selecting Credit Tender!!');
+				return false;
+				
+			}else{
+				return true;
+			}
+		}
+		else{
+			return true;
+		}
+		
+		
+	},
 	calculateDue : function(tenderEnteredAmt, totalDueAmt, tenderId) {
 		var tliPaidAmt;
 		var totalPaidAmount = g_nbr_zero;
@@ -260,7 +305,10 @@ $.extend(TxnAction.prototype, {
 		this.saleTxn.transactionHeader=this.txnHeader;
 		this.saleTxn.txnSaleLineItems=this.saleItemList;
 		this.saleTxn.txnTenderLineItems=this.tenderLineItems;
+		this.saleTxn.customer = this.customer;
+		
 		this.saleTxn.saveTxnDetails();
+		
 	}
 
 });

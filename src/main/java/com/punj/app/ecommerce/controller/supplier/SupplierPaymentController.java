@@ -69,6 +69,7 @@ import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.SupplierService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.utils.Pager;
 
 import net.sf.jasperreports.engine.JRException;
@@ -199,17 +200,24 @@ public class SupplierPaymentController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			AccountJournal accountJournal = SupplierTransformer.transformAccountJournal(journalBean, userDetails.getUsername());
 			Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-			accountJournal = this.paymentService.savePayment(accountJournal, openLocationId, userDetails.getUsername());
-			if (accountJournal != null) {
+			//The account Id is actually supplier id, this field is used to avoid use of another object
+			AccountHead accountHead=this.paymentService.retrievePaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER, new BigInteger(journalBean.getAccountId().toString()), openLocationId);
+			if(accountHead!=null) {
+				accountJournal.setAccountId(accountHead.getAccountId());
 				
-				Map<Integer,Tender> tenderMap=this.commonService.retrieveAllTendersAsMap(openLocationId);
-				
-				journalBean=SupplierTransformer.transformAccountJournalBean(accountJournal, userDetails.getUsername(), tenderMap);				
-				logger.info("The payment details for supplier has been saved successfully");
+				accountJournal = this.paymentService.savePayment(accountJournal, userDetails.getUsername());
+				if (accountJournal != null) {
+					
+					Map<Integer,Tender> tenderMap=this.commonService.retrieveAllTendersAsMap(openLocationId);
+					
+					journalBean=SupplierTransformer.transformAccountJournalBean(accountJournal, userDetails.getUsername(), tenderMap);				
+					logger.info("The payment details for supplier has been saved successfully");
 
-				this.preparePaymentReceiptBeans(journalBean, openLocationId, session, locale);
-			} else {
-				logger.info("The payment details for supplier were not saved due to some issue");
+					this.preparePaymentReceiptBeans(journalBean, openLocationId, session, locale);
+				} else {
+					logger.info("The payment details for supplier were not saved due to some issue");
+				}
+				
 			}
 		} catch (Exception e) {
 			logger.info("The payment details for supplier were not saved due to some issue", e);

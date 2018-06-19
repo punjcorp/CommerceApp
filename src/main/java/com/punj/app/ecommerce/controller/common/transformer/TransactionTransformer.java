@@ -12,18 +12,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.domains.customer.Customer;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionCustomerId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.transaction.SaleReceiptLineItem;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
 import com.punj.app.ecommerce.models.transaction.SaleTransactionReceipt;
@@ -44,10 +48,10 @@ public class TransactionTransformer {
 		throw new IllegalStateException("TransactionTransformer class");
 	}
 
-	public static TransactionDTO transformSaleTransaction(SaleTransaction saleTxn) {
+	public static TransactionDTO transformSaleTransaction(SaleTransaction saleTxn, String username) {
 		TransactionDTO txnDTO = new TransactionDTO();
 
-		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(),MVCConstants.TXN_SALE_PARAM);
+		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_SALE_PARAM);
 		txnDTO.setTxn(txn);
 
 		TransactionId txnId = txn.getTransactionId();
@@ -61,13 +65,22 @@ public class TransactionTransformer {
 		List<TenderLineItem> tenderLIs = TransactionTransformer.transformTenderLineItems(saleTxn, saleTxn.getTxnTenderLineItems(), txnId);
 		txnDTO.setTenderLineItems(tenderLIs);
 
+		if (saleTxn.getCustomer() != null) {
+			TransactionCustomer txnCustomer = TransactionTransformer.transformCustomerBean(saleTxn.getCustomer(), txnId);
+			txnDTO.setTxnCustomer(txnCustomer);
+			if (txnCustomer.getTransactionCustomerId().getCustomerId() == null) {
+				Customer customer = TransactionTransformer.transformCustomerBeanToCustomer(saleTxn.getCustomer(), username);
+				txnDTO.setCustomer(customer);
+			}
+		}
+
 		return txnDTO;
 	}
-	
+
 	public static TransactionDTO transformReturnTransaction(SaleTransaction saleTxn) {
 		TransactionDTO txnDTO = new TransactionDTO();
 
-		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(),MVCConstants.TXN_RETURN_PARAM);
+		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_RETURN_PARAM);
 		txnDTO.setTxn(txn);
 
 		TransactionId txnId = txn.getTransactionId();
@@ -83,8 +96,6 @@ public class TransactionTransformer {
 
 		return txnDTO;
 	}
-	
-	
 
 	public static Transaction transformTransactionDetails(TransactionHeader txnHeader, String txnType) {
 
@@ -247,16 +258,14 @@ public class TransactionTransformer {
 		/**
 		 * The inventory should be subtracted for all the sale line items
 		 */
-		if(saleLineItem.getQty()!=null && saleLineItem.getQty().intValue()>0) {
+		if (saleLineItem.getQty() != null && saleLineItem.getQty().intValue() > 0) {
 			saleLI.setTxnType(MVCConstants.TXN_SALE_PARAM);
 			saleLI.setInvAction(MVCConstants.SUBTRACT);
-		}
-		else {
+		} else {
 			saleLI.setTxnType(MVCConstants.TXN_RETURN_PARAM);
 			saleLI.setInvAction(MVCConstants.ADD);
 		}
-			
-		
+
 		saleLI.setUpc(saleLineItem.getItemId().toString());
 
 		saleLI.setQty(saleLineItem.getQty());
@@ -423,6 +432,39 @@ public class TransactionTransformer {
 		}
 		logger.info("All the tender line items has been transformed now");
 		return tenderLIs;
+	}
+
+	public static TransactionCustomer transformCustomerBean(CustomerBean customerBean, TransactionId txnId) {
+		TransactionCustomer txnCustomer = new TransactionCustomer();
+
+		TransactionCustomerId txnCustomerId = new TransactionCustomerId();
+
+		txnCustomerId.setCustomerId(customerBean.getCustomerId());
+		txnCustomerId.setCustomerType(customerBean.getCustomerType());
+
+		txnCustomerId.setBusinessDate(txnId.getBusinessDate());
+		txnCustomerId.setLocationId(txnId.getLocationId());
+		txnCustomerId.setRegister(txnId.getRegister());
+		txnCustomerId.setTransactionSeq(txnId.getTransactionSeq());
+
+		txnCustomer.setTransactionCustomerId(txnCustomerId);
+
+		logger.info("The customer details has been transformed");
+		return txnCustomer;
+	}
+
+	public static Customer transformCustomerBeanToCustomer(CustomerBean customerBean, String username) {
+		Customer customer = new Customer();
+
+		customer.setCustomerId(customerBean.getCustomerId());
+		customer.setCreatedBy(username);
+		customer.setCreatedDate(LocalDateTime.now());
+		customer.setEmail(customerBean.getEmail());
+		customer.setName(customerBean.getName());
+		customer.setPhone(customerBean.getPhone());
+
+		logger.info("The customer details from bean has been transformed to customer object");
+		return customer;
 	}
 
 	public static SaleTransactionReceipt transformReceiptDetails(SaleTransactionReceiptDTO receiptDetails, String username) {

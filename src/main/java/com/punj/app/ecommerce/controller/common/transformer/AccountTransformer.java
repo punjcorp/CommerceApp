@@ -20,6 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.domains.customer.Customer;
+import com.punj.app.ecommerce.domains.customer.CustomerDTO;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.Role;
 import com.punj.app.ecommerce.domains.user.User;
@@ -31,6 +33,8 @@ import com.punj.app.ecommerce.models.account.AccountBeanDTO;
 import com.punj.app.ecommerce.models.account.RoleBean;
 import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
 import com.punj.app.ecommerce.models.common.SearchBean;
+import com.punj.app.ecommerce.models.customer.CustomerBean;
+import com.punj.app.ecommerce.models.customer.CustomerBeanDTO;
 import com.punj.app.ecommerce.utils.Pager;
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -79,7 +83,7 @@ public class AccountTransformer {
 		accountBean.setStatus(user.getStatus());
 		accountBean.setDisplayStatus(Utils.showStatus(user.getStatus()));
 		accountBean.setUsername(user.getUsername());
-		if(user.getUsername()!=null)
+		if (user.getUsername() != null)
 			accountBean.setOrgUsername(user.getUsername());
 		accountBean.setCreatedBy(user.getCreatedBy());
 		accountBean.setCreatedDate(user.getCreatedDate());
@@ -93,23 +97,22 @@ public class AccountTransformer {
 		AccountTransformer.updateAccountPhoto(accountBean, user);
 
 		AccountTransformer.updateAccountRoles(accountBean, user);
-		
+
 		logger.info("The user details has been transformed to account bean successfully");
 		return accountBean;
 	}
-	
-	
+
 	public static void updateAccountRoles(AccountBean accountBean, User user) {
-		List<UserRole> userRoles= user.getUserRoles();
-		Integer[] selectedLocations=new Integer[userRoles.size()]; 
-		Integer roleId=null;
-		String roleName=null;
-		
-		int counter=0;
-		for(UserRole userRole:userRoles) {
-			roleId=userRole.getUserRoleId().getRole().getRoleId();
-			roleName=userRole.getUserRoleId().getRole().getName();
-			selectedLocations[counter]=userRole.getUserRoleId().getLocationId();
+		List<UserRole> userRoles = user.getUserRoles();
+		Integer[] selectedLocations = new Integer[userRoles.size()];
+		Integer roleId = null;
+		String roleName = null;
+
+		int counter = 0;
+		for (UserRole userRole : userRoles) {
+			roleId = userRole.getUserRoleId().getRole().getRoleId();
+			roleName = userRole.getUserRoleId().getRole().getName();
+			selectedLocations[counter] = userRole.getUserRoleId().getLocationId();
 			counter++;
 		}
 		accountBean.setSelectedLocationIds(selectedLocations);
@@ -117,7 +120,6 @@ public class AccountTransformer {
 		accountBean.setRoleName(roleName);
 		logger.info("The user role details has been transformed to account role details successfully");
 	}
-	
 
 	public static void updateAccountPhoto(AccountBean accountBean, User user) throws IOException {
 
@@ -294,6 +296,48 @@ public class AccountTransformer {
 			logger.info("The search criteria for manage Accounts screen has been updated successfully");
 		}
 
+	}
+
+	public static CustomerBeanDTO transformCustomerDTO(CustomerDTO customerDTO) {
+
+		CustomerBeanDTO customerBeanDTO = new CustomerBeanDTO();
+		List<Customer> customers = customerDTO.getCustomers();
+		List<CustomerBean> customerBeans = null; 
+				
+		if(customers!=null && !customers.isEmpty()) {
+			customerBeans=AccountTransformer.transformCustomers(customers);
+			customerBeanDTO.setCustomers(customerBeans);
+			customerBeanDTO.setPager(customerDTO.getPager());
+		}
+		
+		logger.info("The customer details has been transformed to customer bean DTO");
+		return customerBeanDTO;
+	}
+
+	public static List<CustomerBean> transformCustomers(List<Customer> customers) {
+		List<CustomerBean> customerBeanList = new ArrayList<>(customers.size());
+		CustomerBean customerBean=null;
+		for(Customer customer: customers) {
+			customerBean=AccountTransformer.transformCustomer(customer);
+			customerBeanList.add(customerBean);
+		}
+		logger.info("The customer details list has been transformed to customer bean list successfully");
+		return customerBeanList;
+	}
+
+	public static CustomerBean transformCustomer(Customer customer) {
+		CustomerBean customerBean=new CustomerBean();
+		
+		customerBean.setCreatedBy(customer.getCreatedBy());
+		customerBean.setCreatedDate(customer.getCreatedDate());
+		customerBean.setCustomerId(customer.getCustomerId());
+		customerBean.setCustomerType("C");
+		customerBean.setEmail(customer.getEmail());
+		customerBean.setName(customer.getName());
+		customerBean.setPhone(customer.getPhone());
+		
+		logger.info("The customer details has been transformed to customer bean successfully");
+		return customerBean;
 	}
 
 }

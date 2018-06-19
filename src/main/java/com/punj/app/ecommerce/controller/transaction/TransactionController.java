@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -32,7 +34,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
-import com.punj.app.ecommerce.controller.common.TransformerException;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
@@ -111,13 +112,15 @@ public class TransactionController {
 	@PostMapping(value = ViewPathConstants.TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@Transactional
-	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale) {
-		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn);
+	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale,
+			Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
 		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale,txnId);
+			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
 		}
 
@@ -140,7 +143,7 @@ public class TransactionController {
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale,txnId);
+			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
 		}
 
@@ -152,10 +155,10 @@ public class TransactionController {
 			return null;
 		}
 
-	}	
-	
-	
-	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,TransactionId txnId ) {
+	}
+
+	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,
+			TransactionId txnId) {
 		SaleTransactionReceipt txnReceipt = null;
 		try {
 			txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);
@@ -197,7 +200,7 @@ public class TransactionController {
 				txnHeader.setPdfbytes(pdfBytes);
 
 				// This section will save the receipt in database
-				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId,username);
+				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
 				Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 				if (result) {
 					logger.info("The transaction receipts has been saved in DB successfully");

@@ -21,6 +21,7 @@ public final class ServiceConstants {
 	public static final String ACTION_EXPENSE = "Expense";
 
 	public static final String TENDER_CASH = "Cash";
+	public static final String TENDER_CREDIT = "Credit";
 
 	public static final String REASON_REPO_TO_REGISTER = "Repository To Register";
 	public static final String REASON_REGISTER_TO_REPO = "Register To Repository";
@@ -31,6 +32,8 @@ public final class ServiceConstants {
 	public static final String LEDGER_ACTION_SUBTRACT_FROM_SAFE = "2";
 	public static final String LEDGER_ACTION_RECEIVE_MONEY_TO_REGISTER = "3";
 	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER = "4";
+	public static final String LEDGER_ACTION_SALE_TXN = "5";
+	public static final String LEDGER_ACTION_RETURN_TXN = "6";
 
 	public static final Integer STYLE_LEVEL = 1;
 	public static final Integer ITEM_LEVEL = 2;
@@ -55,6 +58,8 @@ public final class ServiceConstants {
 	public static final String TXN_OPEN_REGISTER = "OPEN_REGISTER";
 	public static final String TXN_CLOSE_REGISTER = "CLOSE_REGISTER";
 	public static final String TXN_NOSALE = "NOSALE";
+	public static final String TXN_SALE = "SALE";
+	public static final String TXN_RETURN= "RETURN";
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";
@@ -93,8 +98,10 @@ public final class ServiceConstants {
 	public static final String PAYMENT_PART = "part";
 	public static final String PAYMENT_ADVANCE = "advance";
 	public static final String PAYMENT_DUE = "payment_due";
+	public static final String JOURNAL_CREDIT = "credit";
 
 	public static final String ACCOUNT_TYPE_SUPPLIER = "SUPPLIER";
+	public static final String ACCOUNT_TYPE_CUSTOMER = "CUSTOMER";
 
 	public static final String PRICE_TYPE_PERMANENT = "1";
 	public static final String PRICE_TYPE_PROMOTION = "2";

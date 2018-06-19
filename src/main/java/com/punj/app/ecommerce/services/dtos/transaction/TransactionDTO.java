@@ -5,10 +5,12 @@ package com.punj.app.ecommerce.services.dtos.transaction;
 
 import java.util.List;
 
+import com.punj.app.ecommerce.domains.customer.Customer;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
 
 /**
@@ -21,6 +23,8 @@ public class TransactionDTO {
 	private List<SaleLineItem> saleLineItems;
 	private List<TaxLineItem> taxLineItems;
 	private List<TenderLineItem> tenderLineItems;
+	private TransactionCustomer txnCustomer;
+	private Customer customer;
 
 	/**
 	 * @return the txn
@@ -95,6 +99,35 @@ public class TransactionDTO {
 	 */
 	public void setTenderLineItems(List<TenderLineItem> tenderLineItems) {
 		this.tenderLineItems = tenderLineItems;
+	}
+
+	/**
+	 * @return the txnCustomer
+	 */
+	public TransactionCustomer getTxnCustomer() {
+		return txnCustomer;
+	}
+
+	/**
+	 * @param txnCustomer
+	 *            the txnCustomer to set
+	 */
+	public void setTxnCustomer(TransactionCustomer txnCustomer) {
+		this.txnCustomer = txnCustomer;
+	}
+
+	/**
+	 * @return the customer
+	 */
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	/**
+	 * @param customer the customer to set
+	 */
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 }

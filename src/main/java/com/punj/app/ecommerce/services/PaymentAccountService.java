@@ -20,8 +20,10 @@ public interface PaymentAccountService {
 	public AccountHead retrievePaymentAccount(Integer accountId);
 
 	public List<AccountHead> setupPaymentAccount(String accountType, BigInteger accountId, String username);
+	
+	public AccountHead setupPaymentAccount(AccountHead accountHead);
 
-	public AccountJournal savePayment(AccountJournal journalDetails, Integer locationId, String username);
+	public AccountJournal savePayment(AccountJournal journalDetails, String username);
 
 	public List<AccountHead> updateAccountsDue(List<AccountHead> accountHead, String username);
 	

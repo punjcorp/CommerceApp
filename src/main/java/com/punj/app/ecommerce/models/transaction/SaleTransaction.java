@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.punj.app.ecommerce.models.customer.CustomerBean;
+
 /**
  * @author admin
  *
@@ -17,6 +19,7 @@ public class SaleTransaction {
 	private TransactionHeader transactionHeader;
 	private List<SaleLineItem> txnSaleLineItems;
 	private List<TenderLineItem> txnTenderLineItems;
+	private CustomerBean customer;
 
 	public SaleTransaction() {
 		transactionHeader = new TransactionHeader();
@@ -67,6 +70,20 @@ public class SaleTransaction {
 	 */
 	public void setTxnTenderLineItems(List<TenderLineItem> txnTenderLineItems) {
 		this.txnTenderLineItems = txnTenderLineItems;
+	}
+
+	/**
+	 * @return the customer
+	 */
+	public CustomerBean getCustomer() {
+		return customer;
+	}
+
+	/**
+	 * @param customer the customer to set
+	 */
+	public void setCustomer(CustomerBean customer) {
+		this.customer = customer;
 	}
 
 }

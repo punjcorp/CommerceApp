@@ -21,6 +21,19 @@ $.extend(TransactionId.prototype, {
  * Class definition for Transaction Id Ends
  */
 
+var Customer = function() {
+	this.customerSearchText;
+	this.customerId;
+	this.name;
+	this.phone;
+	this.email;
+	this.customerType;
+}
+
+$.extend(Customer.prototype, {
+
+});
+
 /**
  * Class definition for Transaction Header Details Starts
  */
@@ -269,10 +282,12 @@ $.extend(SaleLineItem.prototype, {
 		var unitPrice = $('#li_unitPriceAmt' + itemId).val();
 		this.unitPrice=unitPrice;
 		
-		var discountType = $('#li_discountType' + itemId).val();
+		var discountType = $('#discountType' + itemId).val();
 		if(discountType=='percent'){
 			var discountPct = +$('#li_discountAmt' + itemId).val();
 			this.discountPct = discountPct;
+		}else{
+			this.discountPct = undefined;
 		}
 		
 		var discountAmt = +$('#li_uh_discountAmt' + itemId).val();
@@ -759,6 +774,8 @@ $.extend(TenderLineItem.prototype, {
 		$('#' + deleteIndex + 'tenderLineItem').remove();
 	},
 	validateTenderLineItem : function() {
+		
+		
 		var tenderEnteredAmt = +$('#dueAmt').val();
 		if ((!tenderEnteredAmt) || (tenderEnteredAmt == '') || (tenderEnteredAmt <= 0.00)) {
 			alert(i18next.t('sale_txn_validate_amount_tender'));
@@ -804,6 +821,7 @@ var SaleTransaction = function() {
 	this.txnSaleLineItems = [];
 	this.txnTenderLineItems = [];
 	this.transactionHeader = new TransactionHeader();
+	this.customer = new Customer();
 }
 
 $.extend(SaleTransaction.prototype, {
@@ -899,3 +917,8 @@ function startNewReturnTxn(){
 	var newTxnURL=new_return_txn_prefix;
 	window.location.href = newTxnURL;
 }
+
+
+
+
+

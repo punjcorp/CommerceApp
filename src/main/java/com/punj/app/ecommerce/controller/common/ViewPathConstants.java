@@ -87,6 +87,8 @@ public final class ViewPathConstants {
 	public static final String DELETE_ORDER_URL = "/delete_order";
 	
 	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
+	public static final String CUSTOMER_LOOKUP_URL = "/customer_account_lookup";
+	
 	
 	public static final String BULK_ORDER_URL = "/admin/bulk_order_action";
 	public static final String VIEW_ORDER_BILL_URL = "/admin/view_order_bill";
@@ -236,7 +238,7 @@ public final class ViewPathConstants {
 	public static final String POS_URL="/pos/sale";
 	public static final String SALES_URL="/pos/sales";
 	public static final String SALES_PAGE="sale/sales";
-	public static final String AUTO_ITEM_PAGE="sale/auto_item";
+	public static final String AUTO_ITEM_PAGE="sale/sale_txn";
 	
 	public static final String RETURN_TXN_URL="/pos/return_txn";
 	public static final String RETURN_TXN_PAGE="return/return_txn";

@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,15 +21,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.customer.Customer;
+import com.punj.app.ecommerce.domains.finance.LedgerJournal;
 import com.punj.app.ecommerce.domains.finance.TenderMovement;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
 import com.punj.app.ecommerce.domains.inventory.StockReason;
 import com.punj.app.ecommerce.domains.item.Item;
+import com.punj.app.ecommerce.domains.payment.AccountHead;
+import com.punj.app.ecommerce.domains.payment.AccountJournal;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
@@ -40,14 +47,18 @@ import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TaxLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TenderLineItemRepository;
+import com.punj.app.ecommerce.repositories.transaction.TransactionCustomerRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
+import com.punj.app.ecommerce.services.AccountService;
 import com.punj.app.ecommerce.services.FinanceService;
 import com.punj.app.ecommerce.services.InventoryService;
+import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.converter.TransactionConverter;
 import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
@@ -69,8 +80,29 @@ public class TransactionServiceImpl implements TransactionService {
 	private TenderLineItemRepository tenderLineItemRepository;
 	private ReceiptItemTaxRepository receiptItemTaxRepository;
 	private TransactionReceiptRepository txnReceiptRepository;
+	private TransactionCustomerRepository txnCustomerRepository;
 	private TenderMovementRepository tenderMovementRepository;
 	private FinanceService financeService;
+	private AccountService accountService;
+	private PaymentAccountService paymentAccountService;
+
+	/**
+	 * @param paymentAccountService
+	 *            the paymentAccountService to set
+	 */
+	@Autowired
+	public void setPaymentAccountService(PaymentAccountService paymentAccountService) {
+		this.paymentAccountService = paymentAccountService;
+	}
+
+	/**
+	 * @param accountService
+	 *            the accountService to set
+	 */
+	@Autowired
+	public void setAccountService(AccountService accountService) {
+		this.accountService = accountService;
+	}
 
 	/**
 	 * @param financeService
@@ -88,6 +120,15 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	public void setTenderMovementRepository(TenderMovementRepository tenderMovementRepository) {
 		this.tenderMovementRepository = tenderMovementRepository;
+	}
+
+	/**
+	 * @param txnReceiptRepository
+	 *            the txnReceiptRepository to set
+	 */
+	@Autowired
+	public void setTxnCustomerRepository(TransactionCustomerRepository txnCustomerRepository) {
+		this.txnCustomerRepository = txnCustomerRepository;
 	}
 
 	/**
@@ -255,6 +296,28 @@ public class TransactionServiceImpl implements TransactionService {
 	@Override
 	@Transactional
 	public TransactionId saveSaleTransaction(TransactionDTO txnDTO) {
+
+		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
+		Customer customer = txnDTO.getCustomer();
+		AccountHead accountHead = null;
+		if (customer != null) {
+			accountHead = this.accountService.createCustomer(customer, txnDTO.getTxn().getTransactionId().getLocationId());
+			if (accountHead != null) {
+				logger.info("The {} customer details has been saved successfully", accountHead.getEntityId());
+				txnDTO.getTxnCustomer().getTransactionCustomerId().setCustomerId(accountHead.getEntityId());
+			}
+
+			else {
+				logger.info("There was an issue while saving customer details");
+			}
+
+		}else {
+			
+			accountHead=this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(), txnCustomer.getTransactionCustomerId().getCustomerId(), txnCustomer.getTransactionCustomerId().getLocationId());
+			if(accountHead!=null)
+				logger.info("The account head details has been retrieved successfully");
+		}
+
 		TransactionId txnId = null;
 		Transaction txnDetails = txnDTO.getTxn();
 		Transaction txnHeader = this.saveTransaction(txnDetails);
@@ -265,6 +328,19 @@ public class TransactionServiceImpl implements TransactionService {
 			if (!txnLISaveResult) {
 				txnId = null;
 			}
+
+			
+			if (txnCustomer != null) {
+				txnCustomer.getTransactionCustomerId().setTransactionSeq(txnId.getTransactionSeq());
+				txnCustomer = this.txnCustomerRepository.save(txnCustomer);
+				if (txnCustomer != null) {
+					logger.info("The {} customer details for the customer has been saved successfully", txnCustomer.getTransactionCustomerId().getCustomerId());
+				}
+			}
+			
+			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
+			logger.info("The credit tender details has been added to Customer account now");
+
 			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getCreatedBy());
 			this.inventoryService.updateInventory(itemStockDetails);
 			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());
@@ -273,6 +349,46 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 
 		return txnId;
+	}
+
+	private void updateFinanceDetails(AccountHead accountHead, TransactionDTO txnDTO, String username) {
+		List<TenderLineItem> txnTenders = txnDTO.getTenderLineItems();
+		List<TenderLineItem> txnCreditTenders = new ArrayList<>();
+		Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(accountHead.getLocationId());
+		Integer tenderId = null;
+		Tender tender = null;
+		BigDecimal totalCreditAmount = BigDecimal.ZERO;
+		if (txnTenders != null && !txnTenders.isEmpty() && tenderMap != null) {
+			for (TenderLineItem tenderLineItem : txnTenders) {
+				tenderId = tenderLineItem.getTenderId();
+				tender = tenderMap.get(tenderId);
+				if (tender.getName().equals(ServiceConstants.TENDER_CREDIT)) {
+					totalCreditAmount = totalCreditAmount.add(tenderLineItem.getAmount());
+					txnCreditTenders.add(tenderLineItem);
+				}
+			}
+
+			if (!txnCreditTenders.isEmpty() && accountHead!=null) {
+				AccountJournal accountJournal = TransactionConverter.convertCreditToAJ(accountHead, txnCreditTenders, totalCreditAmount,username);
+				accountJournal=this.paymentAccountService.savePayment(accountJournal, username);
+				if(accountJournal!=null) 
+					logger.info("The account journal details for credit tender has been saved successfully");
+				else
+					logger.info("There was error while saving credit tender details");
+			}
+
+		}
+		
+		LedgerJournal ledgerJournal =TransactionConverter.convertTxnToLedger(txnDTO, username);
+		if(ledgerJournal!=null) {
+			ledgerJournal=this.financeService.saveLedgerDetails(ledgerJournal);
+			if(ledgerJournal!=null)
+				logger.info("The ledger details for the txn {} has been saved successfully", txnDTO.getTxn().getTransactionId().toString());
+			else
+				logger.error("The was error saving ledger details for the txn {} ", txnDTO.getTxn().getTransactionId().toString());
+		}
+		
+		
 	}
 
 	private Boolean saveTransactionLineItems(TransactionDTO txnDTO, TransactionId txnId) {
@@ -490,7 +606,7 @@ public class TransactionServiceImpl implements TransactionService {
 			} else {
 				logger.info("There was no transaction found for the day before now()");
 			}
-		}else {
+		} else {
 			logger.info("There was no transaction found for the day before now()");
 		}
 		return txnReceipt;

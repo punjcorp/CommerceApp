@@ -117,13 +117,13 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 
 	@Override
 	@Transactional
-	public AccountJournal savePayment(AccountJournal journalDetails, Integer locationId, String username) {
-		AccountHead accountHead = this.retrievePaymentAccount("SUPPLIER", new BigInteger(journalDetails.getAccountId().toString()), locationId);
+	public AccountJournal savePayment(AccountJournal journalDetails, String username) {
+		AccountHead accountHead = this.retrievePaymentAccount(journalDetails.getAccountId());
 		journalDetails.setAccountId(accountHead.getAccountId());
 		journalDetails = this.accountJournalRepository.save(journalDetails);
 		if (journalDetails != null) {
 			logger.info("The payment journal details has been successfully saved.");
-			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE)) {
+			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)){
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
@@ -200,6 +200,17 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 			logger.info("The account head details has been retrieved successfully");
 		else
 			logger.info("There was some issue while retrieving Supplier's account");
+		return accountHead;
+	}
+
+	@Override
+	public AccountHead setupPaymentAccount(AccountHead accountHead) {
+		accountHead = this.accountHeadRepository.save(accountHead);
+		if (accountHead != null ) {
+			logger.info("The account details has been setup successfully");
+		} else {
+			logger.info("There was some issue with account setup");
+		}
 		return accountHead;
 	}
 

@@ -19,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 public class Utils {
 	private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
@@ -67,6 +68,20 @@ public class Utils {
 			return MVCConstants.PRICE_TYPE_CLEARANCE_DESC;
 		case MVCConstants.PRICE_TYPE_CLEARANCE_RESET:
 			return MVCConstants.PRICE_TYPE_CLEARANCE_RESET_DESC;
+
+		default:
+			return "";
+		}
+
+	}
+	
+	public static String showLedgerAction(String txnType) {
+
+		switch (txnType) {
+		case ServiceConstants.TXN_SALE:
+			return ServiceConstants.LEDGER_ACTION_SALE_TXN;
+		case ServiceConstants.TXN_RETURN:
+			return ServiceConstants.LEDGER_ACTION_RETURN_TXN;
 
 		default:
 			return "";
