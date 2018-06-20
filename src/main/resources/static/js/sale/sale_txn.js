@@ -30,12 +30,24 @@ $.extend(TxnAction.prototype, {
 		}
 		return false;
 	},
+	renderAll : function(){
+		
+		$('#result').html('');
+		
+		$.each(this.saleItemList, function(itrIndex,itrSaleLineItem) {
+			
+			itrSaleLineItem.renderSaleLineItem(itrSaleLineItem, viewType);
+			
+		});
+		this.renderHeaderTotals();
+		
+	},
 	showSaleLineItem : function(data) {
 		var actualSaleItem = this.saleLineItem.parseSaleLineItem(data);
 		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
 			alert(i18next.t('sale_txn_validate_item'));
 		} else {
-			this.saleLineItem.renderSaleLineItem(actualSaleItem);
+			this.saleLineItem.renderSaleLineItem(actualSaleItem, viewType);
 			// Check when we need to add this to list it should be after successful render as per my understanding
 			this.saleItemList.push(actualSaleItem);
 			this.renderHeaderTotals();
@@ -70,6 +82,7 @@ $.extend(TxnAction.prototype, {
 				var modifiedSaleItem=itemRcd[0];
 				modifiedSaleItem.calculateAllAmounts(itemId);
 				this.renderHeaderTotals();
+				modifiedSaleItem.updateModifiedItemValues();
 			}
 		}
 
@@ -106,17 +119,17 @@ $.extend(TxnAction.prototype, {
 			if (this.id.indexOf("li_uh_discountAmt") >= 0) {
 				totalDiscount += +$(this).val();
 			}
-			if (this.id.indexOf("li_priceAmt") >= 0) {
-				totalPrice += +$(this).text();
+			if (this.id.indexOf("li_uh_priceAmt") >= 0) {
+				totalPrice += +$(this).val();
 			}
-			if (this.id.indexOf("li_sgstAmt") >= 0) {
-				totalSGSTTax += +$(this).text();
+			if (this.id.indexOf("li_uh_sgstAmt") >= 0) {
+				totalSGSTTax += +$(this).val();
 			}
-			if (this.id.indexOf("li_cgstAmt") >= 0) {
-				totalCGSTTax += +$(this).text();
+			if (this.id.indexOf("li_uh_cgstAmt") >= 0) {
+				totalCGSTTax += +$(this).val();
 			}
-			if (this.id.indexOf("li_igstAmt") >= 0) {
-				totalIGSTTax += +$(this).text();
+			if (this.id.indexOf("li_uh_igstAmt") >= 0) {
+				totalIGSTTax += +$(this).val();
 			}
 		});
 

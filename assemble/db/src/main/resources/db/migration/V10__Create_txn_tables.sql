@@ -353,6 +353,26 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_no_sale_tender` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`txn_customer`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`txn_customer` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`txn_customer` (
+  `location_id` INT(4) NOT NULL,
+  `business_date` DATETIME NOT NULL,
+  `register` INT(3) NOT NULL,
+  `txn_no` INT(5) NOT NULL,
+  `customer_id` BIGINT NOT NULL,
+  `customer_type` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `customer_id`, `customer_type`),
+  CONSTRAINT `fk_txn_customer_txn_master1`
+    FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
+    REFERENCES `commercedb`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

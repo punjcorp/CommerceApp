@@ -14,6 +14,7 @@ var customerSearch = new Customer();
 var token = $("meta[name='_csrf']").attr("content");
 var txnStartTime;
 var txnEndTime;
+var viewType='COMPACT';
 
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
@@ -198,6 +199,28 @@ $(function() {
 		txnAction.processCompletedTxn();
 	});
 	
+	
+	
+	
+	$('input[name="btnView"]').change(function() {
+		var viewRadio = $('input[name="btnView"]');
+		var viewNames = viewRadio.filter(':checked')
+		if(viewNames.length>0){
+			var selectedViewType=viewNames[0].id;
+			if(selectedViewType=='btnCompact')
+				viewType='COMPACT';
+			else if (selectedViewType=='btnDetailed')
+				viewType='DETAILED';
+		}
+		
+		txnAction.renderAll();
+		
+		
+	});
+	
+	
+	
+	
 	$('#btnNewSaleTxn').click(function() {
 		startNewSaleTxn();
 	});
@@ -358,6 +381,7 @@ function saleItemChanged(cntl) {
 		this.reCalculateTenders();
 	}
 }
+
 
 function deleteTender(deleteIndex) {
 	var totalDueAmt = +$('#hc_totalDueAmt').val();

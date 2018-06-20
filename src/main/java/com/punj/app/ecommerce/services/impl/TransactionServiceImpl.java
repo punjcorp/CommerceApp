@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -300,7 +301,7 @@ public class TransactionServiceImpl implements TransactionService {
 		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
 		Customer customer = txnDTO.getCustomer();
 		AccountHead accountHead = null;
-		if (customer != null) {
+		if (customer != null && customer.getCustomerId()==null) {
 			accountHead = this.accountService.createCustomer(customer, txnDTO.getTxn().getTransactionId().getLocationId());
 			if (accountHead != null) {
 				logger.info("The {} customer details has been saved successfully", accountHead.getEntityId());
@@ -311,7 +312,7 @@ public class TransactionServiceImpl implements TransactionService {
 				logger.info("There was an issue while saving customer details");
 			}
 
-		}else {
+		}else if(txnCustomer != null && txnCustomer.getTransactionCustomerId()!=null){
 			
 			accountHead=this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(), txnCustomer.getTransactionCustomerId().getCustomerId(), txnCustomer.getTransactionCustomerId().getLocationId());
 			if(accountHead!=null)
@@ -330,7 +331,7 @@ public class TransactionServiceImpl implements TransactionService {
 			}
 
 			
-			if (txnCustomer != null) {
+			if (txnCustomer != null && accountHead!=null) {
 				txnCustomer.getTransactionCustomerId().setTransactionSeq(txnId.getTransactionSeq());
 				txnCustomer = this.txnCustomerRepository.save(txnCustomer);
 				if (txnCustomer != null) {
@@ -354,7 +355,7 @@ public class TransactionServiceImpl implements TransactionService {
 	private void updateFinanceDetails(AccountHead accountHead, TransactionDTO txnDTO, String username) {
 		List<TenderLineItem> txnTenders = txnDTO.getTenderLineItems();
 		List<TenderLineItem> txnCreditTenders = new ArrayList<>();
-		Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(accountHead.getLocationId());
+		Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnDTO.getTxn().getTransactionId().getLocationId());
 		Integer tenderId = null;
 		Tender tender = null;
 		BigDecimal totalCreditAmount = BigDecimal.ZERO;
