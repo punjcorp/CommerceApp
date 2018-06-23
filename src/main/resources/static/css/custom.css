@@ -571,3 +571,15 @@ a.ui-button:active,
 .item-row-action{
 	cursor: pointer;
 }
+.input-text-big-bold{
+	font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+  	font-weight: 600;
+  	font-size:1.5em;
+}
+
+.input-text-big{
+  	font-size:1.5em;
+}
+.return-area{
+	background-color: #F4976C;
+}

@@ -163,7 +163,7 @@
 													th:checked="${accountDTO.defaultTender==tenderBean.tndrType}"></input>
 													<div class="sm-btn">
 														<div class="box-text">
-															<span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
+															<span th:if="${tenderBean.name=='Credit'}"><i class="fas fa-hand-holding-usd fa-4x" data-fa-transform="flip-v flip-h"></i> </span><span th:if="${tenderBean.name=='Cash'}"><i class="fas fa-money-bill-alt fa-4x"></i> </span> <span
 																th:if="${tenderBean.name=='Credit Card'}"><i class="fas fa-credit-card fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paypal'}"><i
 																class="fab fa-paypal fa-4x"></i> </span> <span th:if="${tenderBean.name=='Paytm'}"><img th:src="@{/images/paytm_sm.png}"></img> </span> <span
 																th:if="${tenderBean.name=='Cheque'}"><i class="fas fa-id-card fa-4x"></i> </span>

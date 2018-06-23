@@ -157,32 +157,75 @@ $.extend(SaleLineItem.prototype, {
 		}
 
 		if (cntl.id.indexOf('li_discountAmt') == 0 && txn_type == 'R') {
+			
 			var discountValue = +$('#li_discountAmt' + itemId).val();
-			var priceValue = +$('#li_priceAmt' + itemId).text();
-			priceValue = priceValue * -1;
-			if ((discountValue === '') || (discountValue < priceValue) || (discountValue > 0)) {
-				alert(i18next.t('sale_txn_validate_range_discount'));
+			var discountType= +$('#li_discountType' + itemId).val();
+			var priceValue = +$('#li_uh_priceAmt' + itemId).text();
+			
+			if(discountType=='percent'){
+				
+				if(discountValue>100 || discountValue<0){
+					alert(i18next.t('sale_txn_validate_range_discount_pct'));
+					
+					$('#li_discountAmt' + itemId).addClass("is-invalid");
+					$('#li_discountAmt' + itemId).focus();
+					$('#li_discountAmt' + itemId).val(0.00);
+					
+				}else{
+					$('#li_discountAmt' + itemId).removeClass("is-invalid");
+				}
+					
+					
+				
+			}else if(discountType=='amount'){
+				if ((discountValue === '') || (discountValue < priceValue) || (discountValue > 0)) {
+					alert(i18next.t('sale_txn_validate_range_discount'));
 
-				$('#li_discountAmt' + itemId).addClass("is-invalid");
-				$('#li_discountAmt' + itemId).focus();
-				$('#li_discountAmt' + itemId).val(0.00);
-				return false;
-			} else {
-				$('#li_discountAmt' + itemId).removeClass("is-invalid");
+					$('#li_discountAmt' + itemId).addClass("is-invalid");
+					$('#li_discountAmt' + itemId).focus();
+					$('#li_discountAmt' + itemId).val(0.00);
+					return false;
+				} else {
+					$('#li_discountAmt' + itemId).removeClass("is-invalid");
+				}
 			}
+			
+			
+			
+			
 		} else if (cntl.id.indexOf('li_discountAmt') == 0 && txn_type != 'R') {
+		
 			var discountValue = +$('#li_discountAmt' + itemId).val();
-			var priceValue = +$('#li_priceAmt' + itemId).text();
-			if ((discountValue === '') || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
-				alert(i18next.t('sale_txn_validate_range_discount'));
+			var discountType= +$('#li_discountType' + itemId).val();
+			var priceValue = +$('#li_uh_priceAmt' + itemId).text();
+			
+			if(discountType=='percent'){
+				if(discountValue>100 || discountValue<0){
+					alert(i18next.t('sale_txn_validate_range_discount_pct'));
+					
+					$('#li_discountAmt' + itemId).addClass("is-invalid");
+					$('#li_discountAmt' + itemId).focus();
+					$('#li_discountAmt' + itemId).val(0.00);
+					
+				}else{
+					$('#li_discountAmt' + itemId).removeClass("is-invalid");
+				}
+					
+			}else if(discountType=='amount'){
+				if ((discountValue === '') || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
+					alert(i18next.t('sale_txn_validate_range_discount'));
 
-				$('#li_discountAmt' + itemId).addClass("is-invalid");
-				$('#li_discountAmt' + itemId).focus();
-				$('#li_discountAmt' + itemId).val(0.00);
-				return false;
-			} else {
-				$('#li_discountAmt' + itemId).removeClass("is-invalid");
+					$('#li_discountAmt' + itemId).addClass("is-invalid");
+					$('#li_discountAmt' + itemId).focus();
+					$('#li_discountAmt' + itemId).val(0.00);
+					return false;
+				} else {
+					$('#li_discountAmt' + itemId).removeClass("is-invalid");
+				}
 			}
+			
+			
+			
 		}
 
 		return true;
@@ -208,18 +251,14 @@ $.extend(SaleLineItem.prototype, {
 		
 		if(discountType=='percent'){
 			var calculatedDiscountAmt=(this.price * discountAmt)/100;
-			if (txn_type == 'R')
-				calculatedDiscountAmt = calculatedDiscountAmt * -1;
-		
+			if(txn_type == 'R')
+				calculatedDiscountAmt=calculatedDiscountAmt * -1;
 			this.discount=calculatedDiscountAmt ;
 			this.discountPct=discountAmt;
 
 		}else if(discountType=='amount') {
 			
 			var calculatedDiscountAmt =discountAmt;
-			if (txn_type == 'R')
-				calculatedDiscountAmt = discountAmt * -1;
-			
 			this.discount=calculatedDiscountAmt;
 			
 		}
@@ -232,7 +271,15 @@ $.extend(SaleLineItem.prototype, {
 		this.sgstTaxRate=+$('#li_uh_sgstRate' + itemId).val();
 		this.igstTaxRate=+$('#li_uh_igstRate' + itemId).val();
 		
-		var totalItemPrice = this.price - this.discount + this.sgstTax + this.cgstTax;
+		if(txn_type == 'R' && this.price>0)
+			this.price=this.price * -1;
+		
+		var totalItemPrice = 0;
+		if(txn_type == 'R')
+			totalItemPrice = this.price + this.discount + this.sgstTax + this.cgstTax;
+		else
+			totalItemPrice = this.price - this.discount + this.sgstTax + this.cgstTax;
+		
 		this.itemTotal=totalItemPrice;
 		
 	},
@@ -256,8 +303,6 @@ $.extend(SaleLineItem.prototype, {
 		$('#li_uh_unitPriceAmt' + itemId).val(unitPrice);
 		
 		var itemPrice = unitPrice * qty;
-		if (txn_type == 'R')
-			itemPrice = itemPrice * -1;
 		itemPrice = itemPrice.toFixed(2);
 		
 		$('#li_priceAmt' + itemId).text(itemPrice);
@@ -268,15 +313,18 @@ $.extend(SaleLineItem.prototype, {
 		var discountType= $('#discountType' + itemId).val();
 		var discountAmt = +$('#li_discountAmt' + itemId).val();
 		var itemPrice = +$('#li_uh_priceAmt' + itemId).val();
-		if (txn_type == 'R')
-			itemPrice = itemPrice * -1;
 		
 		if(discountType=='percent'){
-			var calculatedDiscountAmt=(itemPrice * discountAmt)/100;
-			if (txn_type == 'R')
-				calculatedDiscountAmt = calculatedDiscountAmt * -1;
-			calculatedDiscountAmt=calculatedDiscountAmt.toFixed(2);
-			$('#li_uh_discountAmt' + itemId).val(calculatedDiscountAmt);
+			
+				var calculatedDiscountAmt=(itemPrice * discountAmt)/100;
+				if (txn_type == 'R') 
+					calculatedDiscountAmt= calculatedDiscountAmt * -1;
+				
+				calculatedDiscountAmt=calculatedDiscountAmt.toFixed(2);
+				
+				$('#li_uh_discountAmt' + itemId).val(calculatedDiscountAmt);
+				
+						
 		}else if(discountType=='amount') {
 			if (discountAmt < itemPrice && txn_type == 'R') {
 				$('#li_discountAmt' + itemId).val(0.00);
@@ -296,32 +344,25 @@ $.extend(SaleLineItem.prototype, {
 	calculateSaleLineItemTax : function(itemId) {
 
 		var discountAmt = +$('#li_uh_discountAmt' + itemId).val();
-
-		var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
 		var itemPrice = +$('#li_uh_priceAmt' + itemId).val();
 
-		var sgstTaxAmt = 0;
-		if (txn_type == 'R'){
+		var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
+		var sgstTaxAmt = 0 ;
+		if (txn_type == 'R') 
 			sgstTaxAmt = (itemPrice + discountAmt) * sgstUnitTax / 100;
-			sgstTaxAmt = sgstTaxAmt * -1;
-		}else{
+		else
 			sgstTaxAmt = (itemPrice - discountAmt) * sgstUnitTax / 100;
-		}
-			
-
+		
 		sgstTaxAmt = sgstTaxAmt.toFixed(2);
 		
 
 		var cgstUnitTax = $('#li_uh_cgstRate' + itemId).val();
-		var cgstTaxAmt = 0;
-
-		if (txn_type == 'R'){
+		var cgstTaxAmt = 0 ;
+		if (txn_type == 'R')
 			cgstTaxAmt = (itemPrice + discountAmt) * cgstUnitTax / 100;
-			cgstTaxAmt = cgstTaxAmt * -1;
-		}else{
+		else
 			cgstTaxAmt = (itemPrice - discountAmt) * cgstUnitTax / 100;
-		}
-			
+		
 		cgstTaxAmt = cgstTaxAmt.toFixed(2);
 		
 		if(viewType=='COMPACT'){
@@ -369,12 +410,15 @@ $.extend(SaleLineItem.prototype, {
 		this.cgstTax = cgstTaxAmt;
 
 		var itemPrice = +$('#li_uh_priceAmt' + itemId).val();
+
 		this.price = itemPrice;
-
+		
+		var totalItemPrice =0;
 		if (txn_type == 'R')
-			itemPrice = itemPrice * -1;
-
-		var totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
+			totalItemPrice = itemPrice + discountAmt + sgstTaxAmt + cgstTaxAmt;
+		else
+			totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
+		
 		totalItemPrice = totalItemPrice.toFixed(2);
 
 		$('#li_itemTotal' + itemId).text(i18next.t('common_currency_sign_inr') + ' ' + totalItemPrice);
@@ -567,8 +611,6 @@ $.extend(SaleLineItem.prototype, {
 		total += '</div>';
 
 		var finalSaleItemHtml = '';
-
-		
 		
 		if(viewType=='COMPACT'){
 			
@@ -588,9 +630,18 @@ $.extend(SaleLineItem.prototype, {
 		
 		$('#result').append(finalSaleItemHtml);
 	},
-	renderReturnLineItem : function(saleLineItem) {
+	renderReturnLineItem : function(saleLineItem, viewType) {
 
-		var saleLineItemHtml = '<div id="' + saleLineItem.itemId + 'Container"><div class="row" id="' + saleLineItem.itemId + 'Container"> <div class="col-1 padding-sm">';
+		var outerContainer='<div id="' + saleLineItem.itemId + 'Container">';
+		var outerContainerEnds='</div>';
+		var firstRowStarts='<div class="row">';
+		var firstRowEnds='</div>';
+		var secondRowStarts='<div class="row"> <div class="col-4"></div>';
+		var secondRowEnds='</div>';
+		
+		
+		
+		var saleLineItemHtml = '<div class="col-1 padding-sm">';
 		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
@@ -606,19 +657,31 @@ $.extend(SaleLineItem.prototype, {
 		qty += saleLineItem.qty;
 		qty += '"></input></div>';
 		
+		var compactUnitPriceAmt = '<input id="li_uh_unitPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		compactUnitPriceAmt += saleLineItem.unitPrice.toFixed(2);
+		compactUnitPriceAmt += '"></input>';
+		
+		var compactSuggestedPriceAmt = '<input id="li_uh_suggestedPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		compactSuggestedPriceAmt += saleLineItem.suggestedPrice.toFixed(2);
+		compactSuggestedPriceAmt += '"></input>';
+		
+		var compactMaxRetailPriceAmt = '<input id="li_uh_maxRetailPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		compactMaxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
+		compactMaxRetailPriceAmt += '"></input>';
+		
 		
 		var unitPriceAmt = '<div class="col padding-sm">';
 		unitPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_unit_cost') + '</span></small> </label><br />';
 		unitPriceAmt += '<div class="input-group text-left">';
 		unitPriceAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
-		unitPriceAmt += saleLineItem.price.toFixed(2);
+		unitPriceAmt += saleLineItem.unitPrice.toFixed(2);
 		unitPriceAmt += '"></input></div></div>';
 		unitPriceAmt += '<input id="li_uh_unitPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
-		unitPriceAmt += saleLineItem.price.toFixed(2);
+		unitPriceAmt += saleLineItem.unitPrice.toFixed(2);
 		unitPriceAmt += '"></input>';
 		
 
-		var priceAmt = '<div class="row"> <div class="col-4"></div> <div class="col padding-sm text-center">';
+		var priceAmt = '<div class="col padding-sm text-center">';
 		priceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_item_price') + '</span></small> </label><br />';
 		priceAmt += '<span>' + i18next.t('common_currency_sign_inr') + ' ' + '</span>';
 		priceAmt += '<span id="li_priceAmt' + saleLineItem.itemId + '">';
@@ -650,27 +713,52 @@ $.extend(SaleLineItem.prototype, {
 		maxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
 		maxRetailPriceAmt += '"></input>';
 		
-		
-		
-		
+				
 		
 		var discountAmt = '<div class="col padding-sm">';
 		discountAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_discount') + '</span></small> </label><br />';
 		discountAmt += '<div class="input-group text-left">';
 		discountAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
 		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
-		discountAmt += saleLineItem.discount.toFixed(2);
+		if(saleLineItem.discountPct!=undefined && saleLineItem.discountPct!='')
+			discountAmt += saleLineItem.discountPct.toFixed(2);
+		else
+			discountAmt += saleLineItem.discount.toFixed(2);
 		discountAmt += '"></input>';
 		
+		
 		discountAmt += '<select class="form-control form-control-sm" onChange="saleItemChanged(this);" id="discountType'+saleLineItem.itemId + '">';
-		discountAmt += '<option value="percent" selected>'+i18next.t('sale_txn_lbl_discount_percent')+'</option>';
-		discountAmt += '<option value="amount">'+i18next.t('sale_txn_lbl_discount_amount')+'</option>';
+		if((saleLineItem.discountPct!=undefined && saleLineItem.discountPct!='') || saleLineItem.discount==0){
+			discountAmt += '<option value="percent" selected>'+i18next.t('sale_txn_lbl_discount_percent')+'</option>';
+			discountAmt += '<option value="amount">'+i18next.t('sale_txn_lbl_discount_amount')+'</option>';
+		}
+		else{
+			discountAmt += '<option value="percent">'+i18next.t('sale_txn_lbl_discount_percent')+'</option>';
+			discountAmt += '<option value="amount" selected>'+i18next.t('sale_txn_lbl_discount_amount')+'</option>';
+		}
 		discountAmt += '</select>';
 		
 		discountAmt += '</div></div>';
 		discountAmt += '<input id="li_uh_discountAmt' + saleLineItem.itemId + '" type="hidden" value="';
 		discountAmt += saleLineItem.discount.toFixed(2);
 		discountAmt += '"></input>';
+			
+		
+		
+		var compactSgstTaxAmt = '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+		compactSgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+		compactSgstTaxAmt += '"></input>';
+		compactSgstTaxAmt += '<input id="li_uh_sgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		compactSgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+		compactSgstTaxAmt += '"></input>';
+		
+		var compactCgstTaxAmt = '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+		compactCgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+		compactCgstTaxAmt += '"></input>';
+		compactCgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		compactCgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
+		compactCgstTaxAmt += '"></input>';
+		
 		
 		
 		var sgstTaxAmt = '<div class="col-1 padding-sm text-center">';
@@ -683,6 +771,9 @@ $.extend(SaleLineItem.prototype, {
 		sgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
 		sgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
 		sgstTaxAmt += '"></input>';
+		sgstTaxAmt += '<input id="li_uh_sgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		sgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+		sgstTaxAmt += '"></input>';
 
 		var cgstTaxAmt = '<div class="col-1 padding-sm text-center">';
 		cgstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_cgst') + '</span></small> </label><br />';
@@ -693,8 +784,10 @@ $.extend(SaleLineItem.prototype, {
 		cgstTaxAmt += '<label><small><span>(' + saleLineItem.cgstTaxRate.toFixed(2) + '%)</span></small></label></div>';
 		cgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
 		cgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
-		cgstTaxAmt += '"></input></div>';	
-
+		cgstTaxAmt += '"></input>';	
+		cgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+		cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
+		cgstTaxAmt += '"></input>';
 		
 		var totalTaxRateVal = saleLineItem.sgstTaxRate + saleLineItem.cgstTaxRate;
 		var totalTaxAmtVal = saleLineItem.sgstTax + saleLineItem.cgstTax;
@@ -720,13 +813,29 @@ $.extend(SaleLineItem.prototype, {
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
 		total += '</h5>';
-		total += '</div></div></div>';
+		total += '</div>';
 
 		
 		
-		var finalReturnItemHtml = saleLineItemHtml + qty + unitPriceAmt + suggestedPriceAmt + maxRetailPriceAmt + sgstTaxAmt + cgstTaxAmt;
-		finalReturnItemHtml += priceAmt + discountAmt + itemTaxAmt + total;
-
+		var finalReturnItemHtml = '';
+		
+		if(viewType=='COMPACT'){
+			
+			finalReturnItemHtml += outerContainer +firstRowStarts;
+			finalReturnItemHtml += saleLineItemHtml + qty + compactUnitPriceAmt+ compactSuggestedPriceAmt + compactMaxRetailPriceAmt + compactSgstTaxAmt + compactCgstTaxAmt;
+			finalReturnItemHtml += priceAmt + discountAmt + itemTaxAmt + total;
+			finalReturnItemHtml += firstRowEnds +outerContainerEnds;
+			
+		}else if (viewType=='DETAILED'){
+			
+			finalReturnItemHtml += outerContainer +firstRowStarts;
+			finalReturnItemHtml += saleLineItemHtml + qty +  unitPriceAmt + suggestedPriceAmt + maxRetailPriceAmt + sgstTaxAmt + cgstTaxAmt;
+			finalReturnItemHtml += firstRowEnds +secondRowStarts;
+			finalReturnItemHtml += priceAmt + discountAmt + itemTaxAmt + total;
+			finalReturnItemHtml += secondRowEnds +outerContainerEnds;
+		}		
+		
+		
 		$('#result').append(finalReturnItemHtml);
 	},
 
@@ -736,6 +845,9 @@ $.extend(SaleLineItem.prototype, {
 		if (returnLineItem.qty > 0)
 			returnLineItem.qty = returnLineItem.qty * -1;
 
+		if (returnLineItem.price > 0)
+			returnLineItem.price = returnLineItem.price * -1;
+		
 		if (returnLineItem.discount > 0)
 			returnLineItem.discount = returnLineItem.discount * -1;
 

@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   `uom` VARCHAR(20) NOT NULL,
   `discount_flag` TINYINT NOT NULL DEFAULT 1,
   `tax_flag` TINYINT NOT NULL DEFAULT 1,
+  `tax_inclusive_flag` TINYINT NOT NULL,
   `ask_qty_flag` TINYINT NOT NULL DEFAULT 1,
   `ask_price_flag` TINYINT NOT NULL DEFAULT 0,
   `unit_cost` DECIMAL(12,2) NOT NULL DEFAULT 0.0,

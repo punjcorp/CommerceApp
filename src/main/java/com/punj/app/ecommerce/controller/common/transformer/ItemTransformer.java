@@ -155,8 +155,8 @@ public class ItemTransformer {
 			List<ItemImageBean> itemImageBeans = ItemTransformer.tranformItemImages(item.getImages());
 			itemBean.setItemImages(itemImageBeans);
 			logger.info("The item images has updated with transformed image bean objects successfully.");
-		}else {
-			List<ItemImageBean> itemImageBeans =new ArrayList<>();
+		} else {
+			List<ItemImageBean> itemImageBeans = new ArrayList<>();
 			itemImageBeans.add(new ItemImageBean());
 			itemBean.setItemImages(itemImageBeans);
 		}
@@ -270,6 +270,11 @@ public class ItemTransformer {
 		itemOptionsBean.setSuggestedPrice(itemOptions.getSuggestedPrice());
 		itemOptionsBean.setUnitCost(itemOptions.getUnitCost());
 
+		if (itemOptions.getTaxInclusiveFlag())
+			itemOptionsBean.setTaxInclusive(MVCConstants.TAX_INCLUSIVE_PARAM);
+		else
+			itemOptionsBean.setTaxInclusive(MVCConstants.TAX_EXCLUSIVE_PARAM);
+
 		itemOptionsBean.setAskPriceFlag(itemOptions.getAskPriceFlag());
 		itemOptionsBean.setAskQtyFlag(itemOptions.getAskQtyFlag());
 		itemOptionsBean.setCustomerPromptFlag(itemOptions.getCustomerPrompt());
@@ -306,6 +311,12 @@ public class ItemTransformer {
 		itemOptions.setMaxRetailPrice(itemOptionsBean.getMaxRetailPrice());
 		itemOptions.setSuggestedPrice(itemOptionsBean.getSuggestedPrice());
 		itemOptions.setUnitCost(itemOptionsBean.getUnitCost());
+
+		if (StringUtils.isNotBlank(itemOptionsBean.getTaxInclusive()) && MVCConstants.TAX_EXCLUSIVE_PARAM.equals(itemOptionsBean.getTaxInclusive()))
+			itemOptions.setTaxInclusiveFlag(Boolean.FALSE);
+		else if (StringUtils.isNotBlank(itemOptionsBean.getTaxInclusive()) && MVCConstants.TAX_INCLUSIVE_PARAM.equals(itemOptionsBean.getTaxInclusive())) {
+			itemOptions.setTaxInclusiveFlag(Boolean.TRUE);
+		}
 
 		if (itemOptionsBean.getAskPriceFlag() == null)
 			itemOptionsBean.setAskPriceFlag(Boolean.FALSE);
@@ -447,7 +458,7 @@ public class ItemTransformer {
 			itemImage.setImageData(multipartFile.getBytes());
 			itemImage.setImageType(multipartFile.getContentType());
 			itemImage.setImageURL(multipartFile.getOriginalFilename());
-			if(StringUtils.isBlank(itemImageBean.getName()))
+			if (StringUtils.isBlank(itemImageBean.getName()))
 				itemImage.setName(multipartFile.getOriginalFilename());
 
 		}
@@ -548,13 +559,13 @@ public class ItemTransformer {
 		for (Item sku : existingSKUs) {
 			existingSKUMap.put(sku.getItemId(), sku);
 		}
-		Item sku=null;
-		List<ItemImage> itemImages=null;
-		for(ItemBean skuBean:itemDTO.getSkus()) {
-			sku=existingSKUMap.get(skuBean.getItemId());
+		Item sku = null;
+		List<ItemImage> itemImages = null;
+		for (ItemBean skuBean : itemDTO.getSkus()) {
+			sku = existingSKUMap.get(skuBean.getItemId());
 			sku.setName(skuBean.getName());
-			if(StringUtils.isNotBlank(skuBean.getIsImageUpdated()) && skuBean.getIsImageUpdated().equals(MVCConstants.YES)) {
-				itemImages=ItemTransformer.transformItemImageBeans(skuBean.getItemImages(), username, sku);
+			if (StringUtils.isNotBlank(skuBean.getIsImageUpdated()) && skuBean.getIsImageUpdated().equals(MVCConstants.YES)) {
+				itemImages = ItemTransformer.transformItemImageBeans(skuBean.getItemImages(), username, sku);
 				sku.setImages(itemImages);
 			}
 			sku.setModifiedBy(username);

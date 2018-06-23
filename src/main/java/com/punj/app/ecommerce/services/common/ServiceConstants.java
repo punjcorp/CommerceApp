@@ -99,6 +99,7 @@ public final class ServiceConstants {
 	public static final String PAYMENT_ADVANCE = "advance";
 	public static final String PAYMENT_DUE = "payment_due";
 	public static final String JOURNAL_CREDIT = "credit";
+	public static final String JOURNAL_CREDIT_RETURN = "credit_return";
 
 	public static final String ACCOUNT_TYPE_SUPPLIER = "SUPPLIER";
 	public static final String ACCOUNT_TYPE_CUSTOMER = "CUSTOMER";

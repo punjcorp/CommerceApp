@@ -10,8 +10,11 @@
 
 var scannedItems = [];
 var txnAction = new TxnAction();
+var customerSearch = new Customer();
+var token = $("meta[name='_csrf']").attr("content");
 var txnStartTime;
 var txnEndTime;
+var viewType='COMPACT';
 
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
@@ -77,8 +80,92 @@ $(function() {
 		}
 	});
 
+	$("#customerSearchText").autocomplete({
+		minLength : 3,
+		appendTo : $('#txnCustomerModal'),
+		source : function(request, response) {
+			$('#customerErrorMsg').hide();
+			$('#customerSearchBusy').removeClass('d-none');
+			
+			customerSearch.customerSearchText=$('#customerSearchText').val();
+			var formdata=JSON.stringify(customerSearch);
+					
+			// AJAX call here and refresh the Expense Screen after the save
+			$.ajax({
+				url : '/customer_account_lookup',
+				type : 'POST',
+				cache : false,
+				data : formdata,
+				
+				contentType : "application/json; charset=utf-8",
+				dataType : "json",
+				success : function(data) {
+					
+					$('#customerSearchBusy').addClass('d-none');
+					if(!data.length){
+						$('#customerSearchText').val('');						
+						$('#customerErrorMsg').addClass('invalid-feedback');
+						$('#customerErrorMsg').html('Customer Not found!!');
+						$('#customerErrorMsg').show();
+					}else{
+						response($.map(data, function(item) {
+							
+							var itemlbl=item.name +' - '+ item.phone;
+							
+							return {
+								label : itemlbl,
+								value : item.name,
+								desc : item.email,
+								phone : item.phone,
+								email : item.email,
+								name : item.name,
+								customerId : item.customerId
+								
+							}
+						}));
+					}
+					
+				},				
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader('X-CSRF-TOKEN', token)
+				}
+			});			
+			
+			
+			
+		},
+		change: function (event, ui) {
+            if (ui.item == null || ui.item == undefined) {
+            	$('#customerSearchText').val('');						
+				$('#customerErrorMsg').addClass('invalid-feedback');
+				$('#customerErrorMsg').html('Please select a Valid Customer!!');
+				$('#customerErrorMsg').show();
+            } else {
+            	$('#customerErrorMsg').hide();
+            }
+        },
+		select : function(event, ui) {
+			event.preventDefault();
+			if (ui.item) {
+				showCustomerDetails(event, ui);
+			}
+		}
+	});		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	$('#btnTenderOK').click(function() {
-		if (txnAction.tenderLineItem.validateReturnTenderLineItem()) {
+		if (txnAction.tenderLineItem.validateReturnTenderLineItem() && txnAction.validateCreditTender()) {
 			txnAction.processTender();
 		}
 	});
@@ -86,6 +173,50 @@ $(function() {
 	$('#btnLastTxn').click(function() {
 		printLastxn();
 	});	
+	
+	$('#btnAssociateCustomer').click(function() {
+		$('#txnCustomerModal').modal({backdrop: 'static', keyboard: false});
+	});
+	
+	$('#btnAddCustomer').click(function() {
+		$('#div_customerAdd').removeClass('d-none');
+		$('#div_customerActions').removeClass('d-none');
+		$('#div_customerSearch').addClass('d-none');
+		
+		
+	});
+	
+	$('#btnSearchCustomer').click(function() {
+		$('#div_customerAdd').addClass('d-none');
+		$('#div_customerSearch').removeClass('d-none');
+		$('#div_customerActions').addClass('d-none');
+		$('#div_customerResult').html('');
+		
+	});	
+	
+	
+	$('#btnSaveCustomer').click(function() {
+		
+		associateCustomerToTxn();
+		
+	});
+	
+	$('input[name="btnView"]').change(function() {
+		var viewRadio = $('input[name="btnView"]');
+		var viewNames = viewRadio.filter(':checked')
+		if(viewNames.length>0){
+			var selectedViewType=viewNames[0].id;
+			if(selectedViewType=='btnCompact')
+				viewType='COMPACT';
+			else if (selectedViewType=='btnDetailed')
+				viewType='DETAILED';
+		}
+		
+		txnAction.renderAll();
+		
+		
+	});	
+	
 	
 	$('#btnCompleteTxn').click(function() {
 		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
@@ -128,6 +259,7 @@ $(function() {
               sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
               sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
               sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
+              sale_txn_validate_range_discount_pct:'The discount percentage should be between 0 and 100 of item price amount.',
               sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
               sale_txn_validate_tender:'Please select tender for the payment',
               sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00',
@@ -200,21 +332,36 @@ $(function() {
 /* This section will allow the item listing to be in a specific format */
 $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 	
-
-	return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
-		'class' : 'row'
-	}).append($('<div/>', {
-		'class' : 'col-4'
-	}).append($('<div/>', {
-		'class' : 'preview-thumbnail-cart'
-	}).append($('<img/>', {
-		src : item.skuImage,
-		class: 'img-thumbnail'
-	})))).append($('<div/>', {
-		'class' : 'col-6'
-	}).append($('<span/>', {
-		html : "<b>" + item.value + "</b><br/>" + item.desc
-	})))).appendTo(ul);
+	if (this.element[0].id.indexOf('customerSearchText') > -1) {
+	
+		return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
+			'class' : 'row'
+		}).append($('<div/>', {
+			'class' : 'col'
+		}).append($('<div/>', {
+			'class' : 'card-text'
+		}).append($('<span/>', {
+			html : "<b>" + item.label + "</b><br/>" + item.desc
+		}))))).appendTo(ul);
+		
+	}else{
+		
+		return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
+			'class' : 'row'
+		}).append($('<div/>', {
+			'class' : 'col-4'
+		}).append($('<div/>', {
+			'class' : 'preview-thumbnail-cart'
+		}).append($('<img/>', {
+			src : item.skuImage,
+			class: 'img-thumbnail'
+		})))).append($('<div/>', {
+			'class' : 'col-6'
+		}).append($('<span/>', {
+			html : "<b>" + item.value + "</b><br/>" + item.desc
+		})))).appendTo(ul);
+		
+	}
 };
 
 /**
@@ -256,8 +403,6 @@ function saleItemChanged(cntl) {
 		var discountAmt=+$('#'+cntl.id).val();
 		if(discountAmt && discountAmt=='')
 			discountAmt=0;
-		else if(discountAmt>0)
-			discountAmt=discountAmt * -1;
 		
 		$('#'+cntl.id).val(discountAmt);
 	}

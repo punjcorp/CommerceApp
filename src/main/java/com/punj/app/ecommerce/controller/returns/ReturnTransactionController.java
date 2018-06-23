@@ -28,6 +28,7 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.SearchBean;
+import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -82,6 +83,9 @@ public class ReturnTransactionController {
 	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
+		
+		CustomerBean customerBean = new CustomerBean();
+		model.addAttribute(MVCConstants.CUSTOMER_BEAN, customerBean);
 
 		Integer openLocId = null;
 		SaleHeaderBean txnHeaderBean = new SaleHeaderBean();

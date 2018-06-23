@@ -370,7 +370,7 @@ public class TransactionServiceImpl implements TransactionService {
 			}
 
 			if (!txnCreditTenders.isEmpty() && accountHead!=null) {
-				AccountJournal accountJournal = TransactionConverter.convertCreditToAJ(accountHead, txnCreditTenders, totalCreditAmount,username);
+				AccountJournal accountJournal = TransactionConverter.convertCreditToAJ(accountHead, txnCreditTenders, totalCreditAmount,username, txnDTO.getTxn().getTxnType());
 				accountJournal=this.paymentAccountService.savePayment(accountJournal, username);
 				if(accountJournal!=null) 
 					logger.info("The account journal details for credit tender has been saved successfully");

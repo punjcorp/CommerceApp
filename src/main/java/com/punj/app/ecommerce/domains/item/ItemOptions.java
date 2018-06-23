@@ -35,6 +35,8 @@ public class ItemOptions implements Serializable {
 
 	@Column(name = "discount_flag")
 	private Boolean discountFlag;
+	@Column(name = "tax_inclusive_flag")
+	private Boolean taxInclusiveFlag;
 	@Column(name = "tax_flag")
 	private Boolean taxFlag;
 	@Column(name = "ask_qty_flag")
@@ -442,6 +444,20 @@ public class ItemOptions implements Serializable {
 	 */
 	public void setNextLevelCreated(String nextLevelCreated) {
 		this.nextLevelCreated = nextLevelCreated;
+	}
+
+	/**
+	 * @return the taxInclusiveFlag
+	 */
+	public Boolean getTaxInclusiveFlag() {
+		return taxInclusiveFlag;
+	}
+
+	/**
+	 * @param taxInclusiveFlag the taxInclusiveFlag to set
+	 */
+	public void setTaxInclusiveFlag(Boolean taxInclusiveFlag) {
+		this.taxInclusiveFlag = taxInclusiveFlag;
 	}
 
 }

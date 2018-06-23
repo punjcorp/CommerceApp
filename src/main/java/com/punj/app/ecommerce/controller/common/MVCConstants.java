@@ -213,6 +213,8 @@ public final class MVCConstants {
 	
 	public static final String SALE_ITEM_PARAM="SALE_ITEM";
 	public static final String TAX_ITEM_PARAM="TAX_ITEM";
+	public static final String TAX_INCLUSIVE_PARAM="inclusive";
+	public static final String TAX_EXCLUSIVE_PARAM="exclusive";
 	public static final String TENDER_ITEM_PARAM="TENDER_ITEM";
 	public static final String COMPLETED="COMPLETED";
 	public static final String MANUAL="MANUAL";

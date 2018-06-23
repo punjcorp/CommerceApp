@@ -137,8 +137,10 @@ public class TransactionController {
 	@PostMapping(value = ViewPathConstants.RETURN_TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@Transactional
-	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale) {
-		TransactionDTO txnDTO = TransactionTransformer.transformReturnTransaction(saleTxn);
+	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale,
+			Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		TransactionDTO txnDTO = TransactionTransformer.transformReturnTransaction(saleTxn, userDetails.getUsername());
 		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {

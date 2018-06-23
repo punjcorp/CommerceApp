@@ -44,6 +44,9 @@ import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.item.ids.SKUCounterId;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
+import com.punj.app.ecommerce.domains.tax.LocationTax;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
+import com.punj.app.ecommerce.domains.tax.ids.LocationTaxId;
 import com.punj.app.ecommerce.repositories.item.AttributeRepository;
 import com.punj.app.ecommerce.repositories.item.AttributeSearchRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
@@ -54,9 +57,11 @@ import com.punj.app.ecommerce.repositories.item.ItemRepository;
 import com.punj.app.ecommerce.repositories.item.ItemSearchRepository;
 import com.punj.app.ecommerce.repositories.item.SKUCounterRepository;
 import com.punj.app.ecommerce.repositories.item.StyleCounterRepository;
+import com.punj.app.ecommerce.repositories.tax.LocationTaxRepository;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
+import com.punj.app.ecommerce.services.TaxService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.converter.AttributeConverter;
@@ -86,12 +91,23 @@ public class ItemServiceImpl implements ItemService {
 	private CommonService commonService;
 	private PriceService priceService;
 	private InventoryService inventoryService;
+	private LocationTaxRepository locationTaxRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @param locationTaxRepository
+	 *            the locationTaxRepository to set
+	 */
+	@Autowired
+	public void setLocationTaxRepository(LocationTaxRepository locationTaxRepository) {
+		this.locationTaxRepository = locationTaxRepository;
+	}
+
 
 	/**
 	 * @param itemImageRepository
@@ -737,14 +753,55 @@ public class ItemServiceImpl implements ItemService {
 
 	@Transactional
 	public List<ItemPrice> updateItemPrices(List<Location> locations, Item item, String username) {
-		List<ItemPrice> itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations);
-		itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
-		if (itemPriceList != null && !itemPriceList.isEmpty())
-			logger.info("The item price records were created successfully");
-		else
-			logger.info("There was some issue while creating the item prices");
+
+		List<LocationTax> taxList = null;
+		List<ItemPrice> itemPriceList = null;
+		if(locations!=null && !locations.isEmpty()) {
+			taxList = this.retrieveTax(locations.get(0).getLocationId(), item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_OTHER_STATE);
+			
+			if(taxList!=null && !taxList.isEmpty()) {
+				
+				LocationTax taxItem=taxList.get(0);
+				
+				itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations, taxItem.getPercentage());
+				itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
+				if (itemPriceList != null && !itemPriceList.isEmpty())
+					logger.info("The item price records were created successfully");
+				else
+					logger.info("There was some issue while creating the item prices");
+				
+			}
+		}
+		
+		
 		return itemPriceList;
 	}
+	
+	/**
+	 * This method retrieves all the taxes for a tax group
+	 * 
+	 * @param locationId
+	 * @param taxGroupId
+	 * @param billingLocation
+	 * @return
+	 */
+	private List<LocationTax> retrieveTax(Integer locationId, Integer taxGroupId, String billingLocation) {
+		LocationTax taxCriteria = new LocationTax();
+
+		LocationTaxId taxId = new LocationTaxId();
+		taxId.setLocationId(locationId);
+		taxId.setTaxGroupId(taxGroupId);
+		taxId.setBillingLocationCode(billingLocation);
+
+		taxCriteria.setLocationTaxId(taxId);
+
+		List<LocationTax> taxList = this.locationTaxRepository.findAll(Example.of(taxCriteria));
+
+		logger.info("The taxes for the tax group {} and location {} has been retrieved successfully", taxGroupId, locationId);
+
+		return taxList;
+	}
+
 
 	@Override
 	@Transactional
@@ -927,37 +984,37 @@ public class ItemServiceImpl implements ItemService {
 
 	@Transactional
 	private void deleteSKUImages(List<Item> skuList) {
-		List<ItemImage> finalImageList=new ArrayList<>();
-		List<ItemImage> itemImageList=null;
-		ItemImage imageCriteria=null;
-		Item itemCriteria=null;
-		for(Item item:skuList) {
-			imageCriteria=new ItemImage();
-			itemCriteria=new Item();
+		List<ItemImage> finalImageList = new ArrayList<>();
+		List<ItemImage> itemImageList = null;
+		ItemImage imageCriteria = null;
+		Item itemCriteria = null;
+		for (Item item : skuList) {
+			imageCriteria = new ItemImage();
+			itemCriteria = new Item();
 			itemCriteria.setItemId(item.getItemId());
 			imageCriteria.setItem(itemCriteria);
-			itemImageList=this.itemImageRepository.findAll(Example.of(imageCriteria));
-			if(itemImageList!=null && !itemImageList.isEmpty()) {
+			itemImageList = this.itemImageRepository.findAll(Example.of(imageCriteria));
+			if (itemImageList != null && !itemImageList.isEmpty()) {
 				finalImageList.addAll(itemImageList);
-				logger.info("The images for SKU {} has been found successfully",item.getItemId());
+				logger.info("The images for SKU {} has been found successfully", item.getItemId());
 			}
-				
+
 		}
 
-		if(!finalImageList.isEmpty()) {
+		if (!finalImageList.isEmpty()) {
 			this.itemImageRepository.delete(finalImageList);
 			logger.info("All the selected SKU images has been deleted successfully");
-		}else {
+		} else {
 			logger.info("There was no images found for deletion");
 		}
-			
+
 	}
 
 	@Override
 	public List<Item> updateSKUs(List<Item> skuList) {
 
 		this.deleteSKUImages(skuList);
-		
+
 		List<Item> updatedSKUs = this.itemRepository.save(skuList);
 		if (updatedSKUs != null && !updatedSKUs.isEmpty())
 			logger.info("The skus were updated successfully");

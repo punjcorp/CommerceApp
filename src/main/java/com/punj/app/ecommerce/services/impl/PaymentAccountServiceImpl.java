@@ -127,7 +127,7 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
-			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)) {
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
 			}
 

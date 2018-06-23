@@ -108,6 +108,16 @@ $
 												priceHtml += 'placeholder="Enter SKU Price" value="'+ style_price.toFixed(2) + '"></input>';
 												priceHtml += '</div>';
 												priceHtml += '</div>';
+												
+												
+												var taxInclusiveHtml = '<div class="form-group">';
+												taxInclusiveHtml += '<label><small><span class="pos-mandatory">Price Tax (Inclusive/Exclusive)</span></small></label>';
+												taxInclusiveHtml += '<div class="input-group">';
+												taxInclusiveHtml += '<span>'+ style_tax_inclusive + '</span>';
+												taxInclusiveHtml += '</div>';
+												taxInclusiveHtml += '</div>';
+												
+												
 
 												var inventoryHtml = '<div class="form-group">';
 												inventoryHtml += '<label><small><span>SKU Initial Stock Count</span></small></label>';
@@ -196,6 +206,9 @@ $
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '<div class="col-12">';
 												outerStructureHtml += priceHtml;
+												outerStructureHtml += '</div>';
+												outerStructureHtml += '<div class="col-12">';
+												outerStructureHtml += taxInclusiveHtml;
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '</div>';
 												outerStructureHtml += '<div class="col">';

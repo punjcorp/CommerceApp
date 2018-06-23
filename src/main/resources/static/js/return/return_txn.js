@@ -11,6 +11,7 @@ var TxnAction = function() {
 	this.txnHeader = new TransactionHeader();
 	this.saleLineItem = new SaleLineItem();
 	this.tenderLineItem = new TenderLineItem();
+	this.customer = new Customer();
 	
 	this.saleItemList = new Array();
 	this.tenderLineItems = new Array();
@@ -29,15 +30,32 @@ $.extend(TxnAction.prototype, {
 		}
 		return false;
 	},
+	renderAll : function() {
+
+		$('#result').html('');
+
+		$.each(this.saleItemList, function(itrIndex, itrSaleLineItem) {
+
+			itrSaleLineItem.renderReturnLineItem(itrSaleLineItem, viewType);
+
+		});
+		this.renderHeaderTotals();
+
+	},
 	showSaleLineItem : function(data) {
 		var actualSaleItem = this.saleLineItem.parseReturnLineItem(data);
 		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
 			alert(i18next.t('sale_txn_validate_item'));
 		} else {
-			this.saleLineItem.renderReturnLineItem(actualSaleItem);
+			this.saleLineItem.renderReturnLineItem(actualSaleItem, viewType);
 			// Check when we need to add this to list it should be after successful render as per my understanding
 			this.saleItemList.push(actualSaleItem);
 			this.renderHeaderTotals();
+			
+			if(this.saleItemList.length>0)
+				$('#tenderOptionsContainer').removeClass('d-none');
+			else
+				$('#tenderOptionsContainer').addClass('d-none');
 		}
 	},
 	deleteSaleItemInList : function(removeItemId, totalDueAmt) {
@@ -48,21 +66,38 @@ $.extend(TxnAction.prototype, {
 		this.saleLineItem.obscureSaleLineItem(removeItemId);
 		this.removeAllTenderItems(totalDueAmt);
 		this.renderHeaderTotals();
+		if(this.saleItemList.length>0)
+			$('#tenderOptionsContainer').removeClass('d-none');
+		else
+			$('#tenderOptionsContainer').addClass('d-none');
 	},
-	reCalculateSaleItemAmounts: function(cntl, itemId) {
-		if (this.saleLineItem.validateSaleLineItem(cntl, itemId)){
-			var itemRcd= $.grep(this.saleItemList, function(item) {
+	reCalculateSaleItemAmounts : function(cntl, itemId) {
+		if (this.saleLineItem.validateSaleLineItem(cntl, itemId)) {
+			var itemRcd = $.grep(this.saleItemList, function(item) {
 				return item.itemId == itemId;
 			})
-			if(itemRcd && itemRcd.length>0){
-				var modifiedSaleItem=itemRcd[0];
+			if (itemRcd && itemRcd.length > 0) {
+				var modifiedSaleItem = itemRcd[0];
 				modifiedSaleItem.calculateAllAmounts(itemId);
 				this.renderHeaderTotals();
+				modifiedSaleItem.updateModifiedItemValues();
 			}
 		}
 
-	},	
-	
+	},
+	associateCustomer : function(customerId, customerType, customerName, customerPhone, customerEmail) {
+		this.customer.customerId = customerId;
+		this.customer.name = customerName;
+		this.customer.phone = customerPhone;
+		this.customer.email = customerEmail;
+		this.customer.customerType = customerType;
+
+		if (customerName != 'undefined' && customerName != '') {
+			$('#salesHeaderCustomer').text(customerName);
+			$('#customerHeader').removeClass('d-none');
+		}
+
+	},
 	renderHeaderTotals : function() {
 		var totalAmt = 0.00;
 		var totalDiscount = 0.00;
@@ -76,35 +111,33 @@ $.extend(TxnAction.prototype, {
 		$("[id^=li_").each(function() {
 			if (this.id.indexOf("li_itemTotal") >= 0) {
 				totalAmtText = $(this).text();
-				totalAmtText = +totalAmtText.replace(i18next.t('common_currency_sign_inr')+' ', '');
+				totalAmtText = +totalAmtText.replace(i18next.t('common_currency_sign_inr') + ' ', '');
 				totalAmt += totalAmtText;
 			}
 			if (this.id.indexOf("li_uh_discountAmt") >= 0) {
 				totalDiscount += +$(this).val();
 			}
-			if (this.id.indexOf("li_priceAmt") >= 0) {
-				var tmp_totalPrice = +$(this).text();
-				if(txn_type=='R')
-					tmp_totalPrice =tmp_totalPrice  * -1;
+			if (this.id.indexOf("li_uh_priceAmt") >= 0) {
+				var tmp_totalPrice = +$(this).val();
 				totalPrice += tmp_totalPrice;
 			}
-			if (this.id.indexOf("li_sgstAmt") >= 0) {
-				totalSGSTTax += +$(this).text();
+			if (this.id.indexOf("li_uh_sgstAmt") >= 0) {
+				totalSGSTTax += +$(this).val();
 			}
-			if (this.id.indexOf("li_cgstAmt") >= 0) {
-				totalCGSTTax += +$(this).text();
+			if (this.id.indexOf("li_uh_cgstAmt") >= 0) {
+				totalCGSTTax += +$(this).val();
 			}
-			if (this.id.indexOf("li_igstAmt") >= 0) {
-				totalIGSTTax += +$(this).text();
+			if (this.id.indexOf("li_uh_igstAmt") >= 0) {
+				totalIGSTTax += +$(this).val();
 			}
 		});
 
 		totalTax = totalSGSTTax + totalCGSTTax;
 
-		$('#salesHeaderSubTotalAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalPrice.toFixed(2));
-		$('#salesHeaderDiscountAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalDiscount.toFixed(2));
-		$('#salesHeaderTaxAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalTax.toFixed(2));
-		$('#salesHeaderTotalAmt').text(i18next.t('common_currency_sign_inr')+'  ' + totalAmt.toFixed(2));
+		$('#salesHeaderSubTotalAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalPrice.toFixed(2));
+		$('#salesHeaderDiscountAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalDiscount.toFixed(2));
+		$('#salesHeaderTaxAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalTax.toFixed(2));
+		$('#salesHeaderTotalAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalAmt.toFixed(2));
 
 		$('#hc_totalSubAmt').val(totalPrice.toFixed(2));
 		$('#hc_totalDiscountAmt').val(totalDiscount.toFixed(2));
@@ -119,7 +152,7 @@ $.extend(TxnAction.prototype, {
 		this.txnHeader.businessDate = txn_businessDate;
 		this.txnHeader.username = txn_user;
 		this.txnHeader.createdBy = txn_user;
-		
+
 		this.txnHeader.startTime = txnStartTime;
 
 		this.txnHeader.subTotalAmt = totalPrice;
@@ -133,7 +166,7 @@ $.extend(TxnAction.prototype, {
 	},
 	showTender : function(amount, tenderId) {
 		var tenderLineItem = this.addTenderItem(amount, tenderId);
-		var tenderIndex=this.tenderLineItems.length-1;
+		var tenderIndex = this.tenderLineItems.length - 1;
 		tenderLineItem.updateTenderIndex(tenderIndex);
 		tenderLineItem.render();
 	},
@@ -147,29 +180,48 @@ $.extend(TxnAction.prototype, {
 		var removeLineItem = this.tenderLineItems[removeIndex];
 		removeLineItem.clearTenderContainer();
 		this.tenderLineItems.splice(removeIndex, 1);
-		$.each(this.tenderLineItems,function(index){
+		$.each(this.tenderLineItems, function(index) {
 			this.updateTenderIndex(index);
 			this.render();
 		});
 		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
-		
+
 	},
 	removeAllTenderItems : function(totalDueAmt) {
-		var rcdCount=this.tenderLineItems.length;
+		var rcdCount = this.tenderLineItems.length;
 		this.tenderLineItem.clearTenderContainer();
-		this.tenderLineItems=new Array();
+		this.tenderLineItems = new Array();
 		this.calculateDue(g_nbr_zero, totalDueAmt, 'Cash');
-	},	
+	},
 	processTender : function() {
 		var tenderRadio = $('input[name="tenderRadio"]');
 		var tenderId = tenderRadio.filter(':checked').val();
 		if (tenderId) {
 			var tenderEnteredAmt = +$('#dueAmt').val();
 			var totalDueAmt = +$('#hc_totalDueAmt').val();
-			
+
 			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderId);
 		} else {
 			alert(i18next.t('sale_txn_validate_tender'));
+		}
+
+	},
+	validateCreditTender : function() {
+
+		var tenderRadio = $('input[name="tenderRadio"]');
+		var tenderId = tenderRadio.filter(':checked').val();
+		var tenderName = $('#' + tenderId + 'tenderName').val();
+
+		if (tenderName != undefined && tenderName == 'Credit') {
+			if (this.customer.name == undefined || this.customer.name == '') {
+				alert('The customer details are needed for selecting Credit Tender!!');
+				return false;
+
+			} else {
+				return true;
+			}
+		} else {
+			return true;
 		}
 
 	},
@@ -233,29 +285,31 @@ $.extend(TxnAction.prototype, {
 			$('#dueAmt').val(g_nbr_zero.toFixed(2));
 			$('#tenderChangeDueCol').removeClass('d-none');
 			$('#hc_changeDueAmt').val(changeDueAmount.toFixed(2));
-			$('#tenderChangeDueAmt').text(i18next.t('common_currency_sign_inr')+' ' + changeDueAmount.toFixed(2));
+			$('#tenderChangeDueAmt').text(i18next.t('common_currency_sign_inr') + ' ' + changeDueAmount.toFixed(2));
 		}
 	},
 
 	resetChangeDueAmount : function() {
 		$('#tenderChangeDueCol').addClass('d-none');
 		$('#hc_changeDueAmt').val(g_nbr_zero.toFixed(2));
-		$('#tenderChangeDueAmt').text(i18next.t('common_currency_sign_inr')+' ' + g_nbr_zero.toFixed(2));
+		$('#tenderChangeDueAmt').text(i18next.t('common_currency_sign_inr') + ' ' + g_nbr_zero.toFixed(2));
 	},
 	preTxnCompletion : function() {
 		this.txnHeader.endTime = txnEndTime;
-		var changeAmount=+$('#hc_changeDueAmt').val();
-		if(changeAmount<0){
-			var tenderCount=this.tenderLineItems.length;
-			this.tenderLineItems[tenderCount-1].changeFlag=true;
-			this.addTenderItem(changeAmount,tndr_change_id);
+		var changeAmount = +$('#hc_changeDueAmt').val();
+		if (changeAmount < 0) {
+			var tenderCount = this.tenderLineItems.length;
+			this.tenderLineItems[tenderCount - 1].changeFlag = true;
+			this.addTenderItem(changeAmount, tndr_change_id);
 		}
-	},	
+	},
 	processCompletedTxn : function() {
 		this.preTxnCompletion();
-		this.saleTxn.transactionHeader=this.txnHeader;
-		this.saleTxn.txnSaleLineItems=this.saleItemList;
-		this.saleTxn.txnTenderLineItems=this.tenderLineItems;
+		this.saleTxn.transactionHeader = this.txnHeader;
+		this.saleTxn.txnSaleLineItems = this.saleItemList;
+		this.saleTxn.txnTenderLineItems = this.tenderLineItems;
+		this.saleTxn.customer = this.customer;
+		
 		this.saleTxn.saveReturnTxnDetails();
 	}
 

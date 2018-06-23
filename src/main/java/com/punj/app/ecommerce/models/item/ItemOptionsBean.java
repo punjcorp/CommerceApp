@@ -21,6 +21,8 @@ import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
  */
 public class ItemOptionsBean implements Serializable {
 
+	private static final long serialVersionUID = -8050456441958425916L;
+	
 	private BigInteger itemId;
 	@NotBlank(message = "{commerce.error.string.empty}")
 	@Size(min = 2, max = 15, message = "{commerce.error.string.size}")
@@ -28,6 +30,7 @@ public class ItemOptionsBean implements Serializable {
 	@NotBlank(message = "{commerce.error.option.empty}")
 	private String uom;
 	private Boolean discountFlag;
+	private String taxInclusive;
 	private Boolean taxFlag;
 	private Boolean askQtyFlag;
 	private Boolean askPriceFlag;
@@ -438,6 +441,20 @@ public class ItemOptionsBean implements Serializable {
 	 */
 	public void setNextLevelCreated(String nextLevelCreated) {
 		this.nextLevelCreated = nextLevelCreated;
+	}
+
+	/**
+	 * @return the taxInclusive
+	 */
+	public String getTaxInclusive() {
+		return taxInclusive;
+	}
+
+	/**
+	 * @param taxInclusive the taxInclusive to set
+	 */
+	public void setTaxInclusive(String taxInclusive) {
+		this.taxInclusive = taxInclusive;
 	}
 
 }

@@ -79,7 +79,7 @@
 								<div th:if="${#fields.hasErrors('longDesc')}" th:errors="*{longDesc}" class="text-danger">Description Error</div>
 							</div>
 							<div class="row">
-								<div class="col-xs-6 col-sm-6 col-md-6">
+								<div class="col-xs-4 col-sm-4 col-md-4">
 									<div class="form-group">
 										<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.current.price}">Current Selling Price</span></small></label>
 										<div class="input-group">
@@ -93,7 +93,21 @@
 											Price Error</div>
 									</div>
 								</div>
-								<div class="col-xs-6 col-sm-6 col-md-6">
+								
+								<div class="col-xs-3 col-sm-3 col-md-3">
+									<div class="form-group">
+										<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.price.inclusive.flag}">Item Price (Inclusive/Exclusive)</span></small></label>
+										<div class="input-group">
+											<select th:field="*{itemOptions.taxInclusive}" class="form-control input-sm">
+												<option class="form-text" value="exclusive" th:selected="${(itemBean.itemOptions.taxInclusive!=null and itemBean.itemOptions.taxInclusive=='exclusive') or (itemBean.itemOptions.taxInclusive==null)}">Exclusive</option>
+												<option class="form-text" value="inclusive" th:selected="${(itemBean.itemOptions.taxInclusive!=null and itemBean.itemOptions.taxInclusive=='inclusive')}">Inclusive</option>
+											</select>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.taxInclusive')}" th:errors="*{itemOptions.taxInclusive}" class="text-danger">Tax Inclusive Error</div>
+									</div>
+								</div>
+								
+								<div class="col-xs-5 col-sm-5 col-md-5">
 									<div class="form-group">
 										<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.tax.group}">Tax Group</span></small></label>
 										<div class="input-group">

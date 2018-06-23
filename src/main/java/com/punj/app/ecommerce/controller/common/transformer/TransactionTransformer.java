@@ -61,7 +61,7 @@ public class TransactionTransformer {
 		txnDTO.setTxnLineItems(txnLIs);
 
 		List<TaxLineItem> taxLIs = new ArrayList<>();
-		TransactionTransformer.transformSaleLineItems(txnDTO, saleTxn, taxLIs, txnId);
+		TransactionTransformer.transformSaleLineItems(txnDTO, saleTxn, taxLIs, txnId, MVCConstants.TXN_SALE_PARAM);
 
 		List<TenderLineItem> tenderLIs = TransactionTransformer.transformTenderLineItems(saleTxn, saleTxn.getTxnTenderLineItems(), txnId);
 		txnDTO.setTenderLineItems(tenderLIs);
@@ -78,7 +78,7 @@ public class TransactionTransformer {
 		return txnDTO;
 	}
 
-	public static TransactionDTO transformReturnTransaction(SaleTransaction saleTxn) {
+	public static TransactionDTO transformReturnTransaction(SaleTransaction saleTxn, String username) {
 		TransactionDTO txnDTO = new TransactionDTO();
 
 		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_RETURN_PARAM);
@@ -90,11 +90,20 @@ public class TransactionTransformer {
 		txnDTO.setTxnLineItems(txnLIs);
 
 		List<TaxLineItem> taxLIs = new ArrayList<>();
-		TransactionTransformer.transformSaleLineItems(txnDTO, saleTxn, taxLIs, txnId);
+		TransactionTransformer.transformSaleLineItems(txnDTO, saleTxn, taxLIs, txnId, MVCConstants.TXN_RETURN_PARAM);
 
 		List<TenderLineItem> tenderLIs = TransactionTransformer.transformTenderLineItems(saleTxn, saleTxn.getTxnTenderLineItems(), txnId);
 		txnDTO.setTenderLineItems(tenderLIs);
 
+		if (saleTxn.getCustomer() != null && StringUtils.isNotBlank(saleTxn.getCustomer().getName())) {
+			TransactionCustomer txnCustomer = TransactionTransformer.transformCustomerBean(saleTxn.getCustomer(), txnId);
+			txnDTO.setTxnCustomer(txnCustomer);
+			if (txnCustomer.getTransactionCustomerId().getCustomerId() == null) {
+				Customer customer = TransactionTransformer.transformCustomerBeanToCustomer(saleTxn.getCustomer(), username);
+				txnDTO.setCustomer(customer);
+			}
+		}
+		
 		return txnDTO;
 	}
 
@@ -125,10 +134,13 @@ public class TransactionTransformer {
 		txn.setSubTotalAmt(txnHeader.getSubTotalAmt());
 		txn.setDiscountTotalAmt(txnHeader.getTotalDiscountAmt());
 
-		// Recalculate everything so that all calculation are bug free
-		// Check the possibility of tax recalculation again
 		txn.setTaxTotalAmt(txnHeader.getTotalCGSTTaxAmt().add(txnHeader.getTotalSGSTTaxAmt()));
-		txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).subtract(txn.getDiscountTotalAmt()));
+		if(MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
+			txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).add(txn.getDiscountTotalAmt()));
+		}else {
+			txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).subtract(txn.getDiscountTotalAmt()));
+		}
+		
 
 		txn.setTxnType(txnType);
 		logger.info("The transaction header details has been transformed now");
@@ -241,7 +253,7 @@ public class TransactionTransformer {
 	}
 
 	public static SaleLineItem transformSaleLineItem(SaleTransaction saleTxn, com.punj.app.ecommerce.models.transaction.SaleLineItem saleLineItem,
-			TransactionId txnId) {
+			TransactionId txnId, String txnType) {
 
 		SaleLineItem saleLI = new SaleLineItem();
 
@@ -256,16 +268,7 @@ public class TransactionTransformer {
 
 		saleLI.setSaleLineItemId(saleLIId);
 
-		/**
-		 * The inventory should be subtracted for all the sale line items
-		 */
-		if (saleLineItem.getQty() != null && saleLineItem.getQty().intValue() > 0) {
-			saleLI.setTxnType(MVCConstants.TXN_SALE_PARAM);
-			saleLI.setInvAction(MVCConstants.SUBTRACT);
-		} else {
-			saleLI.setTxnType(MVCConstants.TXN_RETURN_PARAM);
-			saleLI.setInvAction(MVCConstants.ADD);
-		}
+		
 
 		saleLI.setUpc(saleLineItem.getItemId().toString());
 
@@ -285,9 +288,30 @@ public class TransactionTransformer {
 			saleLI.setTaxAmt(saleLineItem.getSgstTax().add(saleLineItem.getCgstTax()));
 		}
 
+		
 		// All the amounts are recalculated
 		saleLI.setBaseExtendedAmt(saleLI.getUnitPrice().multiply(saleLI.getQty()));
-		saleLI.setExtendedAmt(saleLI.getBaseExtendedAmt().subtract(saleLI.getDiscountAmt()));
+		
+		/**
+		 * The inventory should be subtracted for all the sale line items
+		 */
+		if(MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
+			
+			saleLI.setTxnType(MVCConstants.TXN_RETURN_PARAM);
+			saleLI.setInvAction(MVCConstants.ADD);
+			
+			saleLI.setExtendedAmt(saleLI.getBaseExtendedAmt().add(saleLI.getDiscountAmt()));
+		
+			
+		}else if(MVCConstants.TXN_SALE_PARAM.equals(txnType)) {
+			
+			saleLI.setTxnType(MVCConstants.TXN_SALE_PARAM);
+			saleLI.setInvAction(MVCConstants.SUBTRACT);
+			
+			saleLI.setExtendedAmt(saleLI.getBaseExtendedAmt().subtract(saleLI.getDiscountAmt()));
+			
+		}
+		
 		saleLI.setNetAmt(saleLI.getExtendedAmt());
 		saleLI.setGrossAmt(saleLI.getExtendedAmt().add(saleLI.getTaxAmt()));
 
@@ -314,7 +338,7 @@ public class TransactionTransformer {
 		return saleLI;
 	}
 
-	public static TransactionDTO transformSaleLineItems(TransactionDTO txnDTO, SaleTransaction saleTxn, List<TaxLineItem> taxLIs, TransactionId txnId) {
+	public static TransactionDTO transformSaleLineItems(TransactionDTO txnDTO, SaleTransaction saleTxn, List<TaxLineItem> taxLIs, TransactionId txnId, String txnType) {
 
 		List<com.punj.app.ecommerce.models.transaction.SaleLineItem> saleLineItems = saleTxn.getTxnSaleLineItems();
 		List<SaleLineItem> saleLIs = new ArrayList<>(saleLineItems.size());
@@ -324,7 +348,7 @@ public class TransactionTransformer {
 		List<TaxLineItem> tmpTaxLIs;
 
 		for (com.punj.app.ecommerce.models.transaction.SaleLineItem saleLineItem : saleLineItems) {
-			saleLI = TransactionTransformer.transformSaleLineItem(saleTxn, saleLineItem, txnId);
+			saleLI = TransactionTransformer.transformSaleLineItem(saleTxn, saleLineItem, txnId, txnType);
 			saleLIs.add(saleLI);
 
 			tmpTaxLIs = TransactionTransformer.transformTaxLineItems(saleTxn, saleLI, saleLineItem.getTaxLineItems(), txnId);

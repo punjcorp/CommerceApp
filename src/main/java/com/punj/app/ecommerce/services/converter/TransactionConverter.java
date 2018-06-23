@@ -59,10 +59,14 @@ public class TransactionConverter {
 		return txn;
 	}
 
-	public static AccountJournal convertCreditToAJ(AccountHead accountHead, List<TenderLineItem> txnCreditTenders, BigDecimal totalCreditAmt, String username) {
+	public static AccountJournal convertCreditToAJ(AccountHead accountHead, List<TenderLineItem> txnCreditTenders, BigDecimal totalCreditAmt, String username, String txnType) {
 		AccountJournal accountJournal = new AccountJournal();
 
-		accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT);
+		if(ServiceConstants.TXN_SALE.equals(txnType))
+			accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT);
+		else if(ServiceConstants.TXN_RETURN.equals(txnType))
+			accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT_RETURN);
+		
 		accountJournal.setAccountId(accountHead.getAccountId());
 		accountJournal.setAmount(totalCreditAmt);
 		accountJournal.setComments("Transaction " + txnCreditTenders.get(0).getTransactionLineItemId().toString() + "Credit related entries");
