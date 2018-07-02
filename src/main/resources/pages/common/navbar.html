@@ -20,13 +20,12 @@
 		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false"> <span th:text="#{commerce.home.link.dept}">Shop by Department</span>
-					</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="#">Dept 1</a> <a class="dropdown-item" href="#">Dept 2</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#"><span th:text="#{commerce.home.link.recommended}">Recommend Items</span></a>
+					<li class="nav-item"><div class="valign-center">
+							<a class="nav-link" id="home" th:href="@{/home}"><i class="fas fa-home fa-2x mx-2"></i><span th:text="#{commerce.home.link.home}">Home</span></a>
+						</div></li>
+					<li class="nav-item"><div class="valign-center">
+							<a class="nav-link" id="home" th:href="@{/admin/home}"><i class="fas fa-user-tie fa-2x mx-2"></i><span
+								th:text="#{commerce.home.link.admin}">Admin</span></a>
 						</div></li>
 				</ul>
 				<form class="form-inline my-2 my-lg-0 navbar-nav">
@@ -40,10 +39,9 @@
 								th:text="#{commerce.lang.in.hi}"></span></option>
 						<option class="form-text" value="pa_IN" th:selected="${(#locale.language+'_'+#locale.country)=='pa_IN'}"><span
 								th:text="#{commerce.lang.in.pa}"></span></option>
-					</select> <a class="nav-link" href="../manage_cart.html" th:href="@{/manage_cart}"><i class="material-icons">shopping_cart</i></a> <a class="nav-link"
-						href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="material-icons rotate-180">exit_to_app</i></a>
+					</select> <a class="nav-link" href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="fas fa-sign-in-alt fa-2x mx-2"></i></a>
 					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false"> <i class="fas fa-user-cog"></i> <span th:text="#{commerce.home.link.account}">Your
+						aria-haspopup="true" aria-expanded="false"> <i class="fas fa-user-cog fa-2x"></i> <span th:text="#{commerce.home.link.account}">Your
 								Account</span>
 					</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -52,20 +50,30 @@
 								</span>
 							</span><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a> <a class="dropdown-item" id="changepassword"
 								th:href="@{/manage_password}"><i class="fas fa-key mr-2"></i><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a>
-							<a class="dropdown-item" id="manageaddress" th:href="@{/manage_address}"><span class="mr-2"> <span class="fa-layers fa-fw">
-										<i class="far fa-address-book"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
-								</span>
-							</span><span th:text="#{commerce.home.menu.manage.address}">Manage Addresses</span></a> <a class="dropdown-item" id="managecard" th:href="@{/manage_card}"><span
-								class="mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-credit-card"></i> <i class="fas fa-cog"
-										data-fa-transform="shrink-10 right-11 up-4"></i>
-								</span>
-							</span><span th:text="#{commerce.home.menu.manage.card}">Manage Cards</span></a>
-						</div></li> <a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()"> <i class="material-icons">exit_to_app</i>
+						</div></li> <a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()"> <i class="fas fa-sign-out-alt fa-2x mx-2"></i>
 					</a>
 				</form>
 			</div>
 		</nav>
-		<!-- Item Lookup Modal -->
+		<!-- Alert Modal -->
+		<div class="modal fade " id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header" id="alertModalHeader">
+						<h5 class="modal-title" id="alertModalTitle">
+							<span th:text="#{commerce.screen.common.busy.header}"> Work In Progress</span>
+						</h5>
+					</div>
+					<div class="modal-body text-center m-2">
+						<div class="col-12 text-center" id="alertModalBody"></div>
+					</div>
+					<div class="modal-footer" id="alertModalFooter">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Busy Screen Modal -->
 		<div class="modal fade " id="screenBusyModal" tabindex="-1" role="dialog" aria-labelledby="screenBusyModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
 				<div class="modal-content">

@@ -99,34 +99,95 @@ public class FinanceServiceImpl implements FinanceService {
 
 	@Override
 	@Transactional
-	public DailyTotals upsertStoreTotals(DailyTotals storeTotals) {
+	public DailyTotals upsertStoreTotals(DailyTotals storeTotals, String txnType) {
 
 		DailyTotals storeTotalsCriteria = new DailyTotals();
 		storeTotalsCriteria.setBusinessDate(storeTotals.getBusinessDate());
 		storeTotalsCriteria.setLocationId(storeTotals.getLocationId());
-		storeTotalsCriteria.setRegisterId(storeTotals.getRegisterId());
 
-		storeTotalsCriteria = this.dailyTotalsRepository.findOne(Example.of(storeTotalsCriteria));
+		List<DailyTotals> storeTotalsList = this.dailyTotalsRepository.findAll(Example.of(storeTotalsCriteria));
 
-		if (storeTotalsCriteria != null)
-			storeTotals.setDailyTotalsId(storeTotalsCriteria.getDailyTotalsId());
+		DailyTotals storeTotalsActual = null;
 
-		storeTotals = this.dailyTotalsRepository.save(storeTotals);
-		if (storeTotals != null)
+		if (storeTotalsList != null && !storeTotalsList.isEmpty()) {
+			for (DailyTotals dlyTotal : storeTotalsList) {
+				if (dlyTotal.getRegisterId() == null) {
+					storeTotalsActual = dlyTotal;
+					break;
+				}
+			}
+		}
+
+		storeTotalsActual = this.updateStoreTotalsDetails(storeTotalsActual, storeTotals, txnType);
+		storeTotalsActual = this.dailyTotalsRepository.save(storeTotalsActual);
+		if (storeTotalsActual != null)
 			logger.info("The store total details has been updated successfully");
 		else
 			logger.info("The store total details were not saved due to some issues.");
+
+		return storeTotalsActual;
+	}
+
+	private DailyTotals updateStoreTotalsDetails(DailyTotals storeTotalsResult, DailyTotals storeTotals, String txnType) {
+
+		if (txnType.equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+			if (storeTotalsResult != null) {
+				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount() + BigInteger.ONE.intValue());
+				logger.info("The existing store total record has been updated with the register closing totals");
+				return storeTotalsResult;
+			}
+		} else if (txnType.equals(ServiceConstants.TXN_OPEN_REGISTER)) {
+			if(storeTotalsResult != null) {
+				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount()+1);
+				return storeTotalsResult;
+			}else {
+				storeTotals.setEndOfDayAmount(null);
+				return storeTotals;
+			}
+			
+		}
 		return storeTotals;
 	}
 
 	@Override
 	@Transactional
-	public DailyTotals upsertRegisterTotals(DailyTotals registerTotals) {
+	public DailyTotals upsertRegisterTotals(DailyTotals registerTotals, String txnType) {
+
+		DailyTotals registerTotalsCriteria = new DailyTotals();
+		registerTotalsCriteria.setLocationId(registerTotals.getLocationId());
+		registerTotalsCriteria.setRegisterId(registerTotals.getRegisterId());
+		registerTotalsCriteria.setBusinessDate(registerTotals.getBusinessDate());
+
+		DailyTotals registerTotalsResult = null;
+		List<DailyTotals> registerTotalsResults = this.dailyTotalsRepository.findAll(Example.of(registerTotalsCriteria));
+		if (registerTotalsResults != null && !registerTotalsResults.isEmpty())
+			registerTotalsResult = registerTotalsResults.get(0);
+
+		registerTotals = this.updateTotalsDetails(registerTotalsResult, registerTotals, txnType);
 		registerTotals = this.dailyTotalsRepository.save(registerTotals);
+
 		if (registerTotals != null)
 			logger.info("The register total details has been updated successfully");
 		else
 			logger.info("The register total details were not saved due to some issues.");
+		return registerTotals;
+	}
+
+	private DailyTotals updateTotalsDetails(DailyTotals registerTotalsResult, DailyTotals registerTotals, String txnType) {
+		if (txnType.equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+			if (registerTotalsResult != null) {
+				registerTotalsResult.setEndOfDayAmount(registerTotals.getEndOfDayAmount());
+				registerTotalsResult.setTotalTxnCount(registerTotalsResult.getTotalTxnCount() + BigInteger.ONE.intValue());
+				logger.info("The existing register total record has been updated with the register closing totals");
+				return registerTotalsResult;
+			} else {
+				registerTotals.setEndOfDayAmount(null);
+				return registerTotals;
+			}
+		} else if (txnType.equals(ServiceConstants.TXN_OPEN_REGISTER) && registerTotalsResult == null) {
+			registerTotals.setEndOfDayAmount(null);
+			return registerTotals;
+		}
 		return registerTotals;
 	}
 
@@ -195,12 +256,62 @@ public class FinanceServiceImpl implements FinanceService {
 			}
 		}
 		if (storeTotalsRcd != null) {
-			if (action.equals(ServiceConstants.ACTION_EXPENSE)) {
+			switch (action) {
+			case ServiceConstants.ACTION_EXPENSE:
+
+				if (storeTotalsRcd.getTotalNoSalesAmount() != null) {
+					storeTotalsRcd.setTotalNoSalesCount(storeTotalsRcd.getTotalNoSalesCount() + 1);
+					storeTotalsRcd.setTotalNoSalesAmount(storeTotalsRcd.getTotalNoSalesAmount().add(storeTotals.getTotalTxnAmount()));
+				} else {
+					storeTotalsRcd.setTotalNoSalesCount(BigInteger.ONE.intValue());
+					storeTotalsRcd.setTotalNoSalesAmount(storeTotals.getTotalTxnAmount());
+				}
+
 				storeTotalsRcd.setTotalTxnAmount(storeTotalsRcd.getTotalTxnAmount().subtract(storeTotals.getTotalTxnAmount()));
 				storeTotalsRcd.setTotalTxnCount(storeTotalsRcd.getTotalTxnCount() + BigInteger.ONE.intValue());
-			} else {
+
+				break;
+
+			case ServiceConstants.TXN_RETURN:
+
+				if (storeTotalsRcd.getTotalReturnCount() != null) {
+					storeTotalsRcd.setTotalReturnCount(storeTotalsRcd.getTotalReturnCount() + 1);
+					storeTotalsRcd.setTotalReturnsamount(storeTotalsRcd.getTotalReturnsamount().add(storeTotals.getTotalTxnAmount()));
+				} else {
+					storeTotalsRcd.setTotalReturnCount(BigInteger.ONE.intValue());
+					storeTotalsRcd.setTotalReturnsamount(storeTotals.getTotalTxnAmount());
+				}
+
 				storeTotalsRcd.setTotalTxnAmount(storeTotalsRcd.getTotalTxnAmount().add(storeTotals.getTotalTxnAmount()));
 				storeTotalsRcd.setTotalTxnCount(storeTotalsRcd.getTotalTxnCount() + BigInteger.ONE.intValue());
+
+				break;
+
+			case ServiceConstants.TXN_SALE:
+
+				if (storeTotalsRcd.getTotalSalesCount() != null) {
+					storeTotalsRcd.setTotalSalesCount(storeTotalsRcd.getTotalSalesCount() + 1);
+					storeTotalsRcd.setTotalSalesamount(storeTotalsRcd.getTotalSalesamount().add(storeTotals.getTotalTxnAmount()));
+				} else {
+					storeTotalsRcd.setTotalSalesCount(BigInteger.ONE.intValue());
+					storeTotalsRcd.setTotalSalesamount(storeTotals.getTotalTxnAmount());
+				}
+
+				storeTotalsRcd.setTotalTxnAmount(storeTotalsRcd.getTotalTxnAmount().add(storeTotals.getTotalTxnAmount()));
+				storeTotalsRcd.setTotalTxnCount(storeTotalsRcd.getTotalTxnCount() + BigInteger.ONE.intValue());
+
+				break;
+
+			case ServiceConstants.TXN_OPEN_STORE:
+			case ServiceConstants.TXN_OPEN_REGISTER:
+
+				break;
+
+			case ServiceConstants.TXN_CLOSE_STORE:
+			case ServiceConstants.TXN_CLOSE_REGISTER:
+				storeTotalsRcd.setTotalTxnCount(storeTotalsRcd.getTotalTxnCount() + BigInteger.ONE.intValue());
+
+				break;
 			}
 
 			storeTotalsRcd = this.dailyTotalsRepository.save(storeTotalsRcd);
@@ -216,7 +327,7 @@ public class FinanceServiceImpl implements FinanceService {
 	@Override
 	@Transactional
 	public DailyTotals updateRegisterTotals(DailyTotals registerTotals, String action) {
-		DailyTotals updatedTotals=null;
+		DailyTotals updatedTotals = null;
 		DailyTotals registerTotalsCriteria = new DailyTotals();
 		registerTotalsCriteria.setLocationId(registerTotals.getLocationId());
 		registerTotalsCriteria.setRegisterId(registerTotals.getRegisterId());
@@ -224,39 +335,101 @@ public class FinanceServiceImpl implements FinanceService {
 		registerTotalsCriteria = this.dailyTotalsRepository.findOne(Example.of(registerTotalsCriteria));
 		if (registerTotalsCriteria != null) {
 			registerTotals.setDailyTotalsId(registerTotalsCriteria.getDailyTotalsId());
-			if (action.equals(ServiceConstants.ACTION_EXPENSE)) {
-				registerTotals.setTotalTxnAmount(registerTotalsCriteria.getTotalTxnAmount().subtract(registerTotals.getTotalTxnAmount()));
-				registerTotals.setTotalTxnCount(registerTotalsCriteria.getTotalTxnCount() + registerTotals.getTotalTxnCount());
-			} else {
-				registerTotals.setTotalTxnAmount(registerTotalsCriteria.getTotalTxnAmount().add(registerTotals.getTotalTxnAmount()));
-				registerTotals.setTotalTxnCount(registerTotalsCriteria.getTotalTxnCount() + registerTotals.getTotalTxnCount());
+
+			switch (action) {
+			case ServiceConstants.ACTION_EXPENSE:
+
+				if (registerTotalsCriteria.getTotalNoSalesCount() != null) {
+					registerTotalsCriteria.setTotalNoSalesAmount(registerTotalsCriteria.getTotalNoSalesAmount().add(registerTotals.getTotalTxnAmount()));
+					registerTotalsCriteria.setTotalNoSalesCount(registerTotalsCriteria.getTotalNoSalesCount() + 1);
+				} else {
+					registerTotalsCriteria.setTotalNoSalesAmount(registerTotals.getTotalTxnAmount());
+					registerTotalsCriteria.setTotalNoSalesCount(1);
+				}
+
+				registerTotalsCriteria.setTotalTxnAmount(registerTotalsCriteria.getTotalTxnAmount().subtract(registerTotals.getTotalTxnAmount()));
+				registerTotalsCriteria.setTotalTxnCount(registerTotalsCriteria.getTotalTxnCount() + 1);
+
+				break;
+
+			case ServiceConstants.TXN_RETURN:
+
+				if (registerTotalsCriteria.getTotalReturnCount() != null) {
+					registerTotalsCriteria.setTotalReturnCount(registerTotalsCriteria.getTotalReturnCount() + 1);
+					registerTotalsCriteria.setTotalReturnsamount(registerTotalsCriteria.getTotalReturnsamount().add(registerTotals.getTotalTxnAmount()));
+				} else {
+					registerTotalsCriteria.setTotalReturnCount(1);
+					registerTotalsCriteria.setTotalReturnsamount(registerTotals.getTotalTxnAmount());
+				}
+
+				registerTotalsCriteria.setTotalTxnAmount(registerTotalsCriteria.getTotalTxnAmount().add(registerTotals.getTotalTxnAmount()));
+				registerTotalsCriteria.setTotalTxnCount(registerTotalsCriteria.getTotalTxnCount() + 1);
+
+				break;
+
+			case ServiceConstants.TXN_SALE:
+				if (registerTotalsCriteria.getTotalSalesCount() != null) {
+					registerTotalsCriteria.setTotalSalesCount(registerTotalsCriteria.getTotalSalesCount() + 1);
+					registerTotalsCriteria.setTotalSalesamount(registerTotalsCriteria.getTotalSalesamount().add(registerTotals.getTotalTxnAmount()));
+				} else {
+					registerTotalsCriteria.setTotalSalesCount(1);
+					registerTotalsCriteria.setTotalSalesamount(registerTotals.getTotalTxnAmount());
+				}
+
+				registerTotalsCriteria.setTotalTxnAmount(registerTotalsCriteria.getTotalTxnAmount().add(registerTotals.getTotalTxnAmount()));
+				registerTotalsCriteria.setTotalTxnCount(registerTotalsCriteria.getTotalTxnCount() + 1);
+
+				break;
+
+			case ServiceConstants.TXN_OPEN_STORE:
+			case ServiceConstants.TXN_OPEN_REGISTER:
+
+				registerTotalsCriteria.setStartOfDayAmount(registerTotalsCriteria.getStartOfDayAmount().add(registerTotals.getTotalTxnAmount()));
+
+				registerTotalsCriteria.setTotalTxnAmount(registerTotalsCriteria.getTotalTxnAmount().add(registerTotals.getTotalTxnAmount()));
+				registerTotalsCriteria.setTotalTxnCount(registerTotalsCriteria.getTotalTxnCount() + 1);
+
+				break;
 			}
 
-			updatedTotals = this.dailyTotalsRepository.save(registerTotals);
-			if (registerTotals != null)
+			updatedTotals = this.dailyTotalsRepository.save(registerTotalsCriteria);
+			if (updatedTotals != null)
 				logger.info("The register total details has been updated successfully");
 			else
 				logger.info("The register total details were not saved due to some issues.");
 
 		}
-		return registerTotals;
+		return updatedTotals;
 	}
 
 	@Override
 	@Transactional
 	public DailyTotals updateDailyTotals(DailyTotals dailyTotals, String action) {
-		
-		DailyTotals dailyTotalsOrg=new DailyTotals();
+
+		DailyTotals dailyTotalsOrg = new DailyTotals();
 		dailyTotalsOrg.setBusinessDate(dailyTotals.getBusinessDate());
 		dailyTotalsOrg.setRegisterId(dailyTotals.getRegisterId());
 		dailyTotalsOrg.setLocationId(dailyTotals.getLocationId());
 		dailyTotalsOrg.setTotalTxnAmount(dailyTotals.getTotalTxnAmount());
-		
+
 		DailyTotals registerTotals = this.updateRegisterTotals(dailyTotals, action);
 		DailyTotals storeTotals = this.updateStoreTotals(dailyTotalsOrg, action);
 
 		logger.info("The daily total details has been updated as requested");
 		return registerTotals;
+	}
+
+	@Override
+	public List<DailyTotals> retrieveDailyTotals(DailyTotals dailyTotalCriteria) {
+
+		List<DailyTotals> dailyTotalsList = this.dailyTotalsRepository.findAll(Example.of(dailyTotalCriteria));
+
+		if (dailyTotalsList != null && !dailyTotalsList.isEmpty()) {
+			logger.info("The requested daily total records has been retrieved successfully");
+		} else {
+			logger.error("There was no record found for the daily totals based on provided criteria");
+		}
+		return dailyTotalsList;
 	}
 
 }

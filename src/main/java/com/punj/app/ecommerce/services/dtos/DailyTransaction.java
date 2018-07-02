@@ -13,7 +13,7 @@ import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
  * @author admin
  *
  */
-public class DailyOpenTransaction implements Serializable {
+public class DailyTransaction implements Serializable {
 
 	private static final long serialVersionUID = 3737692312819734561L;
 

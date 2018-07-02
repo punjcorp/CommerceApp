@@ -135,7 +135,8 @@ $.extend(SaleLineItem.prototype, {
 		if (cntl.id.indexOf('li_qty') == 0 && txn_type == 'R') {
 			var qtyValue = +$('#li_qty' + itemId).val();
 			if ((qtyValue === '') || (qtyValue.toFixed(2) >= 0.00)) {
-				alert(i18next.t('sale_txn_validate_qty'));
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_qty'), btnLabels);
 				$('#li_qty' + itemId).addClass("is-invalid");
 				$('#li_qty' + itemId).val(-1);
 				$('#li_qty' + itemId).focus();
@@ -146,7 +147,8 @@ $.extend(SaleLineItem.prototype, {
 		} else if (cntl.id.indexOf('li_qty') == 0 && txn_type != 'R') {
 			var qtyValue = +$('#li_qty' + itemId).val();
 			if ((qtyValue === '') || (qtyValue.toFixed(2) <= 0.00)) {
-				alert(i18next.t('sale_txn_validate_qty'));
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_qty'), btnLabels);
 				$('#li_qty' + itemId).addClass("is-invalid");
 				$('#li_qty' + itemId).val(1);
 				$('#li_qty' + itemId).focus();
@@ -165,7 +167,8 @@ $.extend(SaleLineItem.prototype, {
 			if(discountType=='percent'){
 				
 				if(discountValue>100 || discountValue<0){
-					alert(i18next.t('sale_txn_validate_range_discount_pct'));
+					btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+					alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_range_discount_pct'), btnLabels);
 					
 					$('#li_discountAmt' + itemId).addClass("is-invalid");
 					$('#li_discountAmt' + itemId).focus();
@@ -179,7 +182,8 @@ $.extend(SaleLineItem.prototype, {
 				
 			}else if(discountType=='amount'){
 				if ((discountValue === '') || (discountValue < priceValue) || (discountValue > 0)) {
-					alert(i18next.t('sale_txn_validate_range_discount'));
+					btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+					alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_range_discount'), btnLabels);
 
 					$('#li_discountAmt' + itemId).addClass("is-invalid");
 					$('#li_discountAmt' + itemId).focus();
@@ -201,7 +205,8 @@ $.extend(SaleLineItem.prototype, {
 			
 			if(discountType=='percent'){
 				if(discountValue>100 || discountValue<0){
-					alert(i18next.t('sale_txn_validate_range_discount_pct'));
+					btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+					alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_range_discount_pct'), btnLabels);
 					
 					$('#li_discountAmt' + itemId).addClass("is-invalid");
 					$('#li_discountAmt' + itemId).focus();
@@ -213,7 +218,8 @@ $.extend(SaleLineItem.prototype, {
 					
 			}else if(discountType=='amount'){
 				if ((discountValue === '') || (discountValue.toFixed(2) < 0.00) || (discountValue > priceValue)) {
-					alert(i18next.t('sale_txn_validate_range_discount'));
+					btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+					alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_range_discount'), btnLabels);
 
 					$('#li_discountAmt' + itemId).addClass("is-invalid");
 					$('#li_discountAmt' + itemId).focus();
@@ -329,11 +335,15 @@ $.extend(SaleLineItem.prototype, {
 			if (discountAmt < itemPrice && txn_type == 'R') {
 				$('#li_discountAmt' + itemId).val(0.00);
 				$('#li_uh_discountAmt' + itemId).val(0.00);
-				alert(i18next.t('sale_txn_validate_exceed_discount'));
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_exceed_discount'), btnLabels);
+				
 			} else if (discountAmt > itemPrice && txn_type != 'R') {
 				$('#li_discountAmt' + itemId).val(0.00);
 				$('#li_uh_discountAmt' + itemId).val(0.00);
-				alert(i18next.t('sale_txn_validate_exceed_discount'));
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_exceed_discount'), btnLabels);
+				
 			} else {
 				$('#li_discountAmt' + itemId).val(discountAmt.toFixed(2));
 				$('#li_uh_discountAmt' + itemId).val(discountAmt.toFixed(2));
@@ -1040,7 +1050,8 @@ $.extend(TenderLineItem.prototype, {
 		
 		var tenderEnteredAmt = +$('#dueAmt').val();
 		if ((!tenderEnteredAmt) || (tenderEnteredAmt == '') || (tenderEnteredAmt <= 0.00)) {
-			alert(i18next.t('sale_txn_validate_amount_tender'));
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_amount_tender'), btnLabels);
 			$('#dueAmt').addClass("is-invalid");
 			$('#dueAmt').focus();
 			return false;
@@ -1064,7 +1075,8 @@ $.extend(TenderLineItem.prototype, {
 		var remainingAmount = totalDueAmt.toFixed(2) - (totalPaidAmount.toFixed(2));
 
 		if ((!tenderEnteredAmt) || (tenderEnteredAmt == '') || (tenderEnteredAmt >= 0.00) || (tenderEnteredAmt < remainingAmount)) {
-			alert(i18next.t('return_txn_validate_amount_refund'));
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('return_txn_validate_amount_refund'), btnLabels);
 			$('#dueAmt').addClass("is-invalid");
 			$('#dueAmt').focus();
 			return false;

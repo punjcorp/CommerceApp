@@ -16,6 +16,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.finance.DailySafe;
 import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.finance.LedgerJournal;
@@ -32,7 +33,7 @@ import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.converter.TenderCountDTOConverter;
-import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
+import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 
 /**
@@ -86,7 +87,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 
 	@Override
 	@Transactional
-	public Boolean saveStoreOpenTxn(DailyOpenTransaction storeOpenDetails, String username) {
+	public Boolean saveStoreOpenTxn(DailyTransaction storeOpenDetails, String username) {
 		Boolean result = Boolean.FALSE;
 		TransactionIdDTO txnIdDTO = new TransactionIdDTO();
 		txnIdDTO.setBusinessDate(storeOpenDetails.getTransactionId().getBusinessDate());
@@ -99,7 +100,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		logger.info("The store open transaction basic details has been saved successfully.");
 		if (txnDetails != null) {
 			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(storeOpenDetails.getTenders(), txnDetails.getTransactionId(),
-					username, Boolean.FALSE);
+					username, ServiceConstants.TXN_OPEN_STORE);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			logger.info("The store open tender details has been saved successfully.");
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
@@ -171,12 +172,15 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	private void updateStoreTotals(Transaction txnDetails) {
 
 		DailyTotals storeTotals = new DailyTotals();
+		String txnType=txnDetails.getTxnType();
+		
 		storeTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
 		storeTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
+		storeTotals.setStartOfDayAmount(txnDetails.getTotalAmt());
 		storeTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
 		storeTotals.setTotalTxnCount(BigInteger.ONE.intValue());
 
-		this.financeService.upsertStoreTotals(storeTotals);
+		this.financeService.upsertStoreTotals(storeTotals, txnType);
 		logger.info("The store total details has been updated successfully");
 
 	}
@@ -198,21 +202,46 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 
 	@Override
 	@Transactional
-	public Boolean saveRegisterOpenTxn(DailyOpenTransaction registerOpenDetails, String username) {
-		Boolean result = Boolean.FALSE;
+	public Boolean saveRegisterOpenTxn(DailyTransaction registerOpenDetails, String username) {
 		TransactionIdDTO txnIdDTO = registerOpenDetails.getTransactionId();
 		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_REGISTER);
+		return this.saveTransactionTenderDetails(txnDetails, registerOpenDetails, username, ServiceConstants.TXN_OPEN_REGISTER);
+	}
+
+	@Override
+	@Transactional
+	public Boolean saveRegisterCloseTxn(DailyTransaction registerCloseDetails, String username) {
+		TransactionIdDTO txnIdDTO = registerCloseDetails.getTransactionId();
+		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_CLOSE_REGISTER);
+		return this.saveTransactionTenderDetails(txnDetails, registerCloseDetails, username, ServiceConstants.TXN_CLOSE_REGISTER);
+	}
+	
+	@Override
+	@Transactional
+	public Boolean saveStoreCloseTxn(DailyTransaction storeCloseDetails, String username) {
+		TransactionIdDTO txnIdDTO = storeCloseDetails.getTransactionId();
+		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_CLOSE_STORE);
+		return this.saveTransactionTenderDetails(txnDetails, storeCloseDetails, username, ServiceConstants.TXN_CLOSE_STORE);
+	}
+
+	private Boolean saveTransactionTenderDetails(Transaction txnDetails, DailyTransaction txnRawDetails, String username, String txnType) {
+		Boolean result = Boolean.FALSE;
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(registerOpenDetails.getTenders(), txnDetails.getTransactionId(),
-					username, Boolean.TRUE);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(txnRawDetails.getTenders(), txnDetails.getTransactionId(), username,
+					txnType);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 
 				BigDecimal totalTxnAmount = BigDecimal.ZERO;
 				Integer tenderId = null;
 				for (TenderCount tenderCount : tenderCountList) {
-					totalTxnAmount = totalTxnAmount.add(tenderCount.getAmount());
+					if(ServiceConstants.TXN_CLOSE_REGISTER.equals(txnType) || ServiceConstants.TXN_CLOSE_STORE.equals(txnType)) {
+						totalTxnAmount = totalTxnAmount.add(tenderCount.getActualAmount());
+					}else {
+						totalTxnAmount = totalTxnAmount.add(tenderCount.getAmount());
+					}
+					
 					tenderId = tenderCount.getTenderCountId().getTender().getTenderId();
 				}
 				txnDetails.setTotalAmt(totalTxnAmount);
@@ -222,18 +251,14 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 				this.postTenderMovementTxn(txnDetails, locationSafe, username);
 				this.updateRegisterTotals(txnDetails);
 
-				// This is not needed for register as no new tender added or removed
-				// this.updateLedgerJournal(txnDetails, username);
-
 				result = Boolean.TRUE;
-				logger.info("The register open process has been successfully processed and saved.");
+				logger.info("The txn save procees has been successfully processed and saved.");
 			} else {
-				logger.info("The register open process has failed due to some unknown problem");
+				logger.info("The txn save procees has failed due to some unknown problem");
 			}
 		} else {
-			logger.info("The register open process has failed due to some unknown problem");
+			logger.info("The txn save procees has failed due to some unknown problem");
 		}
-
 		return result;
 	}
 
@@ -258,11 +283,21 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		tenderMovement.setAmount(txnDetails.getTotalAmt());
 		tenderMovement.setCreatedBy(username);
 		tenderMovement.setCreatedDate(LocalDateTime.now());
-		tenderMovement.setFromId(locationSafe.getLocationRepositoryId().toString());
-		tenderMovement.setReasonCode(ServiceConstants.REASON_REPO_TO_REGISTER);
-		tenderMovement.setToId(txnDetails.getTransactionId().getRegister().toString());
+		
+		if(txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+			tenderMovement.setReasonCode(ServiceConstants.REASON_REGISTER_TO_REPO);
+			tenderMovement.setFromId(txnDetails.getTransactionId().getRegister().toString());
+			tenderMovement.setToId(locationSafe.getLocationRepositoryId().toString());
+		}
+		else if(txnDetails.getTxnType().equals(ServiceConstants.TXN_OPEN_REGISTER)) {
+			tenderMovement.setReasonCode(ServiceConstants.REASON_REPO_TO_REGISTER);
+			tenderMovement.setFromId(locationSafe.getLocationRepositoryId().toString());
+			tenderMovement.setToId(txnDetails.getTransactionId().getRegister().toString());
+		}
+			
+		
 		tenderMovement.setTransactionId(txnDetails.getTransactionId());
-		tenderMovement.setTxnType(ServiceConstants.TXN_OPEN_REGISTER);
+		tenderMovement.setTxnType(txnDetails.getTxnType());
 
 		this.financeService.saveTenderMovement(tenderMovement);
 		logger.info("The register total details has been updated successfully");
@@ -275,13 +310,18 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	private void updateRegisterTotals(Transaction txnDetails) {
 
 		DailyTotals registerTotals = new DailyTotals();
+		String txnType=txnDetails.getTxnType();
+		
 		registerTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
 		registerTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
 		registerTotals.setRegisterId(txnDetails.getTransactionId().getRegister());
+		registerTotals.setStartOfDayAmount(txnDetails.getTotalAmt());
+		registerTotals.setEndOfDayAmount(txnDetails.getTotalAmt());
 		registerTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
 		registerTotals.setTotalTxnCount(BigInteger.ONE.intValue());
 
-		this.financeService.upsertRegisterTotals(registerTotals);
+		this.financeService.upsertRegisterTotals(registerTotals, txnType);
+		this.financeService.upsertStoreTotals(registerTotals, txnType);
 		logger.info("The register total details has been updated successfully");
 
 	}
@@ -307,15 +347,16 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	}
 
 	@Override
-	public List<TenderCount> searchTxnTenderCounts(Integer locationId, Integer registerId, LocalDateTime businessDate) {
+	public List<TenderCount> searchTxnTenderCounts(Integer locationId, Integer registerId, LocalDateTime businessDate, String txnType) {
 
 		TenderCount tenderCountCriteria = new TenderCount();
 		TenderCountId tenderCountCriteriaId = new TenderCountId();
 		tenderCountCriteriaId.setBusinessDate(businessDate);
 		tenderCountCriteriaId.setLocationId(locationId);
-		tenderCountCriteriaId.setRegister(registerId);
+		if(registerId!=null)
+			tenderCountCriteriaId.setRegister(registerId);
 		tenderCountCriteria.setTenderCountId(tenderCountCriteriaId);
-		tenderCountCriteria.setTxnType(ServiceConstants.TXN_OPEN_STORE);
+		tenderCountCriteria.setTxnType(txnType);
 
 		List<TenderCount> tenderCounts = this.tenderCountRepository.findAll(Example.of(tenderCountCriteria));
 

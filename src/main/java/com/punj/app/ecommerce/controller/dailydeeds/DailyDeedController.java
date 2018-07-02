@@ -53,7 +53,7 @@ import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
-import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
+import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 import com.punj.app.ecommerce.utils.Utils;
 
 /**
@@ -222,7 +222,7 @@ public class DailyDeedController {
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
-				DailyOpenTransaction storeOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
+				DailyTransaction storeOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
 				Boolean result = this.dailyDeedService.saveStoreOpenTxn(storeOpenDetails, userDetails.getUsername());
 				this.updateBeans(dailyDeedBean, model);
 				if (!result) {
@@ -405,7 +405,7 @@ public class DailyDeedController {
 			if (businessDate != null) {
 
 				Transaction txnDetails = this.txnService.searchLocationOpenTxn(locationId, businessDate);
-				if(txnDetails!=null) {
+				if (txnDetails != null) {
 					TenderCount tenderCount = this.dailyDeedService.searchTxnTenderCount(txnDetails.getTransactionId());
 
 					List<Denomination> denominations = this.commonService.retrieveAllDenominations();
@@ -430,7 +430,6 @@ public class DailyDeedController {
 						}
 					}
 				}
-				
 
 			} else {
 				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.error", null, locale));
@@ -551,7 +550,7 @@ public class DailyDeedController {
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
-				DailyOpenTransaction registerOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
+				DailyTransaction registerOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
 				Boolean result = this.dailyDeedService.saveRegisterOpenTxn(registerOpenDetails, userDetails.getUsername());
 				this.updateBeans(dailyDeedBean, model);
 				if (!result) {

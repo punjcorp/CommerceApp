@@ -129,9 +129,13 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`daily_totals` (
   `total_txn_count` INT NULL,
   `total_sales_count` INT NULL,
   `total_returns_count` INT NULL,
-  `total_txn_amount` DECIMAL NULL,
-  `total_sales_amount` DECIMAL NULL,
-  `total_returns_amount` DECIMAL NULL,
+  `total_txn_amount` DECIMAL(12,2) NULL,
+  `total_sales_amount` DECIMAL(12,2) NULL,
+  `total_returns_amount` DECIMAL(12,2) NULL,
+  `sod_amount` DECIMAL(12,2) NULL,
+  `eod_amount` DECIMAL(12,2) NULL,
+  `total_no_sales_amount` DECIMAL(12,2) NULL,
+  `total_no_sales_count` INT NULL,
   PRIMARY KEY (`daily_totals_id`))
 ENGINE = InnoDB;
 

@@ -24,7 +24,9 @@ public class DailyDeedBean {
 	private Integer locationId;
 	private String locationName;
 	private String defaultTender;
-
+	
+	private String locationStatus;
+	
 	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
 	private LocalDateTime businessDate;
 
@@ -45,6 +47,8 @@ public class DailyDeedBean {
 	private List<TenderBean> availableTenders;
 
 	private List<BaseDenominationBean> denominationList;
+
+	private ConcilationBean concilationBean;
 
 	public DailyDeedBean() {
 		tenders = new ArrayList<>();
@@ -259,6 +263,35 @@ public class DailyDeedBean {
 	 */
 	public void setReferrerURL(String referrerURL) {
 		this.referrerURL = referrerURL;
+	}
+
+	/**
+	 * @return the concilationBean
+	 */
+	public ConcilationBean getConcilationBean() {
+		return concilationBean;
+	}
+
+	/**
+	 * @param concilationBean
+	 *            the concilationBean to set
+	 */
+	public void setConcilationBean(ConcilationBean concilationBean) {
+		this.concilationBean = concilationBean;
+	}
+
+	/**
+	 * @return the locationStatus
+	 */
+	public String getLocationStatus() {
+		return locationStatus;
+	}
+
+	/**
+	 * @param locationStatus the locationStatus to set
+	 */
+	public void setLocationStatus(String locationStatus) {
+		this.locationStatus = locationStatus;
 	}
 
 }

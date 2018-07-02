@@ -19,9 +19,9 @@ public interface FinanceService {
 
 	public LedgerJournal saveLedgerDetails(LedgerJournal ledgerDetails);
 
-	public DailyTotals upsertStoreTotals(DailyTotals storeTotals);
+	public DailyTotals upsertStoreTotals(DailyTotals storeTotals, String txnType);
 
-	public DailyTotals upsertRegisterTotals(DailyTotals registerTotals);
+	public DailyTotals upsertRegisterTotals(DailyTotals registerTotals, String txnType);
 
 	public DailyTotals updateDailyTotals(DailyTotals storeTotals, String action);
 	
@@ -37,4 +37,7 @@ public interface FinanceService {
 
 	public List<LocationSafe> retrieveAllSafes(Integer locationId);
 
+	public List<DailyTotals> retrieveDailyTotals(DailyTotals dailyTotalCriteria);
+	
+	
 }

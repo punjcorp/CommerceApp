@@ -77,10 +77,23 @@ public class DefaultController {
 
 	@GetMapping(ViewPathConstants.BASE_URL)
 	public String redirectBaseUrl(Model model) {
-		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.HOME_URL;
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.CASHIER_HOME_URL;
 	}
 
-	@GetMapping(ViewPathConstants.HOME_URL)
+	
+	
+	@GetMapping(ViewPathConstants.CASHIER_HOME_URL)
+	public String login(Model model) {
+		logger.info("=====================================");
+		logger.info("WELCOME TO THE CASHIER DASHBOARD PAGE");
+		logger.info("=====================================");
+
+		return ViewPathConstants.CASHIER_DASHBOARD_PAGE;
+
+	}
+	
+	
+	@GetMapping(ViewPathConstants.ECOMMERCE_HOME_URL)
 	public String login(@ModelAttribute SearchBean searchBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
 			Principal principal) {
 		logger.info("========================");
@@ -112,7 +125,7 @@ public class DefaultController {
 
 			Pager tmpPager = itemList.getPager();
 			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
-					ViewPathConstants.HOME_URL);
+					ViewPathConstants.ECOMMERCE_HOME_URL);
 
 			model.addAttribute("items", items);
 			model.addAttribute("searchBean", searchBean);
@@ -125,7 +138,7 @@ public class DefaultController {
 			return ViewPathConstants.ERROR_PAGE;
 		}
 
-		return ViewPathConstants.HOME_PAGE;
+		return ViewPathConstants.ECOMMERCE_HOME_PAGE;
 
 	}
 

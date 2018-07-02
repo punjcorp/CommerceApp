@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +12,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.domains.common.Denomination;
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
+import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
-import com.punj.app.ecommerce.services.dtos.DailyOpenTransaction;
+import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 import com.punj.app.ecommerce.services.dtos.tender.DenominationDTO;
 import com.punj.app.ecommerce.services.dtos.tender.TenderDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
@@ -36,14 +39,14 @@ public class DailyDeedTransformer {
 		throw new IllegalStateException("DailyDeedTransformer class");
 	}
 
-	public static DailyOpenTransaction transformOpenTxnDetails(DailyDeedBean dailyDeedBean) {
-		DailyOpenTransaction storeOpenTxn = new DailyOpenTransaction();
+	public static DailyTransaction transformOpenTxnDetails(DailyDeedBean dailyDeedBean) {
+		DailyTransaction storeOpenTxn = new DailyTransaction();
 
 		TransactionIdDTO transactionId = DailyDeedTransformer.transformTransactionDetails(dailyDeedBean.getBusinessDate(), dailyDeedBean.getLocationId(),
 				dailyDeedBean.getRegister());
 		storeOpenTxn.setTransactionId(transactionId);
 
-		List<TenderDTO> tenders = DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders());
+		List<TenderDTO> tenders = DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders(), dailyDeedBean.getConcilationBean());
 		storeOpenTxn.setTenders(tenders);
 
 		logger.info("The selected ids and list index from management page has been seperated");
@@ -58,24 +61,31 @@ public class DailyDeedTransformer {
 		return transactionId;
 	}
 
-	public static List<TenderDTO> transformTenderList(List<TenderBean> tenderBeans) {
+	public static List<TenderDTO> transformTenderList(List<TenderBean> tenderBeans, ConcilationBean concilationBean) {
 		List<TenderDTO> tenders = new ArrayList<>(tenderBeans.size());
 		TenderDTO tender;
 		for (TenderBean tenderBean : tenderBeans) {
-			tender = DailyDeedTransformer.transformTenderBean(tenderBean);
+			tender = DailyDeedTransformer.transformTenderBean(tenderBean, concilationBean);
 			tenders.add(tender);
 		}
 		logger.info("The tender detail list has been transformed successfully");
 		return tenders;
 	}
 
-	private static TenderDTO transformTenderBean(TenderBean tenderBean) {
+	private static TenderDTO transformTenderBean(TenderBean tenderBean, ConcilationBean concilationBean) {
 		TenderDTO tender = new TenderDTO();
 		tender.setTenderId(tenderBean.getTenderId());
 		tender.setName(tenderBean.getName());
 		tender.setTypeCode(tenderBean.getTndrType());
-		tender.setAmount(tenderBean.getCalTAmount());
-		tender.setMediaCount(tenderBean.getCalMCount());
+		if (concilationBean != null && concilationBean.getExpectedTotalAmt() != null) {
+			tender.setAmount(concilationBean.getExpectedTotalAmt());
+			tender.setMediaCount(tenderBean.getCalMCount());
+			tender.setActualAmount(tenderBean.getCalTAmount());
+			tender.setActualMediaCount(tenderBean.getCalMCount());
+		} else {
+			tender.setAmount(tenderBean.getCalTAmount());
+			tender.setMediaCount(tenderBean.getCalMCount());
+		}
 
 		List<DenominationDTO> denominations = DailyDeedTransformer.transformDenominationList(tenderBean.getDenominations());
 		tender.setDenominations(denominations);
@@ -208,4 +218,22 @@ public class DailyDeedTransformer {
 
 		return denominations;
 	}
+
+	public static ConcilationBean transformDailyTotals(DailyTotals dailyTotals, BigDecimal expectedTotals) {
+		ConcilationBean concilationBean = new ConcilationBean();
+
+		concilationBean.setActualTotalAmt(dailyTotals.getTotalTxnAmount());
+		if (expectedTotals != null)
+			concilationBean.setExpectedTotalAmt(expectedTotals);
+		else
+			concilationBean.setExpectedTotalAmt(dailyTotals.getTotalTxnAmount());
+
+		concilationBean.setBusinessDate(dailyTotals.getBusinessDate());
+		concilationBean.setLocationId(dailyTotals.getLocationId());
+		concilationBean.setRegister(dailyTotals.getRegisterId());
+
+		logger.info("The daily totals has been transformed successfully");
+		return concilationBean;
+	}
+
 }

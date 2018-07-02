@@ -22,6 +22,9 @@ public class TenderDTO implements Serializable {
 
 	private BigDecimal amount;
 	private BigInteger mediaCount;
+	
+	private BigDecimal actualAmount;
+	private BigInteger actualMediaCount;
 
 	private List<DenominationDTO> denominations;
 
@@ -113,6 +116,34 @@ public class TenderDTO implements Serializable {
 	 */
 	public void setDenominations(List<DenominationDTO> denominations) {
 		this.denominations = denominations;
+	}
+
+	/**
+	 * @return the actualAmount
+	 */
+	public BigDecimal getActualAmount() {
+		return actualAmount;
+	}
+
+	/**
+	 * @param actualAmount the actualAmount to set
+	 */
+	public void setActualAmount(BigDecimal actualAmount) {
+		this.actualAmount = actualAmount;
+	}
+
+	/**
+	 * @return the actualMediaCount
+	 */
+	public BigInteger getActualMediaCount() {
+		return actualMediaCount;
+	}
+
+	/**
+	 * @param actualMediaCount the actualMediaCount to set
+	 */
+	public void setActualMediaCount(BigInteger actualMediaCount) {
+		this.actualMediaCount = actualMediaCount;
 	}
 
 }

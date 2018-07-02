@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.finance.LedgerJournal;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
@@ -112,6 +113,20 @@ public class TransactionConverter {
 
 		logger.info("The ledger has the txn details saved successfully");
 		return ledgerJournal;
+	}
+	
+	public static DailyTotals createDailyTotals(Transaction txnDetails) {
+		DailyTotals dailyTotals = new DailyTotals();
+
+		dailyTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
+		dailyTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
+		dailyTotals.setRegisterId(txnDetails.getTransactionId().getRegister());
+		
+		dailyTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
+		dailyTotals.setTotalTxnCount(BigDecimal.ONE.intValue());
+		
+		logger.info("The daily totals has been created for posting related to the transaction successfully");
+		return dailyTotals;
 	}
 
 }

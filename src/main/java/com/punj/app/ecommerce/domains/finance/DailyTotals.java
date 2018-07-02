@@ -44,13 +44,21 @@ public class DailyTotals implements Serializable {
 	private Integer totalSalesCount;
 	@Column(name = "total_returns_count")
 	private Integer totalReturnCount;
+	@Column(name = "total_no_sales_count")
+	private Integer totalNoSalesCount;
 
+	@Column(name = "total_no_sales_amount")
+	private BigDecimal totalNoSalesAmount;
 	@Column(name = "total_txn_amount")
 	private BigDecimal totalTxnAmount;
 	@Column(name = "total_sales_amount")
 	private BigDecimal totalSalesamount;
 	@Column(name = "total_returns_amount")
 	private BigDecimal totalReturnsamount;
+	@Column(name = "sod_amount")
+	private BigDecimal startOfDayAmount;
+	@Column(name = "eod_amount")
+	private BigDecimal endOfDayAmount;
 
 	/**
 	 * @return the dailyTotalsId
@@ -200,6 +208,66 @@ public class DailyTotals implements Serializable {
 	 */
 	public void setTotalReturnsamount(BigDecimal totalReturnsamount) {
 		this.totalReturnsamount = totalReturnsamount;
+	}
+
+	/**
+	 * @return the totalNoSalesCount
+	 */
+	public Integer getTotalNoSalesCount() {
+		return totalNoSalesCount;
+	}
+
+	/**
+	 * @param totalNoSalesCount
+	 *            the totalNoSalesCount to set
+	 */
+	public void setTotalNoSalesCount(Integer totalNoSalesCount) {
+		this.totalNoSalesCount = totalNoSalesCount;
+	}
+
+	/**
+	 * @return the totalNoSalesAmount
+	 */
+	public BigDecimal getTotalNoSalesAmount() {
+		return totalNoSalesAmount;
+	}
+
+	/**
+	 * @param totalNoSalesAmount
+	 *            the totalNoSalesAmount to set
+	 */
+	public void setTotalNoSalesAmount(BigDecimal totalNoSalesAmount) {
+		this.totalNoSalesAmount = totalNoSalesAmount;
+	}
+
+	/**
+	 * @return the startOfDayAmount
+	 */
+	public BigDecimal getStartOfDayAmount() {
+		return startOfDayAmount;
+	}
+
+	/**
+	 * @param startOfDayAmount
+	 *            the startOfDayAmount to set
+	 */
+	public void setStartOfDayAmount(BigDecimal startOfDayAmount) {
+		this.startOfDayAmount = startOfDayAmount;
+	}
+
+	/**
+	 * @return the endOfDayAmount
+	 */
+	public BigDecimal getEndOfDayAmount() {
+		return endOfDayAmount;
+	}
+
+	/**
+	 * @param endOfDayAmount
+	 *            the endOfDayAmount to set
+	 */
+	public void setEndOfDayAmount(BigDecimal endOfDayAmount) {
+		this.endOfDayAmount = endOfDayAmount;
 	}
 
 }

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+<script src="../../static/js/utils/Chart-2.7.2.min.js"></script>
+
+<style>
+
+.card-shadow{
+	box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.dashboard-heading{
+	font-size : 2 rem;
+	font-weight: 300;
+    line-height: 1.2;
+}
+
+.album {
+	padding-top: 3rem;
+	padding-left: 2rem;
+	padding-bottom: 3rem;
+}
+
+.album .card {
+	float: left;
+	width: 23.333%;
+	margin-bottom: 1rem;
+	margin-left: 1rem;
+	box-sizing: border-box;
+	border-radius: 5px;
+}
+
+.album .item .card {
+	float: left;
+	width: 23%;
+	padding: .75rem;
+	margin-bottom: 1rem;
+	margin-left: 1rem;
+	box-sizing: border-box;
+	border-radius: 5px;
+}
+
+.album .card-text {
+	font-size: 85%;
+}
+
+.album .footer {
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+}
+
+.album .footer p {
+	margin-bottom: .25rem;
+}
+
+
+</style>
+
+
+</head>
+<body>
+
+
+<div class="album p-4 m-4">
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">REVENUE</h6>
+				<h2 class="dashboard-heading">INR 600.00</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="revenue_canvas"></canvas>		
+		</div>
+	</div>
+	
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Sales Count</h6>
+				<h2 class="dashboard-heading">600</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="sales_count_canvas"></canvas>		
+		</div>
+	</div>
+
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Customer Count</h6>
+				<h2 class="dashboard-heading">50</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="customer_count_canvas"></canvas>		
+		</div>
+	</div>
+
+
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Gross Profit</h6>
+				<h2 class="dashboard-heading">INR 175.00</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="profit_canvas"></canvas>		
+		</div>
+	</div>
+
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Discount</h6>
+				<h2 class="dashboard-heading">INR 1000.00</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="discount_canvas"></canvas>		
+		</div>
+	</div>
+
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Discount %</h6>
+				<h2 class="dashboard-heading">20.00%</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="discount_percent_canvas"></canvas>		
+		</div>
+	</div>
+
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Basket Size</h6>
+				<h2 class="dashboard-heading">2</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="basket_size_canvas"></canvas>		
+		</div>
+	</div>
+
+	<div class="card card-shadow">
+		<div class="card-header card-shadow">
+				<div class="card-text">
+				<h6 class="text-muted text-uppercase">Basket Value</h6>
+				<h2 class="dashboard-heading">INR 25.00</h2>
+			</div>
+		
+		</div>
+		<div class="card-body">
+			<canvas id="basket_value_canvas"></canvas>		
+		</div>
+	</div>
+
+</div>
+
+
+<script>
+
+window.chartColors = {
+	red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	yellow: 'rgb(255, 205, 86)',
+	green: 'rgb(75, 192, 192)',
+	blue: 'rgb(54, 162, 235)',
+	purple: 'rgb(153, 102, 255)',
+	grey: 'rgb(201, 203, 207)'
+};
+
+var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+				datasets: [{
+					label: 'Sales',
+					backgroundColor: window.chartColors.orange,
+					borderColor: window.chartColors.orange,
+					data: [
+						12,
+						16,
+						20,
+						23,
+						9,
+						80,
+						43
+					],
+					fill: false,
+				}]
+			},
+			options: {
+				responsive: true,
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				}				
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('revenue_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+			var ctx = document.getElementById('sales_count_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+
+			var ctx = document.getElementById('customer_count_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+
+			var ctx = document.getElementById('profit_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+</script>
+
+</body>
+</html>

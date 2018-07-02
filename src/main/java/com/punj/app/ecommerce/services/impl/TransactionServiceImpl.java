@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.customer.Customer;
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.finance.LedgerJournal;
 import com.punj.app.ecommerce.domains.finance.TenderMovement;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
@@ -242,7 +242,7 @@ public class TransactionServiceImpl implements TransactionService {
 		txnDetails.setCreatedDate(LocalDateTime.now());
 		txnDetails.setCreatedBy(username);
 
-		txnDetails.setStatus(ServiceConstants.TXN_STATUS_STARTED);
+		txnDetails.setStatus(ServiceConstants.TXN_STATUS_COMPLETED);
 		txnDetails.setTxnType(txnType);
 
 		logger.info("The transaction {} instance has been created based on provided details", txnType);
@@ -301,7 +301,7 @@ public class TransactionServiceImpl implements TransactionService {
 		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
 		Customer customer = txnDTO.getCustomer();
 		AccountHead accountHead = null;
-		if (customer != null && customer.getCustomerId()==null) {
+		if (customer != null && customer.getCustomerId() == null) {
 			accountHead = this.accountService.createCustomer(customer, txnDTO.getTxn().getTransactionId().getLocationId());
 			if (accountHead != null) {
 				logger.info("The {} customer details has been saved successfully", accountHead.getEntityId());
@@ -312,10 +312,11 @@ public class TransactionServiceImpl implements TransactionService {
 				logger.info("There was an issue while saving customer details");
 			}
 
-		}else if(txnCustomer != null && txnCustomer.getTransactionCustomerId()!=null){
-			
-			accountHead=this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(), txnCustomer.getTransactionCustomerId().getCustomerId(), txnCustomer.getTransactionCustomerId().getLocationId());
-			if(accountHead!=null)
+		} else if (txnCustomer != null && txnCustomer.getTransactionCustomerId() != null) {
+
+			accountHead = this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(),
+					txnCustomer.getTransactionCustomerId().getCustomerId(), txnCustomer.getTransactionCustomerId().getLocationId());
+			if (accountHead != null)
 				logger.info("The account head details has been retrieved successfully");
 		}
 
@@ -330,15 +331,14 @@ public class TransactionServiceImpl implements TransactionService {
 				txnId = null;
 			}
 
-			
-			if (txnCustomer != null && accountHead!=null) {
+			if (txnCustomer != null && accountHead != null) {
 				txnCustomer.getTransactionCustomerId().setTransactionSeq(txnId.getTransactionSeq());
 				txnCustomer = this.txnCustomerRepository.save(txnCustomer);
 				if (txnCustomer != null) {
 					logger.info("The {} customer details for the customer has been saved successfully", txnCustomer.getTransactionCustomerId().getCustomerId());
 				}
 			}
-			
+
 			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
 			logger.info("The credit tender details has been added to Customer account now");
 
@@ -355,7 +355,11 @@ public class TransactionServiceImpl implements TransactionService {
 	private void updateFinanceDetails(AccountHead accountHead, TransactionDTO txnDTO, String username) {
 		List<TenderLineItem> txnTenders = txnDTO.getTenderLineItems();
 		List<TenderLineItem> txnCreditTenders = new ArrayList<>();
-		Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnDTO.getTxn().getTransactionId().getLocationId());
+
+		Transaction txnDetails = txnDTO.getTxn();
+		TransactionId txnId = txnDTO.getTxn().getTransactionId();
+
+		Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnId.getLocationId());
 		Integer tenderId = null;
 		Tender tender = null;
 		BigDecimal totalCreditAmount = BigDecimal.ZERO;
@@ -369,27 +373,34 @@ public class TransactionServiceImpl implements TransactionService {
 				}
 			}
 
-			if (!txnCreditTenders.isEmpty() && accountHead!=null) {
-				AccountJournal accountJournal = TransactionConverter.convertCreditToAJ(accountHead, txnCreditTenders, totalCreditAmount,username, txnDTO.getTxn().getTxnType());
-				accountJournal=this.paymentAccountService.savePayment(accountJournal, username);
-				if(accountJournal!=null) 
+			if (!txnCreditTenders.isEmpty() && accountHead != null) {
+				AccountJournal accountJournal = TransactionConverter.convertCreditToAJ(accountHead, txnCreditTenders, totalCreditAmount, username,
+						txnDetails.getTxnType());
+				accountJournal = this.paymentAccountService.savePayment(accountJournal, username);
+				if (accountJournal != null)
 					logger.info("The account journal details for credit tender has been saved successfully");
 				else
 					logger.info("There was error while saving credit tender details");
 			}
 
 		}
-		
-		LedgerJournal ledgerJournal =TransactionConverter.convertTxnToLedger(txnDTO, username);
-		if(ledgerJournal!=null) {
-			ledgerJournal=this.financeService.saveLedgerDetails(ledgerJournal);
-			if(ledgerJournal!=null)
-				logger.info("The ledger details for the txn {} has been saved successfully", txnDTO.getTxn().getTransactionId().toString());
+
+		LedgerJournal ledgerJournal = TransactionConverter.convertTxnToLedger(txnDTO, username);
+		if (ledgerJournal != null) {
+			ledgerJournal = this.financeService.saveLedgerDetails(ledgerJournal);
+			if (ledgerJournal != null)
+				logger.info("The ledger details for the txn {} has been saved successfully", txnId.toString());
 			else
-				logger.error("The was error saving ledger details for the txn {} ", txnDTO.getTxn().getTransactionId().toString());
+				logger.error("The was error saving ledger details for the txn {} ", txnId.toString());
 		}
-		
-		
+
+		DailyTotals dailyTotals = TransactionConverter.createDailyTotals(txnDTO.getTxn());
+		DailyTotals registerTotals = this.financeService.updateDailyTotals(dailyTotals, txnDetails.getTxnType());
+		if (registerTotals != null)
+			logger.info("The register and store totals has been updated for the txn {} successfully", txnId.toString());
+		else
+			logger.error("The was error updating register and store totals for the txn {} ", txnId.toString());
+
 	}
 
 	private Boolean saveTransactionLineItems(TransactionDTO txnDTO, TransactionId txnId) {

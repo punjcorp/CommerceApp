@@ -97,6 +97,11 @@ public final class MVCConstants {
 	public static final String DEFAULT_TENDER_PARAM="defaultTender";
 	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
 
+	
+	public static final String AJAX_STATUS_FAILURE="F";
+	public static final String AJAX_STATUS_SUCCESS="S";
+	public static final String AJAX_STATUS_PROGRESS="P";
+	
 	public static final String STATUS_RECEIVED_DESC="Received";
 	public static final String STATUS_APPROVED_DESC="Approved";
 	public static final String STATUS_DISABLED_DESC="Disabled";
@@ -230,6 +235,7 @@ public final class MVCConstants {
 	public static final String ADDRESS_REPORT="/reports/address/address.jasper";
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
+	public static final String DAILY_TOTALS_BEAN= "dailyTotalsBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String CUSTOMER_BEAN= "customerBean";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
@@ -241,6 +247,7 @@ public final class MVCConstants {
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
 	public static final String USERS_BEAN= "users";
+	public static final String DASHBOARD_REPORTS_BEAN= "reports";
 	
 	
 	

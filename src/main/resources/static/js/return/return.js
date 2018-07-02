@@ -154,16 +154,6 @@ $(function() {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	$('#btnTenderOK').click(function() {
 		if (txnAction.tenderLineItem.validateReturnTenderLineItem() && txnAction.validateCreditTender()) {
 			txnAction.processTender();
@@ -177,6 +167,10 @@ $(function() {
 	$('#btnAssociateCustomer').click(function() {
 		$('#txnCustomerModal').modal({backdrop: 'static', keyboard: false});
 	});
+	
+	$('#btnCloseRegister').click(function() {
+		window.location.href = register_close_url + '=' + txn_registerId;
+	});	
 	
 	$('#btnAddCustomer').click(function() {
 		$('#div_customerAdd').removeClass('d-none');
@@ -258,11 +252,12 @@ $(function() {
               common_currency_sign_inr: '₹',
               sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
               sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
-              sale_txn_validate_range_discount:'The discount amount should be between INR 0.00 and item price amount.Please correct the amount.',
+              sale_txn_validate_range_discount:'The discount amount should be between ₹ 0.00 and item price amount.Please correct the amount.',
               sale_txn_validate_range_discount_pct:'The discount percentage should be between 0 and 100 of item price amount.',
               sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
               sale_txn_validate_tender:'Please select tender for the payment',
-              sale_txn_validate_amount_tender:'The tendered amount should be more than 0.00',
+              return_txn_validate_amount_refund:'The refunded amount should be more than ₹ 0.00',
+              sale_txn_customer_association_needed : 'The customer details are needed for selecting Credit Tender!!',
               sale_txn_lbl_qty: 'Quantity',
               sale_txn_lbl_unit_cost: 'Unit Price',
               sale_txn_lbl_suggested_price: 'Suggested Price',
@@ -275,8 +270,12 @@ $(function() {
               sale_txn_lbl_igst: 'IGST',
               sale_txn_lbl_item_total: 'Item Total',
               sale_txn_lbl_discount_percent: '%',
-              sale_txn_lbl_discount_amount: '₹'
-              
+              sale_txn_lbl_discount_amount: '₹',
+              error_simple_alert_header : 'Alert Message',
+    		  error_confirmation_alert_header : 'Confirmation Message',
+    		  alert_btn_ok : 'OK',
+    		  alert_btn_approve : 'Approve' ,
+    		  alert_btn_cancel : 'Cancel',  
           }
         },
         hi: {

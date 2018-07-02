@@ -23,8 +23,8 @@ public final class ViewPathConstants {
 	public static final String DISPLAY_PAGE = "common/display";
 
 	public static final String BASE_URL = "/";
-	public static final String HOME_URL = "/home";
-	public static final String HOME_PAGE = "home";
+	public static final String ECOMMERCE_HOME_URL = "/ecommerce/home";
+	public static final String ECOMMERCE_HOME_PAGE = "home";
 	public static final String ERROR_PAGE = "error";
 
 	public static final String ACCESS_DENIED_URL = "/403";
@@ -32,6 +32,14 @@ public final class ViewPathConstants {
 
 	public static final String LOGOUT_URL = "/logout";
 	public static final String LOGOUT_REDIRECT_LOGIN_PAGE = "redirect:/login?logout";
+	
+	
+	public static final String ADMIN_HOME_URL = "/admin/home";
+	public static final String ADMIN_DASHBOARD_PAGE = "admin/dashboard";
+	
+	public static final String CASHIER_HOME_URL = "/home";
+	public static final String CASHIER_DASHBOARD_PAGE = "home/dashboard";
+	
 	/**
 	 * The common pages section ends
 	 */
@@ -258,6 +266,13 @@ public final class ViewPathConstants {
 	
 	public static final String REGISTER_OPEN_URL="/pos/open_register";
 	public static final String REGISTER_OPEN_PAGE="dailydeeds/register_open";
+	
+	
+	public static final String STORE_CLOSE_URL="/pos/close_store";
+	public static final String STORE_CLOSE_PAGE="dailydeeds/store_close";
+	
+	public static final String REGISTER_CLOSE_URL="/pos/close_register";
+	public static final String REGISTER_CLOSE_PAGE="dailydeeds/register_close";
 	
 	/**
 	 * The daily deed section ends

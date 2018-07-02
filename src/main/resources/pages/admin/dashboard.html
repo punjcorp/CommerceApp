@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.admin.dashboard.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<th:block th:replace="common/header:: header"></th:block>
+<script src="../../static/js/utils/Chart-2.7.2.min.js" th:src="@{/js/utils/Chart-2.7.2.min.js}"></script>
+<!-- This thymeleaf fragment include the item lookup code-->
+</head>
+<body>
+	<div id="wrapper">
+		<!-- This thymeleaf fragment include left menu -->
+		<div th:include="common/admin_menu:: leftMenu"></div>
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="row m-3">
+				<div class="col">
+					<div class="card">
+						<div class="card-header">
+							<h1 class="display-1">
+								<span th:text="#{commerce.screen.admin.dashboard.title}"></span>
+							</h1>
+						</div>
+						<div class="card-body">
+							<div class="card-text">
+								<div class="album p-4 m-4" th:if="${reports!=null}">
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">REVENUE</h6>
+												<h2 class="dashboard-heading"><span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.revenueAmount}"></span></h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="revenue_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Sales Count</h6>
+												<h2 class="dashboard-heading"><span th:text="${' '+reports.currentDayReport.txnCount}"></span></h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="sales_count_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Customer Count</h6>
+												<h2 class="dashboard-heading"><span th:text="${' '+reports.currentDayReport.customerCount}"></span></h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="customer_count_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Gross Profit</h6>
+												<h2 class="dashboard-heading">INR 175.00</h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="profit_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Discount</h6>
+												<h2 class="dashboard-heading"><span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.discountAmount}"></span></h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="discount_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Discount %</h6>
+												<h2 class="dashboard-heading"><span th:text="${reports.currentDayReport.discountPercentage}"></span>%</h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="discount_percent_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Basket Size</h6>
+												<h2 class="dashboard-heading"><span th:text="${reports.currentDayReport.basketSize}"></span></h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="basket_size_canvas"></canvas>
+										</div>
+									</div>
+									<div class="card card-shadow">
+										<div class="card-header card-shadow">
+											<div class="card-text">
+												<h6 class="text-muted text-uppercase">Basket Value</h6>
+												<h2 class="dashboard-heading"><span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.basketAmount}"></span></h2>
+											</div>
+										</div>
+										<div class="card-body">
+											<canvas id="basket_value_canvas"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+<script>
+
+window.chartColors = {
+	red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	yellow: 'rgb(255, 205, 86)',
+	green: 'rgb(75, 192, 192)',
+	blue: 'rgb(54, 162, 235)',
+	purple: 'rgb(153, 102, 255)',
+	grey: 'rgb(201, 203, 207)'
+};
+
+var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+				datasets: [{
+					label: 'Sales',
+					backgroundColor: window.chartColors.orange,
+					borderColor: window.chartColors.orange,
+					data: [
+						12,
+						16,
+						20,
+						23,
+						9,
+						80,
+						43
+					],
+					fill: false,
+				}]
+			},
+			options: {
+				responsive: true,
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				}				
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('revenue_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+			var ctx = document.getElementById('sales_count_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+
+			var ctx = document.getElementById('customer_count_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+
+
+			var ctx = document.getElementById('profit_canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+</script>	
+	
+	
+	
+</body>
+</html>

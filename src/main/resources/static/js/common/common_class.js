@@ -1,5 +1,5 @@
 /**
- * The global variables are defined in this section 
+ * The global variables are defined in this section
  */
 
 var tli_index = 0;
@@ -13,7 +13,7 @@ var TenderLineItem = function() {
 }
 
 $.extend(TenderLineItem.prototype, {
-	addTenderLineItem: function(){
+	addTenderLineItem : function() {
 		tenderLineItems.push(this);
 	},
 	renderTenderLineItem : function() {
@@ -55,7 +55,7 @@ $.extend(TenderLineItem.prototype, {
 		this.name = tenderName;
 		this.amount = tenderEnteredAmt;
 	},
-	
+
 	deleteTenderLineItem : function(deleteIndex) {
 		var deletedAmt = +$('#tli_amt_' + deleteIndex).val();
 		$('#dueAmt').removeAttr("disabled");
@@ -97,8 +97,8 @@ $.extend(TenderLineItem.prototype, {
 			$('#dueAmt').val(remainingAmt.toFixed(2));
 			$('#dueAmt').attr("disabled", "disabled");
 			this.renderTenderLineItem();
-			
-			this.calculateDue(remainingAmt,totalDueAmt, tenderType);
+
+			this.calculateDue(remainingAmt, totalDueAmt, tenderType);
 
 		} else if (parseFloat(tenderEnteredAmt.toFixed(2)) < parseFloat(remainingAmt.toFixed(2))) {
 			remainingAmt -= tenderEnteredAmt;
@@ -122,3 +122,69 @@ $.extend(TenderLineItem.prototype, {
 		}
 	}
 });
+
+var Utils = function() {
+	this.alertType;
+}
+
+$.extend(Utils.prototype, {
+
+	renderAlert : function(alertType, headerTitle, bodyMsg, btnLabels) {
+
+		$('#alertModalTitle').html(headerTitle);
+
+		if (alertType != undefined && alertType == 'SIMPLE') {
+			this.createSimpleModal(bodyMsg, btnLabels);
+		} else if (alertType != undefined && alertType == 'CONFIRM') {
+			this.createConfirmModal(bodyMsg, btnLabels);
+		}
+
+		$('#alertModal').modal({
+			backdrop : 'static',
+			keyboard : false
+		});
+
+	},
+	createSimpleModal : function(bodyMsg, btnLabels) {
+
+		$('#alertModalHeader').addClass('alert-danger');
+
+		var footerHtml = '<div class="col text-center">';
+		footerHtml += '<button class="btn btn-danger" id="btnAlertOK" onClick="hideAlert();">' + btnLabels[0] + '</button>';
+		footerHtml += '</div>';
+		$('#alertModalFooter').html(footerHtml);
+
+		var bodyHtml = '<div class="row">';
+		bodyHtml += '<div class="col-3 text-left"> <i class="fas fa-exclamation-triangle fa-3x mx-2 text-danger"></i></div>';
+		bodyHtml += '<div class="col text-left"> ' + bodyMsg + '</div>';
+		bodyHtml += '</div>';
+
+		$('#alertModalBody').html(bodyHtml);
+
+	},
+	createConfirmModal : function(bodyMsg, btnLabels) {
+
+		$('#alertModalHeader').addClass('alert-warning');
+
+		var twoActionsHtml = '<div class="row">';
+		twoActionsHtml += '<div class="col-3 text-left"> <i class="fas fa-exclamation-triangle fa-3x mx-2 text-warning"></i></div>';
+		twoActionsHtml += '<div class="col text-left"> ' + bodyMsg + '</div>';
+		twoActionsHtml += '</div>';
+
+		$('#alertModalBody').html(twoActionsHtml);
+
+		var twoActionsFooterHtml = '<div class="col text-center">';
+		$.each(btnLabels, function(index, btnLabel) {
+			twoActionsFooterHtml += '<button class="btn btn-info mx-2" id="btnAlert' + btnLabel + '" onClick="alertAction(this);">' + btnLabel + '</button>';
+		});
+		twoActionsFooterHtml += '</div>';
+		$('#alertModalFooter').html(twoActionsFooterHtml);
+
+	}
+
+});
+
+
+function hideAlert() {
+	$('#alertModal').modal('hide');
+}

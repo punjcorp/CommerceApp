@@ -227,7 +227,112 @@ VIEW `commercedb`.`v_receipt_li_item` AS
             AND (`li_itm`.`business_date` = `tax_dtl`.`business_date`)
             AND (`li_itm`.`txn_no` = `tax_dtl`.`txn_no`)
             AND (`li_itm`.`item_id` = `tax_dtl`.`item_id`));
-    
+
+            
+-- -----------------------------------------------------
+-- View `commercedb`.`v_location_sales_data`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `commercedb`.`v_location_sales_data` ;
+DROP TABLE IF EXISTS `commercedb`.`v_location_sales_data`;
+USE `commercedb`;
+
+CREATE VIEW `commercedb`.`v_location_sales_data` AS
+    SELECT 
+        t1.*,
+        t2.customer_count,
+        t3.discount_percent,
+        t4.discount_amount
+    FROM
+        (SELECT 
+            location_id,
+                business_date,
+                ROUND(SUM(txn_item_count) / COUNT(txn_no), 2) AS basket_size,
+                ROUND(SUM(basket_amounts) / COUNT(txn_no), 2) AS basket_amount,
+                COUNT(txn_no) AS txn_count,
+                ROUND(SUM(gross_amounts), 2) AS revenue
+        FROM
+            (SELECT 
+            txn_itm.location_id,
+                txn_itm.business_date,
+                txn_itm.register,
+                txn_itm.txn_no,
+                SUM(gross_qty) AS txn_item_count,
+                SUM(net_amount) AS basket_amounts,
+                SUM(gross_amount) AS gross_amounts
+        FROM
+            commercedb.txn_master txn, commercedb.txn_li_item txn_itm
+        WHERE
+            txn.txn_type IN ('SALE' , 'RETURN')
+                AND status IN ('COMPLETED')
+                AND txn.business_date = txn_itm.business_date
+                AND txn.register = txn_itm.register
+                AND txn.location_id = txn_itm.location_id
+                AND txn.txn_no = txn_itm.txn_no
+        GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_basket
+        GROUP BY location_id , business_date) t1,
+        (SELECT 
+            location_id, business_date, COUNT(*) AS customer_count
+        FROM
+            commercedb.txn_customer
+        GROUP BY location_id , business_date) t2,
+        (SELECT 
+            location_id,
+                business_date,
+                SUM(total_discount),
+                SUM(total_price),
+                ABS(ROUND((SUM(total_discount) / SUM(total_price)) * 100, 2)) AS discount_percent
+        FROM
+            (SELECT 
+            txn_itm.location_id,
+                txn_itm.business_date,
+                txn_itm.register,
+                txn_itm.txn_no,
+                SUM(discount_amount) AS total_discount,
+                SUM(extended_amount) AS total_price
+        FROM
+            commercedb.txn_master txn, commercedb.txn_li_item txn_itm
+        WHERE
+            txn.txn_type IN ('SALE' , 'RETURN')
+                AND status IN ('COMPLETED')
+                AND txn.business_date = txn_itm.business_date
+                AND txn.register = txn_itm.register
+                AND txn.location_id = txn_itm.location_id
+                AND txn.txn_no = txn_itm.txn_no
+                AND txn_itm.discount_percentage IS NOT NULL
+        GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_discount_percent
+        GROUP BY location_id , business_date) t3,
+        (SELECT 
+            location_id,
+                business_date,
+                ROUND(SUM(total_discount), 2) AS discount_amount
+        FROM
+            (SELECT 
+            txn_itm.location_id,
+                txn_itm.business_date,
+                txn_itm.register,
+                txn_itm.txn_no,
+                SUM(discount_amount) AS total_discount
+        FROM
+            commercedb.txn_master txn, commercedb.txn_li_item txn_itm
+        WHERE
+            txn.txn_type IN ('SALE' , 'RETURN')
+                AND status IN ('COMPLETED')
+                AND txn.business_date = txn_itm.business_date
+                AND txn.register = txn_itm.register
+                AND txn.location_id = txn_itm.location_id
+                AND txn.txn_no = txn_itm.txn_no
+                AND txn_itm.discount_percentage IS NULL
+                AND txn_itm.discount_amount IS NOT NULL
+        GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_discount_percent
+        GROUP BY location_id , business_date) AS t4
+    WHERE
+        t1.location_id = t2.location_id
+            AND t1.business_date = t2.business_date
+            AND t3.location_id = t2.location_id
+            AND t3.business_date = t2.business_date
+            AND t3.location_id = t4.location_id
+            AND t3.business_date = t4.business_date;            
+            
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
@@ -51,7 +52,7 @@ public class RegisterOpenValidator implements Validator {
 		DailyDeedBean dailyDeedBean = (DailyDeedBean) obj;
 
 		List<TenderCount> tenderCounts = this.dailyDeedService.searchTxnTenderCounts(dailyDeedBean.getLocationId(), dailyDeedBean.getRegister(),
-				dailyDeedBean.getBusinessDate());
+				dailyDeedBean.getBusinessDate(), MVCConstants.TXN_OPEN_STORE);
 
 		int counter = 0;
 

@@ -2,7 +2,7 @@
  * The global variable needed for transaction operations
  */
 var g_nbr_zero = 0.00;
-
+var alertUtil = new Utils();
 /**
  * Class definition for TxnAction Starts
  */
@@ -45,7 +45,10 @@ $.extend(TxnAction.prototype, {
 	showSaleLineItem : function(data) {
 		var actualSaleItem = this.saleLineItem.parseSaleLineItem(data);
 		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
-			alert(i18next.t('sale_txn_validate_item'));
+			
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_item'), btnLabels);
+			
 		} else {
 			this.saleLineItem.renderSaleLineItem(actualSaleItem, viewType);
 			// Check when we need to add this to list it should be after successful render as per my understanding
@@ -210,7 +213,8 @@ $.extend(TxnAction.prototype, {
 			var totalDueAmt = +$('#hc_totalDueAmt').val();
 			this.calculateDue(tenderEnteredAmt, totalDueAmt, tenderId);
 		} else {
-			alert(i18next.t('sale_txn_validate_tender'));
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_tender'), btnLabels);
 		}
 
 	},
@@ -222,7 +226,8 @@ $.extend(TxnAction.prototype, {
 		
 		if(tenderName!=undefined && tenderName=='Credit'){
 			if(this.customer.name==undefined || this.customer.name==''){
-				alert('The customer details are needed for selecting Credit Tender!!');
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_customer_association_needed'), btnLabels);
 				return false;
 				
 			}else{
