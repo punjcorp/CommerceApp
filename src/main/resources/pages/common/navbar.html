@@ -23,10 +23,6 @@
 					<li class="nav-item"><div class="valign-center">
 							<a class="nav-link" id="home" th:href="@{/home}"><i class="fas fa-home fa-2x mx-2"></i><span th:text="#{commerce.home.link.home}">Home</span></a>
 						</div></li>
-					<li class="nav-item"><div class="valign-center">
-							<a class="nav-link" id="home" th:href="@{/admin/home}"><i class="fas fa-user-tie fa-2x mx-2"></i><span
-								th:text="#{commerce.home.link.admin}">Admin</span></a>
-						</div></li>
 					<!-- Point of Sales Menu starts -->
 					<li class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="posDropdown" role="button" data-toggle="dropdown"
 						aria-haspopup="true" aria-expanded="false"><i class="fas fa-shopping-cart fa-2x mx-2" data-fa-transform="flip-h"></i> <span
@@ -78,7 +74,7 @@
 											<span class="mx-3" th:text="#{commerce.home.menu.lookup}"></span>
 										</div>
 										<div class="megamenu-item-body">
-											<a class="dropdown-item megamenu-item" th:href="@{/pos/item_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i
+											<a class="dropdown-item megamenu-item" th:href="@{item_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i
 													class="far fa-file-alt"></i> <i class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a>
 										</div>
@@ -88,7 +84,7 @@
 						</div></li>
 					<!-- Point of Sales Menu ends -->
 					<!-- Admin Menu starts -->
-					<li class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown"
+					<li  sec:authorize="hasAuthority('ADMIN')" class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown"
 						aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-tie fa-2x mx-2"></i><span th:text="#{commerce.home.link.admin}">Admin</span></a>
 						<div class="dropdown-menu megamenu-container" aria-labelledby="navbarDropdown">
 							<div class="row">
