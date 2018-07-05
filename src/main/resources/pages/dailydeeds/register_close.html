@@ -266,6 +266,21 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
+	
+	<script th:inline="javascript" th:if="${registers!=null and #lists.size(registers)>0}">
+	
+	var regNo;
+	var tenderDetails;
+	var regDetails=new Array();
+	
+	/*[[<th:block th:each="register,itrStat:${registers}">]]*/
+		regNo=/*[[${register.registerId}]]*/;
+		tenderDetails= /*[[${register.concilationDtls}]]*/;
+		regDetails.push(regNo : tenderDetails);
+	/*[[</th:block>]]*/
+		
+	</script>
+	
 	<script th:inline="javascript" th:if="${dailyDeedBean!=null}">
 	
 	var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;

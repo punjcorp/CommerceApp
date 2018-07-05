@@ -136,119 +136,109 @@ public class RegisterClosureController {
 		try {
 
 			Integer register = null;
-			Integer locationId = null;
 			String locationName = null;
 			String defaultTender = null;
-			LocalDateTime businessDate = null;
 
-			String registerStr = req.getParameter(MVCConstants.REGISTER_ID_PARAM);
+			Integer locationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+			LocalDateTime businessDate = (LocalDateTime) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 
-			if (registerStr != null) {
-				register = new Integer(registerStr);
-				locationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+			if (locationId != null && businessDate != null) {
 				locationName = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME);
-				businessDate = (LocalDateTime) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 				defaultTender = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
 
-				if (locationId != null && businessDate != null) {
+				DailyDeedBean dailyDeedBean = new DailyDeedBean();
+				dailyDeedBean.setLocationId(locationId);
+				dailyDeedBean.setLocationName(locationName);
+				dailyDeedBean.setBusinessDate(businessDate);
+				dailyDeedBean.setDefaultTender(defaultTender);
 
-					DailyTotals dailyTotalCriteria = new DailyTotals();
-					dailyTotalCriteria.setLocationId(locationId);
-					dailyTotalCriteria.setBusinessDate(businessDate);
-					dailyTotalCriteria.setRegisterId(register);
+				String registerStr = req.getParameter(MVCConstants.REGISTER_ID_PARAM);
+				if (registerStr != null) {
+					register = new Integer(registerStr);
+					dailyDeedBean.setRegister(register);
 
-					List<DailyTotals> dailyTotalsList = this.financeService.retrieveDailyTotals(dailyTotalCriteria);
-
-					if (dailyTotalsList != null && !dailyTotalsList.isEmpty()) {
-
-						DailyDeedBean dailyDeedBean = new DailyDeedBean();
-						dailyDeedBean.setRegister(register);
-						dailyDeedBean.setLocationId(locationId);
-						dailyDeedBean.setLocationName(locationName);
-						dailyDeedBean.setBusinessDate(businessDate);
-						dailyDeedBean.setDefaultTender(defaultTender);
-
-						ConcilationBean concilationBean = DailyDeedTransformer.transformDailyTotals(dailyTotalsList.get(0), null);
-						dailyDeedBean.setConcilationBean(concilationBean);
-
-						this.updateBeansForCloseProcess(dailyDeedBean, model, session);
-
-						logger.info("The DAILY TOTALS details for register {} has been retrieved successfully", register);
-					} else {
-						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.error", null, locale));
-						logger.error("The DAILY TOTALS details for register {} were not found in database", register);
-					}
+					this.updateBeansForSelectedRegister(dailyDeedBean, model, locale);
+					logger.info("The bean details for provided register has been updated successfully");
 
 				} else {
-					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.error", null, locale));
-					logger.error("There is no location found for the register closing process");
+					logger.error("There is no register provided for the REGISTER CLOSURE");
 				}
+				this.updateAllRegisterClosureDetails(dailyDeedBean, locationId, businessDate, MVCConstants.TXN_CLOSE_REGISTER, model, locale);
+				logger.info("All the register concilation details has been retrieved and updated");
 
 			} else {
-				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.error", null, locale));
-				logger.error("There is no register no provided for the register closing process");
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.no.open.location", null, locale));
+				logger.error("There was no valid OPEN LOCATION existing, hence the REGISTER CLOSURE is not possible");
 			}
 
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.error", null, locale));
 			logger.error("There was some error retrieving store close details for register open", e);
-			return ViewPathConstants.REGISTER_CLOSE_PAGE;
 		}
 
 		return ViewPathConstants.REGISTER_CLOSE_PAGE;
 
 	}
 
-	private void updateBeansForCloseProcess(DailyDeedBean dailyDeedBean, Model model, HttpSession session) {
-
-		List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(dailyDeedBean.getLocationId());
-		List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
-		dailyDeedBean.setTenders(tenderBeans);
+	private void updateAllRegisterClosureDetails(DailyDeedBean dailyDeedBean, Integer locationId, LocalDateTime businessDate, String txnType, Model model, Locale locale) {
+		
+		List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(locationId);
+		if (tenders != null && !tenders.isEmpty()) {
+			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
+			dailyDeedBean.setTenders(tenderBeans);
+			logger.info("The Tenders needed for reconcilation has been updated in the daily deed bean");
+		}
+		
 
 		List<Denomination> denominations = this.commonService.retrieveAllDenominations();
-		if (denominations != null) {
+		if (denominations != null && !denominations.isEmpty()) {
 			List<BaseDenominationBean> denominationBeans = CommonMVCTransformer.transformDenominations(denominations);
 			dailyDeedBean.setDenominationList(denominationBeans);
+			logger.info("The Tender Denominations needed for reconcilation has been updated in the daily deed bean");
+		}
+		
+		RegisterDTO registerDTO = this.dailyDeedService.retrieveRegisterConcilationDtls(locationId, businessDate, txnType);
+		List<RegisterBean> registers = CommonMVCTransformer.transformRegisterDTO(registerDTO);
 
-			RegisterDTO registerDTO = this.commonService.retrieveRegisterWithDailyStatus(dailyDeedBean.getLocationId());
-			List<RegisterBean> registers = CommonMVCTransformer.transformRegisterDTO(registerDTO);
-
-			String lastRegStatus = null;
-			Integer lastRegId = null;
-			String lastRegName = null;
-
-			if (registers != null && registers.size() == 1) {
-				lastRegStatus = registers.get(0).getLastStatus();
-				lastRegId = registers.get(0).getRegisterId();
-				lastRegName = registers.get(0).getName();
-
-			} else if (registers != null && registers.size() > 1) {
-
-				for (RegisterBean registerBean : registers) {
-					if (registerBean.getRegisterId().equals(dailyDeedBean.getRegister())) {
-						lastRegStatus = registerBean.getLastStatus();
-						lastRegId = registerBean.getRegisterId();
-						lastRegName = registerBean.getName();
-						break;
-					}
-				}
-
+		if(registerDTO!=null) {
+			if(registerDTO.getAllRegisterClosed()) {
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.all.regs.closed", null, locale));
+				logger.error("All the registers has been closed for the day, please proceed with store closure");
 			}
-			if (StringUtils.isNotBlank(lastRegName) && dailyDeedBean.getRegister() != null) {
+			dailyDeedBean.setAllRegClosedFlag(registerDTO.getAllRegisterClosed());
+		}
+		
+		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
+		model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
+		logger.info("All the beans needs for open store screen has been updated in model");
+		
+		
+		
+	}
 
-				if (StringUtils.isBlank(lastRegStatus) || (StringUtils.isNotBlank(lastRegStatus) && MVCConstants.TXN_CLOSE_REGISTER.equals(lastRegStatus))) {
-					dailyDeedBean.setRegister(null);
-					logger.error("The register is not in OPEN status, hence is not eligible for CLOSING");
-				} else if (StringUtils.isNotBlank(lastRegStatus) && MVCConstants.TXN_OPEN_REGISTER.equals(lastRegStatus)) {
-					dailyDeedBean.setRegisterId(lastRegId);
-					dailyDeedBean.setRegisterName(lastRegName);
-					logger.error("The register is setup for CLOSING now");
-				}
+	private void updateBeansForSelectedRegister(DailyDeedBean dailyDeedBean, Model model, Locale locale) {
+
+		DailyTotals regTotals=null;
+		DailyTotals dailyTotalCriteria = new DailyTotals();
+		dailyTotalCriteria.setLocationId(dailyDeedBean.getLocationId());
+		dailyTotalCriteria.setBusinessDate(dailyDeedBean.getBusinessDate());
+		dailyTotalCriteria.setRegisterId(dailyDeedBean.getRegister());
+		List<DailyTotals> dailyTotalsList = this.financeService.retrieveDailyTotals(dailyTotalCriteria);
+		if (dailyTotalsList != null && !dailyTotalsList.isEmpty()) {
+			regTotals=dailyTotalsList.get(0);
+			if(regTotals!=null && regTotals.getStartOfDayAmount()!=null) {
+				dailyDeedBean.setRegisterId(dailyDeedBean.getRegister());
+				ConcilationBean concilationBean = DailyDeedTransformer.transformDailyTotals(regTotals, null);
+				dailyDeedBean.setConcilationBean(concilationBean);
+				logger.info("The DAILY TOTALS details for register {} has been retrieved successfully", dailyDeedBean.getRegister());
+			}else {
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.not.open", null, locale));
+				logger.error("The provided register {} has not been opened yet so it is not eligible for REGISTER CLOSURE");
 			}
-
-			model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
-			model.addAttribute(MVCConstants.REGISTER_BEANS, registers);
-			logger.info("All the beans needs for open store screen has been updated in model");
+			
+		} else {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.close.no.register.total", null, locale));
+			logger.error("There is no register provided for the REGISTER CLOSURE");
 		}
 
 	}

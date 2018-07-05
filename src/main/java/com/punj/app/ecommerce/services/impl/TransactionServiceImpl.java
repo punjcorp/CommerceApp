@@ -261,9 +261,17 @@ public class TransactionServiceImpl implements TransactionService {
 	@Override
 	public Map<Integer, Transaction> searchRegisterTxnByCriteria(Integer locationId, Set<String> txnTypes) {
 		Map<Integer, Transaction> txnMap = new HashMap<>();
+		Transaction tmpTxn=null;
+		Integer registerId=null;
 		List<Transaction> txnDetails = this.transactionRepository.getLastDailyRegisterTxns(locationId, txnTypes);
 		for (Transaction txnDtl : txnDetails) {
-			txnMap.put(txnDtl.getTransactionId().getRegister(), txnDtl);
+			registerId= txnDtl.getTransactionId().getRegister();
+			// Remove Multiple txns for a single register
+			// Only keeps the latest one
+			
+			tmpTxn=txnMap.get(registerId);
+			if(tmpTxn==null)
+				txnMap.put(registerId, txnDtl);
 		}
 		logger.info("The last transaction details for location {} regitsters has been etrieved successfully", locationId);
 		return txnMap;

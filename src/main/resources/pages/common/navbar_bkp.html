@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="utf-8" />
+<title>Top Navbar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.min.css}" />
+<link href="../../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous" th:href="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+	integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="/webjars/bootstrap/4.0.0/js/bootstrap.min.js" th:href="@{/webjars/bootstrap/4.0.0/js/bootstrap.min.js}"></script>
+<script src="../../static/js/custom.js" th:src="@{/js/custom.js}"></script>
+</head>
+<body>
+	<div th:fragment="navbarMenu">
+		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><div class="valign-center">
+							<a class="nav-link" id="home" th:href="@{/home}"><i class="fas fa-home fa-2x mx-2"></i><span th:text="#{commerce.home.link.home}">Home</span></a>
+						</div></li>
+					<li class="nav-item"><div class="valign-center">
+							<a class="nav-link" id="home" th:href="@{/admin/home}"><i class="fas fa-user-tie fa-2x mx-2"></i><span
+								th:text="#{commerce.home.link.admin}">Admin</span></a>
+						</div></li>
+				</ul>
+				<form class="form-inline my-2 my-lg-0 navbar-nav">
+					<input class="form-control input-sm ml-2" type="search" placeholder="Search" aria-label="Search" th:placeholder="#{commerce.home.label.search}"></input>
+					<a class="nav-link" href="#"><i class="material-icons">search</i></a> <select id="langSelect" name="langSelect" class="form-control input-sm">
+						<option class="form-text" value="en_US" th:selected="${(#locale.language+'_'+#locale.country)=='en_US'}"><span
+								th:text="#{commerce.lang.us.en}"></span></option>
+						<option class="form-text" value="en_IN" th:selected="${(#locale.language+'_'+#locale.country)=='en_IN'}"><span
+								th:text="#{commerce.lang.in.en}"></span></option>
+						<option class="form-text" value="hi_IN" th:selected="${(#locale.language+'_'+#locale.country)=='hi_IN'}"><span
+								th:text="#{commerce.lang.in.hi}"></span></option>
+						<option class="form-text" value="pa_IN" th:selected="${(#locale.language+'_'+#locale.country)=='pa_IN'}"><span
+								th:text="#{commerce.lang.in.pa}"></span></option>
+					</select> <a class="nav-link" href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="fas fa-sign-in-alt fa-2x mx-2"></i></a>
+					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false"> <i class="fas fa-user-cog fa-2x"></i> <span th:text="#{commerce.home.link.account}">Your
+								Account</span>
+					</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" id="manageaccount" th:href="@{/manage_user}"><span class="mr-2"> <span class="fa-layers fa-fw"> <i
+										class="far fa-user"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</span><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a> <a class="dropdown-item" id="changepassword"
+								th:href="@{/manage_password}"><i class="fas fa-key mr-2"></i><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a>
+						</div></li> <a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()"> <i class="fas fa-sign-out-alt fa-2x mx-2"></i>
+					</a>
+				</form>
+			</div>
+		</nav>
+		<!-- Alert Modal -->
+		<div class="modal fade " id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header" id="alertModalHeader">
+						<h5 class="modal-title" id="alertModalTitle">
+							<span th:text="#{commerce.screen.common.busy.header}"> Work In Progress</span>
+						</h5>
+					</div>
+					<div class="modal-body text-center m-2">
+						<div class="col-12 text-center" id="alertModalBody"></div>
+					</div>
+					<div class="modal-footer" id="alertModalFooter">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Busy Screen Modal -->
+		<div class="modal fade " id="screenBusyModal" tabindex="-1" role="dialog" aria-labelledby="screenBusyModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="screenBusyModalLabel">
+							<span th:text="#{commerce.screen.common.busy.header}"> Work In Progress</span>
+						</h5>
+					</div>
+					<div class="modal-body text-center">
+						<div class="col-12 text-center" id="progressDiv">
+							<i class="fas fa-cog fa-spin fa-9x"></i>
+							<div>
+								<span th:text="#{commerce.screen.common.busy.body.text}"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

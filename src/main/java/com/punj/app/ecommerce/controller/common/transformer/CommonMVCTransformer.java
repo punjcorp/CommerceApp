@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +16,18 @@ import org.apache.logging.log4j.Logger;
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
 import com.punj.app.ecommerce.domains.user.Address;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
+import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
+import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
@@ -158,22 +164,112 @@ public class CommonMVCTransformer {
 	public static List<RegisterBean> transformRegisterDTO(RegisterDTO registerDTO) {
 		RegisterBean registerBean = null;
 		List<RegisterBean> registers = null;
+		Integer regId = null;
 		Transaction txnDetails;
+		DailyTotals regTotals = null;
+		List<TenderCount> regCounts=null;
+		ConcilationBean concilationBean = null;
+		
 
 		Map<Integer, Transaction> lastTxnStatusTxns = registerDTO.getLastTxnStatus();
+		Map<Integer, List<TenderCount>> regTenderCounts = registerDTO.getRegTenderTotals();
+		Map<Integer, DailyTotals> regDailyTotals = registerDTO.getRegTotals();
 
 		List<Register> registerList = registerDTO.getRegisters();
 		if (registerList != null && !registerList.isEmpty()) {
 			registers = new ArrayList<>(registerList.size());
 			for (Register register : registerList) {
+				regId = register.getRegisterId().getRegister();
 				registerBean = CommonMVCTransformer.transformRegisterDomain(register);
-				txnDetails = lastTxnStatusTxns.get(registerBean.getRegisterId());
-				registerBean = CommonMVCTransformer.updateRegisterTxnStatus(registerBean, txnDetails);
+				
+				if(lastTxnStatusTxns!=null && !lastTxnStatusTxns.isEmpty()) {
+					txnDetails = lastTxnStatusTxns.get(regId);
+					CommonMVCTransformer.updateRegisterTxnStatus(registerBean, txnDetails);
+				}
+				if(regDailyTotals!=null && regTenderCounts!=null) {
+					regTotals = regDailyTotals.get(regId);
+					regCounts = regTenderCounts.get(regId);
+					if(regTotals!=null && regCounts!=null) {
+						concilationBean = CommonMVCTransformer.transformRegTotal(regTotals, regCounts);
+						registerBean.setConcilationDtls(concilationBean);
+					}
+				}
+				
 				registers.add(registerBean);
 			}
 		}
 		logger.info("All the registers from list has been transformed into register bean list");
 		return registers;
+	}
+
+	public static ConcilationBean transformRegTotal(DailyTotals regTotals, List<TenderCount> regTenderCounts) {
+		ConcilationBean concilationBean = new ConcilationBean();
+		concilationBean.setActualTotalAmt(regTotals.getEndOfDayAmount());
+		concilationBean.setBusinessDate(regTotals.getBusinessDate());
+		concilationBean.setExpectedTotalAmt(regTotals.getTotalTxnAmount());
+		concilationBean.setLocationId(regTotals.getLocationId());
+		concilationBean.setRegister(regTotals.getRegisterId());
+
+		if(regTenderCounts!=null && !regTenderCounts.isEmpty()) {
+			List<TenderBean> tenders=CommonMVCTransformer.transformTenderCounts(regTenderCounts);
+			concilationBean.setTenders(tenders);
+		}
+		
+		return concilationBean;
+	}
+
+	public static List<TenderBean> transformTenderCounts(List<TenderCount> tenderCounts) {
+		List<TenderBean> tenders=new ArrayList<>(tenderCounts.size());
+		TenderBean tenderBean = null;
+		for(TenderCount tenderCount: tenderCounts) {
+			tenderBean= CommonMVCTransformer.transformTenderCount(tenderCount);
+			tenders.add(tenderBean);
+		}
+		logger.info("The tender details for all the tender counts has been transformed successfully");
+		return tenders;
+	}	
+	
+	public static TenderBean transformTenderCount(TenderCount tenderCount) {
+		TenderBean tenderBean = new TenderBean();
+		tenderBean.setCalMCount(tenderCount.getMediaCount());
+		tenderBean.setCalTAmount(tenderCount.getAmount());
+		tenderBean.setDescription(tenderCount.getTenderCountId().getTender().getDescription());
+		tenderBean.setName(tenderCount.getTenderCountId().getTender().getName());
+		tenderBean.setTenderId(tenderCount.getTenderCountId().getTender().getTenderId());
+		tenderBean.setTndrType(tenderCount.getTenderCountId().getTender().getType());
+		List<TenderDenomination> denominations = tenderCount.getDenominations();
+		if(denominations!=null && !denominations.isEmpty()) {
+			List<DenominationBean> denomList =CommonMVCTransformer.transformDenominationList(denominations);
+			tenderBean.setDenominations(denomList);
+		}
+		logger.info("The tender details has been transformed successfully");
+		
+		return tenderBean;
+
+	}
+
+	public static List<DenominationBean> transformDenominationList(List<TenderDenomination> denominations) {
+		DenominationBean denomBean = null;
+		List<DenominationBean> denomList = new ArrayList<>(denominations.size());
+		for (TenderDenomination tenderDenom : denominations) {
+			denomBean = CommonMVCTransformer.transformDenominationDomain(tenderDenom);
+			denomList.add(denomBean);
+		}
+		logger.info("The denomination bean list has the transformed tender denomination domain objects now");
+		
+		return denomList;
+	}
+
+	public static DenominationBean transformDenominationDomain(TenderDenomination denomination) {
+		DenominationBean denomBean = new DenominationBean();
+		denomBean.setAmount(denomination.getAmount());
+		denomBean.setDenominationId(denomination.getTenderDenominationId().getDenominationId());
+		denomBean.setDenomValue(denomination.getAmount().divide(new BigDecimal(denomination.getMediaCount())));
+		denomBean.setMediaCount(denomination.getMediaCount());
+
+		logger.info("The denomination bean object has the transformed values now");
+
+		return denomBean;
 	}
 
 	public static RegisterBean transformRegisterDomain(Register register) {
@@ -188,7 +284,7 @@ public class CommonMVCTransformer {
 		return registerBean;
 	}
 
-	public static RegisterBean updateRegisterTxnStatus(RegisterBean registerBean, Transaction txnDetails) {
+	public static void updateRegisterTxnStatus(RegisterBean registerBean, Transaction txnDetails) {
 		if (txnDetails != null) {
 			String txnType = txnDetails.getTxnType();
 			registerBean.setLastBusinessDate(txnDetails.getTransactionId().getBusinessDate());
@@ -202,7 +298,6 @@ public class CommonMVCTransformer {
 			}
 		}
 		logger.info("The register open transaction details has been updated");
-		return registerBean;
 	}
 
 	public static AddressBean transformAddress(Address address) {

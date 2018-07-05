@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.common;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,8 @@ public interface CommonService {
 	public LocationDTO retrieveLocationWithDailyStatus();
 
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId);
+	
+	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate);
 
 	public List<Tender> retrieveAllTenders(Integer locationId);
 

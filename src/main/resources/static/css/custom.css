@@ -319,6 +319,10 @@ body {
 }
 
 .dropdown-menu.show {
+	top: 37px;
+}
+
+.sidebar-nav .dropdown-menu.show {
 	top: 0;
 }
 
@@ -564,7 +568,7 @@ a.ui-button:active,
 }
 
 .icon-blue-theme{
-	color:#05386B;
+	color:#3a9fe5;
 }
 
 .resultMsgContainer{
@@ -595,4 +599,44 @@ a.ui-button:active,
 	font-size : 2 rem;
 	font-weight: 300;
     line-height: 1.2;
+}
+
+
+.megamenu{
+	position: static;
+}
+.megamenu-container{
+	left:10%; 
+	padding : 15px !important;
+	width: 80%;
+	background-color: #1a1a1a;
+	color: #ddd;
+}
+
+.megamenu-item{
+	color: #ddd;
+	padding-top : 1.2rem;
+	padding-bottom : 1.2rem;
+}
+
+.megamenu-item-card{
+	position : relative;
+	padding-top : 0.1rem;	
+}
+	
+.megamenu-item-header{
+	background-color: #1a1a1a;
+	left: 18%;
+	top : 0.2rem;
+	font-size: 1.3rem;
+	color: #fff;
+	position: absolute;
+}
+
+.megamenu-item-body{
+	margin: 1rem;
+	padding: 1.5rem 1.5rem 1.5rem 0;
+	padding-radius: 1rem; 
+	border: 2px solid #fff;
+	border-radius : 1.5rem;
 }

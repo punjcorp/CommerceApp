@@ -13,6 +13,47 @@ function submitForm(formName, actionParam) {
 	$('#' + formName).submit();
 }
 
+function updateBusinessDate(cntl){
+	var splittedData1;
+	var splittedData2;
+	var locValue=$(cntl).val();
+	var today=new Date();
+	today=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+	var minDateValue=new Date();
+	var parsedDate;
+	
+	var locbDateValue= $('#'+locValue+'_loc_bdate').val();
+	if(locbDateValue!=undefined && locbDateValue!=''){
+		splittedData1=locbDateValue.split("-");
+		splittedData2=splittedData1[2].split("T");
+		parsedDate=new Date(splittedData1[0], splittedData1[1]-1, splittedData2[0]);
+		
+		if(parsedDate > today)
+			minDateValue.setDate(parsedDate.getDate()+1);
+		else if (parsedDate.getTime()===today.getTime())
+			minDateValue.setDate(today.getDate()+1);
+		else
+			minDateValue=today;
+
+		
+	}else{
+		minDateValue=today;
+	}
+	
+	
+	bDateCntl.set('minDate', minDateValue);
+}
+
+
+function updateRegChangeValues(regValue){
+	var regName=$('#'+regValue+'_reg_name').val();
+	$('#registerId').val(regValue);
+	$('#registerName').val(regName);
+	
+	
+	
+}
+
 function changedDenomination(tndrIndex, denomIndex) {
 	var denomVal = +$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId').val();
 	var denomText = $('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.denominationId  option:selected').text();
@@ -100,6 +141,14 @@ function checkTotalAgainstStoreOpenAmts(tndrIndex, fieldName){
 }
 
 function processLocationRequest(locValue, url){
+	
+	var defaultTenderVal=$('#'+locValue+'_loc_default_tender').val();
+	var locNameVal=$('#'+locValue+'_loc_name').val();
+	
+	$('#locationName').val(locNameVal);
+	$('#defaultTender').val(defaultTenderVal);
+	
+	
 	var cntl_check=$('#'+locValue+'_loc_status');
 	if(cntl_check){
 		var locBusinessDate=$('#'+locValue+'_loc_bdate').val();
@@ -111,6 +160,7 @@ function processLocationRequest(locValue, url){
 			url+="="+locValue+"&businessDate="+locBusinessDate+"&locName="+locName+"&defaultTender="+locDefaultTender+"&referrerURL="+referrerURL;
 			window.location.href=url;
 		}else{
+			$('#btnOpenStore').removeClass("d-none");
 			$('#businessDateContainer').removeClass("d-none");
 			$('#tenderListContainer').removeClass("d-none");						
 		}
@@ -136,6 +186,7 @@ function processRegisterRequest(regValue, url){
 		if(locStatus=='OPEN_REGISTER'){
 			window.location.href=referrerURL;
 		}else{
+			$('#btnOpenRegister').removeClass("d-none");
 			$('#tenderListContainer').removeClass("d-none");						
 		}
 	}else{

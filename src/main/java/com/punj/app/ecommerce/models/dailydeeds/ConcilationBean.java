@@ -5,6 +5,9 @@ package com.punj.app.ecommerce.models.dailydeeds;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.punj.app.ecommerce.models.tender.TenderBean;
 
 /**
  * @author admin
@@ -17,6 +20,8 @@ public class ConcilationBean {
 	private LocalDateTime businessDate;
 	private BigDecimal expectedTotalAmt;
 	private BigDecimal actualTotalAmt;
+
+	private List<TenderBean> tenders;
 
 	/**
 	 * @return the locationId
@@ -91,6 +96,21 @@ public class ConcilationBean {
 	 */
 	public void setActualTotalAmt(BigDecimal actualTotalAmt) {
 		this.actualTotalAmt = actualTotalAmt;
+	}
+
+	/**
+	 * @return the tenders
+	 */
+	public List<TenderBean> getTenders() {
+		return tenders;
+	}
+
+	/**
+	 * @param tenders
+	 *            the tenders to set
+	 */
+	public void setTenders(List<TenderBean> tenders) {
+		this.tenders = tenders;
 	}
 
 }

@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.services.common.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.HierarchyDTO;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
@@ -46,6 +48,7 @@ import com.punj.app.ecommerce.repositories.item.ItemLocTaxRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierItemRepository;
 import com.punj.app.ecommerce.repositories.tax.TaxGroupRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
+import com.punj.app.ecommerce.services.FinanceService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
@@ -74,6 +77,7 @@ public class CommonServiceImpl implements CommonService {
 	private TaxGroupRepository taxGroupRepository;
 	private UOMRepository uomRepository;
 	private TransactionService txnService;
+	private FinanceService financeService;
 	private DenominationRepository denominationRepository;
 
 	@Value("${commerce.list.max.perpage}")
@@ -84,6 +88,15 @@ public class CommonServiceImpl implements CommonService {
 
 	@Value("${app.default.currency.code}")
 	private String defaultCurrencyCode;
+
+	/**
+	 * @param financeService
+	 *            the financeService to set
+	 */
+	@Autowired
+	public void setFinanceService(FinanceService financeService) {
+		this.financeService = financeService;
+	}
 
 	/**
 	 * @param denominationRepository
@@ -293,16 +306,65 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId) {
 		logger.info("The method to retrieve all the locations with last txn Status has been called");
+		Integer regKey=null;
+		Transaction txnDetails=null;
 		RegisterDTO registerDTO = new RegisterDTO();
-		Register register = new Register();
+		Register registerCriteria = new Register();
 		RegisterId registerId = new RegisterId();
 		registerId.setLocationId(locationId);
-		register.setRegisterId(registerId);
+		registerCriteria.setRegisterId(registerId);
 
-		List<Register> registers = this.registerRepository.findAll(Example.of(register));
+		List<Register> registers = this.registerRepository.findAll(Example.of(registerCriteria));
 		registerDTO.setRegisters(registers);
-		registerDTO.setLastTxnStatus(this.retrieveRegisterTxnStatus(locationId, registers));
+		
+		Map<Integer, Transaction> registerLastTxnMap = this.retrieveRegisterTxnStatus(locationId, registers);
+		if(registers!=null && !registers.isEmpty() && registerLastTxnMap!=null && !registerLastTxnMap.isEmpty()) {
+			registerDTO.setLastTxnStatus(registerLastTxnMap);
+			
+			for(Register register: registers) {
+				regKey=register.getRegisterId().getRegister();
+				txnDetails=registerLastTxnMap.get(regKey);
+				if(txnDetails!=null && !txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+					registerDTO.setAllRegisterClosed(Boolean.FALSE);
+					break;
+				}else {
+					registerDTO.setAllRegisterClosed(Boolean.TRUE);
+				}
+			}
+		}else {
+			logger.error("There were no registers found for the store to perform the operations");
+		}
+		
+
 		logger.info("All the register details with daily status has been retrieved successfully");
+		return registerDTO;
+	}
+
+	@Override
+	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate) {
+		RegisterDTO registerDTO = null;
+
+		registerDTO = this.retrieveRegisterWithDailyStatus(locationId);
+
+		if (registerDTO != null) {
+			DailyTotals dailyTotalCriteria = new DailyTotals();
+			dailyTotalCriteria.setBusinessDate(businessDate);
+			dailyTotalCriteria.setLocationId(locationId);
+			List<DailyTotals> storeTotals=this.financeService.retrieveDailyTotals(dailyTotalCriteria);
+			Map<Integer, DailyTotals> regTotals=new HashMap<>();
+			if(storeTotals!=null && !storeTotals.isEmpty()) {
+				for(DailyTotals dailyTotal: storeTotals) {
+					if(dailyTotal.getRegisterId()!=null)
+						regTotals.put(dailyTotal.getRegisterId(), dailyTotal);
+				}
+			}
+			registerDTO.setRegTotals(regTotals);
+			logger.info("The register totals has been added to register DTO object successfully");
+			
+		}else {
+			logger.info("There were no details found for any of the registers for location {}.", locationId);
+		}
+
 		return registerDTO;
 	}
 
@@ -477,7 +539,7 @@ public class CommonServiceImpl implements CommonService {
 		}
 		return tenderMap;
 	}
-	
+
 	@Override
 	public Map<String, Tender> retrieveAllTenderNamesAsMap(Integer locationId) {
 		Map<String, Tender> tenderMap = null;
@@ -492,7 +554,6 @@ public class CommonServiceImpl implements CommonService {
 			logger.info("The tender details has been converted into a map successfully ");
 		}
 		return tenderMap;
-	}	
-	
+	}
 
 }

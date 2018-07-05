@@ -92,6 +92,9 @@
 									<div class="input-group text-left">
 										<input type="text" th:field="*{businessDate}" class="form-control input-sm" data-input="data-input"
 											th:placeholder="#{commerce.screen.common.date.select}"></input> <input type="hidden" th:field="*{referrerURL}"></input>
+											<input type="hidden" th:field="*{locationName}"></input>
+											<input type="hidden" th:field="*{defaultTender}"></input>
+											
 										<div class="input-group-append">
 											<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check"></i></a>
 										</div>
@@ -225,7 +228,7 @@
 						<div class="row">
 							<div class="col-12 text-right">
 								<div class="form-group">
-									<button type="button" name="openStore" th:onclick="'submitForm(\'openStoreForm\',\'openStore\')'" class="btn btn-primary btn-sm">
+									<button type="button" id="btnOpenStore" name="openStore" th:onclick="'submitForm(\'openStoreForm\',\'openStore\')'" th:class="${dailyDeedBean.locationId!=null?'btn btn-primary btn-sm':'btn btn-primary btn-sm d-none'}">
 										<i class="fas fa-long-arrow-alt-right fa-6x"></i>
 									</button>
 								</div>
@@ -239,8 +242,11 @@
 	</div>
 	<!-- /#wrapper -->
 	<script th:inline="javascript">
+		var bDateCntl;
 		$(function() {
-			$('#businessDate').flatpickr({
+			
+			
+			bDateCntl=$('#businessDate').flatpickr({
 				dateFormat : 'd-M-y',
 				minDate: "today"
 			});
@@ -248,6 +254,7 @@
 			
 			$('input:radio[name=locationId]').change(function(){
 				var locValue=$(this).val();
+				updateBusinessDate(this);
 				processLocationRequest(locValue, url);
 			   });
 			

@@ -25,6 +25,7 @@ public class Utils {
 	private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
 	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+	private static final DateTimeFormatter dateFormatterShort = DateTimeFormatter.ofPattern("dd-MMM-yy'T'HH:mm");
 	private static final List<MonetaryAmount> denominations = new ArrayList<>();
 	private static final Logger logger = LogManager.getLogger();
 
@@ -90,7 +91,13 @@ public class Utils {
 	}
 
 	public static LocalDateTime parseDate(String date) {
-		return LocalDateTime.parse(date, dateFormatter);
+		if(date.length()==9) {
+			date=date+"T00:00";
+			return LocalDateTime.parse(date, dateFormatterShort);
+		}else {
+			return LocalDateTime.parse(date, dateFormatter);
+		}
+		
 	}
 
 	public static String formatDate(LocalDateTime date) {

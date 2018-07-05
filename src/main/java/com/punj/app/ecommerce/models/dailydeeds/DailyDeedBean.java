@@ -24,9 +24,9 @@ public class DailyDeedBean {
 	private Integer locationId;
 	private String locationName;
 	private String defaultTender;
-	
+
 	private String locationStatus;
-	
+
 	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
 	private LocalDateTime businessDate;
 
@@ -40,6 +40,9 @@ public class DailyDeedBean {
 	private String registerName;
 
 	private String referrerURL;
+
+	private Boolean allRegClosedFlag;
+	private Boolean allRegOpenedFlag;
 
 	@Valid
 	private List<TenderBean> tenders;
@@ -288,10 +291,41 @@ public class DailyDeedBean {
 	}
 
 	/**
-	 * @param locationStatus the locationStatus to set
+	 * @param locationStatus
+	 *            the locationStatus to set
 	 */
 	public void setLocationStatus(String locationStatus) {
 		this.locationStatus = locationStatus;
+	}
+
+	/**
+	 * @return the allRegClosedFlag
+	 */
+	public Boolean getAllRegClosedFlag() {
+		return allRegClosedFlag;
+	}
+
+	/**
+	 * @param allRegClosedFlag
+	 *            the allRegClosedFlag to set
+	 */
+	public void setAllRegClosedFlag(Boolean allRegClosedFlag) {
+		this.allRegClosedFlag = allRegClosedFlag;
+	}
+
+	/**
+	 * @return the allRegOpenedFlag
+	 */
+	public Boolean getAllRegOpenedFlag() {
+		return allRegOpenedFlag;
+	}
+
+	/**
+	 * @param allRegOpenedFlag
+	 *            the allRegOpenedFlag to set
+	 */
+	public void setAllRegOpenedFlag(Boolean allRegOpenedFlag) {
+		this.allRegOpenedFlag = allRegOpenedFlag;
 	}
 
 }

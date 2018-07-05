@@ -141,21 +141,21 @@ public class LocationClosureController {
 		logger.info("The show store open screen method has been called when store is already open");
 		try {
 			Integer locationId = null;
-			Integer contextLocationId = null;
 			String locationName = null;
 			String defaultTender = null;
 			LocalDateTime businessDate = null;
 
 			String locationStr = req.getParameter(MVCConstants.LOCATION_ID_PARAM);
-
-			if (StringUtils.isNotBlank(locationStr)) {
+			if (StringUtils.isBlank(locationStr)) {
+				locationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+			} else {
 				locationId = new Integer(locationStr);
-				contextLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-				if (contextLocationId != null && contextLocationId.equals(locationId)) {
-					locationName = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME);
-					businessDate = (LocalDateTime) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
-					defaultTender = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-				}
+			}
+
+			if (locationId != null && locationId > 0) {
+				locationName = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME);
+				businessDate = (LocalDateTime) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+				defaultTender = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
 
 				if (businessDate != null) {
 
@@ -226,8 +226,8 @@ public class LocationClosureController {
 
 	private void updateBeansForCloseProcess(DailyDeedBean dailyDeedBean, Model model, HttpSession session) {
 
-		List<TenderCount> tenderCounts = this.dailyDeedService.searchTxnTenderCounts(dailyDeedBean.getLocationId(), null,
-				dailyDeedBean.getBusinessDate(), MVCConstants.TXN_CLOSE_REGISTER);
+		List<TenderCount> tenderCounts = this.dailyDeedService.searchTxnTenderCounts(dailyDeedBean.getLocationId(), null, dailyDeedBean.getBusinessDate(),
+				MVCConstants.TXN_CLOSE_REGISTER);
 
 		Map<Integer, Map<Integer, TenderDenomination>> tenderMap = EODDeedTransformer.transformRegisterCloseTenderCounts(tenderCounts);
 		logger.info("The tender denominations for register closing txns has been retrieved and transformed successfully");

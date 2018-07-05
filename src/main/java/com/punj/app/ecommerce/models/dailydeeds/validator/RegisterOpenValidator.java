@@ -51,7 +51,7 @@ public class RegisterOpenValidator implements Validator {
 		logger.info("The Register open validation has started");
 		DailyDeedBean dailyDeedBean = (DailyDeedBean) obj;
 
-		List<TenderCount> tenderCounts = this.dailyDeedService.searchTxnTenderCounts(dailyDeedBean.getLocationId(), dailyDeedBean.getRegister(),
+		List<TenderCount> tenderCounts = this.dailyDeedService.searchTxnTenderCounts(dailyDeedBean.getLocationId(), null,
 				dailyDeedBean.getBusinessDate(), MVCConstants.TXN_OPEN_STORE);
 
 		int counter = 0;

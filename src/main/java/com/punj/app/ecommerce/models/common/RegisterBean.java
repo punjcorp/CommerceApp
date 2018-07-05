@@ -4,6 +4,9 @@
 package com.punj.app.ecommerce.models.common;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
 
 /**
  * @author admin
@@ -23,6 +26,8 @@ public class RegisterBean {
 	private String lastStatus;
 	private Boolean eligibleForRegisterOpen = Boolean.TRUE;
 	private String lastOpenedBy;
+
+	private ConcilationBean concilationDtls;
 
 	/**
 	 * @return the locationId
@@ -167,13 +172,26 @@ public class RegisterBean {
 	}
 
 	/**
-	 * @param lastOpenedBy the lastOpenedBy to set
+	 * @param lastOpenedBy
+	 *            the lastOpenedBy to set
 	 */
 	public void setLastOpenedBy(String lastOpenedBy) {
 		this.lastOpenedBy = lastOpenedBy;
 	}
 
-	
-	
-	
+	/**
+	 * @return the concilationDtls
+	 */
+	public ConcilationBean getConcilationDtls() {
+		return concilationDtls;
+	}
+
+	/**
+	 * @param concilationDtls
+	 *            the concilationDtls to set
+	 */
+	public void setConcilationDtls(ConcilationBean concilationDtls) {
+		this.concilationDtls = concilationDtls;
+	}
+
 }

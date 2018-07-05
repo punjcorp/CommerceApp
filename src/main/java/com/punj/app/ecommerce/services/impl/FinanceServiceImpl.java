@@ -130,13 +130,15 @@ public class FinanceServiceImpl implements FinanceService {
 
 	private DailyTotals updateStoreTotalsDetails(DailyTotals storeTotalsResult, DailyTotals storeTotals, String txnType) {
 
-		if (txnType.equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+		switch(txnType){
+		case ServiceConstants.TXN_CLOSE_REGISTER:
 			if (storeTotalsResult != null) {
 				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount() + BigInteger.ONE.intValue());
 				logger.info("The existing store total record has been updated with the register closing totals");
 				return storeTotalsResult;
 			}
-		} else if (txnType.equals(ServiceConstants.TXN_OPEN_REGISTER)) {
+			break;
+		case ServiceConstants.TXN_OPEN_REGISTER:
 			if(storeTotalsResult != null) {
 				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount()+1);
 				return storeTotalsResult;
@@ -144,6 +146,20 @@ public class FinanceServiceImpl implements FinanceService {
 				storeTotals.setEndOfDayAmount(null);
 				return storeTotals;
 			}
+		case ServiceConstants.TXN_CLOSE_STORE:
+			if(storeTotalsResult != null) {
+				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount()+1);
+				storeTotalsResult.setEndOfDayAmount(storeTotals.getEndOfDayAmount());
+				return storeTotalsResult;
+			}else {
+				return storeTotals;
+			}
+		}
+		
+		if (txnType.equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+			
+		} else if (txnType.equals(ServiceConstants.TXN_OPEN_REGISTER)) {
+			
 			
 		}
 		return storeTotals;

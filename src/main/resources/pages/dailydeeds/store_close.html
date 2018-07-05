@@ -32,7 +32,7 @@
 				<div class="card-body">
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-					<form id="closeStoreForm" action="#" th:action="@{/pos/close_store}" th:object="${dailyDeedBean}" method="post">
+					<form id="closeStoreForm" action="#" th:action="@{/pos/close_store}" th:object="${dailyDeedBean}" method="post" th:if="${dailyDeedBean!=null}">
 						<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.store.open.choose}">Select Location
 									choice to proceed</span></small></label> <small th:if="${#fields.hasErrors('locationId')}" th:errors="${dailyDeedBean.locationId}" class="text-danger align-top">Location
 							Error </small>
@@ -256,18 +256,15 @@
 	</div>
 	<!-- /#wrapper -->
 	<script th:inline="javascript">
-		$(function() {
-
+			var current_locale= /*[[${#locale.language}]]*/;
 			var url= /*[[@{/pos/open_register(locationId)}]]*/;
 			
-			
-		});
 	</script>
 	<script th:inline="javascript" th:if="${dailyDeedBean!=null}">
 	
 	var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;
 	var closing_register_id= /*[[${dailyDeedBean.register}]]*/;
-	var current_locale= /*[[${#locale.language}]]*/;
+	
 	
 	var register_close_url= /*[[@{/pos/close_register(registerId)}]]*/;
 	var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
