@@ -42,4 +42,6 @@ public interface TransactionService {
 
 	public TransactionReceipt retrieveLastTransaction(TransactionId txnIdCriteria);
 
+	public Boolean isTransactionAlllowed(Integer locationId, Integer registerId);
+
 }

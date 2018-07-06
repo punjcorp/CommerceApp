@@ -24,6 +24,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +58,18 @@ public class SaleTransactionController {
 	private CommonService commonService;
 	private TransactionService transactionService;
 	private CommerceContext commerceContext;
+	private MessageSource messageSource;
 
+	
+	/**
+	 * @param messageSource
+	 *            the messageSource to set
+	 */
+	@Autowired
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	
 	/**
 	 * @param transactionService
 	 *            the transactionService to set
@@ -86,9 +98,9 @@ public class SaleTransactionController {
 	}
 
 	@GetMapping(ViewPathConstants.POS_URL)
-	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
+	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		try {
-			String forwardURL = this.updateBeans(model, session, req, redirectAttrs);
+			String forwardURL = this.updateBeans(model, session, req, redirectAttrs, locale);
 			if (StringUtils.isNotEmpty(forwardURL))
 				return forwardURL;
 			logger.info("The sale screen is ready for display now");
@@ -103,7 +115,7 @@ public class SaleTransactionController {
 	 * This method is to set all the bean objects in model needed for the return screen functionalities
 	 * 
 	 */
-	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
+	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 
@@ -132,24 +144,36 @@ public class SaleTransactionController {
 			}
 
 			if (registerId != null) {
-				Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
-				Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
-				Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-				if (openLocationName != null)
-					saleHeaderBean.setLocationName((String) openLocationName);
-				if (openBusinessDate != null)
-					saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
-				if (defaultTender != null) {
-					saleHeaderBean.setDefaultTender((String) defaultTender);
+				
+				
+				if(this.validateRegister(openLocId, registerId)) {
+					Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
+					Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+					Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+					if (openLocationName != null)
+						saleHeaderBean.setLocationName((String) openLocationName);
+					if (openBusinessDate != null)
+						saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
+					if (defaultTender != null) {
+						saleHeaderBean.setDefaultTender((String) defaultTender);
+					}
+
+					List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
+					model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+
+					saleHeaderBean.setRegisterId(registerId);
+					saleHeaderBean.setRegisterName(registerName);
+					model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
+					logger.info("All the needed beans for return transaction screen has been set in the model");
+				}else {
+					req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+					redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.POS_URL);
+					redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
+					logger.info("There is no valid store or register provided for the transaction screen");
+					return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 				}
-
-				List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
-				model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
-
-				saleHeaderBean.setRegisterId(registerId);
-				saleHeaderBean.setRegisterName(registerName);
-				model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
-				logger.info("All the needed beans for return transaction screen has been set in the model");
+				
+				
 
 			} else {
 				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
@@ -167,6 +191,18 @@ public class SaleTransactionController {
 
 	}
 
+	private Boolean validateRegister(Integer locationId, Integer registerId) {
+
+		Boolean result= this.transactionService.isTransactionAlllowed(locationId, registerId);
+		if(result)
+			logger.info("The provided location and registers are in valid status");
+		else		
+			logger.info("The provided location and registers are in not valid");
+		
+		return result;
+	}
+	
+	
 	private List<TenderBean> retrieveValidTenders(Integer locationId) {
 		List<Tender> tenders = this.commonService.retrieveAllTenders(locationId);
 		List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);

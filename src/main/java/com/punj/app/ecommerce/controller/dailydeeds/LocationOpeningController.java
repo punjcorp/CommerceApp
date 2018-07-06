@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +36,7 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.common.Denomination;
+import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
@@ -206,7 +208,7 @@ public class LocationOpeningController {
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
 	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean,
 			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs,
-			HttpServletRequest request) {
+			HttpServletRequest request, HttpSession session) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
@@ -222,6 +224,10 @@ public class LocationOpeningController {
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 					logger.info("The Store open process has failed");
 					return ViewPathConstants.STORE_OPEN_PAGE;
+				} else {
+					Integer locationId = dailyDeedBean.getLocationId();
+					session.removeAttribute(locationId + MVCConstants.REGISTER_ID_PARAM);
+					session.removeAttribute(locationId + MVCConstants.REG_NAME_PARAM);
 				}
 				this.updateRedirectBeans(dailyDeedBean, redirectAttrs, request);
 				logger.info("The Store open process has been successful and ready for register open");

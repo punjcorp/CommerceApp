@@ -556,4 +556,22 @@ public class CommonServiceImpl implements CommonService {
 		return tenderMap;
 	}
 
+	@Override
+	public List<Register> retrieveRegisters(Integer locationId) {
+		
+		Register registerCriteria=new Register();
+		RegisterId registerId=new RegisterId();
+		registerId.setLocationId(locationId);
+		
+		registerCriteria.setRegisterId(registerId);
+		
+		List<Register> registers=this.registerRepository.findAll(Example.of(registerCriteria));
+		
+		if (registers != null && !registers.isEmpty())
+			logger.info("All the registers for location {} has been retrieved successfully", locationId);
+		else
+			logger.info("There is no register existing for the {} location", locationId);
+		return registers;
+	}
+
 }

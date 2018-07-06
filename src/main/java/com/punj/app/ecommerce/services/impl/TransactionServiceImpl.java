@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -261,16 +262,16 @@ public class TransactionServiceImpl implements TransactionService {
 	@Override
 	public Map<Integer, Transaction> searchRegisterTxnByCriteria(Integer locationId, Set<String> txnTypes) {
 		Map<Integer, Transaction> txnMap = new HashMap<>();
-		Transaction tmpTxn=null;
-		Integer registerId=null;
+		Transaction tmpTxn = null;
+		Integer registerId = null;
 		List<Transaction> txnDetails = this.transactionRepository.getLastDailyRegisterTxns(locationId, txnTypes);
 		for (Transaction txnDtl : txnDetails) {
-			registerId= txnDtl.getTransactionId().getRegister();
+			registerId = txnDtl.getTransactionId().getRegister();
 			// Remove Multiple txns for a single register
 			// Only keeps the latest one
-			
-			tmpTxn=txnMap.get(registerId);
-			if(tmpTxn==null)
+
+			tmpTxn = txnMap.get(registerId);
+			if (tmpTxn == null)
 				txnMap.put(registerId, txnDtl);
 		}
 		logger.info("The last transaction details for location {} regitsters has been etrieved successfully", locationId);
@@ -630,6 +631,37 @@ public class TransactionServiceImpl implements TransactionService {
 			logger.info("There was no transaction found for the day before now()");
 		}
 		return txnReceipt;
+	}
+
+	@Override
+	public Boolean isTransactionAlllowed(Integer locationId, Integer registerId) {
+		Boolean result = Boolean.FALSE;
+
+		Set<String> txnTypes = new HashSet<>();
+		txnTypes.add(ServiceConstants.TXN_CLOSE_STORE);
+		txnTypes.add(ServiceConstants.TXN_OPEN_STORE);
+		Transaction storeTxn = this.searchTxnByCriteria(locationId, txnTypes);
+		if (storeTxn != null && storeTxn.getTxnType().equals(ServiceConstants.TXN_OPEN_STORE)) {
+			txnTypes = new HashSet<>();
+			txnTypes.add(ServiceConstants.TXN_CLOSE_REGISTER);
+			txnTypes.add(ServiceConstants.TXN_OPEN_REGISTER);
+			Map<Integer, Transaction> regTxns = this.searchRegisterTxnByCriteria(locationId, txnTypes);
+			if (regTxns != null && !regTxns.isEmpty()) {
+				Transaction regTxn = regTxns.get(registerId);
+				if (regTxn != null && regTxn.getTxnType().equals(ServiceConstants.TXN_OPEN_REGISTER)) {
+					result = Boolean.TRUE;
+				} else {
+					result = Boolean.FALSE;
+				}
+			} else {
+				result = Boolean.FALSE;
+			}
+
+		}
+
+		logger.info("The location {} and register {} has been validated if they are in OPEN status", locationId, registerId);
+
+		return result;
 	}
 
 }

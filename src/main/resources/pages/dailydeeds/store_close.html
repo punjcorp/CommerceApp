@@ -32,6 +32,18 @@
 				<div class="card-body">
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+					<div th:if="${dailyDeedBean==null}">
+						<a th:href="@{/pos/open_store}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
+								class="fas fa-home"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+						</span><span th:text="#{commerce.home.menu.open.store}">Open Store</span>
+						</a> <a th:href="@{/pos/open_register}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
+								class="fas fa-tablet-alt"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+						</span><span th:text="#{commerce.home.menu.open.register}">Open Register</span>
+						</a> <a th:href="@{/pos/close_register}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
+								class="fas fa-tablet-alt"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
+						</span><span th:text="#{commerce.home.menu.close.register}">Close Register</span>
+						</a>
+					</div>
 					<form id="closeStoreForm" action="#" th:action="@{/pos/close_store}" th:object="${dailyDeedBean}" method="post" th:if="${dailyDeedBean!=null}">
 						<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.store.open.choose}">Select Location
 									choice to proceed</span></small></label> <small th:if="${#fields.hasErrors('locationId')}" th:errors="${dailyDeedBean.locationId}" class="text-danger align-top">Location
@@ -72,8 +84,8 @@
 										<div class="row box-footer">
 											<div class="col">
 												<div th:if="${location.lastStatus}">
-													<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> 
-													<input type="hidden" th:id="${location.locationId+'_loc_status'}" th:value="${location.lastStatus}"></input> <small><span
+													<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> <input type="hidden"
+														th:id="${location.locationId+'_loc_status'}" th:value="${location.lastStatus}"></input> <small><span
 														th:text="#{commerce.screen.store.open.status.last}"></span></small> : <span th:text="${location.lastStatus}"></span>
 												</div>
 												<div th:if="${location.lastBusinessDate}">
@@ -92,14 +104,11 @@
 						<div class="row">
 							<div class="col">
 								<div class="form-group">
-									<label><small><span th:text="#{commerce.screen.register.close.expected.amount}">Expected Closing Amount</span></small></label> 
-									<input type="hidden" th:field="${dailyDeedBean.concilationBean.expectedTotalAmt}"></input>
-									<input type="hidden" th:field="${dailyDeedBean.locationId}"></input>
-									<input type="hidden" th:field="${dailyDeedBean.locationName}"></input>
-									<input type="hidden" th:field="${dailyDeedBean.locationStatus}"></input>
-									<input type="hidden" th:field="${dailyDeedBean.businessDate}"></input>
-									<input type="hidden" th:field="${dailyDeedBean.register}"></input>
-									
+									<label><small><span th:text="#{commerce.screen.register.close.expected.amount}">Expected Closing Amount</span></small></label> <input
+										type="hidden" th:field="${dailyDeedBean.concilationBean.expectedTotalAmt}"></input> <input type="hidden"
+										th:field="${dailyDeedBean.locationId}"></input> <input type="hidden" th:field="${dailyDeedBean.locationName}"></input> <input type="hidden"
+										th:field="${dailyDeedBean.locationStatus}"></input> <input type="hidden" th:field="${dailyDeedBean.businessDate}"></input> <input
+										type="hidden" th:field="${dailyDeedBean.register}"></input>
 									<div class="input-group text-left">
 										<h2 class="dashboard-heading">
 											<span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+dailyDeedBean.concilationBean.expectedTotalAmt}"></span>
@@ -190,14 +199,11 @@
 													<div class="form-group">
 														<label><span></span></label>
 														<div class="input-group text-left">
-															<button type="button" name="addDenomination"
-																th:onclick="'addNewDenom('+${itrDenomination.index}+')'"
-																class="btn btn-secondary btn-sm">
+															<button type="button" name="addDenomination" th:onclick="'addNewDenom('+${itrDenomination.index}+')'" class="btn btn-secondary btn-sm">
 																<i class="fas fa-plus fa-2x"></i>
 															</button>
 															<button type="button" name="removeDenomination" th:if="${#lists.size(dailyDeedBean.tenders[__${itrStat.index}__].denominations)>1}"
-																th:onclick="'removeSelectedDenom('+${itrDenomination.index}+')'"
-																class="btn btn-secondary btn-sm">
+																th:onclick="'removeSelectedDenom('+${itrDenomination.index}+')'" class="btn btn-secondary btn-sm">
 																<i class="fas fa-minus fa-2x"></i>
 															</button>
 														</div>

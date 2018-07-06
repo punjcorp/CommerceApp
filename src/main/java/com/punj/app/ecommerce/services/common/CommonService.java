@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.HierarchyDTO;
@@ -33,6 +34,8 @@ public interface CommonService {
 
 	public LocationDTO retrieveLocationWithDailyStatus();
 
+	public List<Register> retrieveRegisters(Integer locationId);
+	
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId);
 	
 	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate);

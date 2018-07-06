@@ -32,6 +32,18 @@
 				<div class="card-body">
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+					<div th:if="${dailyDeedBean==null}">
+						<a th:href="@{/pos/open_store}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
+								class="fas fa-home"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+						</span><span th:text="#{commerce.home.menu.open.store}">Open Store</span>
+						</a> <a th:href="@{/pos/open_register}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
+								class="fas fa-tablet-alt"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+						</span><span th:text="#{commerce.home.menu.open.register}">Open Register</span>
+						</a> <a th:href="@{/pos/close_store}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i class="fas fa-home"></i>
+								<i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
+						</span><span th:text="#{commerce.home.menu.close.store}">Close Store</span>
+						</a>
+					</div>
 					<form id="closeRegisterForm" action="#" th:action="@{/pos/close_register}" th:object="${dailyDeedBean}" method="post"
 						th:if="${dailyDeedBean!=null}">
 						<div class="row">
@@ -201,8 +213,7 @@
 													<div class="form-group">
 														<label><span></span></label>
 														<div class="input-group text-left">
-															<button type="button" name="addDenomination" th:onclick="'addNewDenom('+${itrDenomination.index}+')'"
-																class="btn btn-secondary btn-sm">
+															<button type="button" name="addDenomination" th:onclick="'addNewDenom('+${itrDenomination.index}+')'" class="btn btn-secondary btn-sm">
 																<i class="fas fa-plus fa-2x"></i>
 															</button>
 															<button type="button" name="removeDenomination" th:if="${#lists.size(dailyDeedBean.tenders[__${itrStat.index}__].denominations)>1}"
@@ -266,7 +277,6 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
-	
 	<script th:inline="javascript" th:if="${registers!=null and #lists.size(registers)>0}">
 	
 	var regNo;
@@ -280,7 +290,6 @@
 	/*[[</th:block>]]*/
 		
 	</script>
-	
 	<script th:inline="javascript" th:if="${dailyDeedBean!=null}">
 	
 	var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;
@@ -292,9 +301,8 @@
 	
 	var sale_txn_url= /*[[@{/pos/sale}]]*/;
 	</script>
-	
-	
-	<script th:inline="javascript" th:if="${dailyDeedBean!=null and dailyDeedBean.denominationList!=null and dailyDeedBean.tenders[0].denominations!=null}">
+	<script th:inline="javascript"
+		th:if="${dailyDeedBean!=null and dailyDeedBean.denominationList!=null and dailyDeedBean.tenders[0].denominations!=null}">
 	var denomination_list=/*[[${dailyDeedBean.denominationList}]]*/;
 	var totalDenomSize=/*[[${#lists.size(dailyDeedBean.tenders[0].denominations)}]]*/;
 	
@@ -302,7 +310,6 @@
 	initializeDenominationLineItems(denominationLineItems);
 	
 	</script>
-	
 	<!-- Register Close Transaction Completion Modal -->
 	<div class="modal fade " id="txnReceiptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
@@ -322,13 +329,12 @@
 						</button>
 						<button type="button" class="btn btn-warning p-3 m-2" id="btnCloseRegister">
 							<span class="fa-layers fa-fw fa-5x"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-times"
-													data-fa-transform="shrink-10 right-11 up-4"></i>
-												</span>
+								data-fa-transform="shrink-10 right-11 up-4"></i>
+							</span>
 						</button>
 						<button type="button" class="btn btn-danger p-3 m-2" id="btnCloseStore">
-							<span class="fa-layers fa-fw fa-5x"> <i class="fas fa-home"></i> <i class="fas fa-times"
-													data-fa-transform="shrink-10 right-11 up-4"></i>
-												</span>
+							<span class="fa-layers fa-fw fa-5x"> <i class="fas fa-home"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
+							</span>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">
@@ -341,7 +347,6 @@
 				</div>
 			</div>
 		</div>
-	</div>	
-	
+	</div>
 </body>
 </html>

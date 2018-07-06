@@ -611,6 +611,7 @@ a.ui-button:active,
 	width: 80%;
 	background-color: #1a1a1a;
 	color: #ddd;
+	border-radius : 2rem;
 }
 
 .megamenu-item{

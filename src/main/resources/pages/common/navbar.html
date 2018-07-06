@@ -181,13 +181,13 @@
 				</ul>
 				<form class="form-inline my-2 my-lg-0 navbar-nav">
 					<input class="form-control input-sm ml-2" type="search" placeholder="Search" aria-label="Search" th:placeholder="#{commerce.home.label.search}"></input>
-					<a class="nav-link" href="#"><i class="material-icons">search</i></a> <select id="langSelect" name="langSelect" class="form-control input-sm">
+					<a class="nav-link" href="#"><i class="fas fa-search">search</i></a> <select id="langSelect" name="langSelect" class="form-control input-sm">
 						<option class="form-text" value="en_US" th:selected="${(#locale.language+'_'+#locale.country)=='en_US'}" th:text="#{commerce.lang.us.en}"></option>
 						<option class="form-text" value="en_IN" th:selected="${(#locale.language+'_'+#locale.country)=='en_IN'}" th:text="#{commerce.lang.in.en}"></option>
 						<option class="form-text" value="hi_IN" th:selected="${(#locale.language+'_'+#locale.country)=='hi_IN'}" th:text="#{commerce.lang.in.hi}"></option>
 						<option class="form-text" value="pa_IN" th:selected="${(#locale.language+'_'+#locale.country)=='pa_IN'}" th:text="#{commerce.lang.in.pa}"></option>
-					</select> <a class="nav-link" href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="fas fa-sign-in-alt fa-2x mx-2"></i></a>
-					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown"
+					</select> 
+					<li class="nav-item dropdown" sec:authorize="isAuthenticated()"><a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown"
 						aria-haspopup="true" aria-expanded="false"> <i class="fas fa-user-cog fa-2x"></i> <span th:text="#{commerce.home.link.account}">Your
 								Account</span>
 					</a>
@@ -197,7 +197,10 @@
 								</span>
 							</span><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a> <a class="dropdown-item" id="changepassword"
 								th:href="@{/manage_password}"><i class="fas fa-key mr-2"></i><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a>
-						</div></li> <a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()"> <i class="fas fa-sign-out-alt fa-2x mx-2"></i>
+						</div></li> 
+						
+						<a class="nav-link" href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="fas fa-sign-in-alt fa-2x mx-2"></i></a>
+						<a class="nav-link" href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()"> <i class="fas fa-sign-out-alt fa-2x mx-2"></i>
 					</a>
 				</form>
 			</div>

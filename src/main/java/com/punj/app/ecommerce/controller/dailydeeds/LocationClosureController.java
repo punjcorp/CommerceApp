@@ -197,27 +197,29 @@ public class LocationClosureController {
 							this.updateBeansForCloseProcess(dailyDeedBean, model, session);
 
 							logger.info("The DAILY TOTALS details for store {} has been retrieved successfully", locationStr);
+						}else {
+							model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.dtotal.not.found", null, locale));
+							logger.error("The DAILY TOTALS details for store {} were not found in database", locationStr);
 						}
 
 					} else {
-						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.error", null, locale));
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.dtotal.not.found", null, locale));
 						logger.error("The DAILY TOTALS details for store {} were not found in database", locationStr);
 					}
 
 				} else {
-					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.error", null, locale));
-					logger.error("The location {} details were not found for closing", locationStr);
+					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.bdate.not.found", null, locale));
+					logger.error("The location {} OPEN business date is not found", locationStr);
 				}
 
 			} else {
-				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.error", null, locale));
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.no.location", null, locale));
 				logger.error("There is no location no provided for the store closing process");
 			}
 
 		} catch (Exception e) {
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.error", null, locale));
 			logger.error("There was some error retrieving store close details", e);
-			return ViewPathConstants.STORE_CLOSE_PAGE;
 		}
 
 		return ViewPathConstants.STORE_CLOSE_PAGE;
