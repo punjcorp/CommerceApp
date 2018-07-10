@@ -198,8 +198,8 @@ public class LocationClosureController {
 
 							logger.info("The DAILY TOTALS details for store {} has been retrieved successfully", locationStr);
 						}else {
-							model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.dtotal.not.found", null, locale));
-							logger.error("The DAILY TOTALS details for store {} were not found in database", locationStr);
+							model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.close.register.dtotal.not.found", null, locale));
+							logger.error("One or more registers has not been closed yet, please proceed to register closure screen for register closing", locationStr);
 						}
 
 					} else {

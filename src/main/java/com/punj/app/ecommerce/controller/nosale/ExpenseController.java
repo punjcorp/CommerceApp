@@ -260,7 +260,7 @@ public class ExpenseController {
 		// This is to print the receipt when user select the printing option
 		session.setAttribute(txnId + MVCConstants.RCPT_JASPER_PARAM, jasperPrint);
 		// This is to show the receipt PDF in view screen
-		session.setAttribute(MVCConstants.LAST_TXN_NO, txnId);
+		session.setAttribute(MVCConstants.LAST_TXN_NO, txnId.toString());
 		session.setAttribute(txnId + MVCConstants.RCPT_PARAM, pdfBytes);
 
 		// This section will save the receipt in database

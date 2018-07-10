@@ -76,6 +76,7 @@ INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `create
 INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paytm', 'PAYTM', 'This is PAYTM online payment', 'admin', now());
 INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cheque', 'CHEQUE', 'This is bank account cheque', 'admin', now());
 INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Change', 'CHANGE', 'This is change for cash tender', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit', 'CREDIT', 'This is for Credit tender to give udhar', 'admin', '2018-07-06 19:46:21');
 
 commit;
 
@@ -90,17 +91,25 @@ INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (4, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (5, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (6, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES ('7', 'Main Safe', 'This is main safe for credit in the store', '2018-07-06 19:46:22', '2018-07-06 19:46:22', 'A', 'admin', '2018-07-06 19:46:22');
+
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '5', '0', 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', '7997', '6', '0', 'admin', now());
-
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 5, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 6, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 7, 0, 'admin', now());
 
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 6, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 7, 0, 'admin', now());
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 6, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 7, 0, 'admin', now());
 INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 6, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 7, 0, 'admin', now());
 
 commit;
 
@@ -109,10 +118,14 @@ commit;
 -- Seed data for register_master table
 -- -----------------------------------------------------
 truncate `commercedb`.`register_master`;
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (7997, 1, '1', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (2, 1, '1', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (3, 1, '1', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (27, 1, '1', 'admin', now());
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (7997, 1, 'First Register', 'admin', now());
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (2, 1, 'First Register', 'admin', now());
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (3, 1, 'First Register', 'admin', now());
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (27, 1, 'First Register', 'admin', now());
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('2', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '3', 'Third Register', 'admin', '2018-07-06 19:46:22');
+
 commit;
 
 -- -----------------------------------------------------
@@ -126,9 +139,14 @@ truncate `commercedb`.`tax_location`;
 truncate `commercedb`.`tax_authority`;
 truncate `commercedb`.`tax_location_mapping`;
 
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 1);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 2);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 1);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 2);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 1);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 2);
 INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 1);
 INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 2);
-
 
 INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
 INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('State Govt of India', 'N', '2', 'admin', now());

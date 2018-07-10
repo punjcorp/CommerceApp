@@ -158,11 +158,12 @@ $.extend(SaleLineItem.prototype, {
 			}
 		}
 
-		if (cntl.id.indexOf('li_discountAmt') == 0 && txn_type == 'R') {
+		if ((cntl.id.indexOf('li_discountAmt') == 0 || cntl.id.indexOf('discountType') == 0) && txn_type == 'R') {
 			
 			var discountValue = +$('#li_discountAmt' + itemId).val();
-			var discountType= +$('#li_discountType' + itemId).val();
-			var priceValue = +$('#li_uh_priceAmt' + itemId).text();
+			
+			var discountType= $('#discountType' + itemId).val();
+			var priceValue = +$('#li_uh_priceAmt' + itemId).val();
 			
 			if(discountType=='percent'){
 				
@@ -181,6 +182,7 @@ $.extend(SaleLineItem.prototype, {
 					
 				
 			}else if(discountType=='amount'){
+				discountValue= discountValue * -1;
 				if ((discountValue === '') || (discountValue < priceValue) || (discountValue > 0)) {
 					btnLabels = [ i18next.t('alert_btn_ok'), '' ];
 					alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_range_discount'), btnLabels);
@@ -197,11 +199,11 @@ $.extend(SaleLineItem.prototype, {
 			
 			
 			
-		} else if (cntl.id.indexOf('li_discountAmt') == 0 && txn_type != 'R') {
+		} else if ((cntl.id.indexOf('li_discountAmt') == 0 || cntl.id.indexOf('discountType') == 0) && txn_type != 'R') {
 		
 			var discountValue = +$('#li_discountAmt' + itemId).val();
-			var discountType= +$('#li_discountType' + itemId).val();
-			var priceValue = +$('#li_uh_priceAmt' + itemId).text();
+			var discountType= $('#discountType' + itemId).val();
+			var priceValue = +$('#li_uh_priceAmt' + itemId).val();
 			
 			if(discountType=='percent'){
 				if(discountValue>100 || discountValue<0){

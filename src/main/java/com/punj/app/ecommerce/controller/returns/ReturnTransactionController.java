@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.controller.returns;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,7 @@ import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
+import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 
 /**
@@ -43,6 +46,27 @@ public class ReturnTransactionController {
 	private static final Logger logger = LogManager.getLogger();
 	private CommonService commonService;
 	private CommerceContext commerceContext;
+	private MessageSource messageSource;
+	private TransactionService transactionService;
+
+	/**
+	 * @param messageSource
+	 *            the messageSource to set
+	 */
+	@Autowired
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	
+	/**
+	 * @param transactionService
+	 *            the transactionService to set
+	 */
+	@Autowired
+	public void setTransactionService(TransactionService transactionService) {
+		this.transactionService = transactionService;
+	}
+
 
 	/**
 	 * @param commonService
@@ -63,9 +87,9 @@ public class ReturnTransactionController {
 	}
 
 	@GetMapping(ViewPathConstants.RETURN_TXN_URL)
-	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
+	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		try {
-			String forwardURL = this.updateBeans(model, session, req,redirectAttrs);
+			String forwardURL = this.updateBeans(model, session, req, redirectAttrs, locale);
 			if (StringUtils.isNotEmpty(forwardURL))
 				return forwardURL;
 			logger.info("The sale screen is ready for display now");
@@ -80,10 +104,10 @@ public class ReturnTransactionController {
 	 * This method is to set all the bean objects in model needed for the return screen functionalities
 	 * 
 	 */
-	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs) {
+	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
-		
+
 		CustomerBean customerBean = new CustomerBean();
 		model.addAttribute(MVCConstants.CUSTOMER_BEAN, customerBean);
 
@@ -99,44 +123,56 @@ public class ReturnTransactionController {
 			String registerName = null;
 
 			if (StringUtils.isEmpty(registerIdValue)) {
-				registerId = (Integer) session.getAttribute(openLocId+MVCConstants.REGISTER_ID_PARAM);
-				registerName = (String) session.getAttribute(openLocId+MVCConstants.REG_NAME_PARAM);
+				registerId = (Integer) session.getAttribute(openLocId + MVCConstants.REGISTER_ID_PARAM);
+				registerName = (String) session.getAttribute(openLocId + MVCConstants.REG_NAME_PARAM);
 			} else {
 				registerId = new Integer(registerIdValue);
 				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
-				session.setAttribute(openLocId+MVCConstants.REGISTER_ID_PARAM, registerId);
-				session.setAttribute(openLocId+MVCConstants.REG_NAME_PARAM, registerName);
+				session.setAttribute(openLocId + MVCConstants.REGISTER_ID_PARAM, registerId);
+				session.setAttribute(openLocId + MVCConstants.REG_NAME_PARAM, registerName);
 			}
 
 			if (registerId != null) {
-				Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
-				Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
-				Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-				if (openLocationName != null)
-					txnHeaderBean.setLocationName((String) openLocationName);
-				if (openBusinessDate != null)
-					txnHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
-				if (defaultTender != null) {
-					txnHeaderBean.setDefaultTender((String) defaultTender);
+
+				if (this.validateRegister(openLocId, registerId)) {
+
+					Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
+					Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+					Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+					if (openLocationName != null)
+						txnHeaderBean.setLocationName((String) openLocationName);
+					if (openBusinessDate != null)
+						txnHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
+					if (defaultTender != null) {
+						txnHeaderBean.setDefaultTender((String) defaultTender);
+					}
+
+					List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
+					model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+
+					txnHeaderBean.setRegisterId(registerId);
+					txnHeaderBean.setRegisterName(registerName);
+					model.addAttribute(MVCConstants.TXN_HEADER_BEAN, txnHeaderBean);
+					logger.info("All the needed beans for return transaction screen has been set in the model");
+
+				} else {
+					req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+					redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.RETURN_TXN_URL);
+					redirectAttrs.addFlashAttribute(MVCConstants.ALERT,
+							this.messageSource.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
+					logger.info("There is no valid store or register provided for the return transaction screen");
+					return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 				}
-
-				List<TenderBean> tenderBeans = this.retrieveValidTenders((Integer) openLocationId);
-				model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
-
-				txnHeaderBean.setRegisterId(registerId);
-				txnHeaderBean.setRegisterName(registerName);
-				model.addAttribute(MVCConstants.TXN_HEADER_BEAN, txnHeaderBean);
-				logger.info("All the needed beans for return transaction screen has been set in the model");
 
 			} else {
 				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM,ViewPathConstants.RETURN_TXN_URL);
+				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.RETURN_TXN_URL);
 				logger.info("There is no open store existing as per this session, routing to register open screen");
 				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
 			}
 		} else {
 			req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-			redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM,ViewPathConstants.RETURN_TXN_URL);
+			redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.RETURN_TXN_URL);
 			logger.info("There is no open store existing as per application context, routing to store open screen");
 			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 		}
@@ -148,6 +184,17 @@ public class ReturnTransactionController {
 		List<Tender> tenders = this.commonService.retrieveAllTenders(locationId);
 		List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
 		return tenderBeans;
+	}
+
+	private Boolean validateRegister(Integer locationId, Integer registerId) {
+
+		Boolean result = this.transactionService.isTransactionAlllowed(locationId, registerId);
+		if (result)
+			logger.info("The provided location and registers are in valid status");
+		else
+			logger.info("The provided location and registers are in not valid");
+
+		return result;
 	}
 
 }

@@ -115,7 +115,7 @@
 						</th:block>
 						<!-- Item Attribute Information Ends-->
 						<!-- Item Stock Information Starts-->
-						<div class="card form-group">
+						<div class="card form-group" th:if="${itemBean.itemInventory!=null}">
 							<div class="card-header">
 								<div class="row">
 									<div class="col-11 text-left">

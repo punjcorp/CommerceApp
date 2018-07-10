@@ -125,13 +125,17 @@ public class LocationOpeningController {
 		logger.info("The show store open screen method has been called");
 		try {
 			DailyDeedBean dailyDeedBean = new DailyDeedBean();
-			Map<String, Object> attrMap = model.asMap();
-			if (attrMap != null && attrMap.size() > 0) {
-				Object referrerObj = attrMap.get(MVCConstants.REFERRER_URL_PARAM);
-				if (referrerObj != null)
-					dailyDeedBean.setReferrerURL((String) referrerObj);
-			}
+
 			String referrerURL = request.getParameter(MVCConstants.REFERRER_URL_PARAM);
+			if (StringUtils.isBlank(referrerURL)) {
+				Map<String, Object> attrMap = model.asMap();
+				if (attrMap != null && attrMap.size() > 0) {
+					Object referrerObj = attrMap.get(MVCConstants.REFERRER_URL_PARAM);
+					if (referrerObj != null)
+						referrerURL = (String) referrerObj;
+				}
+			}
+			
 			if (StringUtils.isNotBlank(referrerURL))
 				dailyDeedBean.setReferrerURL(referrerURL);
 

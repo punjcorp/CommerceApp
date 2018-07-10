@@ -271,8 +271,7 @@
 	var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;
 	var closing_register_id= /*[[${dailyDeedBean.register}]]*/;
 	
-	
-	var register_close_url= /*[[@{/pos/close_register(registerId)}]]*/;
+	var open_store_url=/*[[@{/pos/open_store}]]*/;
 	var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
 	
 	var sale_txn_url= /*[[@{/pos/sale}]]*/;
@@ -303,8 +302,9 @@
 						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintTxnReceipt">
 							<i class="fas fa-print fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-danger p-3 m-2" id="btnCloseWindow" onclick="window.close()">
-							<i class="fas fa-window-close fa-5x"></i>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnOpenStore">
+							<span class="fa-layers fa-fw fa-5x"> <i class="fas fa-home"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+							</span>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">

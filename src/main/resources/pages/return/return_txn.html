@@ -6,6 +6,8 @@
 <meta charset="utf-8" />
 <title th:text="#{commerce.screen.return.add.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
+<link href="../../static/css/utils/introjs.min.css" th:href="@{/css/utils/introjs.min.css}" rel="stylesheet" />
+<script src="../../static/js/utils/intro.js" th:src="@{/js/utils/intro.js}"></script>
 <th:block th:replace="common/header:: header"></th:block>
 <!-- Enable the auto complete item lookup-->
 <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
@@ -39,7 +41,7 @@
 								<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 								<form id="autoCompleteForm" action="#" th:action="@{/sku_lookup}" th:object="${searchBean}" method="post">
 									<div class="row">
-										<div class="col-6">
+										<div class="col-6" data-step="2" data-th-attr="data-intro=#{commerce.help.txn.item.search}">
 											<div class="form-group">
 												<div class="input-group text-left">
 													<div class="input-group-prepend">
@@ -54,7 +56,7 @@
 												<small id="itemErrorMsg"></small>
 											</div>
 										</div>
-										<div class="col">
+										<div class="col" data-step="3" data-th-attr="data-intro=#{commerce.help.txn.btns.action}">
 											<button type="button" id="btnLastTxn" class="btn btn-secondary">
 												<i class="fas fa-receipt fa-2x"></i>
 											</button>
@@ -69,7 +71,7 @@
 												</label>
 											</div>
 										</div>
-										<div class="col-2 text-right">
+										<div class="col-2 text-right"  data-step="4" data-th-attr="data-intro=#{commerce.help.txn.btn.close}">
 											<button type="button" id="btnCloseRegister" class="btn btn-danger">
 												<span class="fa-layers fa-fw fa-2x"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-times"
 													data-fa-transform="shrink-10 right-11 up-4"></i>
@@ -78,12 +80,14 @@
 										</div>
 									</div>
 								</form>
-								<div id="result" class="col-12"></div>
+								<div id="result" class="col-12"  data-step="5" data-th-attr="data-intro=#{commerce.help.txn.item.area}">
+									<!-- The item scanned will appear here -->
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-4">
+				<div class="col-4"  data-step="1" data-th-attr="data-intro=#{commerce.help.txn.transaction.header}">
 					<div class="border-box-filled">
 						<div class="row ">
 							<div class="col-6">

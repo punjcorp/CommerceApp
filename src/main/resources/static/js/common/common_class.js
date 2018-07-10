@@ -129,7 +129,7 @@ var Utils = function() {
 
 $.extend(Utils.prototype, {
 
-	renderAlert : function(alertType, headerTitle, bodyMsg, btnLabels) {
+	renderAlert : function(alertType, headerTitle, bodyMsg, btnLabels, btnActions, actionFunction) {
 
 		$('#alertModalTitle').html(headerTitle);
 
@@ -137,7 +137,11 @@ $.extend(Utils.prototype, {
 			this.createSimpleModal(bodyMsg, btnLabels);
 		} else if (alertType != undefined && alertType == 'CONFIRM') {
 			this.createConfirmModal(bodyMsg, btnLabels);
-		}
+		} else if (alertType != undefined && alertType == 'CUSTOM') {
+			this.createCustomModal(bodyMsg, btnLabels, btnActions);
+		} else if (alertType != undefined && alertType == 'GLOBAL') {
+			this.createGlobalAlertModal(bodyMsg, btnLabels, btnActions, actionFunction);
+		}  
 
 		$('#alertModal').modal({
 			backdrop : 'static',
@@ -162,7 +166,7 @@ $.extend(Utils.prototype, {
 		$('#alertModalBody').html(bodyHtml);
 
 	},
-	createConfirmModal : function(bodyMsg, btnLabels) {
+	createConfirmModal : function(bodyMsg, btnLabels, btnActionId) {
 
 		$('#alertModalHeader').addClass('alert-warning');
 
@@ -180,11 +184,45 @@ $.extend(Utils.prototype, {
 		twoActionsFooterHtml += '</div>';
 		$('#alertModalFooter').html(twoActionsFooterHtml);
 
-	}
+	},
+	createCustomModal : function(bodyMsg, btnLabels, btnActions) {
+
+		$('#alertModalHeader').addClass('alert-warning');
+
+		var twoActionsHtml = '<div class="row">';
+		twoActionsHtml += '<div class="col-3 text-left"> <i class="fas fa-exclamation-triangle fa-3x mx-2 text-warning"></i></div>';
+		twoActionsHtml += '<div class="col text-left"> ' + bodyMsg + '</div>';
+		twoActionsHtml += '</div>';
+
+		$('#alertModalBody').html(twoActionsHtml);
+
+		var twoActionsFooterHtml = '<div class="col text-center">';
+		$.each(btnLabels, function(index, btnLabel) {
+			twoActionsFooterHtml += '<button class="btn btn-info mx-2" id="'+btnActions[index]+'" onClick="alertAction(this);">' + btnLabel + '</button>';
+		});
+		twoActionsFooterHtml += '</div>';
+		$('#alertModalFooter').html(twoActionsFooterHtml);
+
+	},
+	createGlobalAlertModal : function(bodyMsg, btnLabels, btnActions, actionFunction) {
+
+		$('#alertModalHeader').addClass('alert-warning');
+
+		var twoActionsHtml = '<div class="row">';
+		twoActionsHtml += '<div class="col-3 text-left"> <i class="fas fa-exclamation-triangle fa-3x mx-2 text-warning"></i></div>';
+		twoActionsHtml += '<div class="col text-left"> ' + bodyMsg + '</div>';
+		twoActionsHtml += '</div>';
+
+		$('#alertModalBody').html(twoActionsHtml);
+
+		var twoActionsFooterHtml = '<div class="col text-center">';
+		$.each(btnLabels, function(index, btnLabel) {
+			twoActionsFooterHtml += '<button class="btn btn-info mx-2" id="'+btnActions[index]+'" onClick="'+actionFunction+'(this);">' + btnLabel + '</button>';
+		});
+		twoActionsFooterHtml += '</div>';
+		$('#alertModalFooter').html(twoActionsFooterHtml);
+
+	}		
 
 });
 
-
-function hideAlert() {
-	$('#alertModal').modal('hide');
-}

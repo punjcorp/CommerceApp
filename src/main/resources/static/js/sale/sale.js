@@ -22,7 +22,18 @@ var viewType='COMPACT';
  * @returns
  */
 $(function() {
+	
+	introJs().start();
+	
+	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
+	
+	$(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      return false;
+	    }
+	  });
 	
 	$("#searchText").autocomplete({
 		minLength : 3,
@@ -239,60 +250,7 @@ $(function() {
 		viewTxnReceipt();
 	});			
 	
-	 // use plugins and options as needed, for options, detail see
-    // http://i18next.com/docs/
-    i18next.init({
-      lng: current_locale, // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
-      resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
-        en: {
-          translation: {
-              common_currency_sign_inr: '₹',
-              sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
-              sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
-              sale_txn_validate_range_discount:'The discount amount should be between ₹ 0.00 and item price amount.Please correct the amount.',
-              sale_txn_validate_range_discount_pct:'The discount percentage should be between 0 and 100 of item price amount.',
-              sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
-              sale_txn_validate_tender:'Please select tender for the payment',
-              sale_txn_validate_amount_tender:'The tendered amount should be more than ₹ 0.00',
-              sale_txn_customer_association_needed : 'The customer details are needed for selecting Credit Tender!!',
-              sale_txn_lbl_qty: 'Quantity',
-              sale_txn_lbl_unit_cost: 'Unit Price',
-              sale_txn_lbl_suggested_price: 'Suggested Price',
-              sale_txn_lbl_mrp: 'Max Retail Price',
-              sale_txn_lbl_discount: 'Discount',
-              sale_txn_lbl_item_price: 'Item Price',
-              sale_txn_lbl_tax: 'Tax',
-              sale_txn_lbl_sgst: 'SGST',
-              sale_txn_lbl_cgst: 'CGST',
-              sale_txn_lbl_igst: 'IGST',
-              sale_txn_lbl_item_total: 'Item Total',
-              sale_txn_lbl_discount_percent: '%',
-              sale_txn_lbl_discount_amount: '₹',
-			  error_simple_alert_header : 'Alert Message',
-			  error_confirmation_alert_header : 'Confirmation Message',
-			  alert_btn_ok : 'OK',
-			  alert_btn_approve : 'Approve' ,
-			  alert_btn_cancel : 'Cancel',              
-              
-          }
-        },
-        hi: {
-            translation: {
-            	common_currency_sign_inr: '₹'
-            }
-          },
-          pa: {
-              translation: {
-            	  common_currency_sign_inr: 'ਰੁ.'
-              }
-            }          
-      }
-    }, function(err, t) {
-      // for options see
-      // https://github.com/i18next/jquery-i18next#initialize-the-plugin
-      jqueryI18next.init(i18next, $);
-      
-    });	
+	
 	
 	
     /*
@@ -464,7 +422,8 @@ function printLastxn(){
 	
 	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+lastTxnRcptURL;
 	
-	window.open(pdfRcptUrl);
+	var txnWindow=window.open(pdfRcptUrl);
+	txnWindow.document.title=i18next.t('last_txn_title');
 	return false;
 }
 

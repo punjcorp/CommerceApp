@@ -30,11 +30,14 @@
 				<version>4.2.0</version>
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<url>jdbc:mysql://localhost:3306/commercedb?autoreconnect=true</url>
+					<!-- <url>jdbc:mysql://pos.crjn48listps.us-east-2.rds.amazonaws.com:3306/commercedb?autoreconnect=true</url> -->
+					<url>jdbc:mysql://localhost:3306/commercedb?autoreconnect=true</url> 
 					<user>admin</user>
-					<password>admin</password> 
-<!--  					<user>root</user>
-					<password>G00gl3r$</password>--> 
+					<password>admin</password>  
+					<!-- <user>mysqlroot</user>
+					<password>rootmysql</password> -->
+  					<!-- <user>root</user>
+					<password>G00gl3r$</password> --> 
 					<schemas>
 						<schema>commercedb</schema>
 					</schemas>

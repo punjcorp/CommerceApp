@@ -155,18 +155,25 @@ public class ItemLookupController {
 					ItemLookupBean itemLookupBean = ItemTransformer.transformItemForLookup(item);
 
 					ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
-					ItemInventory itemInventory = InventoryBeanTransformer.transformItemStock(itemStock);
-					itemLookupBean.setItemInventory(itemInventory);
+					if(itemStock!=null) {
+						ItemInventory itemInventory = InventoryBeanTransformer.transformItemStock(itemStock);
+						itemLookupBean.setItemInventory(itemInventory);
+					}
 
 					List<ItemPrice> itemPriceList = this.priceService.getFutureItemPrices(itemId, locationId, LocalDateTime.now());
-					List<PriceBean> priceBeanList = PriceTransformer.transformItemPriceList(itemPriceList);
-					itemLookupBean.setItemFuturePrices(priceBeanList);
+					if(itemPriceList!=null && !itemPriceList.isEmpty()) {
+						List<PriceBean> priceBeanList = PriceTransformer.transformItemPriceList(itemPriceList);
+						itemLookupBean.setItemFuturePrices(priceBeanList);
+					}
+					
 
 					ItemPrice itemPrice = this.priceService.getCurrentItemPrice(itemId, locationId, LocalDateTime.now());
-					itemLookupBean.getItemOptions().setCurrentPrice(itemPrice.getItemPriceAmt());
-					itemLookupBean.setCurrentPriceStartDate(itemPrice.getStartDate());
-					itemLookupBean.setCurrentPriceEndDate(itemPrice.getEndDate());
-					itemLookupBean.setCurrentPriceType(Utils.showPriceType(itemPrice.getType()));
+					if(itemPrice!=null) {
+						itemLookupBean.getItemOptions().setCurrentPrice(itemPrice.getItemPriceAmt());
+						itemLookupBean.setCurrentPriceStartDate(itemPrice.getStartDate());
+						itemLookupBean.setCurrentPriceEndDate(itemPrice.getEndDate());
+						itemLookupBean.setCurrentPriceType(Utils.showPriceType(itemPrice.getType()));
+					}
 
 					model.addAttribute(MVCConstants.ITEM_BEAN, itemLookupBean);
 					model.addAttribute(MVCConstants.SUCCESS,

@@ -33,8 +33,8 @@
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 					<div th:if="${dailyDeedBean==null}">
-						<a th:href="@{/pos/open_store}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
-								class="fas fa-home"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+						<a th:href="@{/pos/open_store}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i class="fas fa-home"></i> <i
+								class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
 						</span><span th:text="#{commerce.home.menu.open.store}">Open Store</span>
 						</a> <a th:href="@{/pos/open_register}" class="btn btn-success mx-2"> <span class="fa-layers fa-fw fa-2x mx-2"> <i
 								class="fas fa-tablet-alt"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
@@ -114,14 +114,17 @@
 										</div>
 									</div>
 								</div>
-								<div class="row">
+								<div id="row_expectedAmt"
+									th:class="${dailyDeedBean!=null and dailyDeedBean.concilationBean!=null and dailyDeedBean.concilationBean.expectedTotalAmt!=null?'row':'row d-none'}">
 									<div class="col">
 										<div class="form-group">
 											<label><small><span th:text="#{commerce.screen.register.close.expected.amount}">Expected Closing Amount</span></small></label> <input
 												type="hidden" th:field="${dailyDeedBean.concilationBean.expectedTotalAmt}"></input>
 											<div class="input-group text-left">
 												<h2 class="dashboard-heading">
-													<span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+dailyDeedBean.concilationBean.expectedTotalAmt}"></span>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:text="${' '+dailyDeedBean.concilationBean.expectedTotalAmt}"
+														id="lbl_expectedAmt" th:if="${dailyDeedBean!=null and dailyDeedBean.concilationBean!=null and dailyDeedBean.concilationBean.expectedTotalAmt!=null}"></span>
+													<span id="lbl_expectedAmt" th:if="${dailyDeedBean==null or dailyDeedBean.concilationBean==null or dailyDeedBean.concilationBean.expectedTotalAmt==null}">0.00</span>
 												</h2>
 											</div>
 										</div>
@@ -129,7 +132,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="tenderListContainer">
+						<div id="tenderListContainer" th:class="${dailyDeedBean!=null and dailyDeedBean.concilationBean!=null and dailyDeedBean.concilationBean.expectedTotalAmt!=null?'':'d-none'}">
 							<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
 							<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
 								<div class="border-box">
@@ -252,7 +255,7 @@
 								</div>
 							</th:block>
 						</div>
-						<div class="row p-5">
+						<div id="actionBtns" th:class="${dailyDeedBean!=null and dailyDeedBean.concilationBean!=null and dailyDeedBean.concilationBean.expectedTotalAmt!=null?'row p-5':'row p-5 d-none'}">
 							<div class="col-12 text-left">
 								<div class="form-group">
 									<div class="input-group">
@@ -277,16 +280,22 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
+	<script th:inline="javascript">
+		var current_locale= /*[[${#locale.language}]]*/;
+		var register_close_url= /*[[@{/pos/close_register}]]*/;
+		var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
+		var sale_txn_url= /*[[@{/pos/sale}]]*/;
+		var open_register_url = /*[[@{/pos/open_register}]]*/;
+	</script>
 	<script th:inline="javascript" th:if="${registers!=null and #lists.size(registers)>0}">
-	
 	var regNo;
 	var tenderDetails;
-	var regDetails=new Array();
+	var regDetails=new Object();
 	
 	/*[[<th:block th:each="register,itrStat:${registers}">]]*/
 		regNo=/*[[${register.registerId}]]*/;
 		tenderDetails= /*[[${register.concilationDtls}]]*/;
-		regDetails.push(regNo : tenderDetails);
+		regDetails[regNo]= tenderDetails;
 	/*[[</th:block>]]*/
 		
 	</script>
@@ -294,12 +303,7 @@
 	
 	var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;
 	var closing_register_id= /*[[${dailyDeedBean.register}]]*/;
-	var current_locale= /*[[${#locale.language}]]*/;
 	
-	var register_close_url= /*[[@{/pos/close_register(registerId)}]]*/;
-	var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
-	
-	var sale_txn_url= /*[[@{/pos/sale}]]*/;
 	</script>
 	<script th:inline="javascript"
 		th:if="${dailyDeedBean!=null and dailyDeedBean.denominationList!=null and dailyDeedBean.tenders[0].denominations!=null}">

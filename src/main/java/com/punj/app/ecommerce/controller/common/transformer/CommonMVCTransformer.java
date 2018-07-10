@@ -186,10 +186,12 @@ public class CommonMVCTransformer {
 					txnDetails = lastTxnStatusTxns.get(regId);
 					CommonMVCTransformer.updateRegisterTxnStatus(registerBean, txnDetails);
 				}
-				if(regDailyTotals!=null && regTenderCounts!=null) {
+				if(regDailyTotals!=null) {
+					regCounts=null;
 					regTotals = regDailyTotals.get(regId);
-					regCounts = regTenderCounts.get(regId);
-					if(regTotals!=null && regCounts!=null) {
+					if(regTenderCounts!=null) 
+						regCounts = regTenderCounts.get(regId);
+					if(regTotals!=null) {
 						concilationBean = CommonMVCTransformer.transformRegTotal(regTotals, regCounts);
 						registerBean.setConcilationDtls(concilationBean);
 					}

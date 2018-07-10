@@ -1,30 +1,71 @@
 /**
  * This file contains all the custom JS code for commerce website
  */
-var menuStatus = 0;
-var posmenuStatus = 0;
-var financemenuStatus = 0;
-var accountmenuStatus = 0;
-var suppliermenuStatus = 0;
-var stylemenuStatus = 0;
-var ordermenuStatus = 0;
-var inventorymenuStatus = 0;
-var lookupmenuStatus = 0;
-var pricemenuStatus = 0;
 
-function resetAllMenus() {
-	posmenuStatus = 0;
-	financemenuStatus = 0;
-	accountmenuStatus = 0;
-	suppliermenuStatus = 0;
-	stylemenuStatus = 0;
-	ordermenuStatus = 0;
-	inventorymenuStatus = 0;
-	lookupmenuStatus = 0;
-	pricemenuStatus = 0;
-}
+var commonUtil = new Utils();
+var logout_url='/logout';
 
 $(function() {
+	
+	 // use plugins and options as needed, for options, detail see
+    // http://i18next.com/docs/
+    i18next.init({
+      lng: current_locale, // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+      resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
+        en: {
+          translation: {
+              common_currency_sign_inr: '₹',
+              sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
+              sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
+              sale_txn_validate_range_discount:'The discount amount should be between ₹ 0.00 and item price amount.Please correct the amount.',
+              sale_txn_validate_range_discount_pct:'The discount percentage should be between 0 and 100 of item price amount.',
+              sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
+              sale_txn_validate_tender:'Please select tender for the payment',
+              sale_txn_validate_amount_tender:'The tendered amount should be more than ₹ 0.00',
+              sale_txn_customer_association_needed : 'The customer details are needed for selecting Credit Tender!!',
+              sale_txn_lbl_qty: 'Quantity',
+              sale_txn_lbl_unit_cost: 'Unit Price',
+              sale_txn_lbl_suggested_price: 'Suggested Price',
+              sale_txn_lbl_mrp: 'Max Retail Price',
+              sale_txn_lbl_discount: 'Discount',
+              sale_txn_lbl_item_price: 'Item Price',
+              sale_txn_lbl_tax: 'Tax',
+              sale_txn_lbl_sgst: 'SGST',
+              sale_txn_lbl_cgst: 'CGST',
+              sale_txn_lbl_igst: 'IGST',
+              sale_txn_lbl_item_total: 'Item Total',
+              sale_txn_lbl_discount_percent: '%',
+              sale_txn_lbl_discount_amount: '₹',
+			  error_simple_alert_header : 'Alert Message',
+			  error_confirmation_alert_header : 'Confirmation Message',
+			  alert_btn_ok : 'OK',
+			  alert_btn_approve : 'Approve' ,
+			  alert_btn_cancel : 'Cancel',              
+			  last_txn_title : 'Last Successful Transaction',
+			  alert_btn_logout : 'Logout',
+			  error_confirm_logout : 'Are you sure you want to Logout? This will end your current session!',
+              
+          }
+        },
+        hi: {
+            translation: {
+            	common_currency_sign_inr: '₹'
+            }
+          },
+          pa: {
+              translation: {
+            	  common_currency_sign_inr: 'ਰੁ.'
+              }
+            }          
+      }
+    }, function(err, t) {
+      // for options see
+      // https://github.com/i18next/jquery-i18next#initialize-the-plugin
+      jqueryI18next.init(i18next, $);
+      
+    });	
+	
+	
 
 	$('input[type=number][class$="pos-amount"]').each(function() {
 
@@ -44,114 +85,30 @@ $(function() {
 			$(this).val(nbrValue.toFixed(2));
 		}
 	});
+
+	$('#langSelect').change(function() {
+
+		var langSelected = $('#langSelect').val();
+		var currentUrl = window.location.href;
+		currentUrl = removeParam('lang', currentUrl);
+
+		if (currentUrl.indexOf("?") > 0) {
+			currentUrl = currentUrl + '&lang=' + langSelected;
+		} else {
+			currentUrl = currentUrl + '?lang=' + langSelected;
+		}
+
+		window.location.href = currentUrl;
+	});
+
 });
 
-$(document).ready(
-		function() {
-
-			$('#langSelect').change(function() {
-
-				var langSelected = $('#langSelect').val();
-				var currentUrl = window.location.href;
-				currentUrl = removeParam('lang', currentUrl);
-
-				if (currentUrl.indexOf("?") > 0) {
-					currentUrl = currentUrl + '&lang=' + langSelected;
-				} else {
-					currentUrl = currentUrl + '?lang=' + langSelected;
-				}
-
-				window.location.href = currentUrl;
-			});
-
-			$('.offcanvas').click(
-					function() {
-						if (menuStatus == 0) {
-							$('#wrapper').toggleClass('toggled');
-						}
-						if (this.id == 'posmenu') {
-							if (posmenuStatus == 0) {
-								resetAllMenus();
-								posmenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'suppliermenu') {
-							if (suppliermenuStatus == 0) {
-								resetAllMenus();
-								suppliermenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'stylemenu') {
-							if (stylemenuStatus == 0) {
-								resetAllMenus();
-								stylemenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-
-						if (this.id == 'accountmenu') {
-							if (accountmenuStatus == 0) {
-								resetAllMenus();
-								accountmenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'ordermenu') {
-							if (ordermenuStatus == 0) {
-								resetAllMenus();
-								ordermenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'inventorymenu') {
-							if (inventorymenuStatus == 0) {
-								resetAllMenus();
-								inventorymenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'lookupmenu') {
-							if (lookupmenuStatus == 0) {
-								resetAllMenus();
-								lookupmenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'pricemenu') {
-							if (pricemenuStatus == 0) {
-								resetAllMenus();
-								pricemenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-						if (this.id == 'financemenu') {
-							if (financemenuStatus == 0) {
-								resetAllMenus();
-								financemenuStatus = 1;
-							} else {
-								resetAllMenus();
-							}
-						}
-
-						menuStatus = posmenuStatus + financemenuStatus + accountmenuStatus + suppliermenuStatus + stylemenuStatus + ordermenuStatus
-								+ inventorymenuStatus + lookupmenuStatus + pricemenuStatus;
-						if (menuStatus < 1) {
-							$('#wrapper').toggleClass('toggled');
-						}
-
-					});
-		});
-
+/**
+ * 
+ * @param key
+ * @param sourceURL
+ * @returns
+ */
 function removeParam(key, sourceURL) {
 	var rtn = sourceURL.split("?")[0], param, params_arr = [], queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
 	if (queryString !== "") {
@@ -172,4 +129,23 @@ function removeParam(key, sourceURL) {
 
 	}
 	return rtn;
+}
+
+
+function confirmLogout(){
+	var btnLabels = [ i18next.t('alert_btn_logout'),  i18next.t('alert_btn_cancel') ];
+	var btnActions= ['btnLogout' , 'btnCancel'];
+	commonUtil.renderAlert('GLOBAL', i18next.t('error_confirmation_alert_header'), i18next.t('error_confirm_logout'), btnLabels, btnActions, 'globalAction');	
+}
+
+function globalAction(cntl){
+	if (cntl.id.indexOf('Cancel') > 0) {
+		$('#alertModal').modal('hide');
+	} else if(cntl.id.indexOf('Logout')>0){
+		window.location.href = logout_url;
+	} 
+}
+
+function hideAlert() {
+	$('#alertModal').modal('hide');
 }

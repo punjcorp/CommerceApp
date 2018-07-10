@@ -1,0 +1,58 @@
+/**
+ * 
+ */
+package com.punj.app.ecommerce.common;
+
+import java.io.IOException;
+import java.util.Collection;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+
+@Component
+public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+	private static final Logger logger = LogManager.getLogger();
+
+	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
+	@Override
+	public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) throws IOException, ServletException {
+
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		authorities.forEach(authority -> {
+			if (authority.getAuthority().equals("ROLE_CASHIER")) {
+				try {
+					redirectStrategy.sendRedirect(req, res, ViewPathConstants.CASHIER_HOME_URL);
+				} catch (Exception e) {
+					logger.error("There is an error while rerouting to CSAHIER DASHBOARD", e);
+				}
+			} else if (authority.getAuthority().equals("ROLE_ADMIN")) {
+				try {
+					redirectStrategy.sendRedirect(req, res, ViewPathConstants.ADMIN_HOME_URL);
+				} catch (Exception e) {
+					logger.error("There is an error while rerouting to ADMIN DASHBOARD", e);
+				}
+			} else {
+				try {
+					redirectStrategy.sendRedirect(req, res, ViewPathConstants.CASHIER_HOME_URL);
+				} catch (Exception e) {
+					logger.error("There is an error while rerouting to CSAHIER DASHBOARD", e);
+				}
+			}
+		});
+
+	}
+
+}

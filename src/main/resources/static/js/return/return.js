@@ -22,8 +22,18 @@ var viewType='COMPACT';
  * @returns
  */
 $(function() {
+	
+	introJs().start();
+	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
 
+	$(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      return false;
+	    }
+	  });	
+	
 	$("#searchText").autocomplete({
 		minLength : 3,
 		source : function(request, response) {

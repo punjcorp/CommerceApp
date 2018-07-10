@@ -16,6 +16,9 @@ $(function() {
 		
 	});	
 		
+	$('#btnOpenStore').click(function() {
+		window.location.href = open_store_url;
+	});
 	
 	$('input:radio[name=locationId]').change(function() {
 		var locValue = $(this).val();

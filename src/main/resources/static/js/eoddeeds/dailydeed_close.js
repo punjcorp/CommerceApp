@@ -26,7 +26,7 @@ $(function() {
 	
 	$('input:radio[name=register]').change(function() {
 		var regValue = $(this).val();
-		processRegisterRequest(regValue, url);
+		processRegisterRequest(regValue);
 	});
 
 	$("#btnConcileRegister").click(function() {
@@ -55,10 +55,13 @@ $(function() {
 									error_entered_low : 'The <b>Counted Total Amount</b> is less than <b>Expected Closing Amount</b>. <br><br>Please <b>Approve</b> to proceed with the Entered Total Amount or <b>Cancel</b> to make changes.',
 									error_entered_high : 'The <b>Counted Total Amount</b> is greater than <b>Expected Closing Amount</b>. <br><br>Please <b>Approve</b> to proceed with the Entered Total Amount or <b>Cancel</b> to make changes.',
 									error_entered_zero : 'Please enter amount greater than <b>₹ 0.00</b> to reconcile.',
+									error_status_open_register : 'The register cannot be closed, Do you want to open register?',
 									error_simple_alert_header : 'Alert Message',
 									error_confirmation_alert_header : 'Confirmation Message',
 									alert_btn_ok : 'OK',
 									alert_btn_approve : 'Approve' ,
+									alert_btn_open_register : 'Open Register' ,
+									alert_btn_close_store : 'Close Store' ,
 									alert_btn_cancel : 'Cancel',
 									screen_lbl_tender_denomination : 'Tender Denomination',
 									screen_lbl_tender_denomination_first_option : 'Select Denomination',
@@ -157,10 +160,13 @@ function validateConcilationAmounts(enteredValue, expectedValue) {
 function alertAction(cntl) {
 	if (cntl.id.indexOf('Cancel') > 0) {
 		$('#alertModal').modal('hide');
+	} else if(cntl.id.indexOf('OpenRegister')>0){
+		window.location.href = open_register_url;
+	} else if(cntl.id.indexOf('CloseStore')>0){
+		window.location.href = store_close_url;
 	} else {
 		processRegisterClosure();
 	}
-
 }
 
 function actionDenomination(tenderId, denominationId, actionParam, formName) {
@@ -302,3 +308,38 @@ function postClosureAction(data){
 
 
 
+
+function processRegisterRequest(regValue){
+	
+	
+	var regStatus=$('#'+regValue+'_reg_status').val();
+	if(regStatus!=undefined && regStatus=='OPEN_REGISTER'){
+		
+		var conCilationDtls=regDetails[regValue];
+		var expectedAmt= +conCilationDtls.expectedTotalAmt;
+		expectedAmt=expectedAmt.toFixed(2);
+		
+		$('#row_expectedAmt').removeClass('d-none');
+		$('#actionBtns').removeClass('d-none');
+		$('#tenderListContainer').removeClass('d-none');
+		$('#lbl_expectedAmt').text(expectedAmt);
+		$('#concilationBean\\.expectedTotalAmt').val(expectedAmt);
+		
+	}else{
+		
+		var btnLabels = [ i18next.t('alert_btn_open_register'), i18next.t('alert_btn_close_store'), i18next.t('alert_btn_cancel') ];
+		var btnActions= ['btnOpenRegister' , 'btnCloseStore' , 'btnCancel'];
+		alertUtil.renderAlert('CUSTOM', i18next.t('error_confirmation_alert_header'), i18next.t('error_status_open_register'), btnLabels, btnActions);
+		
+		$('#row_expectedAmt').addClass('d-none');
+		$('#actionBtns').addClass('d-none');
+		$('#tenderListContainer').addClass('d-none');
+		$('#lbl_expectedAmt').text('0.00');
+		$('#concilationBean\\.expectedTotalAmt').val(0.00);
+		
+	}
+	
+	
+	
+	
+}

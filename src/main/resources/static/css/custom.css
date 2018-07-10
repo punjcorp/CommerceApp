@@ -641,3 +641,11 @@ a.ui-button:active,
 	border: 2px solid #fff;
 	border-radius : 1.5rem;
 }
+
+.footer-btns{
+	padding-top : 1rem;
+	padding-bottom : 1rem;
+	padding-bottom : 1rem;
+	padding-left : 0;
+	padding-right : 0;
+}

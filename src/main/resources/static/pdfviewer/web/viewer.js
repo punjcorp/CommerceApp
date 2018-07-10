@@ -1247,6 +1247,7 @@ var PDFViewerApplication = {
       } catch (ex) {
         title = url;
       }
+      title = 'Last Transaction Receipt';
     }
     this.setTitle(title);
   },

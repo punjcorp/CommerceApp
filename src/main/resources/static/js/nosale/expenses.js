@@ -22,7 +22,17 @@ var txnStartTime;
 var txnEndTime;
 
 $(function() {
+	
+	introJs().start();
+	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
+	
+	$(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      return false;
+	    }
+	  });	
 	
 	$("#expenseType").autocomplete({
 		minLength : 3,

@@ -37,7 +37,7 @@ public final class ViewPathConstants {
 	public static final String ADMIN_HOME_URL = "/admin/home";
 	public static final String ADMIN_DASHBOARD_PAGE = "admin/dashboard";
 	
-	public static final String CASHIER_HOME_URL = "/home";
+	public static final String CASHIER_HOME_URL = "/pos/home";
 	public static final String CASHIER_DASHBOARD_PAGE = "home/dashboard";
 	
 	/**
