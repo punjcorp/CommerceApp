@@ -441,7 +441,10 @@ $.extend(SaleLineItem.prototype, {
 		
 
 
-		var outerContainer='<div id="' + saleLineItem.itemId + 'Container">';
+		var outerContainer='<div class="mx-2" id="' + saleLineItem.itemId + 'Container"';
+		outerContainer += 'onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		outerContainer += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)">';
+		
 		var outerContainerEnds='</div>';
 		var firstRowStarts='<div class="row">';
 		var firstRowEnds='</div>';
@@ -460,7 +463,10 @@ $.extend(SaleLineItem.prototype, {
 
 		var qty = '<div class="col-1 padding-sm">';
 		qty += '<label><small> <span>' + i18next.t('sale_txn_lbl_qty') + '</span></small> </label><br />';
-		qty += '<input class="form-control form-control-sm " onChange="saleItemChanged(this);" id="li_qty';
+		qty += '<input class="form-control form-control-sm " onChange="saleItemChanged(this);"';
+		qty += 'onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		qty += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)"';
+		qty += ' id="li_qty';
 		qty += saleLineItem.itemId + '" type="number" min="0" value="';
 		qty += saleLineItem.qty;
 		qty += '"></input></div>';
@@ -475,7 +481,10 @@ $.extend(SaleLineItem.prototype, {
 		var unitPriceAmt = '<div class="col padding-sm">';
 		unitPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_unit_cost') + '</span></small> </label><br />';
 		unitPriceAmt += '<div class="input-group text-left">';
-		unitPriceAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		unitPriceAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_unitPriceAmt' + saleLineItem.itemId + '" ';
+		unitPriceAmt += ' onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		unitPriceAmt += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)" ';
+		unitPriceAmt += ' type="number" min="0" step="0.01" value="';
 		unitPriceAmt += saleLineItem.unitPrice.toFixed(2);
 		unitPriceAmt += '"></input></div></div>';
 		unitPriceAmt += '<input id="li_uh_unitPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -507,7 +516,10 @@ $.extend(SaleLineItem.prototype, {
 		var suggestedPriceAmt = '<div class="col padding-sm">';
 		suggestedPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_suggested_price') + '</span></small> </label><br />';
 		suggestedPriceAmt += '<div class="input-group text-left">';
-		suggestedPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		suggestedPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_suggestedPriceAmt' + saleLineItem.itemId + '" type="number"';
+		suggestedPriceAmt += ' onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		suggestedPriceAmt += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)" ';
+		suggestedPriceAmt += ' min="0" step="0.01" value="';
 		suggestedPriceAmt += saleLineItem.suggestedPrice.toFixed(2);
 		suggestedPriceAmt += '" ></input></div></div>';
 		suggestedPriceAmt += '<input id="li_uh_suggestedPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -517,7 +529,10 @@ $.extend(SaleLineItem.prototype, {
 		var maxRetailPriceAmt = '<div class="col padding-sm">';
 		maxRetailPriceAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_mrp') + '</span></small> </label><br />';
 		maxRetailPriceAmt += '<div class="input-group text-left">';
-		maxRetailPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
+		maxRetailPriceAmt += '<input class="form-control form-control-sm  pos-amount" id="li_maxRetailPriceAmt' + saleLineItem.itemId + '" type="number"';
+		maxRetailPriceAmt += ' onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		maxRetailPriceAmt += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)" ';
+		maxRetailPriceAmt += ' min="0" step="0.01" value="';
 		maxRetailPriceAmt += saleLineItem.maxRetailPrice.toFixed(2);
 		maxRetailPriceAmt += '"></input></div></div>';
 		maxRetailPriceAmt += '<input id="li_uh_maxRetailPriceAmt' + saleLineItem.itemId + '" type="hidden" value="';
@@ -527,7 +542,10 @@ $.extend(SaleLineItem.prototype, {
 		var discountAmt = '<div class="col padding-sm">';
 		discountAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_discount') + '</span></small> </label><br />';
 		discountAmt += '<div class="input-group text-left">';
-		discountAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);" id="li_discountAmt';
+		discountAmt += '<input class="form-control form-control-sm  pos-amount" onChange="saleItemChanged(this);"';
+		discountAmt += ' onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		discountAmt += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)" ';
+		discountAmt += ' id="li_discountAmt';
 		discountAmt += saleLineItem.itemId + '" type="number" min="0" step="0.01" value="';
 		if(saleLineItem.discountPct!=undefined && saleLineItem.discountPct!='')
 			discountAmt += saleLineItem.discountPct.toFixed(2);
@@ -535,7 +553,10 @@ $.extend(SaleLineItem.prototype, {
 			discountAmt += saleLineItem.discount.toFixed(2);
 		discountAmt += '"></input>';
 		
-		discountAmt += '<select class="form-control form-control-sm" onChange="saleItemChanged(this);" id="discountType'+saleLineItem.itemId + '">';
+		discountAmt += '<select class="form-control form-control-sm" ';
+		discountAmt += ' onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		discountAmt += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)" ';
+		discountAmt += 'onChange="saleItemChanged(this);" id="discountType'+saleLineItem.itemId + '">';
 		if((saleLineItem.discountPct!=undefined && saleLineItem.discountPct!='') || saleLineItem.discount==0){
 			discountAmt += '<option value="percent" selected>'+i18next.t('sale_txn_lbl_discount_percent')+'</option>';
 			discountAmt += '<option value="amount">'+i18next.t('sale_txn_lbl_discount_amount')+'</option>';
@@ -616,9 +637,12 @@ $.extend(SaleLineItem.prototype, {
 		total += '<label><small> <span>' + i18next.t('sale_txn_lbl_item_total') + '</span></small> </label><br />';
 		total += '<h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
 		total += i18next.t('common_currency_sign_inr') + ' ' + saleLineItem.itemTotal.toFixed(2);
-		total += '</span><button type="button" id="btnDeleteSLI"';
+		total += '</span><button type="button" title="'+ i18next.t('tooltip_btn_delete_sale_line_item') +'"  id="btnDeleteSLI'+saleLineItem.itemId+'"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
-		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
+		total += ')" ';
+		total += ' onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
+		total += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)" ';
+		total += 'class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
 		total += '</h5>';
 		total += '</div>';
 
@@ -641,6 +665,58 @@ $.extend(SaleLineItem.prototype, {
 		}
 		
 		$('#result').append(finalSaleItemHtml);
+		this.bindKeysForLineItem(saleLineItem, viewType);
+	},
+	bindKeysForLineItem : function (saleLineItem, viewType){
+		
+		var itemQtyCntl=document.querySelector('#li_qty'+saleLineItem.itemId);
+		var itemDiscountCntl=document.querySelector('#li_discountAmt'+saleLineItem.itemId);
+		var itemDiscountTypeCntl=document.querySelector('#discountType'+saleLineItem.itemId);
+		var itemDeleteBtnCntl=document.querySelector('#btnDeleteSLI'+saleLineItem.itemId);
+	    
+		Mousetrap(itemQtyCntl).bind('right', function() { itemDiscountCntl.focus(); });
+		Mousetrap(itemQtyCntl).bind('left', function() { txnAction.focusPrevious(saleLineItem.itemId); });
+		
+		Mousetrap(itemDiscountCntl).bind('left', function() { itemQtyCntl.focus(); });
+		Mousetrap(itemDiscountCntl).bind('right', function() { itemDiscountTypeCntl.focus(); });
+		
+		Mousetrap(itemDiscountTypeCntl).bind('left', function(e) {
+			e.preventDefault();
+			itemDiscountCntl.focus();
+			return false;
+		});
+		Mousetrap(itemDiscountTypeCntl).bind('right', function(e) {
+			e.preventDefault();
+			itemDeleteBtnCntl.focus();
+			return false;
+		});
+		
+		Mousetrap(itemDeleteBtnCntl).bind('left', function() { itemDiscountTypeCntl.focus(); });
+		Mousetrap(itemDeleteBtnCntl).bind('right', function() { txnAction.focusNext(saleLineItem.itemId); });
+		
+		if (viewType=='DETAILED'){
+			var itemSuggestedPriceCntl=document.querySelector('#li_suggestedPriceAmt'+saleLineItem.itemId);
+			var itemMRPCntl=document.querySelector('#li_maxRetailPriceAmt'+saleLineItem.itemId);
+			var itemUnitPriceCntl=document.querySelector('#li_unitPriceAmt'+saleLineItem.itemId);
+			
+			Mousetrap(itemQtyCntl).bind('right', function() { itemUnitPriceCntl.focus(); });
+			
+			Mousetrap(itemUnitPriceCntl).bind('left', function() { itemQtyCntl.focus(); });
+			Mousetrap(itemUnitPriceCntl).bind('right', function() { itemSuggestedPriceCntl.focus(); });
+			
+			Mousetrap(itemSuggestedPriceCntl).bind('left', function() { itemUnitPriceCntl.focus(); });
+			Mousetrap(itemSuggestedPriceCntl).bind('right', function() { itemMRPCntl.focus(); });
+			
+			Mousetrap(itemMRPCntl).bind('left', function() { itemSuggestedPriceCntl.focus(); });
+			Mousetrap(itemMRPCntl).bind('right', function() { itemDiscountCntl.focus(); });
+			
+			Mousetrap(itemDiscountCntl).bind('left', function() { itemMRPCntl.focus(); });
+			
+		}else {
+			Mousetrap(itemQtyCntl).bind('right', function() { itemDiscountCntl.focus(); });
+			Mousetrap(itemDiscountCntl).bind('left', function() { itemQtyCntl.focus(); });
+		}
+		
 	},
 	renderReturnLineItem : function(saleLineItem, viewType) {
 
@@ -821,7 +897,7 @@ $.extend(SaleLineItem.prototype, {
 		total += '<label><small> <span>' + i18next.t('sale_txn_lbl_item_total') + '</span></small> </label><br />';
 		total += '<h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
 		total += i18next.t('common_currency_sign_inr') + ' ' + saleLineItem.itemTotal.toFixed(2);
-		total += '</span><button type="button" id="btnDeleteSLI"';
+		total += '</span><button type="button" title="'+ i18next.t('tooltip_btn_delete_return_line_item') +'" id="btnDeleteSLI"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" class="btn btn-danger btn-sm ml-2"><i class="fas fa-times"></i></button> ';
 		total += '</h5>';
@@ -1009,7 +1085,10 @@ $.extend(TenderLineItem.prototype, {
 		if (g_tenderIndex >= 0) {
 			$('#tenderLineItemContainer').removeClass('d-none');
 		}
-		var htmlContent = '<div class="row" id="' + g_tenderIndex + 'tenderLineItem">';
+		var htmlContent = '<div class="row" id="' + g_tenderIndex + 'tenderLineItem"';
+		
+		htmlContent += 'onmouseover="txnAction.tenderHoverEffect(this)" onfocus="txnAction.tenderHoverEffect(this)"';
+		htmlContent += 'onmouseout="txnAction.tenderHoverAwayEffect(this)" onblur="txnAction.tenderHoverAwayEffect(this)">';
 		htmlContent += '<div class="col-6">';
 
 		var iconImg = '';
@@ -1026,15 +1105,25 @@ $.extend(TenderLineItem.prototype, {
 		htmlContent += '<input id="tli_amt_' + g_tenderIndex + '" type="hidden" value="' + this.amount.toFixed(2) + '"></input>';
 		htmlContent += '<h5><span>' + i18next.t('common_currency_sign_inr') + ' ' + this.amount.toFixed(2) + '</span></h5>';
 		htmlContent += '</div><div class="col-2">';
-		htmlContent += '<button type="button" id="btnDeleteTLI"';
-		htmlContent += 'onClick="deleteTender(' + g_tenderIndex;
-		htmlContent += ')" class="btn btn-danger btn-sm"><i class="far fa-trash-alt fa-2x"></i></button>';
+		htmlContent += '<button type="button" title="'+ i18next.t('tooltip_btn_delete_tender_line_item') +'" id="btnDeleteTLI'+g_tenderIndex+'"';
+		htmlContent += 'onClick="deleteTender(' + g_tenderIndex+')" ';
+		htmlContent += 'onmouseover="txnAction.tenderHoverEffect(this)" onfocus="txnAction.tenderHoverEffect(this)"';
+		htmlContent += 'onmouseout="txnAction.tenderHoverAwayEffect(this)" onblur="txnAction.tenderHoverAwayEffect(this)"';
+		htmlContent += 'class="btn btn-danger btn-sm"><i class="far fa-trash-alt fa-2x"></i></button>';
 		htmlContent += '</div></div>';
 
 		$('#tenderLineItemContainer').append(htmlContent);
+		this.bindKeysForTenderLineItem(g_tenderIndex);
 
 	},
-
+	bindKeysForTenderLineItem : function (controlIndex){
+		
+		var deleteTenderCntl=document.querySelector('#btnDeleteTLI'+controlIndex);
+	    
+		Mousetrap(deleteTenderCntl).bind('up', function() { txnAction.focusPreviousTender(controlIndex); });
+		Mousetrap(deleteTenderCntl).bind('down', function() { txnAction.focusNextTender(controlIndex); });
+		
+	},
 	initialize : function(tenderEnteredAmt, tenderId) {
 		var tenderName = $('#' + tenderId + 'tenderName').val();
 		var tenderType = $('#' + tenderId + 'tenderType').val();

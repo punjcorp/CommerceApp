@@ -15,6 +15,9 @@ $(function() {
         en: {
           translation: {
               common_currency_sign_inr: '₹',
+              tooltip_btn_delete_tender_line_item : 'Delete Tender Line Item',
+              tooltip_btn_delete_sale_line_item : 'Delete Sale Line Item',
+              tooltip_btn_delete_return_line_item : 'Delete Return Line Item',
               sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
               sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
               sale_txn_validate_range_discount:'The discount amount should be between ₹ 0.00 and item price amount.Please correct the amount.',

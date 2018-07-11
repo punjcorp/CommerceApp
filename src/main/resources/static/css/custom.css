@@ -649,3 +649,13 @@ a.ui-button:active,
 	padding-left : 0;
 	padding-right : 0;
 }
+
+
+.tender-line-item-hover{
+	background-color :#9bafc3;
+	color: #fff;
+}
+.txn-line-item-hover{
+	background-color :#8ee4af;
+	color: #05386B;
+}
