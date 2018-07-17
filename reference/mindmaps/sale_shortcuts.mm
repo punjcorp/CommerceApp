@@ -1,6 +1,7 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node CREATED="1530583522376" ID="ID_1452102475" MODIFIED="1530583536023" TEXT="Sale Shortcuts">
+<node CREATED="1530583522376" ID="ID_1452102475" MODIFIED="1531548958143" TEXT="Sale Shortcuts">
+<font NAME="Calibri Light" SIZE="12"/>
 <node CREATED="1530583540181" ID="ID_1857337108" MODIFIED="1530583825070" POSITION="right" TEXT="Add Item textbox"/>
 <node CREATED="1530583550760" ID="ID_1985198259" MODIFIED="1530583848267" POSITION="right" TEXT="Go to scanned item area and choose items">
 <node CREATED="1530583690469" ID="ID_349955206" MODIFIED="1530583702066" TEXT="go to item qty"/>

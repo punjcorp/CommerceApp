@@ -211,7 +211,10 @@ public final class ViewPathConstants {
 	public static final String LOGIN_PAGE="login/login";
 	public static final String LOGIN_URL="/login";
 	public static final String MANAGE_USER_PAGE="account/manage_user";
+	public static final String MANAGE_USER_URL="/account/manage_user";
 	
+	public static final String CHANGE_PASSWORD_URL="/account/change_password";
+	public static final String CHANGE_PASSWORD_PAGE="account/manage_password";	
 	
 	public static final String SEARCH_ACCOUNT_URL="/admin/search_account";
 	

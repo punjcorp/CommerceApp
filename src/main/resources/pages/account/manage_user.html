@@ -1,107 +1,88 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.manage.account.title}">Manage
-	User</title>
-
-
+<title th:text="#{commerce.screen.manage.account.title}">Manage User</title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
-
-
-
-
 </head>
 <body>
 	<div id="wrapper">
-
-		
-		
-
 		<!-- Page Content -->
 		<div id="page-content-wrapper-no-menu">
-
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
-
-
-
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<div class="container">
-
 				<div class="card">
 					<div class="card-header">
-						<h3 th:text="#{commerce.screen.manage.account.header}">Manage
-							Account</h3>
+						<h3 th:text="#{commerce.screen.manage.account.header}">Manage Account</h3>
 					</div>
 					<div class="card-body">
 						<div class="card-text">
-							<div th:if="${ success!=null}" th:text="${success}"
-								class="alert alert-success " role="alert"></div>
-							<div th:if="${ alert!=null}" th:text="${alert}"
-								class="alert alert-danger " role="alert"></div>
-							<form class="form" id="muform" action="#"
-								th:action="@{/manage_user}" th:object="${registerUserBean}"
-								method="post">
-								<div class="form-group">
-									<input type="text" th:field="*{firstName}"
-										class="form-control input-sm" placeholder="First Name"
-										th:placeholder="#{commerce.screen.register.firstname}"></input>
+							<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+							<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+							<form class="form" id="muform" action="#" th:action="@{/account/manage_user}" th:object="${registerUserBean}" method="post">
+								<div class="form-group  text-left">
+									<label for="firstName"><small><span th:text="#{commerce.screen.register.firstname}">First Name</span></small></label>
+									<div class="input-group text-left">
+										<input type="hidden" th:field="*{username}"></input>
+										<input type="text" th:field="*{firstName}" class="form-control input-sm" placeholder="First Name"
+											th:placeholder="#{commerce.screen.register.firstname.placeholder}" maxlength="50"></input>
+									</div>
+									<small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger">First Name Error</small>
 								</div>
-								<div class="form-group">
-									<input type="text" th:field="*{lastName}"
-										class="form-control input-sm" placeholder="Last Name"
-										th:placeholder="#{commerce.screen.register.lastname}"></input>
+								<div class="form-group  text-left">
+									<label for="lastName"><small><span th:text="#{commerce.screen.register.lastname}">Last Name</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="*{lastName}" class="form-control input-sm" placeholder="Last Name"
+											th:placeholder="#{commerce.screen.register.lastname.placeholder}" maxlength="50"></input>
+									</div>
+									<small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger">Last Name Error</small>
+								</div>
+								<div class="form-group  text-left">
+									<label for="email"><small><span th:text="#{commerce.screen.register.email}">Email Address</span></small></label>
+									<div class="input-group text-left">
+										<input type="email" th:field="*{email}" class="form-control input-sm" placeholder="Email Address"
+											th:placeholder="#{commerce.screen.register.email.placeholder}" maxlength="100"></input>
+									</div>
+									<small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Address Error</small>
+								</div>
+								
+								
+								<div class="form-group  text-left">
+									<label for="phone1"><small><span th:text="#{commerce.screen.register.phone1}">Home Phone</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="*{phone1}" class="form-control input-sm" placeholder="Home Phone"
+											th:placeholder="#{commerce.screen.register.phone1.placeholder}" maxlength="10"></input>
+									</div>
+									<small th:if="${#fields.hasErrors('phone1')}" th:errors="*{phone1}" class="text-danger">Home Phone Error</small>
 								</div>
 
-								<div class="form-group">
-									<input type="email" th:field="*{email}"
-										class="form-control input-sm" placeholder="Email Address"
-										th:placeholder="#{commerce.screen.register.email}"></input>
+								<div class="form-group  text-left">
+									<label for="phone2"><small><span th:text="#{commerce.screen.register.phone2}">Work Phone</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="*{phone2}" class="form-control input-sm" placeholder="Work Phone"
+											th:placeholder="#{commerce.screen.register.phone2.placeholder}" maxlength="10"></input>
+									</div>
+									<small th:if="${#fields.hasErrors('phone2')}" th:errors="*{phone2}" class="text-danger">Work Phone Error</small>
 								</div>
-								<div class="form-group">
-									<input type="text" th:field="*{phone1}"
-										class="form-control input-sm" placeholder="Home Phone"
-										th:placeholder="#{commerce.screen.register.phone1}"></input>
-								</div>
-								<div class="form-group">
-									<input type="text" th:field="*{phone2}"
-										class="form-control input-sm" placeholder="Work Phone"
-										th:placeholder="#{commerce.screen.register.phone2}"></input>
-								</div>
+								
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
-										<input type="button" id="editbtn" value="Edit"
-											th:value="#{commerce.btn.edit}"
-											class="btn btn-info btn-block"></input>
-									</div>
-									<div class="col-xs-3 col-sm-3 col-md-3">
-										<input type="submit" value="Done"
-											th:value="#{commerce.btn.done}"
-											class="btn btn-info btn-block"></input>
-
+										<button type="button" id="editbtn" value="Edit" th:text="#{commerce.btn.edit}" class="btn btn-info"></button>
+										<button type="submit" value="Done" th:text="#{commerce.btn.done}" class="btn btn-info"></button>
 									</div>
 								</div>
 							</form>
 						</div>
 					</div>
-
 				</div>
-
 			</div>
-
-
-
-
 		</div>
 		<!-- /#page-content-wrapper -->
-
 	</div>
 	<!-- /#wrapper -->
-
-
 	<script>
 		$(document)
 				.ready(
@@ -124,6 +105,5 @@
 
 						});
 	</script>
-
 </body>
 </html>

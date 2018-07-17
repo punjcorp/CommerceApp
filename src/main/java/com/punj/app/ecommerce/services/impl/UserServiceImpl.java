@@ -159,41 +159,38 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	private void deleteExistingRecords(String username) {
 
-		Password passwordCriteria=new Password();
+		Password passwordCriteria = new Password();
 		passwordCriteria.setStatus(ServiceConstants.STATUS_APPROVED);
 		passwordCriteria.setUsername(username);
-		
-		List<Password> passwords=this.passwordRepository.findAll(Example.of(passwordCriteria));
-		if(passwords!=null && !passwords.isEmpty()) {
-			
+
+		List<Password> passwords = this.passwordRepository.findAll(Example.of(passwordCriteria));
+		if (passwords != null && !passwords.isEmpty()) {
+
 			this.passwordRepository.delete(passwords);
 			logger.info("The user passwords has been cleared successfully");
-			
+
 		}
-		
-		UserRole userRoleCriteria=new UserRole();
-		UserRoleId userRoleIdCriteria=new UserRoleId();
+
+		UserRole userRoleCriteria = new UserRole();
+		UserRoleId userRoleIdCriteria = new UserRoleId();
 		userRoleIdCriteria.setUsername(username);
 		userRoleCriteria.setUserRoleId(userRoleIdCriteria);
-		
-		List<UserRole> userRoles=this.userRoleRepository.findAll(Example.of(userRoleCriteria));
-		if(userRoles!=null && !userRoles.isEmpty()) {
+
+		List<UserRole> userRoles = this.userRoleRepository.findAll(Example.of(userRoleCriteria));
+		if (userRoles != null && !userRoles.isEmpty()) {
 			this.userRoleRepository.delete(userRoles);
 			logger.info("The user roles has been cleared successfully");
 		}
 
-		
 	}
-	
-	
-	
+
 	public User saveUser(User user) {
-		
+
 		this.deleteExistingRecords(user.getUsername());
-		
-		user=this.userRepository.save(user);
+
+		user = this.userRepository.save(user);
 		logger.info("The user has been saved successfully");
-		
+
 		return user;
 	}
 
@@ -212,7 +209,7 @@ public class UserServiceImpl implements UserService {
 
 		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}", pwd.getStatus(), pwd.getModifiedBy(),
 				pwd.getUsername(), pwd.getPassword(), pwd.getModifiedDate());
-		pwd.setPassword(userDetails.getPassword());
+
 		pwd.setUsername(userDetails.getUsername());
 		pwd.setStatus("A");
 		pwd = passwordRepository.findOne(Example.of(pwd));
@@ -481,6 +478,28 @@ public class UserServiceImpl implements UserService {
 			this.deleteUser(username, actionBy);
 		}
 		logger.info("The deletion for all the provided user accounts was successful");
+	}
+
+	@Override
+	public User updateUserDetails(User user, String modifiedBy) {
+		User retrievedUser=this.userRepository.findOne(user.getUsername());
+		if(retrievedUser!=null) {
+			retrievedUser.setFirstname(retrievedUser.getFirstname());
+			retrievedUser.setLastname(retrievedUser.getLastname());
+			retrievedUser.setEmail(retrievedUser.getEmail());
+			retrievedUser.setPhone1(retrievedUser.getPhone1());
+			retrievedUser.setPhone2(retrievedUser.getPhone2());
+			retrievedUser.setModifiedBy(modifiedBy);
+			retrievedUser.setModifiedDate(LocalDateTime.now());
+			
+			retrievedUser=this.userRepository.save(retrievedUser);
+			
+			logger.info("The user updation is successful");
+		}else {
+			logger.error("The {} user was not found in database, hence cannot be updated", user.getUsername());
+			
+		}
+		return retrievedUser;
 	}
 
 }

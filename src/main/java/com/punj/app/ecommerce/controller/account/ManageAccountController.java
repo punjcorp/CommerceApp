@@ -3,7 +3,7 @@ package com.punj.app.ecommerce.controller.account;
  * 
  */
 
-import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
@@ -59,45 +59,52 @@ public class ManageAccountController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/manage_user")
-	public String showUser(Model model, HttpSession session, Principal principal) {
-		String loggedInUser = principal.getName();
+	@GetMapping(ViewPathConstants.MANAGE_USER_URL)
+	public String showUser(Model model, HttpSession session, Authentication authentication) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String loggedInUser = userDetails.getUsername();
+		
 		RegisterUserBean userBean = null;
-		User user = userService.getUserByUsername(loggedInUser);
-		userBean = this.updateUserBean(user);
-		model.addAttribute("registerUserBean", userBean);
+		User user = this.userService.getUserByUsername(loggedInUser);
+		if(user !=null)
+			userBean = this.updateUserBean(user);
+		model.addAttribute(MVCConstants.USER_BEAN_PARAM, userBean);
 
-		return "account/manage_user";
+		return ViewPathConstants.MANAGE_USER_PAGE;
 
 	}
 
-	@PostMapping("/manage_user")
+	@PostMapping(ViewPathConstants.MANAGE_USER_URL)
 	public String saveUser(@ModelAttribute RegisterUserBean registerUserBean, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		logger.info("Captured the updated details for the user");
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-		User newUser = userService.getUserByUsername(registerUserBean.getEmail());
-		newUser = this.updateUserDomain(registerUserBean, newUser);
+		User newUser = userService.getUserByUsername(registerUserBean.getUsername());
+		if (newUser != null) {
+			this.updateUserDomain(registerUserBean, newUser, userDetails.getUsername());
+			newUser = this.userService.updateUserDetails(newUser, userDetails.getUsername());
+			if (newUser != null) {
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.manage.account.success", null, locale));
+				logger.info("The user details has been successfully updated");
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.manage.account.failure", null, locale));
+				logger.error("The user details were not saved due to some issues");
+			}
+		}
 
-		newUser = userService.saveUser(newUser);
-		model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.manage.account.success", null, locale));
-
-		logger.info("The user details has been successfully updated");
-
-		model.addAttribute("registerUserBean", registerUserBean);
-
-		return "account/manage_user";
+		model.addAttribute(MVCConstants.USER_BEAN_PARAM, registerUserBean);
+		return ViewPathConstants.MANAGE_USER_PAGE;
 
 	}
 
-	@GetMapping("/manage_password")
+	@GetMapping(ViewPathConstants.CHANGE_PASSWORD_URL)
 	public String showPassword(Model model) {
-		model.addAttribute("passwordBean", new LoginBean());
-		return "account/manage_password";
+		model.addAttribute(MVCConstants.PASSWORD_BEAN_PARAM, new LoginBean());
+		return ViewPathConstants.CHANGE_PASSWORD_PAGE;
 	}
 
-	@PostMapping("/manage_password")
+	@PostMapping(ViewPathConstants.CHANGE_PASSWORD_URL)
 	public String savePassword(@ModelAttribute LoginBean passwordBean, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		logger.info("Captured the updated password for the user");
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -106,20 +113,18 @@ public class ManageAccountController {
 					&& passwordBean.getConfirmPassword().equals(passwordBean.getNewPassword())) {
 				Password pwd = new Password();
 				pwd = userService.updatePassword(userDetails, pwd, passwordBean.getNewPassword(), null);
-				session.setAttribute("userDetails", pwd);
-				model.addAttribute("passwordBean", passwordBean);
+				session.setAttribute(MVCConstants.USER_PASSWORD_BEAN_PARAM, pwd);
 				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.manage.password.success", null, locale));
 			} else {
-				model.addAttribute("passwordBean", passwordBean);
-				model.addAttribute("alert", messageSource.getMessage("commerce.screen.manage.password.matching.failed", null, locale));
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.manage.password.matching.failed", null, locale));
 			}
+			model.addAttribute(MVCConstants.PASSWORD_BEAN_PARAM, passwordBean);
 		} catch (Exception e) {
-			model.addAttribute("alert", "Unexpected error occured.");
-			model.addAttribute("passwordBean", passwordBean);
+			model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.manage.password.failure", null, locale));
+			model.addAttribute(MVCConstants.PASSWORD_BEAN_PARAM, passwordBean);
 			logger.error("The error has occured while updating the new password", e);
-			return ViewPathConstants.ERROR_PAGE;
 		}
-		return "account/manage_password";
+		return ViewPathConstants.CHANGE_PASSWORD_PAGE;
 	}
 
 	/**
@@ -131,6 +136,7 @@ public class ManageAccountController {
 	private RegisterUserBean updateUserBean(User loggedInUser) {
 		RegisterUserBean newUserBean = new RegisterUserBean();
 		newUserBean.setEmail(loggedInUser.getEmail());
+		newUserBean.setUsername(loggedInUser.getUsername());
 		newUserBean.setFirstName(loggedInUser.getFirstname());
 		newUserBean.setLastName(loggedInUser.getLastname());
 		newUserBean.setPhone1(loggedInUser.getPhone1());
@@ -147,15 +153,18 @@ public class ManageAccountController {
 	 * @param newUser
 	 * @return
 	 */
-	private User updateUserDomain(RegisterUserBean registerUserBean, User newUser) {
+	private User updateUserDomain(RegisterUserBean registerUserBean, User newUser, String modifiedBy) {
 
-		newUser.setUsername(registerUserBean.getEmail());
+		newUser.setUsername(registerUserBean.getUsername());
 		newUser.setEmail(registerUserBean.getEmail());
 		newUser.setFirstname(registerUserBean.getFirstName());
 		newUser.setLastname(registerUserBean.getLastName());
 		newUser.setPhone1(registerUserBean.getPhone1());
 		newUser.setPhone2(registerUserBean.getPhone2());
-
+		
+		newUser.setModifiedBy(modifiedBy);
+		newUser.setModifiedDate(LocalDateTime.now());
+		
 		return newUser;
 
 	}

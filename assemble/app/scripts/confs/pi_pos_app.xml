@@ -1,0 +1,9 @@
+<service>
+    <id>PI-POS-APP</id>
+    <name>PI-POS APP</name>
+    <description>This service executes the PI-POS Java application as Windows Service</description>
+    <env name="PI-POS-APP_HOME" value="PI_POS_T_HOME/pi_pos_app/"/>
+    <executable>%PI-POS-APP_HOME%/bin/run.bat</executable>
+    <depend>PI-POS-DB</depend>
+    <logmode>rotate</logmode>
+</service>

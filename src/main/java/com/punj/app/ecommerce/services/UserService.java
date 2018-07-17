@@ -41,7 +41,7 @@ public interface UserService extends UserDetailsService {
 	public List<User> disableAllUsers(List<String> usernameList, String actionBy);
 	public void deleteAllUsers(List<String> usernameList, String actionBy);
 	
-
+	public User updateUserDetails(User user, String modifiedBy);
 	public User saveUser(User user);
 
 	public Card saveCard(Card card);

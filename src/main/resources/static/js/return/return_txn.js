@@ -313,8 +313,100 @@ $.extend(TxnAction.prototype, {
 		this.saleTxn.txnSaleLineItems = this.saleItemList;
 		this.saleTxn.txnTenderLineItems = this.tenderLineItems;
 		this.saleTxn.customer = this.customer;
-		
 		this.saleTxn.saveReturnTxnDetails();
+
+	},
+	focusFirstItemQty : function() {
+		if (this.saleItemList != undefined && this.saleItemList.length > 0) {
+			var sli_access = this.saleItemList[0];
+			$('#li_qty' + sli_access.itemId).focus();
+		}
+	},
+	focusFirstItemDiscount : function() {
+		if (this.saleItemList != undefined && this.saleItemList.length < 1) {
+			var sli_access = this.saleItemList[0];
+			$('#li_discountAmt' + sli_access.itemId).focus();
+		}
+
+	},
+	focusNext : function(itemId) {
+		var findIndex;
+		$.each(this.saleItemList, function(index, saleLineItem) {
+			if (saleLineItem.itemId == itemId)
+				findIndex = index;
+		});
+		if (findIndex != undefined && this.saleItemList.length > (findIndex + 1)) {
+			findIndex = +findIndex;
+			var nextSLI = this.saleItemList[findIndex + 1];
+			$('#li_qty' + nextSLI.itemId).focus();
+		} else {
+			$('#dueAmt').focus();
+		}
+	},
+	focusPrevious : function(itemId) {
+		var findIndex;
+		$.each(this.saleItemList, function(index, saleLineItem) {
+			if (saleLineItem.itemId == itemId)
+				findIndex = index;
+		});
+		if (findIndex != undefined && findIndex === 0) {
+			$('#searchText').focus();
+		} else if (findIndex != undefined && findIndex > 0) {
+			findIndex = +findIndex;
+			var previousSLI = this.saleItemList[findIndex - 1];
+			$('#btnDeleteSLI' + previousSLI.itemId).focus();
+		}
+	},
+	focusLastDeleteBtn : function() {
+		var itemLength = this.saleItemList.length;
+		var lastIndex = itemLength - 1;
+		var previousSLI = this.saleItemList[lastIndex];
+		$('#btnDeleteSLI' + previousSLI.itemId).focus();
+	},
+	focusFirstTender : function() {
+		var tenderItemLength = this.tenderLineItems.length;
+		if (tenderItemLength > 0)
+			$('#btnDeleteTLI0').focus();
+	},
+	txnLIHoverEffect : function(cntl) {
+		var txn_liIndex = cntl.id.replace(/[^0-9]/gi, '');
+		$('#' + txn_liIndex + 'Container').addClass('txn-line-item-hover');
+	},
+	txnLIHoverAwayEffect : function(cntl) {
+		var txn_liIndex = cntl.id.replace(/[^0-9]/gi, '');
+		$('#' + txn_liIndex + 'Container').removeClass('txn-line-item-hover');
+	},
+	tenderHoverEffect : function(cntl) {
+		var tliIndex = cntl.id.replace(/[^0-9]/gi, '');
+		$('#' + tliIndex + 'tenderLineItem').addClass('tender-line-item-hover');
+	},
+	tenderHoverAwayEffect : function(cntl) {
+		var tliIndex = cntl.id.replace(/[^0-9]/gi, '');
+		$('#' + tliIndex + 'tenderLineItem').removeClass('tender-line-item-hover');
+	},
+	focusPreviousTender : function(tenderIndex){
+		if(tenderIndex>0){
+			var tenderItemLength = this.tenderLineItems.length;
+			if(tenderItemLength>0){
+				tenderIndex=tenderIndex-1;
+				$('#btnDeleteTLI'+tenderIndex).focus();
+			}
+				
+		}
+		
+		
+	},
+	focusNextTender : function(tenderIndex){
+			var tenderItemLength = this.tenderLineItems.length;
+			if(tenderItemLength > tenderIndex+1){
+				tenderIndex=tenderIndex+1;
+				$('#btnDeleteTLI'+tenderIndex).focus();
+			}else if(tenderItemLength == tenderIndex){
+				$('#dueAmt').focus();
+			}else{
+				$('#dueAmt').focus();
+			}
+
 	}
 
 });

@@ -204,6 +204,22 @@ $(function() {
 		associateCustomerToTxn();
 		
 	});
+	$('[id^=btnDeleteTLI]').focus(function() {
+		var tliIndex=this.id.replace(/[^0-9]/gi, '');
+		$('#'+tliIndex+'tenderLineItem').css("background", "#89dfaa");
+	}, function() {
+		var tliIndex=this.id.replace(/[^0-9]/gi, '');
+		$('#'+tliIndex+'tenderLineItem').css("background", "#8ee4af");
+	});
+	
+	$('[id^=btnDeleteTLI]').hover(function() {
+		var tliIndex=this.id.replace(/[^0-9]/gi, '');
+		$('#'+tliIndex+'tenderLineItem').css("background", "#89dfaa");
+	}, function() {
+		var tliIndex=this.id.replace(/[^0-9]/gi, '');
+		$('#'+tliIndex+'tenderLineItem').css("background", "#8ee4af");
+	});	
+	
 	
 	$('input[name="btnView"]').change(function() {
 		var viewRadio = $('input[name="btnView"]');
@@ -252,89 +268,77 @@ $(function() {
 		}				
 	});	
 	
-	// use plugins and options as needed, for options, detail see
-    // http://i18next.com/docs/
-    i18next.init({
-      lng: current_locale, // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
-      resources: { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
-        en: {
-          translation: {
-              common_currency_sign_inr: '₹',
-              sale_txn_validate_item:"The selected item already exists in the transaction, please increase the quantity if needed",
-              sale_txn_validate_qty:'The quantity should be a positive value always.Please correct the quantity.',
-              sale_txn_validate_range_discount:'The discount amount should be between ₹ 0.00 and item price amount.Please correct the amount.',
-              sale_txn_validate_range_discount_pct:'The discount percentage should be between 0 and 100 of item price amount.',
-              sale_txn_validate_exceed_discount:'The discount amount cannot be more than item price',
-              sale_txn_validate_tender:'Please select tender for the payment',
-              return_txn_validate_amount_refund:'The refunded amount should be more than ₹ 0.00',
-              sale_txn_customer_association_needed : 'The customer details are needed for selecting Credit Tender!!',
-              sale_txn_lbl_qty: 'Quantity',
-              sale_txn_lbl_unit_cost: 'Unit Price',
-              sale_txn_lbl_suggested_price: 'Suggested Price',
-              sale_txn_lbl_mrp: 'Max Retail Price',
-              sale_txn_lbl_discount: 'Discount',
-              sale_txn_lbl_item_price: 'Item Price',
-              sale_txn_lbl_tax: 'Tax',
-              sale_txn_lbl_sgst: 'SGST',
-              sale_txn_lbl_cgst: 'CGST',
-              sale_txn_lbl_igst: 'IGST',
-              sale_txn_lbl_item_total: 'Item Total',
-              sale_txn_lbl_discount_percent: '%',
-              sale_txn_lbl_discount_amount: '₹',
-              error_simple_alert_header : 'Alert Message',
-    		  error_confirmation_alert_header : 'Confirmation Message',
-    		  alert_btn_ok : 'OK',
-    		  alert_btn_approve : 'Approve' ,
-    		  alert_btn_cancel : 'Cancel',  
-          }
-        },
-        hi: {
-            translation: {
-            	common_currency_sign_inr: '₹'
-            }
-          },
-          pa: {
-              translation: {
-            	  common_currency_sign_inr: 'ਰੁ.'
-              }
-            }          
-      }
-    }, function(err, t) {
-      // for options see
-      // https://github.com/i18next/jquery-i18next#initialize-the-plugin
-      jqueryI18next.init(i18next, $);
-      
-    });	
-	
-	
-	
     /*
 	 * This section will register the shortcut keys for various functions on sale screen
 	 */
     
-    // item search selection
-    Mousetrap.bind('enter', function() { $('#searchText').focus(); });
-    // item qty selection
-    Mousetrap.bind('ctrl+q', function() { });
-    // item discount selection
-    Mousetrap.bind('ctrl+d', function() { });
-    // tender due text selection
-    Mousetrap.bind('ctrl+enter', function() { $('#dueAmt').focus();});            
-    // First tender selection - CASH
-    Mousetrap.bind('ctrl+1', function() { });
-    // First tender selection - Credit Card
-    Mousetrap.bind('ctrl+2', function() { });
-    // First tender selection - Paypal
-    Mousetrap.bind('ctrl+3', function() { });
-    // First tender selection - Paytm
-    Mousetrap.bind('ctrl+4', function() { });
-    // First tender selection - Print the Receipt
-    Mousetrap.bind('ctrl+shift+p', function() { });
-    // First tender selection - View the Receipt
-    Mousetrap.bind('ctrl+shift+v', function() { });
-    // First tender selection - Start New Txn
-    Mousetrap.bind('alt+enter', function() { });    
     
+    var itemCntl=document.querySelector('#searchText');
+    Mousetrap(itemCntl).bind('right', function() {
+    	var itemSearchText=$('#searchText').val();
+    	if(itemSearchText==undefined || itemSearchText=='')
+    		txnAction.focusFirstItemQty(); 
+    });
+    
+    Mousetrap.bind('ctrl a', function() { $('#btnLastTxn').focus(); });
+    var btnLastTxnCntl=document.querySelector('#btnLastTxn');
+    Mousetrap(btnLastTxnCntl).bind('left', function() { $('#searchText').focus(); });
+    Mousetrap(btnLastTxnCntl).bind('right', function() { $('#btnAssociateCustomer').focus(); });
+    Mousetrap(btnLastTxnCntl).bind('down', function() { txnAction.focusFirstItemQty(); });
+    
+    var btnAssociateCustomerCntl=document.querySelector('#btnAssociateCustomer');
+    Mousetrap(btnAssociateCustomerCntl).bind('left', function() { $('#btnLastTxn').focus(); });
+    Mousetrap(btnAssociateCustomerCntl).bind('right', function() { $('#btnCompact').focus(); });
+    Mousetrap(btnAssociateCustomerCntl).bind('down', function() { txnAction.focusFirstItemQty(); });
+    
+    var btnCompactCntl=document.querySelector('#btnCompact');
+    Mousetrap(btnCompactCntl).bind('left', function(e) { 
+    	e.preventDefault();
+    	$('#btnAssociateCustomer').focus();
+    	return false;
+    });
+    Mousetrap(btnCompactCntl).bind('right', function() { $('#btnDetailed').focus(); });
+    Mousetrap(btnCompactCntl).bind('down', function() { txnAction.focusFirstItemQty(); });
+    
+    var btnDetailedCntl=document.querySelector('#btnDetailed');
+    Mousetrap(btnDetailedCntl).bind('left', function() { $('#btnCompact').focus(); });
+    Mousetrap(btnDetailedCntl).bind('right', function(e) {
+    	e.preventDefault();
+    	$('#btnCloseRegister').focus();
+    	return false;
+    });
+    Mousetrap(btnDetailedCntl).bind('down', function() { txnAction.focusFirstItemQty(); });
+        
+    var btnCloseRegisterCntl=document.querySelector('#btnCloseRegister');
+    Mousetrap(btnCloseRegisterCntl).bind('left', function() { $('#btnDetailed').focus(); });
+    Mousetrap(btnCloseRegisterCntl).bind('right', function() { txnAction.focusFirstItemQty(); });
+    Mousetrap(btnCloseRegisterCntl).bind('down', function() { txnAction.focusFirstItemQty(); });
+    
+    var dueAmtCntl=document.querySelector('#dueAmt');
+    Mousetrap(dueAmtCntl).bind('left', function() { txnAction.focusLastDeleteBtn();  });
+    Mousetrap(dueAmtCntl).bind('enter', function() { 
+    	if($('#btnCompleteTxn').hasClass('d-none')){
+    		if (txnAction.tenderLineItem.validateTenderLineItem() && txnAction.validateCreditTender()) {
+    			txnAction.processTender();
+    		}
+    	}else{
+    		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+    		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
+    		txnAction.processCompletedTxn();
+    	}
+    	
+    	
+    });
+    
+    // item search selection
+    Mousetrap.bindGlobal('ctrl+enter', function() { $('#searchText').focus(); });
+    // sale line item selection
+    Mousetrap.bindGlobal('ctrl+alt+enter', function() { txnAction.focusFirstItemQty(); });    
+    // tender due text selection
+    Mousetrap.bindGlobal('ctrl+shift+enter', function() { $('#dueAmt').focus();});            
+    // tender line item selection
+    Mousetrap.bindGlobal('ctrl+alt+t', function() { txnAction.focusFirstTender(); });
+
 	
 });
 
@@ -496,7 +500,8 @@ function printLastxn(){
 	
 	var pdfRcptUrl = view_rcpt_viewer_url+'?file='+lastTxnRcptURL;
 	
-	window.open(pdfRcptUrl);
+	var txnWindow=window.open(pdfRcptUrl);
+	txnWindow.document.title=i18next.t('last_txn_title');
 	return false;
 }
 

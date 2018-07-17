@@ -13,6 +13,7 @@ public class RegisterUserBean {
 
 	private String firstName;
 	private String lastName;
+	private String username;
 	private String email;
 	private String password;
 	private String confirmPassword;
@@ -231,7 +232,8 @@ public class RegisterUserBean {
 	}
 
 	/**
-	 * @param addressType the addressType to set
+	 * @param addressType
+	 *            the addressType to set
 	 */
 	public void setAddressType(String addressType) {
 		this.addressType = addressType;
@@ -245,7 +247,8 @@ public class RegisterUserBean {
 	}
 
 	/**
-	 * @param addressId the addressId to set
+	 * @param addressId
+	 *            the addressId to set
 	 */
 	public void setAddressId(BigInteger addressId) {
 		this.addressId = addressId;
@@ -259,11 +262,26 @@ public class RegisterUserBean {
 	}
 
 	/**
-	 * @param action the action to set
+	 * @param action
+	 *            the action to set
 	 */
 	public void setAction(String action) {
 		this.action = action;
 	}
-	
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @param username
+	 *            the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 }

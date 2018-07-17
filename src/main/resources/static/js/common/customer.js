@@ -30,6 +30,9 @@ function associateCustomerToTxn(){
 	txnAction.associateCustomer(customerId,customerType,customerName,customerPhone,customerEmail);
 	$('#txnCustomerModal').modal('hide');
 	
+	btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+	alertUtil.renderAlert('SUCCESS', i18next.t('error_simple_success_header'), i18next.t('customer_add_success'), btnLabels);
+	
 }
 
 

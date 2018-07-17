@@ -132,9 +132,11 @@ $.extend(Utils.prototype, {
 	renderAlert : function(alertType, headerTitle, bodyMsg, btnLabels, btnActions, actionFunction) {
 
 		$('#alertModalTitle').html(headerTitle);
-
+		
 		if (alertType != undefined && alertType == 'SIMPLE') {
 			this.createSimpleModal(bodyMsg, btnLabels);
+		} else if (alertType != undefined && alertType == 'SUCCESS') {
+			this.createSimpleSuccessModal(bodyMsg, btnLabels);
 		} else if (alertType != undefined && alertType == 'CONFIRM') {
 			this.createConfirmModal(bodyMsg, btnLabels);
 		} else if (alertType != undefined && alertType == 'CUSTOM') {
@@ -160,6 +162,23 @@ $.extend(Utils.prototype, {
 
 		var bodyHtml = '<div class="row">';
 		bodyHtml += '<div class="col-3 text-left"> <i class="fas fa-exclamation-triangle fa-3x mx-2 text-danger"></i></div>';
+		bodyHtml += '<div class="col text-left"> ' + bodyMsg + '</div>';
+		bodyHtml += '</div>';
+
+		$('#alertModalBody').html(bodyHtml);
+
+	},
+	createSimpleSuccessModal : function(bodyMsg, btnLabels) {
+
+		$('#alertModalHeader').addClass('alert-success');
+
+		var footerHtml = '<div class="col text-center">';
+		footerHtml += '<button class="btn btn-success" id="btnAlertOK" onClick="hideAlert();">' + btnLabels[0] + '</button>';
+		footerHtml += '</div>';
+		$('#alertModalFooter').html(footerHtml);
+
+		var bodyHtml = '<div class="row">';
+		bodyHtml += '<div class="col-3 text-left"> <i class="fas fa-exclamation-triangle fa-3x mx-2 text-success"></i></div>';
 		bodyHtml += '<div class="col text-left"> ' + bodyMsg + '</div>';
 		bodyHtml += '</div>';
 

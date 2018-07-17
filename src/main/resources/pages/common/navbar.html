@@ -34,7 +34,10 @@
 													class="fas fa-money-bill-alt" data-fa-transform="shrink-6 left-6 down-5 rotate-90"></i> <i class="fas fa-money-bill-alt"
 													data-fa-transform="shrink-6 down-5 rotate-45"></i>
 											</span><span th:text="#{commerce.home.menu.expense}">Expense</span>
-											</a>
+											</a> <a class="dropdown-item megamenu-item" sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin/supplier/payment}"> <span
+												class="fa-3x mx-2 fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-dollar-sign"
+													data-fa-transform="shrink-11 right-10 up-4"></i>
+											</span><span th:text="#{commerce.home.menu.payment.supplier}">Supplier Payment</span></a>
 										</div>
 									</div>
 								</div>
@@ -186,18 +189,17 @@
 								th:text="#{commerce.home.link.account}">Your Account</span>
 						</a>
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" id="manageaccount" th:href="@{/manage_user}"><span class="mr-2"> <span class="fa-layers fa-fw"> <i
+								<a class="dropdown-item" id="manageaccount" th:href="@{/account/manage_user}"><span class="mr-2"> <span class="fa-layers fa-fw"> <i
 											class="far fa-user"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
 									</span>
 								</span><span th:text="#{commerce.home.menu.manage.account}">Manage Account</span></a> <a class="dropdown-item" id="changepassword"
-									th:href="@{/manage_password}"><i class="fas fa-key mr-2"></i><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a>
-							</div></li> 
-							
-							<a class="nav-link" th:title="#{commerce.tooltip.btn.login}" href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i class="fas fa-sign-in-alt fa-2x mx-2"></i></a> 
-							<a class="nav-link" th:title="#{commerce.tooltip.btn.logout}" href="#" onClick="confirmLogout()" sec:authorize="isAuthenticated()"> <i class="fas fa-sign-out-alt fa-2x mx-2"></i></a>
+									th:href="@{/account/change_password}"><i class="fas fa-key mr-2"></i><span th:text="#{commerce.home.menu.change.password}">Change Password</span></a>
+							</div></li> <a class="nav-link" th:title="#{commerce.tooltip.btn.login}" href="#" th:href="@{/login}" sec:authorize="isAnonymous()"> <i
+							class="fas fa-sign-in-alt fa-2x mx-2"></i></a> <a class="nav-link" th:title="#{commerce.tooltip.btn.logout}" href="#" onClick="confirmLogout()"
+							sec:authorize="isAuthenticated()"> <i class="fas fa-sign-out-alt fa-2x mx-2"></i></a>
 					</div>
-					<a class="nav-link global-help" th:title="#{commerce.tooltip.btn.help}" data-step="2" data-th-attr="data-intro=#{commerce.help.navbar.help}" href="#" onClick="introJs().start()"> <i
-						class="far fa-question-circle fa-2x mx-2"></i></a>
+					<a class="nav-link global-help" th:title="#{commerce.tooltip.btn.help}" data-step="2" data-th-attr="data-intro=#{commerce.help.navbar.help}"
+						href="#" onClick="introJs().start()"> <i class="far fa-question-circle fa-2x mx-2"></i></a>
 				</form>
 			</div>
 		</nav>
@@ -237,18 +239,13 @@
 				</div>
 			</div>
 		</div>
-		
-	<script th:inline="javascript">
+		<script th:inline="javascript">
 		/*<![CDATA[*/
 
 		var current_locale= /*[[${#locale.language}]]*/;
 		
 		/*]]>*/
-	</script>		
-		
+	</script>
 	</div>
-	
-	
-	
 </body>
 </html>

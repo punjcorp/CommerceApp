@@ -157,6 +157,9 @@ public final class MVCConstants {
 	public static final String RECEIVE_ALL_ORDERS_PARAM="receiveAllOrder";
 	public static final String ORDER_ID_PARAM= "orderId";
 	public static final String USERNAME_PARAM= "username";
+	public static final String PASSWORD_BEAN_PARAM= "passwordBean";
+	public static final String USER_PASSWORD_BEAN_PARAM= "userDetails";
+	public static final String USER_BEAN_PARAM= "registerUserBean";
 		
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";

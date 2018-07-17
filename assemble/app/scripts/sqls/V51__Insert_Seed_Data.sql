@@ -15,10 +15,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Seed data for location
 -- -----------------------------------------------------
 truncate `commercedb`.`location`;
-INSERT INTO `commercedb`.`location` (`location_id`,`location_type`,`name`,`description`,`status`,`address1`,`address2`,`city`,`state`,`country`,`pincode`,`neighborhood`,`locale`,`currency`,`telephone1`,`telephone2`,`store_manager`,`email_address`,`created_date`,`created_by`,`modified_date`,`modified_by`) VALUES (7997,'S','commerce site','This is the descripton for only location in commerce site as of now','A','Kharar',NULL,'Kharar','Panjab','India','140301','Arya Collage road','en_US','INR','8847523677',NULL,'Amit','eramitpunj@gmail.com','2017-12-11 12:56:07','Admin',NULL,NULL);
-INSERT INTO `commercedb`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (2, 'W', 'Warehouse 1', 'this is sample warehouse 1', 'A', 'Mohali', 'Mohali', 'Punjab', 'India', '140301', '7 Phase', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin');
-INSERT INTO `commercedb`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (3, 'S', 'Store 2', 'this is sample store 2', 'A', 'Mohali', 'Mohali', 'Punjab', 'India', '140301', '7 Phase', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin');
-INSERT INTO `commercedb`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (27, 'S', 'Store 3', 'this is sample store 3', 'A', 'Chandigarh', 'Chandigarh', 'Punjab', 'India', '140301', 'Sector 34', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin'); 
+INSERT INTO `commercedb`.`location` (`location_id`,`location_type`,`name`,`description`,`status`,`address1`,`address2`,`city`,`state`,`country`,`pincode`,`neighborhood`,`locale`,`currency`,`telephone1`,`telephone2`,`store_manager`,`email_address`,`created_date`,`created_by`,`modified_date`,`modified_by`) VALUES (PI_POS_T_STORE_NO,'S','PI_POS_T_STORE_NAME','PI_POS_T_STORE_DESC','A','PI_POS_T_STORE_ADDRESS_1',PI_POS_T_STORE_ADDRESS_2,'PI_POS_T_STORE_CITY','PI_POS_T_STORE_STATE','PI_POS_T_STORE_COUNTRY','PI_POS_T_STORE_PINCODE','PI_POS_T_STORE_NEIGHBORHOOD','en_US','INR','PI_POS_T_STORE_PHONE',NULL,'PI_POS_T_STORE_MANAGER','PI_POS_T_STORE_EMAIL',now(),'admin',NULL,NULL);
 commit;
 
 -- -----------------------------------------------------
@@ -91,25 +88,15 @@ INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (4, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (5, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (6, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES ('7', 'Main Safe', 'This is main safe for credit in the store', '2018-07-06 19:46:22', '2018-07-06 19:46:22', 'A', 'admin', '2018-07-06 19:46:22');
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (7, 'Main Safe', 'This is main safe for credit in the store', '2018-07-06 19:46:22', '2018-07-06 19:46:22', 'A', 'admin', '2018-07-06 19:46:22');
 
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 5, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 6, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 7, 0, 'admin', now());
-
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 6, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 7, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 6, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 7, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 6, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 7, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 1, 1, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 2, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 3, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 4, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 5, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 6, 0, 'admin', now());
+INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, PI_POS_T_STORE_NO, 7, 0, 'admin', now());
 
 commit;
 
@@ -118,14 +105,7 @@ commit;
 -- Seed data for register_master table
 -- -----------------------------------------------------
 truncate `commercedb`.`register_master`;
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (7997, 1, 'First Register', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (2, 1, 'First Register', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (3, 1, 'First Register', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (27, 1, 'First Register', 'admin', now());
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('2', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '3', 'Third Register', 'admin', '2018-07-06 19:46:22');
-
+INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (PI_POS_T_STORE_NO, 1, 'First Register', 'admin', now());
 commit;
 
 -- -----------------------------------------------------
@@ -139,14 +119,6 @@ truncate `commercedb`.`tax_location`;
 truncate `commercedb`.`tax_authority`;
 truncate `commercedb`.`tax_location_mapping`;
 
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 1);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 2);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 1);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 2);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 1);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 2);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 1);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 2);
 
 INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
 INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('State Govt of India', 'N', '2', 'admin', now());
@@ -154,6 +126,9 @@ INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_dig
 
 INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Within State', 'I', 'This tax location is for all sales within state', 'admin', now());
 INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Outside State', 'O','This tax location is for all sales outside state', 'admin', now());
+
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (PI_POS_T_STORE_NO, 1);
+INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (PI_POS_T_STORE_NO, 2);
 
 INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable', 'admin', now());
 INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST', 'admin', now());
@@ -317,24 +292,6 @@ INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_des
 INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '5', '5 Kgs', 'This is the Weight of 5  Kgs', '7');
 
 
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('NA', 'None', 'This is for items with no attributes', 'P', 'Plain', 'This attribute is selected for items with no differentiator for SKUs', '1');
-
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '100', '100 ml', 'This is the Volume of 100 ml', '1');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '200', '200 ml', 'This is the Weight of 200 ml', '2');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '250', '250 ml', 'This is the Weight of 250 ml', '3');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '300', '300 ml', 'This is the Weight of 350 ml', '4');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '400', '400 ml', 'This is the Weight of 400 ml', '5');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '500', '500 ml', 'This is the Weight of 500 ml', '6');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '1', '1 ltr', 'This is the Weight of 1 ltr', '7');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '2', '2 ltr', 'This is the Weight of 2 ltr', '8');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '5', '5 ltr', 'This is the Weight of 5 ltr', '9');
-
-
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'CH', 'Chocolate', 'Chocolate Flavor Item', '1');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'VA', 'Vanilla', 'Vanilla Flavor Item', '2');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'ST', 'Strawberry', 'Strawberry Flavor Item', '3');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'PA', 'Pineapple', 'Pineapple Flavor Item', '4');
-INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'BF', 'Black Forest', 'Black Forest Flavor Item', '5');
 commit;
 
 
@@ -364,8 +321,8 @@ values('cashier', '$2a$10$iHH8hs7bMG.7ud5.DdCMteuxwXZRNikGUYuySm4r5drTBkTsVC7B2'
 -- -----------------------------------------------------
 -- Seed data for user role
 -- -----------------------------------------------------
-INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', '7997', 'admin', now(), now(), now());
-INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', '7997', 'admin', now(), now(), now());
+INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', PI_POS_T_STORE_NO, 'admin', now(), now(), now());
+INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', PI_POS_T_STORE_NO, 'admin', now(), now(), now());
 
 -- -----------------------------------------------------
 -- Seed data for user addresses
