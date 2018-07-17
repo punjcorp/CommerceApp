@@ -13,7 +13,8 @@ spring.jpa.properties.hibernate.format_sql=true
 
 spring.jpa.properties.hibernate.search.default.directory_provider = filesystem
 #spring.jpa.properties.hibernate.search.default.indexBase = e:/lucene/indexes/
-spring.jpa.properties.hibernate.search.default.indexBase = /home/ec2-user/lucene/indexes/
+#spring.jpa.properties.hibernate.search.default.indexBase = /home/ec2-user/lucene/indexes/
+spring.jpa.properties.hibernate.search.default.indexBase = /home/amit/lucene/indexes/
 
 spring.jackson.serialization.write_dates_as_timestamps=false
 
@@ -21,7 +22,7 @@ spring.thymeleaf.cache=false
 spring.thymeleaf.enabled=true
 spring.thymeleaf.prefix=classpath:/pages/
 spring.thymeleaf.suffix=.html
- 
+
 spring.application.name=Commerce App
 
 commerce.list.max.perpage=8
@@ -31,11 +32,13 @@ commerce.resource.bundle.base=i18n/messages
 
 spring.servlet.multipart.max-file-size=50MB
 spring.servlet.multipart.max-request-size=75MB
-multipart.location=/home/ec2-user/lucene/upload/
+#multipart.location=/home/ec2-user/lucene/upload/
+multipart.location=/home/amit/lucene/upload/
 
 ## File Storage Properties
 # All files uploaded through the REST API will be stored in this directory
-file.upload-dir=/home/ec2-user/lucene/uploads
+#file.upload-dir=/home/ec2-user/lucene/uploads
+file.upload-dir=/home/amit/lucene/uploads
 
 app.default.currency.code=INR
 
