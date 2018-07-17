@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -145,7 +146,7 @@ public class SupplierPaymentController {
 	}
 
 	@GetMapping(value = ViewPathConstants.SUPPLIER_PAYMENT_URL)
-	public String addSupplier(Model model, HttpSession session, RedirectAttributes redirectAttrs) {
+	public String addSupplier(Model model, HttpSession session, RedirectAttributes redirectAttrs, final HttpServletRequest req) {
 		logger.info("The supplier payment screen pre tasks are in progress");
 		AccountDTO accountDTO = new AccountDTO();
 
@@ -154,10 +155,22 @@ public class SupplierPaymentController {
 		if (openLocationId != null && openLocationId > 0) {
 			LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 			String locationName = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_LOC_NAME);
-			Integer registerId = (Integer) session.getAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM);
+
+			String registerIdValue = req.getParameter(MVCConstants.REGISTER_ID_PARAM);
+			Integer registerId = null;
+			String registerName = null;
+
+			if (StringUtils.isEmpty(registerIdValue)) {
+				registerId = (Integer) session.getAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM);
+				registerName = (String) session.getAttribute(openLocationId + MVCConstants.REG_NAME_PARAM);
+			} else {
+				registerId = new Integer(registerIdValue);
+				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
+				session.setAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM, registerId);
+				session.setAttribute(openLocationId + MVCConstants.REG_NAME_PARAM, registerName);
+			}
 
 			if (registerId != null && registerId > 0) {
-				String registerName = (String) session.getAttribute(openLocationId + MVCConstants.REG_NAME_PARAM);
 
 				accountDTO.setBusinessDate(openBusinessDate);
 				accountDTO.setLocationId(openLocationId);

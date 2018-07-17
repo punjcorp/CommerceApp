@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -134,14 +135,26 @@ public class ExpenseController {
 	}
 
 	@GetMapping(value = ViewPathConstants.TXN_EXPENSE_URL)
-	public String processExpenseType(Model model, HttpSession session, RedirectAttributes redirectAttrs) {
+	public String processExpenseType(Model model, HttpSession session, RedirectAttributes redirectAttrs, final HttpServletRequest req) {
 		ExpenseBean expenseBean = new ExpenseBean();
 
 		Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 
 		if (openLocationId != null) {
 
-			Integer registerId = (Integer) session.getAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM);
+			String registerIdValue = req.getParameter(MVCConstants.REGISTER_ID_PARAM);
+			Integer registerId = null;
+			String registerName = null;
+
+			if (StringUtils.isEmpty(registerIdValue)) {
+				registerId = (Integer) session.getAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM);
+				registerName = (String) session.getAttribute(openLocationId + MVCConstants.REG_NAME_PARAM);
+			} else {
+				registerId = new Integer(registerIdValue);
+				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
+				session.setAttribute(openLocationId + MVCConstants.REGISTER_ID_PARAM, registerId);
+				session.setAttribute(openLocationId + MVCConstants.REG_NAME_PARAM, registerName);
+			}
 
 			if (registerId != null) {
 
@@ -151,7 +164,6 @@ public class ExpenseController {
 				LocalDateTime openBusinessDate = (LocalDateTime) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 
 				String defaultTender = (String) commerceContext.getStoreSettings(openLocationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
-				String registerName = (String) session.getAttribute(openLocationId + MVCConstants.REG_NAME_PARAM);
 
 				expenseBean.setDefaultTender(defaultTender);
 				expenseBean.setBusinessDate(openBusinessDate);
