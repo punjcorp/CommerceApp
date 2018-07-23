@@ -31,6 +31,9 @@ public class SupplierBean {
 	@Size(min = 7, max = 10, message = "{commerce.error.int.size}")
 	private String phone1;
 	private String phone2;
+	
+	private String gstNo;
+	
 	@NotNull
 	@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
 	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
@@ -268,6 +271,20 @@ public class SupplierBean {
 	 */
 	public void setPrimaryAddressIndex(Integer primaryAddressIndex) {
 		this.primaryAddressIndex = primaryAddressIndex;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 }

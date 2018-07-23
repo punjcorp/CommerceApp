@@ -51,6 +51,7 @@ public class SupplierTransformer {
 		supplierBean.setEmail(supplier.getEmail());
 		supplierBean.setPhone1(supplier.getPhone1());
 		supplierBean.setPhone2(supplier.getPhone2());
+		supplierBean.setGstNo(supplier.getGstNo());
 		supplierBean.setCreatedBy(supplier.getCreatedBy());
 		supplierBean.setCreatedDate(supplier.getCreatedDate());
 		supplierBean.setModifiedBy(supplier.getModifiedBy());
@@ -75,6 +76,8 @@ public class SupplierTransformer {
 		supplier.setEmail(supplierBean.getEmail());
 		supplier.setPhone1(supplierBean.getPhone1());
 		supplier.setPhone2(supplierBean.getPhone2());
+		supplier.setGstNo(supplierBean.getGstNo());
+		
 		supplier.setCreatedBy(supplierBean.getCreatedBy());
 		supplier.setCreatedDate(supplierBean.getCreatedDate());
 

@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`supplier` (
   `phone1` VARCHAR(20) NOT NULL,
   `phone2` VARCHAR(20) NULL,
   `email` VARCHAR(80) NULL,
+  `gst_no` VARCHAR(20) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,

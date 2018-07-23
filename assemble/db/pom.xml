@@ -33,7 +33,7 @@
 					<!-- <url>jdbc:mysql://pos.crjn48listps.us-east-2.rds.amazonaws.com:3306/commercedb?autoreconnect=true</url> -->
 					<url>jdbc:mysql://localhost:3306/commercedb?autoreconnect=true</url> 
 					<user>admin</user>
-					<password>admin</password>  
+					<password>G00gl3r$</password>  
 					<!-- <user>mysqlroot</user>
 					<password>rootmysql</password> -->
   					<!-- <user>root</user>

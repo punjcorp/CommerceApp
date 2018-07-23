@@ -69,13 +69,25 @@
 										</div>
 									</div>
 								</div>
-								<div class="form-group  text-left">
-									<label for="email"><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.email}">Supplier Email</span></small></label>
-									<div class="input-group text-left">
-										<input type="email" th:field="*{email}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.email.placeholder}"
-											maxlength="80"></input>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group  text-left">
+											<label for="email"><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.email}">Supplier Email</span></small></label>
+											<div class="input-group text-left">
+												<input type="email" th:field="*{email}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.email.placeholder}" maxlength="80"></input>
+											</div>
+											<small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Error</small>
+										</div>
 									</div>
-									<small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Error</small>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group  text-left">
+											<label for="gstNo"><small><span th:text="#{commerce.screen.supplier.gst}">GST No Email</span></small></label>
+											<div class="input-group text-left">
+												<input type="text" th:field="*{gstNo}" class="form-control input-sm" th:placeholder="#{commerce.screen.supplier.gst.placeholder}"></input>
+											</div>
+											<small th:if="${#fields.hasErrors('gstNo')}" th:errors="*{gstNo}" class="text-danger">GST No Error</small>
+										</div>
+									</div>
 								</div>
 								<div class="address form-group">
 									<th:block th:each="address,itrStat:${supplierBean.addresses}">

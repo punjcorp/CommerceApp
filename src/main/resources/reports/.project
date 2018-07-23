@@ -3,6 +3,7 @@
 	<name>reports</name>
 	<comment></comment>
 	<projects>
+		<project>MyReports</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>

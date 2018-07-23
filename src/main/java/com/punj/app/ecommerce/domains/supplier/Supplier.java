@@ -46,6 +46,8 @@ public class Supplier implements Serializable {
 	@Field
 	private String phone1;
 	private String phone2;
+	@Column(name = "gst_no")
+	private String gstNo;
 	@Field
 	private String email;
 
@@ -211,6 +213,20 @@ public class Supplier implements Serializable {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 	/*
