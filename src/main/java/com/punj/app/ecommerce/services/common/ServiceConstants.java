@@ -20,6 +20,10 @@ public final class ServiceConstants {
 
 	public static final String ACTION_EXPENSE = "Expense";
 
+	public static final String CUSTOMER_TYPE_CLIENT = "C";
+	public static final String CUSTOMER_TYPE_SUPPLIER= "S";
+	public static final String CUSTOMER_TYPE_FRIEND= "F";
+
 	public static final String TENDER_CASH = "Cash";
 	public static final String TENDER_CREDIT = "Credit";
 

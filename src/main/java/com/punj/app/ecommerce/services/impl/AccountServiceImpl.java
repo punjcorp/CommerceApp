@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -120,6 +121,16 @@ public class AccountServiceImpl implements AccountService {
 			logger.info("There were no customers found based on criteria");
 		}
 		return customerList;
+	}
+
+	@Override
+	public Customer searchCustomerDetails(BigInteger customerId) {
+		Customer customer=this.customerRepository.findOne(customerId);
+		if(customer!=null)
+			logger.info("The customer details were found for customer id -> ",customerId);
+		else
+			logger.info("There is no customer existing for the provided id");
+		return customer;
 	}
 
 	@Override

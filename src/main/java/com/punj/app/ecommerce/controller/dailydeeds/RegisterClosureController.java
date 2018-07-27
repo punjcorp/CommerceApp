@@ -3,18 +3,45 @@ package com.punj.app.ecommerce.controller.dailydeeds;
  * 
  */
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-import org.apache.commons.lang3.StringUtils;
+import com.punj.app.ecommerce.common.web.CommerceConstants;
+import com.punj.app.ecommerce.common.web.CommerceContext;
+import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
+import com.punj.app.ecommerce.domains.common.Denomination;
+import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
+import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.models.common.AJAXResponseBean;
+import com.punj.app.ecommerce.models.common.BaseDenominationBean;
+import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.common.RegisterBean;
+import com.punj.app.ecommerce.models.dailydeeds.ClosingReportBean;
+import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
+import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
+import com.punj.app.ecommerce.models.dailydeeds.validator.RegisterOpenValidator;
+import com.punj.app.ecommerce.models.tender.TenderBean;
+import com.punj.app.ecommerce.models.transaction.SaleTransactionReceipt;
+import com.punj.app.ecommerce.models.transaction.TransactionHeader;
+import com.punj.app.ecommerce.services.DailyDeedService;
+import com.punj.app.ecommerce.services.FinanceService;
+import com.punj.app.ecommerce.services.TransactionService;
+import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
+import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
+import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDTO;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
@@ -28,28 +55,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.punj.app.ecommerce.common.web.CommerceConstants;
-import com.punj.app.ecommerce.common.web.CommerceContext;
-import com.punj.app.ecommerce.controller.common.MVCConstants;
-import com.punj.app.ecommerce.controller.common.ViewPathConstants;
-import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
-import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
-import com.punj.app.ecommerce.domains.common.Denomination;
-import com.punj.app.ecommerce.domains.finance.DailyTotals;
-import com.punj.app.ecommerce.domains.tender.Tender;
-import com.punj.app.ecommerce.models.common.AJAXResponseBean;
-import com.punj.app.ecommerce.models.common.BaseDenominationBean;
-import com.punj.app.ecommerce.models.common.RegisterBean;
-import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
-import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
-import com.punj.app.ecommerce.models.dailydeeds.validator.RegisterOpenValidator;
-import com.punj.app.ecommerce.models.tender.TenderBean;
-import com.punj.app.ecommerce.services.DailyDeedService;
-import com.punj.app.ecommerce.services.FinanceService;
-import com.punj.app.ecommerce.services.TransactionService;
-import com.punj.app.ecommerce.services.common.CommonService;
-import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
-import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * @author admin
@@ -66,6 +77,10 @@ public class RegisterClosureController {
 	private TransactionService txnService;
 	private FinanceService financeService;
 	private RegisterOpenValidator registerOpenValidator;
+
+	@Value("${commerce.resource.bundle.base}")
+	private String resourceBundleBase;
+
 
 	/**
 	 * @param registerOpenValidator
@@ -255,14 +270,18 @@ public class RegisterClosureController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
 				DailyTransaction registerCloseDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
-				Boolean result = this.dailyDeedService.saveRegisterCloseTxn(registerCloseDetails, userDetails.getUsername());
-				if (!result) {
+				DailyDeedDTO regTotalsDTO= this.dailyDeedService.saveRegisterCloseTxn(registerCloseDetails, userDetails.getUsername());
+				ClosingReportBean txnReceipt = null;
+				if (regTotalsDTO != null) {
+					txnReceipt = this.generateClosingReport(regTotalsDTO, session, userDetails.getUsername(), locale);
+
+				}else{
 					return this.updateAJAXResponseBeanFailure(locale);
 				}
 				session.removeAttribute(dailyDeedBean.getLocationId() + MVCConstants.REGISTER_ID_PARAM);
 				session.removeAttribute(dailyDeedBean.getLocationId() + MVCConstants.REG_NAME_PARAM);
 				logger.info("The Register close process was successful");
-				return this.updateAJAXResponseForSuccess(locale, dailyDeedBean.getRegisterId(), dailyDeedBean.getRegisterName());
+				return this.updateAJAXResponseForSuccess(locale, dailyDeedBean.getRegisterId(), dailyDeedBean.getRegisterName(), regTotalsDTO);
 			}
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving skus for sku lookup screen", e);
@@ -281,8 +300,9 @@ public class RegisterClosureController {
 		return ajaxResponse;
 	}
 
-	private AJAXResponseBean updateAJAXResponseForSuccess(Locale locale, Integer registerId, String registerName) {
+	private AJAXResponseBean updateAJAXResponseForSuccess(Locale locale, Integer registerId, String registerName,DailyDeedDTO regTotalsDTO) {
 		AJAXResponseBean ajaxResponse = new AJAXResponseBean();
+		ajaxResponse.setResultObj(regTotalsDTO);
 		ajaxResponse.setStatus(MVCConstants.AJAX_STATUS_SUCCESS);
 		ajaxResponse
 				.setStatusMsg(this.messageSource.getMessage("commerce.screen.register.close.success.msg", new Object[] { registerId, registerName }, locale));
@@ -290,6 +310,64 @@ public class RegisterClosureController {
 		logger.info("The ajax response has been updated successfully based on register closing");
 
 		return ajaxResponse;
+	}
+
+
+	public ClosingReportBean generateClosingReport(DailyDeedDTO regTotalsDTO, HttpSession session, String username, Locale locale) {
+		ClosingReportBean txnReceipt = null;
+		try {
+			TransactionId txnId=regTotalsDTO.getTxnId();
+			Location location=this.commonService.retrieveLocationDetails(txnId.getLocationId());
+			if(location!=null){
+				LocationBean locationBean=CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
+				txnReceipt=DailyDeedTransformer.transformDailyTotalsToReportBean(regTotalsDTO, username, locationBean);
+
+				if (txnReceipt != null) {
+					logger.info("The receipt details has been transformed successfully");
+					logger.info("Start the receipt PDF generation now");
+					List<ClosingReportBean> txnList = new ArrayList<>(1);
+					txnList.add(txnReceipt);
+
+					InputStream txnClosingReportStream = getClass().getResourceAsStream(MVCConstants.TXN_REG_CLOSE_REPORT);
+					JasperReport jasperReport = (JasperReport) JRLoader.loadObject(txnClosingReportStream);
+					logger.debug("The closing report has been compiled now");
+
+					ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
+					JRBeanCollectionDataSource txnDS = new JRBeanCollectionDataSource(txnList);
+					logger.debug("The report data source and resource bundle is ready now");
+
+					Map<String, Object> paramMap = new HashMap<>();
+					paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+					paramMap.put(JRParameter.REPORT_LOCALE, locale);
+					logger.debug("The parameter set for setting receipt data is ready");
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, txnDS);
+					logger.debug("The receipt report is ready with data to be used");
+
+					String uniqueTxnNo = txnId.toString();
+					byte pdfBytes[] = JasperExportManager.exportReportToPdf(jasperPrint);
+
+					// This is to print the receipt when user select the printing option
+					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_JASPER_PARAM, jasperPrint);
+					// This is to show the receipt PDF in view screen
+					session.setAttribute(MVCConstants.LAST_TXN_NO, uniqueTxnNo);
+					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM, pdfBytes);
+
+					// This section will save the receipt in database
+					List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+					Boolean result = this.txnService.saveTransactionReceipt(txnReceipts);
+					if (result) {
+						logger.info("The transaction receipts has been saved in DB successfully");
+					} else {
+						logger.info("The transaction receipts were not saved due to unknown reason");
+					}
+
+				}
+			}
+
+		} catch (JRException e) {
+			logger.error("There is an error while generating receipt for txn", e);
+		}
+		return txnReceipt;
 	}
 
 }

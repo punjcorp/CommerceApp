@@ -6,6 +6,7 @@ package com.punj.app.ecommerce.models.transaction;
 import java.util.List;
 
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.customer.CustomerBean;
 
 /**
  * @author admin
@@ -14,6 +15,7 @@ import com.punj.app.ecommerce.models.common.LocationBean;
 public class SaleTransactionReceipt {
 	private LocationBean locationDetails;
 	private TransactionHeader transactionHeader;
+	private CustomerBean customer;
 	private List<SaleReceiptLineItem> txnSaleLineItems;
 	private List<TenderLineItem> txnTenderLineItems;
 
@@ -77,4 +79,11 @@ public class SaleTransactionReceipt {
 		this.txnTenderLineItems = txnTenderLineItems;
 	}
 
+	public CustomerBean getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(CustomerBean customer) {
+		this.customer = customer;
+	}
 }

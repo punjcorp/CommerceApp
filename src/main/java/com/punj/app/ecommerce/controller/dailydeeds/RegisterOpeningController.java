@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -386,9 +387,9 @@ public class RegisterOpeningController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
 				DailyTransaction registerOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
-				Boolean result = this.dailyDeedService.saveRegisterOpenTxn(registerOpenDetails, userDetails.getUsername());
+				DailyDeedDTO regTotalsDTO=  this.dailyDeedService.saveRegisterOpenTxn(registerOpenDetails, userDetails.getUsername());
 				this.updateBeansAllActions(dailyDeedBean, model, locale, session, Boolean.FALSE);
-				if (!result) {
+				if (regTotalsDTO==null) {
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.register.open.failure", null, locale));
 					logger.info("The Register open process failed due to some unknown issue");
 					return ViewPathConstants.REGISTER_OPEN_PAGE;

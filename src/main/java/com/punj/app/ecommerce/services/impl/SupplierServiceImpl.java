@@ -180,6 +180,16 @@ public class SupplierServiceImpl implements SupplierService {
 	}
 
 	@Override
+	public Supplier searchSupplier(Integer supplierId) {
+		Supplier supplier=this.supplierRepository.findOne(supplierId);
+		if(supplier!=null)
+			logger.info("The supplier details were found successfully for id -> {}",supplierId);
+		else
+			logger.info("The supplier id -> {} details were not found",supplierId);
+		return supplier;
+	}
+
+	@Override
 	public List<Supplier> getAll() {
 
 		List<Supplier> suppliers = this.supplierRepository.findAll();

@@ -257,7 +257,7 @@ $(function() {
 	});		
 
 	$('#btnPrintReceiptAndNewTxn').click(function() {
-		printTxnReceipt();
+        printTxnReceipt();
 	});
 	
 	$('#btnViewTxnReceipt').click(function() {

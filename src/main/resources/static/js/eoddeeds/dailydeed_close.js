@@ -9,11 +9,11 @@ var dNL = new DenominationLineItem();
 $(function() {
 
 	$('#btnPrintTxnReceipt').click(function() {
-		
+        printTxnReceipt();
 	});
 	
 	$('#btnViewTxnReceipt').click(function() {
-		
+        viewTxnReceipt();
 	});	
 	
 	$('#btnCloseRegister').click(function() {
@@ -21,7 +21,7 @@ $(function() {
 	});
 	
 	$('#btnCloseStore').click(function() {
-		window.location.href = store_close_url+"="+ closing_location_id;
+        viewStoreClose();
 	});
 	
 	$('input:radio[name=register]').change(function() {
@@ -299,6 +299,13 @@ function postClosureAction(data){
 		btnLabels = [ i18next.t('alert_btn_ok'), '' ];
 		alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), data.status.msg, btnLabels);
 	} else if(data.status!=undefined && data.status=='S'){
+
+		txn_locationId =data.resultObj.txnId.locationId;
+        txn_registerId =data.resultObj.txnId.registerId;
+        txn_businessDate =data.resultObj.txnId.locationId;
+        rcpt_txn_no = data.resultObj.txnId.transactionSeq;
+        rcpt_txn_id = data.resultObj.uniqueTxnNo;
+
 		$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
 		
 	}
@@ -342,4 +349,46 @@ function processRegisterRequest(regValue){
 	
 	
 	
+}
+
+
+function printTxnReceipt(){
+    var txnHeader = new TransactionHeader();
+    txnHeader.uniqueTxnNo=rcpt_txn_id;
+    txnHeader.locationId=txn_locationId;
+    txnHeader.registerId=txn_registerId;
+    txnHeader.businessDate=txn_businessDate;
+    txnHeader.txnNo=rcpt_txn_no;
+
+    // The AJAX call for receipt printing
+    var token = $("meta[name='_csrf']").attr("content");
+    var formdata = JSON.stringify(txnHeader);
+    // AJAX call here and refresh the sell item page with receipt printing
+    $.ajax({
+        url : print_rcpt_url,
+        type : 'POST',
+        cache : false,
+        data : formdata,
+        contentType : "application/json; charset=utf-8",
+        dataType : "json",
+        success : function(data) {
+            viewStoreClose();
+        },
+        beforeSend : function(xhr) {
+            xhr.setRequestHeader('X-CSRF-TOKEN', token)
+        }
+    });
+
+}
+
+function viewTxnReceipt(){
+    $('#progressDiv').removeClass("d-none");
+
+    var pdfRcptUrl = view_rcpt_viewer_url+'?file='+view_rcpt_url;
+    $('#receiptPDFContainer').attr("src",pdfRcptUrl);
+    $('#progressDiv').addClass("d-none");
+}
+
+function viewStoreClose(){
+    window.location.href = store_close_url+"="+ closing_location_id;
 }

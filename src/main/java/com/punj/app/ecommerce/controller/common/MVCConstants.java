@@ -187,7 +187,10 @@ public final class MVCConstants {
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
-	
+
+
+	public static final String TXN_REG_CLOSE_REPORT="/reports/dailydeeds/register_close_report.jasper";
+	public static final String TXN_STORE_CLOSE_REPORT="/reports/dailydeeds/store_close_report.jasper";
 
 	public static final String ORDER_HEADER_REPORT_PARAM="ORDER_HEADER_REPORT";
 	public static final String ORDER_FOOTER_REPORT_PARAM="ORDER_FOOTER_REPORT";

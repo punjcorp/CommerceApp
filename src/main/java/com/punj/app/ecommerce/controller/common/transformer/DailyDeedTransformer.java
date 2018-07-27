@@ -3,14 +3,6 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
@@ -18,14 +10,24 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderDenomination;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
+import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.dailydeeds.ClosingReportBean;
 import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
 import com.punj.app.ecommerce.models.tender.DenominationBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
 import com.punj.app.ecommerce.services.dtos.tender.DenominationDTO;
 import com.punj.app.ecommerce.services.dtos.tender.TenderDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author admin
@@ -234,6 +236,43 @@ public class DailyDeedTransformer {
 
 		logger.info("The daily totals has been transformed successfully");
 		return concilationBean;
+	}
+
+	public static ClosingReportBean transformDailyTotalsToReportBean(DailyDeedDTO regTotalsDTO, String username, LocationBean locationBean) {
+
+		ClosingReportBean reportBean=new ClosingReportBean();
+		reportBean.setPrintedBy(username);
+
+		DailyTotals dailyTotals=regTotalsDTO.getDailyTotals();
+		TransactionId txnId=regTotalsDTO.getTxnId();
+
+		reportBean.setLocationId(dailyTotals.getLocationId());
+		reportBean.setRegisterId(dailyTotals.getRegisterId());
+		reportBean.setBusinessDate(dailyTotals.getBusinessDate());
+		reportBean.setClosedBy(username);
+		reportBean.setClosedDate(dailyTotals.getBusinessDate());
+
+		reportBean.setStartOfDayAmount(dailyTotals.getStartOfDayAmount());
+		reportBean.setEndOfDayAmount(dailyTotals.getEndOfDayAmount());
+		reportBean.setProfitAmount(dailyTotals.getEndOfDayAmount().subtract(dailyTotals.getStartOfDayAmount()));
+
+		reportBean.setLocationBean(locationBean);
+
+		reportBean.setTotalTxnCount(dailyTotals.getTotalTxnCount());
+		reportBean.setTotalSalesCount(dailyTotals.getTotalSalesCount());
+		reportBean.setTotalReturnCount(dailyTotals.getTotalReturnCount());
+		reportBean.setTotalNoSalesCount(dailyTotals.getTotalNoSalesCount());
+
+		reportBean.setTotalTxnAmount(dailyTotals.getTotalTxnAmount());
+		reportBean.setTotalSalesamount(dailyTotals.getTotalSalesamount());
+		reportBean.setTotalReturnsamount(dailyTotals.getTotalReturnsamount());
+		reportBean.setTotalPaymentAmount(null);
+		reportBean.setTotalNoSalesAmount(dailyTotals.getTotalNoSalesAmount());
+		reportBean.setTotalExpensesAmount(null);
+
+		logger.info("The daily totals has been transformed successfully to closing report bean");
+		return reportBean;
+
 	}
 
 }

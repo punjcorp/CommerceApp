@@ -12,13 +12,13 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 public class Utils {

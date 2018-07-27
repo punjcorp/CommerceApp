@@ -286,6 +286,20 @@
 		var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
 		var sale_txn_url= /*[[@{/pos/sale}]]*/;
 		var open_register_url = /*[[@{/pos/open_register}]]*/;
+
+
+        var txn_locationId ;
+        var txn_registerId ;
+        var txn_businessDate ;
+
+        var print_rcpt_url= /*[[@{/pos/receipt_print}]]*/;
+        var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
+        var view_rcpt_url= /*[[@{/pos/view_last_receipt}]]*/;
+        var rcpt_txn_id= '';
+        var rcpt_txn_no= '';
+
+
+
 	</script>
 	<script th:inline="javascript" th:if="${registers!=null and #lists.size(registers)>0}">
 	var regNo;

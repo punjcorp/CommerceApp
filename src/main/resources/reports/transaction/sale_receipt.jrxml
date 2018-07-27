@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="594" pageHeight="422" orientation="Landscape" columnWidth="580" leftMargin="14" rightMargin="0" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
@@ -11,6 +10,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-DS"/>
 	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
 		<queryString>
 			<![CDATA[]]>
@@ -31,6 +31,9 @@
 	</field>
 	<field name="txnTenderLineItems" class="java.util.List">
 		<fieldDescription><![CDATA[txnTenderLineItems]]></fieldDescription>
+	</field>
+	<field name="customer" class="com.punj.app.ecommerce.models.customer.CustomerBean">
+		<fieldDescription><![CDATA[customer]]></fieldDescription>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -69,7 +72,7 @@
 				<textElement textAlignment="Left">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["GSTIN: "+$F{locationDetails}.getGstNo()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{locationDetails}.getGstNo()!=null)?"GSTIN: "+$F{locationDetails}.getGstNo():""]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -150,7 +153,7 @@
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getRegisterId()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{customer}.getName()!=null)?" : "+$F{customer}.getName()+" - "+$F{customer}.getPhone():" : "]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="435" y="19" width="36" height="11" uuid="e06afa84-4ef5-4be9-85e4-4c2faf11e848"/>

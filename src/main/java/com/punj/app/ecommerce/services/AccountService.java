@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.customer.Customer;
@@ -21,6 +22,8 @@ public interface AccountService {
 	public CustomerDTO searchCustomer(String searchText, Pager pager);
 
 	public List<Customer> searchCustomer(Customer custCriteria);
+
+	public Customer searchCustomerDetails(BigInteger customerId);
 
 	public void addCustomerCreditDetails();
 

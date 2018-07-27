@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -500,11 +501,19 @@ public class TransactionTransformer {
 		txnHeader.setPrintedBy(username);
 		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems(), txnHeader);
 
+		if(receiptDetails.getTxnCustomer()!=null){
+			CustomerBean customerBean=TransactionTransformer.tranformTransactionCustomer(receiptDetails.getTxnCustomer(),receiptDetails.getCustomerDetails(),receiptDetails.getSupplierDetails());
+			txnReceipt.setCustomer(customerBean);
+		}
+
+
 		txnReceipt.setTransactionHeader(txnHeader);
 		txnReceipt.setTxnSaleLineItems(receiptItemList);
 
 		LocationBean locationBean = CommonMVCTransformer.transformLocationDomainPartially(receiptDetails.getLocation(), Boolean.FALSE);
 		txnReceipt.setLocationDetails(locationBean);
+
+
 
 		logger.info("All the tender line items has been transformed now");
 		return txnReceipt;
@@ -619,6 +628,25 @@ public class TransactionTransformer {
 		logger.info("The transaction receipts has been transformed for saving in DB");
 
 		return txnReceipts;
+	}
+
+	public static CustomerBean tranformTransactionCustomer(TransactionCustomer txnCustomer, Customer customer, Supplier supplier) {
+		CustomerBean customerBean=new CustomerBean();
+		customerBean.setCustomerId(txnCustomer.getTransactionCustomerId().getCustomerId());
+		customerBean.setCustomerType(txnCustomer.getTransactionCustomerId().getCustomerType());
+
+		if(customer!=null){
+			customerBean.setEmail(customer.getEmail());
+			customerBean.setName(customer.getName());
+			customerBean.setPhone(customer.getPhone());
+		} else if(supplier!=null){
+			customerBean.setEmail(supplier.getEmail());
+			customerBean.setName(supplier.getName());
+			customerBean.setPhone(supplier.getPhone1());
+		}
+
+		logger.info("The customer details has been transformed successfully");
+		return customerBean;
 	}
 
 }

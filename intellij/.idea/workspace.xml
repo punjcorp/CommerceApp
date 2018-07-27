@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="599db034-cc0a-4160-8aa9-a89d9a03c641" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../assemble/db/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../assemble/db/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/MVCConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/MVCConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/DailyDeedTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/DailyDeedTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/TransactionTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/TransactionTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/LocationClosureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/LocationClosureController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterClosureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterClosureController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterOpeningController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterOpeningController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/SaleTransactionReceipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/SaleTransactionReceipt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/DailyDeedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/DailyDeedService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/SupplierService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/SupplierService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/ServiceConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/ServiceConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/SaleTransactionReceiptDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/SaleTransactionReceiptDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/AccountServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/AccountServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/DailyDeedServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/DailyDeedServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/SupplierServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/SupplierServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/TransactionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/TransactionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/i18n/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/i18n/messages.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/register_close.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/register_close.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/store_close.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/store_close.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/reports/.project" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/reports/.project" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/reports/transaction/sale_receipt.jrxml" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/reports/transaction/sale_receipt.jrxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_close.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_close.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_store_close.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_store_close.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/static/js/sale/sale.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/static/js/sale/sale.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/../target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-922793398">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.81" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="properties" value="22" />
+          <entry key="txt" value="37" />
+          <entry key="xml" value="52" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="PLAIN_TEXT" value="37" />
+          <entry key="Properties" value="22" />
+          <entry key="XML" value="52" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="properties" value="1" />
+          <entry key="xml" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Properties" value="1" />
+          <entry key="XML" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
+    <session id="1921177470">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.298" value="1" />
+          <entry key="project.open.time.319" value="1" />
+          <entry key="project.open.time.52" value="1" />
+          <entry key="project.open.time.64" value="1" />
+          <entry key="project.open.time.76" value="1" />
+          <entry key="project.open.time.77" value="1" />
+          <entry key="project.opened" value="6" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="html" value="7" />
+          <entry key="java" value="71" />
+          <entry key="js" value="5" />
+          <entry key="properties" value="3" />
+          <entry key="xml" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="HTML" value="7" />
+          <entry key="JAVA" value="71" />
+          <entry key="JavaScript" value="5" />
+          <entry key="Properties" value="3" />
+          <entry key="XML" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="html" value="83" />
+          <entry key="java" value="2890" />
+          <entry key="js" value="131" />
+          <entry key="xml" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="HTML" value="83" />
+          <entry key="JAVA" value="2890" />
+          <entry key="JavaScript" value="131" />
+          <entry key="XML" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="CommerceApp" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="158">
+              <caret line="191" column="76" lean-forward="true" selection-start-line="191" selection-start-column="76" selection-end-line="191" selection-end-column="76" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="135" column="86" lean-forward="true" selection-start-line="135" selection-start-column="86" selection-end-line="135" selection-end-column="86" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1904">
+              <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="180" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>MVCConsta</find>
+      <find>&quot;C&quot;</find>
+      <find>SupplierSer</find>
+      <find>printTxnReceipt</find>
+      <find>inclusive</find>
+    </findStrings>
+    <replaceStrings>
+      <replace />
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="PATH_TO_GIT" value="D:\apps\PortableGit\bin\git.exe" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/../assemble/db/pom.xml" />
+        <option value="$PROJECT_DIR$/../src/main/resources/application.properties" />
+        <option value="$PROJECT_DIR$/../src/main/resources/i18n/messages.properties" />
+        <option value="$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/SaleTransactionReceipt.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/ServiceConstants.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/AccountService.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/AccountServiceImpl.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/SupplierServiceImpl.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/SupplierService.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/SaleTransactionReceiptDTO.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/TransactionServiceImpl.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/utils/Utils.java" />
+        <option value="$PROJECT_DIR$/../pom.xml" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/dailydeeds/ClosingReportBean.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/MVCConstants.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/DailyDeedDTO.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/DailyDeedService.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/DailyDeedTransformer.java" />
+        <option value="$PROJECT_DIR$/../src/main/resources/static/js/sale/sale.js" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterOpeningController.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterClosureController.java" />
+        <option value="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/register_close.html" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/dailydeeds/DailyDeedDTO.java" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/DailyDeedServiceImpl.java" />
+        <option value="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_close.js" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/TransactionTransformer.java" />
+        <option value="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/store_close.html" />
+        <option value="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_store_close.js" />
+        <option value="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/LocationClosureController.java" />
+        <option value="$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html" />
+        <option value="$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html" />
+        <option value="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="PI-POS-APP" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+      </expand>
+      <select />
+    </treeState>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1296" />
+    <option name="height" value="816" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1532711691085" />
+    <property name="last_opened_file_path" value="D:/apps/PortableGit/bin/git.exe" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\repos\CommerceApp\src\main\java\com\punj\app\ecommerce\services\dtos" />
+      <recent name="D:\repos\CommerceApp\src\main\resources" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Maven.PI-POS START">
+    <configuration name="PI-POS Package" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="package" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/.." />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="PI-POS START" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="spring-boot:run" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/.." />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="PI-POS-DB MIGRATE" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="flyway:migrate" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/../assemble/db" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="PI-POS DEBUG" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8000" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Maven.PI-POS START" />
+      <item itemvalue="Maven.PI-POS-DB MIGRATE" />
+      <item itemvalue="Maven.PI-POS Package" />
+      <item itemvalue="Remote.PI-POS DEBUG" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="599db034-cc0a-4160-8aa9-a89d9a03c641" name="Default Changelist" comment="" />
+      <created>1532586925607</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1532586925607</updated>
+      <workItem from="1532586995906" duration="2559000" />
+      <workItem from="1532591261740" duration="9928000" />
+      <workItem from="1532672158811" duration="13588000" />
+      <workItem from="1532698713056" duration="627000" />
+      <workItem from="1532700091737" duration="923000" />
+      <workItem from="1532704675420" duration="4249000" />
+      <workItem from="1532712340860" duration="441000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="32315000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1234" height="816" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49903288" weight="0.20698467" />
+      <window_info id="Structure" order="1" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Favorites" order="5" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
+      <window_info id="Capture Tool" order="6" />
+      <window_info id="Web" order="7" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49944875" weight="0.22108346" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49944875" weight="0.32917964" />
+      <window_info anchor="bottom" id="Spring" order="7" weight="0.32917964" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5005513" side_tool="true" weight="0.32917964" />
+      <window_info anchor="bottom" id="Java Enterprise" order="10" sideWeight="0.49889746" weight="0.32917964" />
+      <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="12" weight="0.32917964" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.32917964" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.24972437" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" weight="0.3296582" />
+      <window_info anchor="right" id="Database" order="6" weight="0.3296582" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="8" />
+      <window_info anchor="right" id="Bean Validation" order="9" weight="0.3296582" />
+    </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49903288" weight="0.20698467" />
+      <window_info id="Structure" order="1" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Favorites" order="5" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
+      <window_info id="Capture Tool" order="6" />
+      <window_info id="Web" order="7" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49944875" visible="true" weight="0.22108346" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49944875" weight="0.32917964" />
+      <window_info anchor="bottom" id="Spring" order="7" weight="0.32917964" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5005513" side_tool="true" weight="0.32917964" />
+      <window_info anchor="bottom" id="Java Enterprise" order="10" sideWeight="0.49889746" weight="0.32917964" />
+      <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="12" weight="0.32917964" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.32917964" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.24972437" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" weight="0.3296582" />
+      <window_info anchor="right" id="Database" order="6" weight="0.3296582" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="8" />
+      <window_info anchor="right" id="Bean Validation" order="9" weight="0.3296582" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="19" lean-forward="true" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
+        </state>
+      </provider>
+      <provider editor-type-id="ResourceBundle" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
+        </state>
+      </provider>
+      <provider editor-type-id="ResourceBundle" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages_hi_IN.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-459" />
+      </provider>
+      <provider editor-type-id="ResourceBundle" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/TransactionHeader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-187">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/transaction/Transaction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-51">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/transaction/TransactionCustomer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/repositories/transaction/TransactionCustomerRepository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="14" column="83" selection-start-line="14" selection-start-column="83" selection-end-line="14" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/transaction/ids/TransactionCustomerId.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/ServiceConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="22" column="51" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/CommonService.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/impl/CommonServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="70" column="17" lean-forward="true" selection-start-line="70" selection-start-column="17" selection-end-line="70" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/customer/Customer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="43" column="33" selection-start-line="43" selection-start-column="12" selection-end-line="43" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/AccountService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="25" column="41" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/AccountServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="623">
+          <caret line="126" column="41" selection-start-line="126" selection-start-column="20" selection-end-line="126" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/utils/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/SupplierServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2465">
+          <caret line="182" column="34" selection-start-line="182" selection-start-column="20" selection-end-line="182" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/supplier/Supplier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/SupplierService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="27" column="35" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="178" column="21" lean-forward="true" selection-start-line="178" selection-start-column="21" selection-end-line="178" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/TransactionIdDTO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/SaleTransactionReceiptDTO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/FinanceService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/SaleTransactionReceipt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/MVCConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="188" column="67" lean-forward="true" selection-start-line="188" selection-start-column="67" selection-end-line="188" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/converter/TransactionConverter.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/DailyTransaction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="25" column="28" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/TransactionService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="26" column="23" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/TransactionServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="236" column="23" selection-start-line="236" selection-start-column="23" selection-end-line="236" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/DailyDeedService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/DailyDeedTransformer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="246" column="52" lean-forward="true" selection-start-line="246" selection-start-column="8" selection-end-line="246" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/common/AJAXResponseBean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/static/js/sale/sale.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="442" column="1" lean-forward="true" selection-start-line="436" selection-end-line="442" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterOpeningController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="391" column="20" selection-start-line="391" selection-start-column="20" selection-end-line="391" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/dailydeeds/ClosingReportBean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" column="30" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/sale/sale_txn.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="275" column="72" lean-forward="true" selection-start-line="270" selection-start-column="8" selection-end-line="275" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/transaction/ids/TransactionId.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="31" column="34" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/domains/finance/DailyTotals.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/transaction/TransactionController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="368">
+          <caret line="222" column="81" lean-forward="true" selection-start-line="222" selection-start-column="81" selection-end-line="222" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/DailyDeedServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="235" column="39" selection-start-line="235" selection-start-column="28" selection-end-line="235" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/dailydeeds/DailyDeedDTO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="34" column="1" lean-forward="true" selection-start-line="34" selection-start-column="1" selection-end-line="34" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/TransactionTransformer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="617" selection-start-line="617" selection-end-line="617" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/register_close.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5066">
+          <caret line="298" column="28" selection-start-line="290" selection-start-column="6" selection-end-line="298" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/store_close.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4913">
+          <caret line="289" column="86" selection-start-line="289" selection-start-column="86" selection-end-line="289" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_close.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1337">
+          <caret line="284" column="34" lean-forward="true" selection-start-line="284" selection-start-column="34" selection-end-line="284" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_store_close.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-181">
+          <caret line="336" selection-start-line="336" selection-end-line="336" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterClosureController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="82" lean-forward="true" selection-start-line="80" selection-end-line="82" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/LocationClosureController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="392" column="24" lean-forward="true" selection-start-line="392" selection-start-column="24" selection-end-line="392" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1904">
+          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="180" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="135" column="86" lean-forward="true" selection-start-line="135" selection-start-column="86" selection-end-line="135" selection-end-column="86" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="191" column="76" lean-forward="true" selection-start-line="191" selection-start-column="76" selection-end-line="191" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Spring</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>CommerceApp</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.35555556" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.35555556" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: antlr:antlr:2.7.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

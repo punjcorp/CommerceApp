@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
 
 /**
  * @author admin
@@ -20,11 +22,11 @@ public interface DailyDeedService {
 
 	public Boolean saveStoreOpenTxn(DailyTransaction storeOpenDetails, String username);
 
-	public Boolean saveRegisterOpenTxn(DailyTransaction storeOpenDetails, String username);
+	public DailyDeedDTO saveRegisterOpenTxn(DailyTransaction storeOpenDetails, String username);
 
-	public Boolean saveRegisterCloseTxn(DailyTransaction registerOpenDetails, String username);
+	public DailyDeedDTO saveRegisterCloseTxn(DailyTransaction registerOpenDetails, String username);
 
-	public Boolean saveStoreCloseTxn(DailyTransaction registerOpenDetails, String username);
+	public DailyDeedDTO saveStoreCloseTxn(DailyTransaction registerOpenDetails, String username);
 
 	public TenderCount searchTxnTenderCount(TransactionId txnId);
 

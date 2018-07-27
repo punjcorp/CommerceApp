@@ -25,6 +25,8 @@ public interface SupplierService {
 
 	public Supplier searchSupplier(Supplier supplier);
 
+	public Supplier searchSupplier(Integer supplierId);
+
 	public SupplierDTO searchSupplier(String text, Pager pager);
 
 	public List<Supplier> getAll();

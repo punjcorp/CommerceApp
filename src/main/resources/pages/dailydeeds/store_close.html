@@ -262,27 +262,37 @@
 	</div>
 	<!-- /#wrapper -->
 	<script th:inline="javascript">
-			var current_locale= /*[[${#locale.language}]]*/;
-			var url= /*[[@{/pos/open_register(locationId)}]]*/;
-			
+		var current_locale= /*[[${#locale.language}]]*/;
+		var url= /*[[@{/pos/open_register(locationId)}]]*/;
+
+		var txn_locationId ;
+		var txn_registerId ;
+		var txn_businessDate ;
+
+		var print_rcpt_url= /*[[@{/pos/receipt_print}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
+		var view_rcpt_url= /*[[@{/pos/view_last_receipt}]]*/;
+		var rcpt_txn_id= '';
+		var rcpt_txn_no= '';
+
 	</script>
 	<script th:inline="javascript" th:if="${dailyDeedBean!=null}">
 	
-	var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;
-	var closing_register_id= /*[[${dailyDeedBean.register}]]*/;
-	
-	var open_store_url=/*[[@{/pos/open_store}]]*/;
-	var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
-	
-	var sale_txn_url= /*[[@{/pos/sale}]]*/;
+		var closing_location_id= /*[[${dailyDeedBean.locationId}]]*/;
+		var closing_register_id= /*[[${dailyDeedBean.register}]]*/;
+
+		var open_store_url=/*[[@{/pos/open_store}]]*/;
+		var store_close_url= /*[[@{/pos/close_store(locationId)}]]*/;
+
+		var sale_txn_url= /*[[@{/pos/sale}]]*/;
 	</script>
 	<script th:inline="javascript"
 		th:if="${dailyDeedBean!=null and dailyDeedBean.denominationList!=null and dailyDeedBean.tenders[0].denominations!=null}">
-	var denomination_list=/*[[${dailyDeedBean.denominationList}]]*/;
-	var totalDenomSize=/*[[${#lists.size(dailyDeedBean.tenders[0].denominations)}]]*/;
-	
-	var denominationLineItems=/*[[${dailyDeedBean.tenders[0].denominations}]]*/;
-	initializeDenominationLineItems(denominationLineItems);
+		var denomination_list=/*[[${dailyDeedBean.denominationList}]]*/;
+		var totalDenomSize=/*[[${#lists.size(dailyDeedBean.tenders[0].denominations)}]]*/;
+
+		var denominationLineItems=/*[[${dailyDeedBean.tenders[0].denominations}]]*/;
+		initializeDenominationLineItems(denominationLineItems);
 	
 	</script>
 	<!-- Register Close Transaction Completion Modal -->

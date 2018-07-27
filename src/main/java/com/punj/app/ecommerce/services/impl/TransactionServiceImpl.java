@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.transaction.ids.*;
+import com.punj.app.ecommerce.services.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +43,6 @@ import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
-import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
-import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
-import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
-import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
@@ -53,11 +52,6 @@ import com.punj.app.ecommerce.repositories.transaction.TransactionCustomerReposi
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
-import com.punj.app.ecommerce.services.AccountService;
-import com.punj.app.ecommerce.services.FinanceService;
-import com.punj.app.ecommerce.services.InventoryService;
-import com.punj.app.ecommerce.services.PaymentAccountService;
-import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.converter.TransactionConverter;
@@ -86,6 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
 	private TenderMovementRepository tenderMovementRepository;
 	private FinanceService financeService;
 	private AccountService accountService;
+	private SupplierService supplierService;
 	private PaymentAccountService paymentAccountService;
 
 	/**
@@ -95,6 +90,15 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	public void setPaymentAccountService(PaymentAccountService paymentAccountService) {
 		this.paymentAccountService = paymentAccountService;
+	}
+
+	/**
+	 * @param supplierService
+	 *            the supplierService to set
+	 */
+	@Autowired
+	public void setSupplierService(SupplierService supplierService) {
+		this.supplierService = supplierService;
 	}
 
 	/**
@@ -125,8 +129,8 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	/**
-	 * @param txnReceiptRepository
-	 *            the txnReceiptRepository to set
+	 * @param txnCustomerRepository
+	 *            the txnCustomerRepository to set
 	 */
 	@Autowired
 	public void setTxnCustomerRepository(TransactionCustomerRepository txnCustomerRepository) {
@@ -535,6 +539,38 @@ public class TransactionServiceImpl implements TransactionService {
 			} else {
 				logger.info("The receipt line items were not found for the provided transaction");
 			}
+
+			TransactionCustomerId txnCustomerId=new TransactionCustomerId();
+			txnCustomerId.setBusinessDate(txnId.getBusinessDate());
+			txnCustomerId.setLocationId(txnId.getLocationId());
+			txnCustomerId.setRegister(txnId.getRegister());
+			txnCustomerId.setTransactionSeq(txnId.getTransactionSeq());
+
+			TransactionCustomer txnCustomerCriteria=new TransactionCustomer();
+			txnCustomerCriteria.setTransactionCustomerId(txnCustomerId);
+
+			TransactionCustomer txnCustomer=this.txnCustomerRepository.findOne(Example.of(txnCustomerCriteria));
+			if(txnCustomer!=null){
+				txnReceipt.setTxnCustomer(txnCustomer);
+				String custType=txnCustomer.getTransactionCustomerId().getCustomerType();
+				BigInteger custId=txnCustomer.getTransactionCustomerId().getCustomerId();
+				if(custType.equals(ServiceConstants.CUSTOMER_TYPE_CLIENT)){
+					Customer customer=this.accountService.searchCustomerDetails(custId);
+					txnReceipt.setCustomerDetails(customer);
+					logger.info("The customer details has been updated successfully");
+				}else if (custType.equals(ServiceConstants.CUSTOMER_TYPE_SUPPLIER)){
+					Supplier supplier=this.supplierService.searchSupplier(custId.intValue());
+					txnReceipt.setSupplierDetails(supplier);
+					logger.info("The supplier details has been updated successfully");
+				}
+
+				logger.info("The associated customer details has been retrieved successfully");
+
+			}else{
+				logger.info("There was no customer associated with this transaction");
+			}
+
+
 
 		} else {
 			logger.info("There was no details found for the provided transaction details");

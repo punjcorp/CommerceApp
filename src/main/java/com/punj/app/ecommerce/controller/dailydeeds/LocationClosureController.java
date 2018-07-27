@@ -3,21 +3,30 @@ package com.punj.app.ecommerce.controller.dailydeeds;
  * 
  */
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
+import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.models.dailydeeds.ClosingReportBean;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
@@ -72,6 +81,9 @@ public class LocationClosureController {
 	private TransactionService txnService;
 	private FinanceService financeService;
 	private RegisterOpenValidator registerOpenValidator;
+
+	@Value("${commerce.resource.bundle.base}")
+	private String resourceBundleBase;
 
 	/**
 	 * @param registerOpenValidator
@@ -300,17 +312,21 @@ public class LocationClosureController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
 				DailyTransaction storeCloseDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
-				Boolean result = this.dailyDeedService.saveStoreCloseTxn(storeCloseDetails, userDetails.getUsername());
-				if (!result) {
+				DailyDeedDTO storeTotalsDTO= this.dailyDeedService.saveStoreCloseTxn(storeCloseDetails, userDetails.getUsername());
+				ClosingReportBean txnReceipt = null;
+				if (storeTotalsDTO==null) {
 					return this.updateAJAXResponseBeanFailure(locale);
 				} else {
+
+					txnReceipt = this.generateClosingReport(storeTotalsDTO, session, userDetails.getUsername(), locale);
+
 					commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, null);
 					commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_NAME, null);
 					commerceContext.setStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE, null);
 					commerceContext.setStoreSettings(CommerceConstants.LOC_DEFAULT_TENDER, null);
 					logger.info("The Store close process was successful");
 
-					return this.updateAJAXResponseForSuccess(locale, dailyDeedBean.getLocationId(), dailyDeedBean.getLocationName());
+					return this.updateAJAXResponseForSuccess(locale, dailyDeedBean.getLocationId(), dailyDeedBean.getLocationName(), storeTotalsDTO);
 				}
 			}
 		} catch (Exception e) {
@@ -330,8 +346,9 @@ public class LocationClosureController {
 		return ajaxResponse;
 	}
 
-	private AJAXResponseBean updateAJAXResponseForSuccess(Locale locale, Integer locationId, String locName) {
+	private AJAXResponseBean updateAJAXResponseForSuccess(Locale locale, Integer locationId, String locName,DailyDeedDTO storeTotalsDTO) {
 		AJAXResponseBean ajaxResponse = new AJAXResponseBean();
+		ajaxResponse.setResultObj(storeTotalsDTO);
 		ajaxResponse.setStatus(MVCConstants.AJAX_STATUS_SUCCESS);
 		ajaxResponse.setStatusMsg(this.messageSource.getMessage("commerce.screen.store.close.success.msg", new Object[] { locationId, locName }, locale));
 
@@ -339,5 +356,63 @@ public class LocationClosureController {
 
 		return ajaxResponse;
 	}
+
+	public ClosingReportBean generateClosingReport(DailyDeedDTO storeTotalsDTO, HttpSession session, String username, Locale locale) {
+		ClosingReportBean txnReceipt = null;
+		try {
+			TransactionId txnId=storeTotalsDTO.getTxnId();
+			Location location=this.commonService.retrieveLocationDetails(txnId.getLocationId());
+			if(location!=null){
+				LocationBean locationBean=CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
+				txnReceipt=DailyDeedTransformer.transformDailyTotalsToReportBean(storeTotalsDTO, username, locationBean);
+
+				if (txnReceipt != null) {
+					logger.info("The receipt details has been transformed successfully");
+					logger.info("Start the receipt PDF generation now");
+					List<ClosingReportBean> txnList = new ArrayList<>(1);
+					txnList.add(txnReceipt);
+
+					InputStream txnClosingReportStream = getClass().getResourceAsStream(MVCConstants.TXN_STORE_CLOSE_REPORT);
+					JasperReport jasperReport = (JasperReport) JRLoader.loadObject(txnClosingReportStream);
+					logger.debug("The closing report has been compiled now");
+
+					ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
+					JRBeanCollectionDataSource txnDS = new JRBeanCollectionDataSource(txnList);
+					logger.debug("The report data source and resource bundle is ready now");
+
+					Map<String, Object> paramMap = new HashMap<>();
+					paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+					paramMap.put(JRParameter.REPORT_LOCALE, locale);
+					logger.debug("The parameter set for setting receipt data is ready");
+					JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, txnDS);
+					logger.debug("The receipt report is ready with data to be used");
+
+					String uniqueTxnNo = txnId.toString();
+					byte pdfBytes[] = JasperExportManager.exportReportToPdf(jasperPrint);
+
+					// This is to print the receipt when user select the printing option
+					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_JASPER_PARAM, jasperPrint);
+					// This is to show the receipt PDF in view screen
+					session.setAttribute(MVCConstants.LAST_TXN_NO, uniqueTxnNo);
+					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM, pdfBytes);
+
+					// This section will save the receipt in database
+					List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+					Boolean result = this.txnService.saveTransactionReceipt(txnReceipts);
+					if (result) {
+						logger.info("The transaction receipts has been saved in DB successfully");
+					} else {
+						logger.info("The transaction receipts were not saved due to unknown reason");
+					}
+
+				}
+			}
+
+		} catch (JRException e) {
+			logger.error("There is an error while generating receipt for txn", e);
+		}
+		return txnReceipt;
+	}
+
 
 }

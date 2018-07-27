@@ -6,9 +6,12 @@ package com.punj.app.ecommerce.services.dtos.transaction;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.customer.Customer;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 
 /**
  * @author admin
@@ -19,6 +22,9 @@ public class SaleTransactionReceiptDTO {
 	private Transaction txn;
 	private List<ReceiptItemTax> txnLineItems;
 	private List<TenderLineItem> tenderLineItems;
+	private TransactionCustomer txnCustomer;
+	private Customer customerDetails;
+	private Supplier supplierDetails;
 	/**
 	 * @return the txn
 	 */
@@ -67,7 +73,28 @@ public class SaleTransactionReceiptDTO {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	
-	
-	
+
+	public TransactionCustomer getTxnCustomer() {
+		return txnCustomer;
+	}
+
+	public void setTxnCustomer(TransactionCustomer txnCustomer) {
+		this.txnCustomer = txnCustomer;
+	}
+
+	public Customer getCustomerDetails() {
+		return customerDetails;
+	}
+
+	public void setCustomerDetails(Customer customerDetails) {
+		this.customerDetails = customerDetails;
+	}
+
+	public Supplier getSupplierDetails() {
+		return supplierDetails;
+	}
+
+	public void setSupplierDetails(Supplier supplierDetails) {
+		this.supplierDetails = supplierDetails;
+	}
 }
