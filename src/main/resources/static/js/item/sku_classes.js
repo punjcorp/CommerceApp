@@ -138,14 +138,24 @@ $
 												imageHtml += 'value="'+style_image_name+'"></input>';
 												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.imageURL"';
 												imageHtml += 'name="skus['+index+'].itemImages[0].imageURL"';
-												imageHtml += 'value="'+style_image_url_actual+'"></input>';
+												if(typeof style_image_url_actual == 'undefined')
+													imageHtml += 'value=""></input>';
+												else
+													imageHtml += 'value="'+style_image_url_actual+'"></input>';
 												
 												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.imageType"';
 												imageHtml += 'name="skus['+index+'].itemImages[0].imageType"';
-												imageHtml += 'value="'+style_image_type+'"></input>';
+												if(typeof style_image_type == 'undefined')
+													imageHtml += 'value=""></input>';
+												else
+													imageHtml += 'value="'+style_image_type+'"></input>';
+												
 												imageHtml += '<input type="hidden" id="skus'+index+'.itemImages0.baseEncodedImage"';
 												imageHtml += 'name="skus['+index+'].itemImages[0].baseEncodedImage"';
-												imageHtml += 'value="'+style_encoded_image+'"></input>';
+												if(typeof style_encoded_image == 'undefined')
+													imageHtml += 'value=""></input>';
+												else
+													imageHtml += 'value="'+style_encoded_image+'"></input>';
 
 												var attributesHtml = '';
 												attributesHtml += '<div class="row">';

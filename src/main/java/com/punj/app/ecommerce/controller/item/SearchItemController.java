@@ -160,6 +160,7 @@ public class SearchItemController {
 			itemBean.setLongDesc(item.getDescription());
 			itemBean.setItemId(item.getItemId());
 			itemBean.setParentItemId(item.getParentItemId());
+			itemBean.setStatus(item.getStatus());
 
 			itemOptionsBean = new ItemOptionsBean();
 			itemOptionsBean.setNextLevelCreated(item.getItemOptions().getNextLevelCreated());

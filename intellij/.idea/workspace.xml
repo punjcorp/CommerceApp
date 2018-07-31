@@ -2,40 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="599db034-cc0a-4160-8aa9-a89d9a03c641" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../assemble/db/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../assemble/db/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/MVCConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/MVCConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/DailyDeedTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/DailyDeedTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/TransactionTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/common/transformer/TransactionTransformer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/LocationClosureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/LocationClosureController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterClosureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterClosureController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterOpeningController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/controller/dailydeeds/RegisterOpeningController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/SaleTransactionReceipt.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/SaleTransactionReceipt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/AccountService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/DailyDeedService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/DailyDeedService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/SupplierService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/SupplierService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/ServiceConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/common/ServiceConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/SaleTransactionReceiptDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/dtos/transaction/SaleTransactionReceiptDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/AccountServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/AccountServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/DailyDeedServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/DailyDeedServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/SupplierServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/SupplierServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/TransactionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/services/impl/TransactionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/i18n/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/i18n/messages.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/register_close.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/register_close.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/store_close.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/dailydeeds/store_close.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/reports/.project" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/reports/.project" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/reports/transaction/sale_receipt.jrxml" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/reports/transaction/sale_receipt.jrxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_close.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_close.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_store_close.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/static/js/eoddeeds/dailydeed_store_close.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/static/js/sale/sale.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/static/js/sale/sale.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/webapp/WEB-INF/web.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/../target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -101,9 +68,10 @@
           <entry key="project.open.time.319" value="1" />
           <entry key="project.open.time.52" value="1" />
           <entry key="project.open.time.64" value="1" />
+          <entry key="project.open.time.71" value="1" />
           <entry key="project.open.time.76" value="1" />
           <entry key="project.open.time.77" value="1" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -126,7 +94,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="83" />
+          <entry key="html" value="122" />
           <entry key="java" value="2890" />
           <entry key="js" value="131" />
           <entry key="xml" value="2" />
@@ -134,7 +102,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="83" />
+          <entry key="HTML" value="122" />
           <entry key="JAVA" value="2890" />
           <entry key="JavaScript" value="131" />
           <entry key="XML" value="2" />
@@ -150,8 +118,32 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="158">
-              <caret line="191" column="76" lean-forward="true" selection-start-line="191" selection-start-column="76" selection-end-line="191" selection-end-column="76" />
+            <state relative-caret-position="345">
+              <caret line="136" column="46" lean-forward="true" selection-start-line="136" selection-start-column="46" selection-end-line="136" selection-end-column="46" />
+              <folding>
+                <element signature="e#2#29#0" expanded="true" />
+                <element signature="e#2#29#0" expanded="true" />
+                <element signature="e#2#34#0" expanded="true" />
+                <element signature="e#2#28#0" expanded="true" />
+                <element signature="e#2#38#0" expanded="true" />
+                <element signature="e#2#38#0" expanded="true" />
+                <element signature="e#2#25#0" expanded="true" />
+                <element signature="e#2#27#0" expanded="true" />
+                <element signature="e#2#34#0" expanded="true" />
+                <element signature="e#2#25#0" expanded="true" />
+                <element signature="e#2#35#0" expanded="true" />
+                <element signature="e#2#37#0" expanded="true" />
+                <element signature="e#2#30#0" expanded="true" />
+                <element signature="e#2#30#0" expanded="true" />
+                <element signature="e#2#33#0" expanded="true" />
+                <element signature="e#2#34#0" expanded="true" />
+                <element signature="e#2#35#0" expanded="true" />
+                <element signature="e#2#37#0" expanded="true" />
+                <element signature="e#2#33#0" expanded="true" />
+                <element signature="e#2#35#0" expanded="true" />
+                <element signature="e#2#38#0" expanded="true" />
+                <element signature="e#2#36#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -159,8 +151,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="135" column="86" lean-forward="true" selection-start-line="135" selection-start-column="86" selection-end-line="135" selection-end-column="86" />
+            <state relative-caret-position="2295">
+              <caret line="135" column="86" selection-start-line="135" selection-start-column="86" selection-end-line="135" selection-end-column="86" />
             </state>
           </provider>
         </entry>
@@ -257,8 +249,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
+    <option name="x" value="1649" />
+    <option name="y" value="217" />
     <option name="width" value="1296" />
     <option name="height" value="816" />
   </component>
@@ -410,11 +402,12 @@
       <workItem from="1532700091737" duration="923000" />
       <workItem from="1532704675420" duration="4249000" />
       <workItem from="1532712340860" duration="441000" />
+      <workItem from="1532749593645" duration="1365000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32315000" />
+    <option name="totallyTimeSpent" value="33680000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -426,8 +419,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1234" height="816" extended-state="6" />
-    <editor active="true" />
+    <frame x="1272" y="-8" width="1874" height="1096" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49903288" weight="0.20698467" />
       <window_info id="Structure" order="1" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
@@ -439,7 +431,7 @@
       <window_info id="Web" order="7" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49944875" weight="0.22108346" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49944875" visible="true" weight="1.0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -462,40 +454,6 @@
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info anchor="right" id="Bean Validation" order="9" weight="0.3296582" />
     </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49903288" weight="0.20698467" />
-      <window_info id="Structure" order="1" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
-      <window_info id="Designer" order="2" />
-      <window_info id="Image Layers" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Favorites" order="5" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
-      <window_info id="Capture Tool" order="6" />
-      <window_info id="Web" order="7" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49944875" visible="true" weight="0.22108346" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49944875" weight="0.32917964" />
-      <window_info anchor="bottom" id="Spring" order="7" weight="0.32917964" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5005513" side_tool="true" weight="0.32917964" />
-      <window_info anchor="bottom" id="Java Enterprise" order="10" sideWeight="0.49889746" weight="0.32917964" />
-      <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="12" weight="0.32917964" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.32917964" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.24972437" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Maven Projects" order="5" weight="0.3296582" />
-      <window_info anchor="right" id="Database" order="6" weight="0.3296582" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" id="Theme Preview" order="8" />
-      <window_info anchor="right" id="Bean Validation" order="9" weight="0.3296582" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -516,26 +474,26 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages.properties">
+      <provider editor-type-id="ResourceBundle" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
           <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
         </state>
       </provider>
-      <provider editor-type-id="ResourceBundle" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties">
+      <provider editor-type-id="ResourceBundle" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
         </state>
       </provider>
-      <provider editor-type-id="ResourceBundle" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages_hi_IN.properties">
+      <provider editor-type-id="ResourceBundle" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-459" />
       </provider>
-      <provider editor-type-id="ResourceBundle" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/TransactionHeader.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -837,24 +795,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html">
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1904">
-          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="180" selection-end-column="34" />
+        <state relative-caret-position="345">
+          <caret line="136" column="46" lean-forward="true" selection-start-line="136" selection-start-column="46" selection-end-line="136" selection-end-column="46" />
+          <folding>
+            <element signature="e#2#29#0" expanded="true" />
+            <element signature="e#2#29#0" expanded="true" />
+            <element signature="e#2#34#0" expanded="true" />
+            <element signature="e#2#28#0" expanded="true" />
+            <element signature="e#2#38#0" expanded="true" />
+            <element signature="e#2#38#0" expanded="true" />
+            <element signature="e#2#25#0" expanded="true" />
+            <element signature="e#2#27#0" expanded="true" />
+            <element signature="e#2#34#0" expanded="true" />
+            <element signature="e#2#25#0" expanded="true" />
+            <element signature="e#2#35#0" expanded="true" />
+            <element signature="e#2#37#0" expanded="true" />
+            <element signature="e#2#30#0" expanded="true" />
+            <element signature="e#2#30#0" expanded="true" />
+            <element signature="e#2#33#0" expanded="true" />
+            <element signature="e#2#34#0" expanded="true" />
+            <element signature="e#2#35#0" expanded="true" />
+            <element signature="e#2#37#0" expanded="true" />
+            <element signature="e#2#33#0" expanded="true" />
+            <element signature="e#2#35#0" expanded="true" />
+            <element signature="e#2#38#0" expanded="true" />
+            <element signature="e#2#36#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/edit_style.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="135" column="86" lean-forward="true" selection-start-line="135" selection-start-column="86" selection-end-line="135" selection-end-column="86" />
+        <state relative-caret-position="2295">
+          <caret line="135" column="86" selection-start-line="135" selection-start-column="86" selection-end-line="135" selection-end-column="86" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
+    <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="191" column="76" lean-forward="true" selection-start-line="191" selection-start-column="76" selection-end-line="191" selection-end-column="76" />
+        <state relative-caret-position="1904">
+          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="180" selection-end-column="34" />
         </state>
       </provider>
     </entry>

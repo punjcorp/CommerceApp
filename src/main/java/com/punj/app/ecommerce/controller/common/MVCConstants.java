@@ -23,6 +23,17 @@ public final class MVCConstants {
 	public static final String YES="Y";
 	public static final String NO="N";
 	
+	
+	public static final String WIDGET_REVENUE="Revenue";
+	public static final String WIDGET_SALES_COUNT="Sales Count";
+	public static final String WIDGET_CUSTOMER_COUNT="Customer Count";
+	public static final String WIDGET_PROFIT="Gross Profit";
+	public static final String WIDGET_DISCOUNT_AMOUNT="Discount";
+	public static final String WIDGET_DISCOUNT_PERCENTAGE="Discount %";
+	public static final String WIDGET_BASKET_SIZE="Basket Size";
+	public static final String WIDGET_BASKET_VALUE="Basket Value";
+	
+	
 	public static final String PRICE_TYPE_PERMANENT="1";
 	public static final String PRICE_TYPE_PROMOTION="2";
 	public static final String PRICE_TYPE_CLEARANCE="3";

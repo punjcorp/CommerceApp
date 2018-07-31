@@ -4,8 +4,9 @@
 package com.punj.app.ecommerce.services.dtos;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.punj.app.ecommerce.domains.reports.dashboard.DashboardReport;
 
@@ -18,7 +19,9 @@ public class DashboardDTO implements Serializable {
 	private static final long serialVersionUID = -2210628942887342403L;
 
 	private DashboardReport currentDayReport;
-	private Map<LocalDateTime, DashboardReport> historicalReports;
+	private Map<String, DashboardReport> historicalReports;
+	private Map<String, Object[]> dashboardData;
+	private List<String> dates;
 
 	/**
 	 * @return the currentDayReport
@@ -38,7 +41,7 @@ public class DashboardDTO implements Serializable {
 	/**
 	 * @return the historicalReports
 	 */
-	public Map<LocalDateTime, DashboardReport> getHistoricalReports() {
+	public Map<String, DashboardReport> getHistoricalReports() {
 		return historicalReports;
 	}
 
@@ -46,8 +49,38 @@ public class DashboardDTO implements Serializable {
 	 * @param historicalReports
 	 *            the historicalReports to set
 	 */
-	public void setHistoricalReports(Map<LocalDateTime, DashboardReport> historicalReports) {
+	public void setHistoricalReports(Map<String, DashboardReport> historicalReports) {
 		this.historicalReports = historicalReports;
+	}
+
+	/**
+	 * @return the dates
+	 */
+	public List<String> getDates() {
+		return dates;
+	}
+
+	/**
+	 * @param dates
+	 *            the dates to set
+	 */
+	public void setDates(List<String> dates) {
+		this.dates = dates;
+	}
+
+	/**
+	 * @return the dashboardData
+	 */
+	public Map<String, Object[]> getDashboardData() {
+		return dashboardData;
+	}
+
+	/**
+	 * @param dashboardData
+	 *            the dashboardData to set
+	 */
+	public void setDashboardData(Map<String, Object[]> dashboardData) {
+		this.dashboardData = dashboardData;
 	}
 
 }

@@ -298,7 +298,7 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
                 AND txn.register = txn_itm.register
                 AND txn.location_id = txn_itm.location_id
                 AND txn.txn_no = txn_itm.txn_no
-                AND txn_itm.discount_percentage IS NOT NULL
+                AND (IFNULL(`txn_itm`.`discount_percentage`,-1) = -1 OR `txn_itm`.`discount_percentage` IS NOT NULL)
         GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_discount_percent
         GROUP BY location_id , business_date) t3,
         (SELECT 
@@ -322,7 +322,7 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
                 AND txn.location_id = txn_itm.location_id
                 AND txn.txn_no = txn_itm.txn_no
                 AND txn_itm.discount_percentage IS NULL
-                AND txn_itm.discount_amount IS NOT NULL
+                AND (`txn_itm`.`discount_amount` IS NOT NULL OR IFNULL(`txn_itm`.`discount_amount`,-1) = -1)
         GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_discount_percent
         GROUP BY location_id , business_date) AS t4
     WHERE
