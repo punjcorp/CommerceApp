@@ -48,7 +48,7 @@ public class Order implements Serializable {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "location_id")
-	@IndexedEmbedded
+	@IndexedEmbedded(includeEmbeddedObjectId = true)
 	private Location location;
 
 	@Field
@@ -88,11 +88,11 @@ public class Order implements Serializable {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "supplier_id")
-	@IndexedEmbedded(depth = 1)
+	@IndexedEmbedded(includeEmbeddedObjectId = true)
 	private Supplier supplier;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-	@IndexedEmbedded
+	@IndexedEmbedded(includeEmbeddedObjectId = true)
 	private List<OrderItem> orderItems;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

@@ -345,7 +345,8 @@ public class OrderController {
 		order = this.orderService.createOrder(order);
 		logger.info("The {} order details has been saved successfully", order.getOrderId());
 		orderBean.setOrderId(order.getOrderId());
-
+		orderBean.setStatus(order.getStatus());
+		
 		this.updateOrderModelDetails(model, orderBeanDTO);
 
 		// This section is to update order report details

@@ -577,8 +577,8 @@ public class OrderServiceImpl implements OrderService {
 			suggestedPrice = orderItem.getActualSuggestedPrice();
 			maxRetailPrice = orderItem.getActualMaxRetailPrice();
 			item = this.itemRepository.findOne(orderItem.getItemId());
+			itemOptions = item.getItemOptions();
 			if ((suggestedPrice != null && suggestedPrice.doubleValue() > 0) || (maxRetailPrice != null && maxRetailPrice.doubleValue() > 0)) {
-				itemOptions = item.getItemOptions();
 				if (suggestedPrice.doubleValue() > 0)
 					itemOptions.setSuggestedPrice(suggestedPrice);
 				if (maxRetailPrice.doubleValue() > 0)

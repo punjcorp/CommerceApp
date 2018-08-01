@@ -230,6 +230,10 @@ $(function() {
 	$('#btnNewOrder').click(function() {
 		startNewOrder();
 	});
+	
+	$('#btnSearchOrder').click(function() {
+		searchOrder();
+	});
 
 	calculateTotals();
 	calculateActualTotals();
@@ -718,4 +722,8 @@ function receiveOrder() {
 
 function startNewOrder() {
 	window.location.href = newOrderURL;
+}
+
+function searchOrder(){
+	window.location.href = searchOrderURL;
 }

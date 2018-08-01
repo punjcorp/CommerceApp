@@ -22,8 +22,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * @author admin
@@ -46,9 +46,11 @@ public class OrderItem implements Serializable {
 	@JoinColumn(name = "order_id")
 	private Order order;
 
+	@Field
 	@Column(name = "item_id")
 	private BigInteger itemId;
 
+	@Field
 	@Column(name = "item_name")
 	private String itemDesc;
 
@@ -71,8 +73,8 @@ public class OrderItem implements Serializable {
 	@Column(name = "actual_suggested_price")
 	private BigDecimal actualSuggestedPrice = BigDecimal.ZERO;
 	@Column(name = "actual_max_retail_price")
-	private BigDecimal actualMaxRetailPrice= BigDecimal.ZERO;	
-	
+	private BigDecimal actualMaxRetailPrice = BigDecimal.ZERO;
+
 	@Column(name = "delievered_qty")
 	private BigDecimal delieveredQty = BigDecimal.ZERO;
 	@Column(name = "delievered_date")
@@ -355,7 +357,8 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @param actualSuggestedPrice the actualSuggestedPrice to set
+	 * @param actualSuggestedPrice
+	 *            the actualSuggestedPrice to set
 	 */
 	public void setActualSuggestedPrice(BigDecimal actualSuggestedPrice) {
 		this.actualSuggestedPrice = actualSuggestedPrice;
@@ -369,7 +372,8 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @param actualMaxRetailPrice the actualMaxRetailPrice to set
+	 * @param actualMaxRetailPrice
+	 *            the actualMaxRetailPrice to set
 	 */
 	public void setActualMaxRetailPrice(BigDecimal actualMaxRetailPrice) {
 		this.actualMaxRetailPrice = actualMaxRetailPrice;

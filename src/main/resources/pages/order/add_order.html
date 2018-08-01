@@ -468,7 +468,9 @@
 				<div class="modal-body text-center">
 					<div id="receiptActions" class="col-12 text-center">
 						<button type="button" class="btn btn-info p-3 m-2" id="btnViewOrderReport">
-							<i class="fas fa-receipt fa-5x"></i>
+							<div class="fa-5x">
+								<i class="fas fa-receipt"></i>
+							</div>
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReportAndNewOrder">
 							<div class="fa-5x">
@@ -503,6 +505,14 @@
 								</span>
 							</div>
 						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnSearchOrder">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="far fa-file-powerpoint"></i> <i class="fas fa-cog"
+									data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">
 						<i class="fas fa-cog fa-spin fa-5x"></i>
@@ -521,6 +531,7 @@
 
 		var txn_orderId = /*[[${orderBeanDTO.order.orderId}]]*/;
 		var newOrderURL = /*[[@{/admin/add_order}]]*/;
+		var searchOrderURL = /*[[@{/admin/manage_order}]]*/;
 		var editOrderURL = /*[[@{/admin/edit_order(orderId)}]]*/;
 		var approveOrderURL = /*[[@{/admin/approve_order(orderId)}]]*/;
 		var receiveOrderURL = /*[[@{/admin/receive_order(orderId)}]]*/;

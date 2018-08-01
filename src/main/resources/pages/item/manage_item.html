@@ -142,15 +142,12 @@
 														th:if="${items.items[__${itrStat.index}__].parentItemId==null and items.items[__${itrStat.index}__].status=='C'}"
 														class="btn btn-secondary btn-sm"><span
 														th:text="#{commerce.screen.actions.edit}">Edit
-															Style</span></a>
-
-													<a
+															Style</span></a> <a
 														th:href="@{/admin/add_sku(styleId=${items.items[__${itrStat.index}__].itemId})}"
 														href="../item/add_item.html" class="btn btn-info btn-sm"
 														th:if="${items.items[__${itrStat.index}__].parentItemId==null and items.items[__${itrStat.index}__].status=='A' and items.items[__${itrStat.index}__].itemOptions!=null and items.items[__${itrStat.index}__].itemOptions.nextLevelCreated=='N'}"><span
 														th:text="#{commerce.screen.actions.add.sku}">Add
-															SKU(s)</span></a> 
-													<a
+															SKU(s)</span></a> <a
 														th:href="@{/admin/edit_sku(styleId=${items.items[__${itrStat.index}__].itemId})}"
 														class="btn btn-info btn-sm"
 														th:if="${items.items[__${itrStat.index}__].parentItemId==null and items.items[__${itrStat.index}__].itemOptions!=null and items.items[__${itrStat.index}__].itemOptions.nextLevelCreated=='A'}"><span
@@ -208,12 +205,15 @@
 											id="btnSave" value="Save"
 											th:value="#{commerce.screen.btn.submit.save}"
 											class="btn btn-info btn-sm" aria-describedby="bulkHelp"
-											disabled="disabled"></input> <input type="button"
+											disabled="disabled"></input> 
+<!-- 										<input type="button"
 											th:onclick="'submitForm(\'/bulk_item_action?deleteItems=\')'"
 											id="btnDelete" value="Delete"
 											th:value="#{commerce.screen.btn.submit.delete}"
 											class="btn btn-danger btn-sm" aria-describedby="bulkHelp"
-											disabled="disabled"></input> <a href="add_style.html"
+											disabled="disabled"></input> 
+										 -->
+										<a href="add_style.html"
 											th:href="@{/admin/add_style}" class="btn btn-success btn-sm"><span
 											th:text="#{commerce.screen.btn.submit.add.style}">Add
 												Style</span></a>

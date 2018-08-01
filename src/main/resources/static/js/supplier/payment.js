@@ -98,9 +98,9 @@ $(function() {
 	});
 
 	$('#btnSavePayment').click(function() {
-		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		if (validatePaymentDetails()) {
+			$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 			readPaymentDetails();
 			payment.savePayment();
 		}

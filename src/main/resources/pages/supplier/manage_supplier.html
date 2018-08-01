@@ -87,10 +87,11 @@
 												<div class="btn-group">
 													<a th:href="@{/admin/edit_supplier(supplierId=${suppliers.suppliers[__${itrStat.index}__].supplierId})}"
 														href="../supplier/add_supplier.html" class="btn btn-success btn-sm"><i class="fas fa-user fa-2x mx-2"></i> <span
-														th:text="#{commerce.screen.actions.edit}">Edit</span></a> <a
+														th:text="#{commerce.screen.actions.edit}">Edit</span></a> 
+													<!-- <a
 														th:href="@{/admin/delete_supplier(supplierId=${suppliers.suppliers[__${itrStat.index}__].supplierId})}"
 														href="../supplier/manage_supplier.html" class="btn btn-danger btn-sm"><i class="fas fa-user-times fa-2x mx-2"></i><span
-														th:text="#{commerce.screen.actions.delete}">Delete</span></a>
+														th:text="#{commerce.screen.actions.delete}">Delete</span></a> -->
 												</div>
 											</td>
 										</tr>
@@ -117,10 +118,10 @@
 											class="btn btn-success btn-sm" aria-describedby="bulkHelp" disabled="disabled">
 											<i class="fas fa-users fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.all.save}"></span>
 										</button>
-										<button type="button" th:onclick="'submitForm(\'/admin/bulk_supplier_action?deleteSuppliers=\')'" id="btnDelete" value="Delete"
+										<!-- <button type="button" th:onclick="'submitForm(\'/admin/bulk_supplier_action?deleteSuppliers=\')'" id="btnDelete" value="Delete"
 											class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled">
 											<i class="fas fa-user-times fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.all.delete}"></span>
-										</button>
+										</button> -->
 										<a href="add_supplier.html" th:href="@{/admin/add_supplier}" class="btn btn-success btn-sm"><i class="fas fa-user-plus fa-2x mx-2"></i><span
 											th:text="#{commerce.screen.supplier.btn.new.supplier}">Add New Supplier</span></a>
 									</div>

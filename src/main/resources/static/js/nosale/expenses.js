@@ -74,9 +74,9 @@ $(function() {
 	});
 
 	$('#btnSaveExpense').click(function() {
-		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		if (validateExpenseDetails()) {
+			$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 			readExpenseDetails();
 			expense.saveExpense();
 		} 

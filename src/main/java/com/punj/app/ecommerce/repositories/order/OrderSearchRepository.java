@@ -54,7 +54,7 @@ public class OrderSearchRepository {
 
 		// a very basic query by keywords
 		org.apache.lucene.search.Query query = queryBuilder.keyword()
-				.onFields("orderId", "comments", "createdBy").matching(text).createQuery();
+				.onFields("orderId", "comments", "createdBy", "supplier.supplierId", "supplier.name", "location.locationId","location.name", "orderItems.itemId", "orderItems.itemDesc").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
 		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Order.class);
