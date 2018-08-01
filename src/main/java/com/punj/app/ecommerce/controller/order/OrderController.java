@@ -105,7 +105,6 @@ public class OrderController {
 		} catch (Exception e) {
 			logger.error("An unknown error has occurred while creating empty purchase order.", e);
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
-			return ViewPathConstants.ADD_ORDER_PAGE;
 		}
 
 		return ViewPathConstants.ADD_ORDER_PAGE;

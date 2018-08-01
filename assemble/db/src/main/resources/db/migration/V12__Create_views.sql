@@ -271,10 +271,19 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
         GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_basket
         GROUP BY location_id , business_date) t1,
         (SELECT 
-            location_id, business_date, COUNT(*) AS customer_count
+            `txn`.`location_id` AS `location_id`,
+                `txn`.`business_date` AS `business_date`,
+                count(txn_cust.customer_id) AS `customer_count`
         FROM
-            commercedb.txn_customer
-        GROUP BY location_id , business_date) t2,
+            commercedb.txn_master `txn` LEFT JOIN commercedb.txn_customer txn_cust
+            on (txn.location_id=txn_cust.location_id
+            and txn.register=txn_cust.register
+            and txn.business_date=txn_cust.business_date
+            and txn.txn_no=txn_cust.txn_no)
+            where `txn`.`txn_type` IN ('SALE' , 'RETURN')
+                AND (`txn`.`status` = 'COMPLETED')
+                
+        GROUP BY `txn`.`location_id` , `txn`.`business_date`) t2,
         (SELECT 
             location_id,
                 business_date,
@@ -302,36 +311,38 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
         GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_discount_percent
         GROUP BY location_id , business_date) t3,
         (SELECT 
-            location_id,
-                business_date,
-                ROUND(SUM(total_discount), 2) AS discount_amount
+            `txn_discount_percent`.`location_id` AS `location_id`,
+                `txn_discount_percent`.`business_date` AS `business_date`,
+                ROUND(SUM(`txn_discount_percent`.`total_discount`), 2) AS `discount_amount`
         FROM
             (SELECT 
-            txn_itm.location_id,
-                txn_itm.business_date,
-                txn_itm.register,
-                txn_itm.txn_no,
-                SUM(discount_amount) AS total_discount
+            `txn_itm`.`location_id` AS `location_id`,
+                `txn_itm`.`business_date` AS `business_date`,
+                `txn_itm`.`register` AS `register`,
+                `txn_itm`.`txn_no` AS `txn_no`,
+                SUM(`txn_itm`.`discount_amount`) AS `total_discount`
         FROM
-            commercedb.txn_master txn, commercedb.txn_li_item txn_itm
+            (`commercedb`.`txn_master` `txn`
+        JOIN `commercedb`.`txn_li_item` `txn_itm`)
         WHERE
-            txn.txn_type IN ('SALE' , 'RETURN')
-                AND status IN ('COMPLETED')
-                AND txn.business_date = txn_itm.business_date
-                AND txn.register = txn_itm.register
-                AND txn.location_id = txn_itm.location_id
-                AND txn.txn_no = txn_itm.txn_no
-                AND txn_itm.discount_percentage IS NULL
-                AND (`txn_itm`.`discount_amount` IS NOT NULL OR IFNULL(`txn_itm`.`discount_amount`,-1) = -1)
-        GROUP BY txn_itm.location_id , txn_itm.business_date , txn_itm.register , txn_itm.txn_no) txn_discount_percent
-        GROUP BY location_id , business_date) AS t4
+            (`txn`.`txn_type` IN ('SALE' , 'RETURN'))
+                AND (`txn`.`status` = 'COMPLETED')
+                AND (`txn`.`business_date` = `txn_itm`.`business_date`)
+                AND (`txn`.`register` = `txn_itm`.`register`)
+                AND (`txn`.`location_id` = `txn_itm`.`location_id`)
+                AND (`txn`.`txn_no` = `txn_itm`.`txn_no`)              
+                AND (ISNULL(`txn_itm`.`discount_percentage`) OR `txn_itm`.`discount_percentage`=0)
+                AND ((`txn_itm`.`discount_amount` IS NOT NULL)
+                OR (IFNULL(`txn_itm`.`discount_amount`, -(1)) = -(1)))
+        GROUP BY `txn_itm`.`location_id` , `txn_itm`.`business_date` , `txn_itm`.`register` , `txn_itm`.`txn_no`) `txn_discount_percent`
+        GROUP BY `txn_discount_percent`.`location_id` , `txn_discount_percent`.`business_date`) AS t4
     WHERE
         t1.location_id = t2.location_id
             AND t1.business_date = t2.business_date
             AND t3.location_id = t2.location_id
             AND t3.business_date = t2.business_date
             AND t3.location_id = t4.location_id
-            AND t3.business_date = t4.business_date;            
+            AND t3.business_date = t4.business_date;                
             
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

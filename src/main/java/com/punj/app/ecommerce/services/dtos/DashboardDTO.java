@@ -6,9 +6,9 @@ package com.punj.app.ecommerce.services.dtos;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.punj.app.ecommerce.domains.reports.dashboard.DashboardReport;
+import com.punj.app.ecommerce.models.common.LocationBean;
 
 /**
  * @author admin
@@ -22,6 +22,9 @@ public class DashboardDTO implements Serializable {
 	private Map<String, DashboardReport> historicalReports;
 	private Map<String, Object[]> dashboardData;
 	private List<String> dates;
+	private List<LocationBean> locations;
+	private Integer defaultLocation;
+	private Integer LocationId;
 
 	/**
 	 * @return the currentDayReport
@@ -81,6 +84,50 @@ public class DashboardDTO implements Serializable {
 	 */
 	public void setDashboardData(Map<String, Object[]> dashboardData) {
 		this.dashboardData = dashboardData;
+	}
+
+	/**
+	 * @return the locations
+	 */
+	public List<LocationBean> getLocations() {
+		return locations;
+	}
+
+	/**
+	 * @param locations
+	 *            the locations to set
+	 */
+	public void setLocations(List<LocationBean> locations) {
+		this.locations = locations;
+	}
+
+	/**
+	 * @return the defaultLocation
+	 */
+	public Integer getDefaultLocation() {
+		return defaultLocation;
+	}
+
+	/**
+	 * @param defaultLocation
+	 *            the defaultLocation to set
+	 */
+	public void setDefaultLocation(Integer defaultLocation) {
+		this.defaultLocation = defaultLocation;
+	}
+
+	/**
+	 * @return the locationId
+	 */
+	public Integer getLocationId() {
+		return LocationId;
+	}
+
+	/**
+	 * @param locationId the locationId to set
+	 */
+	public void setLocationId(Integer locationId) {
+		LocationId = locationId;
 	}
 
 }

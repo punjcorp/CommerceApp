@@ -22,7 +22,7 @@ import org.hibernate.search.annotations.Indexed;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1764456297095150169L;
-	
+
 	@Id
 	@DocumentId
 	private String username;
@@ -39,6 +39,8 @@ public class User implements Serializable {
 	private String email;
 	@Column(name = "login_count")
 	private Integer loginCount = 0;
+	@Column(name = "default_location")
+	private Integer defaultLocationId;
 	@Field
 	private String status;
 	@Lob
@@ -377,6 +379,21 @@ public class User implements Serializable {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the defaultLocationId
+	 */
+	public Integer getDefaultLocationId() {
+		return defaultLocationId;
+	}
+
+	/**
+	 * @param defaultLocationId
+	 *            the defaultLocationId to set
+	 */
+	public void setDefaultLocationId(Integer defaultLocationId) {
+		this.defaultLocationId = defaultLocationId;
 	}
 
 }

@@ -347,10 +347,10 @@ INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `crea
 -- -----------------------------------------------------
 -- Seed data for user
 -- -----------------------------------------------------
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
+values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 7997, 'A', 'admin', '2018-01-16 20:19:09');
 insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
-values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 'A', 'admin', '2018-01-16 20:19:09');
-insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
-values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 'A', 'admin', '2018-01-16 20:19:09');
+values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 27, 'A', 'admin', '2018-01-16 20:19:09');
 
 
 -- -----------------------------------------------------

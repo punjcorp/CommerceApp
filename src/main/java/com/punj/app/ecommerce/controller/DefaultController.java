@@ -31,11 +31,13 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
+import com.punj.app.ecommerce.domains.user.UserRole;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.services.ItemService;
+import com.punj.app.ecommerce.services.dtos.UserPrincipal;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -76,12 +78,23 @@ public class DefaultController {
 	}
 
 	@GetMapping(ViewPathConstants.BASE_URL)
-	public String redirectBaseUrl(Model model) {
-		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.CASHIER_HOME_URL;
+	public String redirectBaseUrl(Model model, Authentication authentication) {
+		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+		List<UserRole> userRoles = userDetails.getUserRoles();
+		Boolean isAdmin=Boolean.FALSE;
+		
+		for(UserRole role:userRoles) {
+			if(role.getUserRoleId().getRole().getName().equals(MVCConstants.ROLE_ADMIN)) {
+				isAdmin=Boolean.TRUE;
+				break;
+			}
+		}
+		if (isAdmin)
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.ADMIN_HOME_URL;
+		else
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.CASHIER_HOME_URL;
 	}
 
-	
-	
 	@GetMapping(ViewPathConstants.CASHIER_HOME_URL)
 	public String login(Model model) {
 		logger.info("=====================================");
@@ -91,8 +104,7 @@ public class DefaultController {
 		return ViewPathConstants.CASHIER_DASHBOARD_PAGE;
 
 	}
-	
-	
+
 	@GetMapping(ViewPathConstants.ECOMMERCE_HOME_URL)
 	public String login(@ModelAttribute SearchBean searchBean, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model,
 			Principal principal) {

@@ -23,6 +23,10 @@ public final class MVCConstants {
 	public static final String YES="Y";
 	public static final String NO="N";
 	
+	public static final String ROLE_ADMIN="ADMIN";
+	public static final String ROLE_CASHIER="CASHIER";
+	
+	
 	
 	public static final String WIDGET_REVENUE="Revenue";
 	public static final String WIDGET_SALES_COUNT="Sales Count";

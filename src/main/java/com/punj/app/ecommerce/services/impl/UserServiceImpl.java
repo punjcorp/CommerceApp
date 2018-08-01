@@ -14,8 +14,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -39,6 +37,8 @@ import com.punj.app.ecommerce.repositories.user.UserRoleRepository;
 import com.punj.app.ecommerce.repositories.user.UserSearchRepository;
 import com.punj.app.ecommerce.services.UserService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.converter.UserConverter;
+import com.punj.app.ecommerce.services.dtos.UserPrincipal;
 import com.punj.app.ecommerce.utils.Pager;
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -326,35 +326,13 @@ public class UserServiceImpl implements UserService {
 	public UserDetails loadUserByUsername(String username) {
 		User user = this.getUserDetails(username);
 		if (user != null) {
-			String password = null;
-			List<Password> passwords = user.getPasswords();
-			if (passwords != null && !passwords.isEmpty()) {
-				for (Password passwd : passwords) {
-					if (passwd.getStatus().equals(ServiceConstants.STATUS_APPROVED)) {
-						password = passwd.getPassword();
-						break;
-					}
-				}
 
-				List<UserRole> userRoles = user.getUserRoles();
+			UserPrincipal userDetails = UserConverter.convertUser(user);
+			if (userDetails != null) {
+				return userDetails;
 
-				if (userRoles != null && !userRoles.isEmpty()) {
-
-					List<GrantedAuthority> authorities = new ArrayList<>();
-					GrantedAuthority authority = null;
-					for (UserRole userRole : userRoles) {
-						authority = new SimpleGrantedAuthority(userRole.getUserRoleId().getRole().getName());
-						authorities.add(authority);
-					}
-
-					return new org.springframework.security.core.userdetails.User(username, password, authorities);
-				} else {
-					logger.info("The user roles were not retrieved.");
-					throw new UsernameNotFoundException(username);
-				}
-
-			} else {
-				logger.info("The user passwords were not retrieved.");
+			} else{
+				logger.info("The user password or user roles were not retrieved.");
 				throw new UsernameNotFoundException(username);
 			}
 
@@ -363,6 +341,28 @@ public class UserServiceImpl implements UserService {
 			throw new UsernameNotFoundException(username);
 		}
 	}
+
+	/*
+	 * @Override
+	 * 
+	 * @Transactional public UserDetails loadUserByUsername(String username) { User user = this.getUserDetails(username); if (user != null) { String
+	 * password = null; List<Password> passwords = user.getPasswords(); if (passwords != null && !passwords.isEmpty()) { for (Password passwd : passwords)
+	 * { if (passwd.getStatus().equals(ServiceConstants.STATUS_APPROVED)) { password = passwd.getPassword(); break; } }
+	 * 
+	 * List<UserRole> userRoles = user.getUserRoles();
+	 * 
+	 * if (userRoles != null && !userRoles.isEmpty()) {
+	 * 
+	 * List<GrantedAuthority> authorities = new ArrayList<>(); GrantedAuthority authority = null; for (UserRole userRole : userRoles) { authority = new
+	 * SimpleGrantedAuthority(userRole.getUserRoleId().getRole().getName()); authorities.add(authority); }
+	 * 
+	 * return new org.springframework.security.core.userdetails.User(username, password, authorities); } else {
+	 * logger.info("The user roles were not retrieved."); throw new UsernameNotFoundException(username); }
+	 * 
+	 * } else { logger.info("The user passwords were not retrieved."); throw new UsernameNotFoundException(username); }
+	 * 
+	 * } else { logger.info("The user basic details were not retrieved."); throw new UsernameNotFoundException(username); } }
+	 */
 
 	@Override
 	public List<Role> getAllUserRoles() {
@@ -482,8 +482,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updateUserDetails(User user, String modifiedBy) {
-		User retrievedUser=this.userRepository.findOne(user.getUsername());
-		if(retrievedUser!=null) {
+		User retrievedUser = this.userRepository.findOne(user.getUsername());
+		if (retrievedUser != null) {
 			retrievedUser.setFirstname(retrievedUser.getFirstname());
 			retrievedUser.setLastname(retrievedUser.getLastname());
 			retrievedUser.setEmail(retrievedUser.getEmail());
@@ -491,13 +491,13 @@ public class UserServiceImpl implements UserService {
 			retrievedUser.setPhone2(retrievedUser.getPhone2());
 			retrievedUser.setModifiedBy(modifiedBy);
 			retrievedUser.setModifiedDate(LocalDateTime.now());
-			
-			retrievedUser=this.userRepository.save(retrievedUser);
-			
+
+			retrievedUser = this.userRepository.save(retrievedUser);
+
 			logger.info("The user updation is successful");
-		}else {
+		} else {
 			logger.error("The {} user was not found in database, hence cannot be updated", user.getUsername());
-			
+
 		}
 		return retrievedUser;
 	}

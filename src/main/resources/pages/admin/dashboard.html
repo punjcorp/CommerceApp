@@ -27,13 +27,34 @@
 							</h1>
 						</div>
 						<div class="card-body">
+						<form class="form" th:action="@{/admin/home}" th:object="${reports}" method="post">
+							<div class="row">
+									<div class="col-8"></div>
+									<div class="col-3">
+										<div class="form-group text-left">
+											<label for="locationId"><small><span th:text="#{commerce.screen.common.location}">Location </span></small></label>
+											<div class="input-group">
+												<select th:field="*{locationId}" class="form-control input-sm" onChange="this.form.submit()">
+													<option th:each="location: ${reports.locations}" th:value="${location.locationId}" th:text="${location.locationId} + ' - ' +${location.name}"
+														th:selected="${reports.defaultLocation == location.locationId}"></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-1"></div>
+								
+							</div>
+							</form>
 							<div class="card-text">
-								<div class="album p-4 m-4" th:if="${reports!=null}">
+
+								<div class="album p-4 m-4" th:if="${reports!=null and reports.currentDayReport!=null}">
 									<div class="card card-shadow">
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">REVENUE</h6>
-												<h2 class="dashboard-heading"><span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.revenueAmount}"></span></h2>
+												<h2 class="dashboard-heading">
+													<span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.revenueAmount}"></span>
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -44,7 +65,9 @@
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">Sales Count</h6>
-												<h2 class="dashboard-heading"><span th:text="${' '+reports.currentDayReport.txnCount}"></span></h2>
+												<h2 class="dashboard-heading">
+													<span th:text="${' '+reports.currentDayReport.txnCount}"></span>
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -55,7 +78,9 @@
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">Customer Count</h6>
-												<h2 class="dashboard-heading"><span th:text="${' '+reports.currentDayReport.customerCount}"></span></h2>
+												<h2 class="dashboard-heading">
+													<span th:text="${' '+reports.currentDayReport.customerCount}"></span>
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -77,7 +102,9 @@
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">Discount</h6>
-												<h2 class="dashboard-heading"><span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.discountAmount}"></span></h2>
+												<h2 class="dashboard-heading">
+													<span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.discountAmount}"></span>
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -88,7 +115,9 @@
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">Discount %</h6>
-												<h2 class="dashboard-heading"><span th:text="${reports.currentDayReport.discountPercentage}"></span>%</h2>
+												<h2 class="dashboard-heading">
+													<span th:text="${reports.currentDayReport.discountPercentage}"></span>%
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -99,7 +128,9 @@
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">Basket Size</h6>
-												<h2 class="dashboard-heading"><span th:text="${reports.currentDayReport.basketSize}"></span></h2>
+												<h2 class="dashboard-heading">
+													<span th:text="${reports.currentDayReport.basketSize}"></span>
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -110,7 +141,9 @@
 										<div class="card-header card-shadow">
 											<div class="card-text">
 												<h6 class="text-muted text-uppercase">Basket Value</h6>
-												<h2 class="dashboard-heading"><span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.basketAmount}"></span></h2>
+												<h2 class="dashboard-heading">
+													<span th:text="#{commerce.screen.common.currency.inr}"></span><span th:text="${' '+reports.currentDayReport.basketAmount}"></span>
+												</h2>
 											</div>
 										</div>
 										<div class="card-body">
@@ -127,17 +160,18 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
-	
-<script th:inline="javascript">
+
+	<script th:inline="javascript">
 		/*<![CDATA[*/
 
 		var dates= /*[[${reports.dates}]]*/;
+		var defaultStore= /*[[${reports.defaultLocation}]]*/;
 		
 		var dashboardData= /*[[${reports.dashboardData}]]*/;
 		
 		/*]]>*/
-	</script>	
-	
-	
+	</script>
+
+
 </body>
 </html>
