@@ -79,16 +79,20 @@ public class DefaultController {
 
 	@GetMapping(ViewPathConstants.BASE_URL)
 	public String redirectBaseUrl(Model model, Authentication authentication) {
-		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-		List<UserRole> userRoles = userDetails.getUserRoles();
+		UserPrincipal userDetails = null;
 		Boolean isAdmin=Boolean.FALSE;
-		
-		for(UserRole role:userRoles) {
-			if(role.getUserRoleId().getRole().getName().equals(MVCConstants.ROLE_ADMIN)) {
-				isAdmin=Boolean.TRUE;
-				break;
+		if(authentication!=null) {
+			userDetails = (UserPrincipal) authentication.getPrincipal();
+			List<UserRole> userRoles = userDetails.getUserRoles();
+
+			for(UserRole role:userRoles) {
+				if(role.getUserRoleId().getRole().getName().equals(MVCConstants.ROLE_ADMIN)) {
+					isAdmin=Boolean.TRUE;
+					break;
+				}
 			}
 		}
+		
 		if (isAdmin)
 			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.ADMIN_HOME_URL;
 		else
@@ -96,12 +100,33 @@ public class DefaultController {
 	}
 
 	@GetMapping(ViewPathConstants.CASHIER_HOME_URL)
-	public String login(Model model) {
-		logger.info("=====================================");
-		logger.info("WELCOME TO THE CASHIER DASHBOARD PAGE");
-		logger.info("=====================================");
+	public String login(Model model, Authentication authentication) {
+		
 
-		return ViewPathConstants.CASHIER_DASHBOARD_PAGE;
+		UserPrincipal userDetails = null;
+		Boolean isAdmin=Boolean.FALSE;
+		if(authentication!=null) {
+			userDetails = (UserPrincipal) authentication.getPrincipal();
+			List<UserRole> userRoles = userDetails.getUserRoles();
+
+			for(UserRole role:userRoles) {
+				if(role.getUserRoleId().getRole().getName().equals(MVCConstants.ROLE_ADMIN)) {
+					isAdmin=Boolean.TRUE;
+					break;
+				}
+			}
+		}
+		
+		if (isAdmin)
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.ADMIN_HOME_URL;
+		else {
+			logger.info("=====================================");
+			logger.info("WELCOME TO THE CASHIER DASHBOARD PAGE");
+			logger.info("=====================================");
+			return ViewPathConstants.CASHIER_DASHBOARD_PAGE;
+		}
+			
+	
 
 	}
 

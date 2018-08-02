@@ -28,6 +28,7 @@ public class AccountDTO {
 	private Integer txnNo;
 
 	private Integer accountId;
+	private Boolean searchAccount;
 	private String entityType;
 	private BigInteger entityId;
 
@@ -442,6 +443,20 @@ public class AccountDTO {
 	 */
 	public void setRegisterName(String registerName) {
 		this.registerName = registerName;
+	}
+
+	/**
+	 * @return the searchAccount
+	 */
+	public Boolean getSearchAccount() {
+		return searchAccount;
+	}
+
+	/**
+	 * @param searchAccount the searchAccount to set
+	 */
+	public void setSearchAccount(Boolean searchAccount) {
+		this.searchAccount = searchAccount;
 	}
 
 }

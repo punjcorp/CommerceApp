@@ -295,6 +295,7 @@ public final class MVCConstants {
 	public static final String UOM_LIST_BEAN="UOMs";
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
+	public static final String ACCOUNT_DTO="accountDTO";
 	
 	public static final String ADD_SUPPLIER_ADDRESS_PARAM= "addSupplierAddress";
 	public static final String REMOVE_SUPPLIER_ADDRESS_PARAM= "removeSupplierAddress";

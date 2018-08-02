@@ -13,6 +13,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -31,9 +32,9 @@ public class SupplierBean {
 	@Size(min = 7, max = 10, message = "{commerce.error.int.size}")
 	private String phone1;
 	private String phone2;
-	
+
 	private String gstNo;
-	
+
 	@NotNull
 	@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
 	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
@@ -49,11 +50,13 @@ public class SupplierBean {
 
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer primaryAddressIndex;
-	
+
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
+
+	private List<AccountHeadBean> supplierAccounts;
 
 	public SupplierBean() {
 		addresses = new ArrayList<AddressBean>();
@@ -267,7 +270,8 @@ public class SupplierBean {
 	}
 
 	/**
-	 * @param primaryAddressIndex the primaryAddressIndex to set
+	 * @param primaryAddressIndex
+	 *            the primaryAddressIndex to set
 	 */
 	public void setPrimaryAddressIndex(Integer primaryAddressIndex) {
 		this.primaryAddressIndex = primaryAddressIndex;
@@ -281,10 +285,26 @@ public class SupplierBean {
 	}
 
 	/**
-	 * @param gstNo the gstNo to set
+	 * @param gstNo
+	 *            the gstNo to set
 	 */
 	public void setGstNo(String gstNo) {
 		this.gstNo = gstNo;
 	}
+
+	/**
+	 * @return the supplierAccounts
+	 */
+	public List<AccountHeadBean> getSupplierAccounts() {
+		return supplierAccounts;
+	}
+
+	/**
+	 * @param supplierAccounts the supplierAccounts to set
+	 */
+	public void setSupplierAccounts(List<AccountHeadBean> supplierAccounts) {
+		this.supplierAccounts = supplierAccounts;
+	}
+
 
 }

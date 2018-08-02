@@ -144,14 +144,16 @@ public class ReportingServiceImpl implements ReportingService {
 			Map<String, DashboardReport> historicalReports = new HashMap<>();
 			DashboardReport dashboardReport = null;
 			List<String> bDates=new ArrayList<>();
+			String tmpDateStr=null;
 			while (tmpDate.isBefore(businessDate) || tmpDate.isEqual(businessDate)) {
 				dashboardReport = weeklyReports.get(tmpDate);
+				tmpDateStr=tmpDate.toLocalDate().toString();
 				if (dashboardReport != null)
-					historicalReports.put(tmpDate.toString(), dashboardReport);
+					historicalReports.put(tmpDateStr, dashboardReport);
 				else
-					historicalReports.put(tmpDate.toString(), ReportingConverter.createBlankDashboardReport(locationId, businessDate));
+					historicalReports.put(tmpDateStr, ReportingConverter.createBlankDashboardReport(locationId, businessDate));
 
-				bDates.add(tmpDate.toString());
+				bDates.add(tmpDateStr);
 
 				tmpDate = tmpDate.plusDays(1);
 
@@ -161,7 +163,7 @@ public class ReportingServiceImpl implements ReportingService {
 
 			dashboardDTO.setDates(bDates);
 			dashboardDTO.setHistoricalReports(historicalReports);
-			dashboardDTO.setCurrentDayReport(historicalReports.get(businessDate.toString()));
+			dashboardDTO.setCurrentDayReport(historicalReports.get(businessDate.toLocalDate().toString()));
 			logger.info("The location {} totals for the date {} has been retrieved successfully", locationId, businessDate);
 		} else {
 			logger.info("There was no record found for the searched location {} and business date {}", locationId, businessDate);

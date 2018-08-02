@@ -7,7 +7,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,11 +126,13 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		journalDetails = this.accountJournalRepository.save(journalDetails);
 		if (journalDetails != null) {
 			logger.info("The payment journal details has been successfully saved.");
-			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)){
+			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE)
+					|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)) {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
-			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)
+					|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
 			}
 
@@ -183,9 +188,9 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		accountHead.setDueAmount(accountHead.getDueAmount().add(journalDetails.getAmount()));
 		accountHead.setModifiedBy(username);
 		accountHead.setModifiedDate(LocalDateTime.now());
-		
-		accountHead=this.accountHeadRepository.save(accountHead);
-		if(accountHead!=null)
+
+		accountHead = this.accountHeadRepository.save(accountHead);
+		if (accountHead != null)
 			logger.info("The order amount for the supplier {} has been added to the account successfully", journalDetails.getAccountId());
 		else
 			logger.info("There was some issue while updating order details in Supplier's account");
@@ -195,8 +200,8 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 
 	@Override
 	public AccountHead retrievePaymentAccount(Integer accountId) {
-		AccountHead accountHead=this.accountHeadRepository.findOne(accountId);
-		if(accountHead!=null)
+		AccountHead accountHead = this.accountHeadRepository.findOne(accountId);
+		if (accountHead != null)
 			logger.info("The account head details has been retrieved successfully");
 		else
 			logger.info("There was some issue while retrieving Supplier's account");
@@ -206,12 +211,40 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 	@Override
 	public AccountHead setupPaymentAccount(AccountHead accountHead) {
 		accountHead = this.accountHeadRepository.save(accountHead);
-		if (accountHead != null ) {
+		if (accountHead != null) {
 			logger.info("The account details has been setup successfully");
 		} else {
 			logger.info("There was some issue with account setup");
 		}
 		return accountHead;
+	}
+
+	@Override
+	public Map<BigInteger, List<AccountHead>> retrieveAccounts(Set<BigInteger> entityIds, String entityType) {
+
+		Map<BigInteger, List<AccountHead>> accounts = null;
+		List<AccountHead> accountList = null;
+		BigInteger entityId = null;
+
+		List<AccountHead> accountHeadList = this.accountHeadRepository.getAccounts(entityIds, entityType);
+		if (accountHeadList != null && !accountHeadList.isEmpty()) {
+			accounts = new HashMap<>();
+			for (AccountHead accountHead : accountHeadList) {
+				entityId = accountHead.getEntityId();
+				accountList = accounts.get(entityId);
+				if (accountList == null || accountList.isEmpty())
+					accountList = new ArrayList<>();
+
+				accountList.add(accountHead);
+				accounts.put(entityId, accountList);
+
+			}
+			logger.info("The accounts for provided entities has been successfully retrieved");
+		} else {
+			logger.info("There were no accounts found for the provided entities");
+		}
+
+		return accounts;
 	}
 
 }

@@ -10,10 +10,12 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,21 +52,17 @@ import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.SupplierTransformer;
-import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.supplier.SupplierDTO;
 import com.punj.app.ecommerce.domains.tender.Tender;
-import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
-import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.financials.AJReportingBean;
 import com.punj.app.ecommerce.models.financials.AccountDTO;
 import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.models.financials.AccountJournalBean;
-import com.punj.app.ecommerce.models.nosale.ExpenseBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.PaymentAccountService;
@@ -213,28 +211,29 @@ public class SupplierPaymentController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			AccountJournal accountJournal = SupplierTransformer.transformAccountJournal(journalBean, userDetails.getUsername());
 			Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-			//The account Id is actually supplier id, this field is used to avoid use of another object
-			AccountHead accountHead=this.paymentService.retrievePaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER, new BigInteger(journalBean.getAccountId().toString()), openLocationId);
-			if(accountHead!=null) {
+			// The account Id is actually supplier id, this field is used to avoid use of another object
+			AccountHead accountHead = this.paymentService.retrievePaymentAccount(ServiceConstants.ACCOUNT_TYPE_SUPPLIER,
+					new BigInteger(journalBean.getAccountId().toString()), openLocationId);
+			if (accountHead != null) {
 				accountJournal.setAccountId(accountHead.getAccountId());
-				
+
 				accountJournal = this.paymentService.savePayment(accountJournal, userDetails.getUsername());
 				if (accountJournal != null) {
-					
-					Map<Integer,Tender> tenderMap=this.commonService.retrieveAllTendersAsMap(openLocationId);
-					
-					journalBean=SupplierTransformer.transformAccountJournalBean(accountJournal, userDetails.getUsername(), tenderMap);				
+
+					Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(openLocationId);
+
+					journalBean = SupplierTransformer.transformAccountJournalBean(accountJournal, userDetails.getUsername(), tenderMap);
 					logger.info("The payment details for supplier has been saved successfully");
 
 					this.preparePaymentReceiptBeans(journalBean, openLocationId, session, locale);
 				} else {
 					logger.info("The payment details for supplier were not saved due to some issue");
 				}
-				
+
 			}
 		} catch (Exception e) {
 			logger.info("The payment details for supplier were not saved due to some issue", e);
-			journalBean=null;
+			journalBean = null;
 		}
 		return journalBean;
 	}
@@ -257,8 +256,18 @@ public class SupplierPaymentController {
 
 			SupplierDTO supplierList = this.supplierService.searchSupplier(accountDTO.getEntityType(), pager);
 			List<Supplier> suppliersList = supplierList.getSuppliers();
+			Map<BigInteger, List<AccountHead>> accounts=null;
+			
+			if (accountDTO.getSearchAccount() != null && accountDTO.getSearchAccount() && suppliersList != null && !suppliersList.isEmpty()) {
+				Set<BigInteger> supplierEntityIds = new HashSet<>();
+				for (Supplier supplier : suppliersList) {
+					supplierEntityIds.add(new BigInteger(supplier.getSupplierId().toString()));
+				}
 
-			suppliers = SupplierTransformer.transformSuppliers(suppliersList);
+				accounts=this.paymentService.retrieveAccounts(supplierEntityIds, MVCConstants.SUPPLIER);
+			}
+
+			suppliers = SupplierTransformer.transformSuppliers(suppliersList, accounts);
 
 			if (suppliers != null && !suppliers.isEmpty()) {
 				logger.info("The suppliers were retrieved successfully based on the criteria");

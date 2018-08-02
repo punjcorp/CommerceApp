@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.controller.common.transformer;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class SupplierTransformer {
 		supplier.setPhone1(supplierBean.getPhone1());
 		supplier.setPhone2(supplierBean.getPhone2());
 		supplier.setGstNo(supplierBean.getGstNo());
-		
+
 		supplier.setCreatedBy(supplierBean.getCreatedBy());
 		supplier.setCreatedDate(supplierBean.getCreatedDate());
 
@@ -89,6 +90,37 @@ public class SupplierTransformer {
 		supplier.setAddresses(supplierAddressList);
 		logger.info("The supplier details has been updated in domain object now");
 		return supplier;
+	}
+
+	public static List<SupplierBean> transformSuppliers(List<Supplier> supplierList, Map<BigInteger, List<AccountHead>> supplierAccounts) {
+
+		List<SupplierBean> supplierBeanList = new ArrayList<>(supplierList.size());
+		SupplierBean supplierBean;
+		Boolean isSupplierAccountExisting=Boolean.FALSE;
+		BigInteger supplierId=null;
+		String supplierIdStr=null;
+		List<AccountHeadBean> supplierAccountBeans=null;
+		List<AccountHead> supplierAccountList=null;
+		AccountHead supplierAccount=null;
+		AccountHeadBean supplierAccountBean=null;
+		if(supplierAccounts!=null && !supplierAccounts.isEmpty()) {
+			isSupplierAccountExisting=Boolean.TRUE;
+		}
+		for (Supplier supplier : supplierList) {
+			supplierBean = SupplierTransformer.transformSupplier(supplier);
+			if(isSupplierAccountExisting) {
+				supplierIdStr=supplier.getSupplierId().toString();
+				supplierId=new BigInteger(supplierIdStr);
+				supplierAccountList=supplierAccounts.get(supplierId);
+				if(supplierAccountList!=null && !supplierAccountList.isEmpty()) {
+					supplierAccountBeans=SupplierTransformer.transformAccountHeads(supplierAccountList, supplier.getName());
+					supplierBean.setSupplierAccounts(supplierAccountBeans);
+				}
+			}
+			supplierBeanList.add(supplierBean);
+		}
+		logger.info("The transformed supplier list details has been supplier bean list");
+		return supplierBeanList;
 	}
 
 	public static List<SupplierBean> transformSuppliers(List<Supplier> supplierList) {
@@ -137,9 +169,9 @@ public class SupplierTransformer {
 		List<JournalTenderBean> journalTenderBeans = new ArrayList<>();
 		JournalTenderBean journalTenderBean = null;
 		Tender tender = null;
-		
-		int counter=1;
-		
+
+		int counter = 1;
+
 		for (JournalTender journalTender : tenders) {
 			journalTenderBean = new JournalTenderBean();
 			tender = tenderMap.get(journalTender.getJournalTenderId().getTenderId());
@@ -149,7 +181,7 @@ public class SupplierTransformer {
 			}
 			journalTenderBean.setSeqNo(counter);
 			counter++;
-			
+
 			journalTenderBean.setAccountNo(journalTender.getAccountNo());
 			journalTenderBean.setTenderAmount(journalTender.getAmount());
 			journalTenderBean.setBankBranch(journalTender.getBankBranch());
@@ -184,6 +216,18 @@ public class SupplierTransformer {
 		return accountJournal;
 	}
 
+	public static List<AccountHeadBean> transformAccountHeads(List<AccountHead> accountHeads, String entityName) {
+		List<AccountHeadBean> accountHeadBeans=new ArrayList<>();
+		AccountHeadBean accountHeadBean=null;
+		for(AccountHead accountHead: accountHeads) {
+			accountHeadBean=SupplierTransformer.transformAccountHead(accountHead, entityName);
+			accountHeadBeans.add(accountHeadBean);
+		}
+		logger.info("The account head detail list has been transformed successfully");
+		
+		return accountHeadBeans;
+	}
+	
 	public static AccountHeadBean transformAccountHead(AccountHead accountHead, String entityName) {
 		AccountHeadBean accountHeadBean = new AccountHeadBean();
 		accountHeadBean.setAccountId(accountHead.getAccountId());
