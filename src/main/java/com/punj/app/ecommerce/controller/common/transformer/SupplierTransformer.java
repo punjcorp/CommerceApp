@@ -146,6 +146,20 @@ public class SupplierTransformer {
 		return accountDTO;
 	}
 
+	public static List<AccountJournalBean> transformAccountJournals(List<AccountJournal> accountJournals, Map<Integer, Tender> tenderMap) {
+		
+		List<AccountJournalBean> accountJournalBeans=new ArrayList<>(accountJournals.size());
+		AccountJournalBean accountJournalBean=null;
+		
+		for(AccountJournal accountJournal:accountJournals) {
+			accountJournalBean=SupplierTransformer.transformAccountJournalBean(accountJournal, null, tenderMap);
+			accountJournalBeans.add(accountJournalBean);
+		}
+		logger.info("The account journal details list has been transformed successfully");
+		return accountJournalBeans;
+		
+	}
+	
 	public static AccountJournalBean transformAccountJournalBean(AccountJournal accountJournal, String username, Map<Integer, Tender> tenderMap) {
 		AccountJournalBean journalBean = new AccountJournalBean();
 		journalBean.setAccountId(accountJournal.getAccountId());

@@ -247,4 +247,16 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		return accounts;
 	}
 
+	@Override
+	public List<AccountJournal> retrievePaymentAccountJournals(Set<Integer> accountIds) {
+		 List<AccountJournal> accountJournals= this.accountJournalRepository.getAccountJournals(accountIds);
+		 if (accountJournals != null && !accountJournals.isEmpty()) {
+			 
+			 logger.info("There are some transactions existing in provided accounts which has been retrieved successfully");
+		 }else {
+			 logger.info("There were no transactions found for the provided accounts");
+		 }
+		return accountJournals;
+	}
+
 }

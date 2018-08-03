@@ -25,6 +25,8 @@ public interface PaymentAccountService {
 
 	public List<AccountHead> setupPaymentAccount(String accountType, BigInteger accountId, String username);
 
+	public List<AccountJournal> retrievePaymentAccountJournals(Set<Integer> accountIds);
+
 	public AccountHead setupPaymentAccount(AccountHead accountHead);
 
 	public AccountJournal savePayment(AccountJournal journalDetails, String username);

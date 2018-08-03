@@ -17,9 +17,29 @@ $(function() {
 			$('#supplierMsg').addClass('invalid-feedback');
 			$('#supplierMsg').html('<h6>Please enter a valid Supplier!</h6>');
 			$('#supplierMsg').show();
+
+			$('#supplierDetails').addClass('d-none');
+			$('#supplierAccountDetails').addClass('d-none');
+
 		}
 	});
 
+	var journalTable=$('#paymentDetails').DataTable( {
+        keys: true,
+        responsive : true,
+        colReorder: true,
+        select: true,
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+	
+	journalTable.buttons().container().appendTo( $('#tableBtns') );
+	$('#tableBtns').addClass('text-right');
+	
 	$("#searchBean\\.searchText")
 			.autocomplete(
 					{
@@ -46,12 +66,12 @@ $(function() {
 													'd-none');
 											if (!suppliers.length) {
 												$('#supplierId').val('');
-												$('#supplierMsg').addClass(
-														'invalid-feedback');
-												$('#supplierMsg')
-														.html(
-																'<h6>Please enter a valid Supplier!</h6>');
+												$('#supplierMsg').addClass('invalid-feedback');
+												$('#supplierMsg').html('<h6>Please enter a valid Supplier!</h6>');
 												$('#supplierMsg').show();
+												
+												$('#supplierDetails').addClass('d-none');
+												$('#supplierAccountDetails').addClass('d-none');
 											} else {
 												$('#supplierMsg').hide();
 
@@ -99,10 +119,12 @@ $(function() {
 							if (ui.item == null || ui.item == undefined) {
 								$('#supplierId').val('');
 								$('#supplierMsg').addClass('invalid-feedback');
-								$('#supplierMsg')
-										.html(
-												'<h6>Please choose a valid Supplier from the list!</h6>');
+								$('#supplierMsg').html('<h6>Please choose a valid Supplier from the list!</h6>');
 								$('#supplierMsg').show();
+								
+								$('#supplierDetails').addClass('d-none');
+								$('#supplierAccountDetails').addClass('d-none');
+								
 							} else {
 								$('#supplierMsg').hide();
 							}
@@ -200,12 +222,12 @@ function processAccountHeadDetails(supplier) {
 								supplierStoreAccount.entityType = itrAccount.entityType;
 								supplierStoreAccount.entityName = itrAccount.entityName;
 
-								supplierStoreAccount.advanceAmt = supplierStoreAccount.advanceAmt
-										+ itrAccount.advanceAmt;
-								supplierStoreAccount.dueAmt = supplierStoreAccount.dueAmt
-										+ itrAccount.dueAmt;
-								supplierStoreAccount.paymentAmt = supplierStoreAccount.paymentAmt
-										+ itrAccount.paymentAmt;
+								supplierStoreAccount.advanceAmt = parseFloat(supplierStoreAccount.advanceAmt)
+										+ parseFloat(itrAccount.advanceAmt);
+								supplierStoreAccount.dueAmt = parseFloat(supplierStoreAccount.dueAmt)
+										+ parseFloat(itrAccount.dueAmt);
+								supplierStoreAccount.paymentAmt = parseFloat(supplierStoreAccount.paymentAmt)
+										+ parseFloat(itrAccount.paymentAmt);
 
 								supplierStoreAccount.locationIds
 										.push(itrAccount.locationId);
@@ -215,14 +237,19 @@ function processAccountHeadDetails(supplier) {
 							});
 
 		} else {
-			var lookedUpAccounts = $.grep(accounts, function(account) {
-				return (account.locationId == selectedStore && account.entityId == supplier.supplierId);
-			});
+			var lookedUpAccounts = $
+					.grep(
+							accounts,
+							function(account) {
+								return (account.locationId == selectedStore && account.entityId == supplier.supplierId);
+							});
 
-			supplierStoreAccount=lookedUpAccounts[0]; 
+			supplierStoreAccount = lookedUpAccounts[0];
 		}
-		supplierStoreAccount.advanceAmt=supplierStoreAccount.advanceAmt.toFixed(2);
-		supplierStoreAccount.dueAmt=supplierStoreAccount.dueAmt.toFixed(2);
+		supplierStoreAccount.advanceAmt = parseFloat(
+				supplierStoreAccount.advanceAmt).toFixed(2);
+		supplierStoreAccount.dueAmt = parseFloat(supplierStoreAccount.dueAmt)
+				.toFixed(2);
 		this.renderAccountHeadDetails(supplierStoreAccount);
 	}
 

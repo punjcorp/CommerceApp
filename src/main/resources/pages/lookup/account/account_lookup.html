@@ -8,7 +8,11 @@
 <title th:text="#{commerce.screen.item.search}">Supplier Account Lookup Page</title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
+<link rel="stylesheet" href="../../css/utils/datatables.min.css" th:href="@{/css/utils/datatables.min.css}" />
 <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../js/utils/pdfmake.min.js" th:src="@{/js/utils/pdfmake.min.js}"></script>
+<script src="../../js/utils/vfs_fonts.js" th:src="@{/js/utils/vfs_fonts.js}"></script>
+<script src="../../js/utils/datatables.min.js" th:src="@{/js/utils/datatables.min.js}"></script>
 <script src="../../js/lookup/lookup_classes.js" th:src="@{/js/lookup/lookup_classes.js}"></script>
 <script src="../../js/lookup/account_lookup.js" th:src="@{/js/lookup/account_lookup.js}"></script>
 </head>
@@ -21,184 +25,225 @@
 			<!-- This thymeleaf fragment include the top navigation bar-->
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
-			<div class="card content-container">
-				<div class="card-header">
-					<h3 th:text="#{commerce.home.menu.lookup.supplier.account}">Supplier Account Lookup</h3>
-				</div>
-				<div class="card-body">
-					<form class="form" id="searchForm" action="#" th:action="@{/admin/account_lookup}" th:object="${accountDTO}" method="post">
-						<div class="card-text">
+			<form class="form" id="searchForm" action="#" th:action="@{/admin/account_lookup}" th:object="${accountDTO}" method="post">
+				<div class="row content-container">
+					<div class="col-9">
+						<div class="card">
+							<div class="card-header">
+								<h3 th:text="#{commerce.home.menu.lookup.supplier.account}">Supplier Account Lookup</h3>
+							</div>
+							<div class="card-body">
 
-							<div class="row">
-								<div class="col-3">
-									<div class="form-group text-left">
-										<label for="searchText"><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.searchtext}">Supplier</span></small></label>
-										<div class="input-group">
-											<div class="input-group-prepend">
-												<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-search"
-														data-fa-transform="shrink-10 right-12 up-4"></i>
-												</span>
-												</span>
-											</div>
-											<input type="hidden" th:field="*{supplierId}"></input> <input type="text" th:field="*{searchBean.searchText}" class="form-control input-sm"
-												th:placeholder="#{commerce.screen.supplier.search.text}" placeholder="Enter keyword to search" aria-describedby="searchHelp"></input>
-											<div class="input-group-append d-none" id="supplierSearchBusy">
-												<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
-												</span>
-											</div>
-										</div>
-										<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.supplier.search.keywords}">Enter keywords like
-											id/Name/Email/Address/Phone#</small> <small th:if="${#fields.hasErrors('searchBean.searchText')}" th:errors="*{searchBean.searchText}" class="text-danger">Search
-											Text Error</small>
-										<div id="supplierMsg"></div>
-									</div>
-									<div class="form-group text-left">
-										<label for="searchBtn"><small></small></label>
-										<div class="input-group">
-											<button type="submit" id="searchBtn" value="Search" class="btn btn-info">
-												<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.account.search}"></span>
-											</button>
-										</div>
-									</div>
-								</div>
-								<div class="col-3">
-									<div class="form-group text-left">
-										<label for="locationId"><small><span th:text="#{commerce.screen.common.location}">Location </span></small></label>
-										<div class="input-group">
-											<select th:field="*{selectedLocation}" class="form-control input-sm">
-												<option value="0" th:text="#{commerce.screen.common.select.all}"></option>
-												<option th:each="location: ${accountDTO.locations}" th:value="${location.locationId}" th:text="${location.locationId} + ' - ' +${location.name}"></option>
-											</select>
-										</div>
-									</div>
-								</div>
+								<div class="card-text">
 
-
-
-
-								<div class="col-3">
-									<div id="supplierDetails" th:class="${accountDTO.supplierId==null}?'d-none':''">
-										<div class="card border-box-filled">
-											<input type="hidden" th:field="*{supplier.supplierId}"></input> <input type="hidden" th:field="*{supplier.name}"></input> <input type="hidden"
-												th:field="*{supplier.phone1}"></input> <input type="hidden" th:field="*{supplier.phone2}"></input> <input type="hidden" th:field="*{supplier.email}"></input>
-											<input type="hidden" th:field="*{supplier.primaryAddress.addressId}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.addressType}"></input>
-											<input type="hidden" th:field="*{supplier.primaryAddress.primary}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.address1}"></input>
-											<input type="hidden" th:field="*{supplier.primaryAddress.address2}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.city}"></input>
-											<input type="hidden" th:field="*{supplier.primaryAddress.state}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.country}"></input>
-											<input type="hidden" th:field="*{supplier.primaryAddress.pincode}"></input>
-											<div class="card-body">
-												<div class="row">
-													<div class="col-4">
-														<div class="card-text my-3">
-															<div class="fa-3x">
-																<span class="fa-layers fa-fw"> <i class="fas fa-map-marker"></i> <i class="fas fa-circle color-blue" data-fa-transform="shrink-10 up-2"></i></span>
-															</div>
-														</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group text-left">
+												<label for="searchText"><small><span class="pos-mandatory" th:text="#{commerce.screen.supplier.searchtext}">Supplier</span></small></label>
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-search"
+																data-fa-transform="shrink-10 right-12 up-4"></i>
+														</span>
+														</span>
 													</div>
-													<div class="col-8">
-														<div class="row">
-															<div class="col-2">
-																<i class="fas fa-address-card"></i>
-															</div>
-															<div class="col text-left">
-																<div class="card-text">
-																	<small><span id="primaryAddress1" th:text="${accountDTO.supplier.primaryAddress.address1}"></span></small>
-																</div>
-															</div>
-														</div>
-														<div class="row" th:if="${accountDTO.supplier.primaryAddress.address2!=null}">
-															<div class="col-2"></div>
-															<div class="col text-left">
-																<div class="card-text">
-																	<small><span id="primaryAddress2" th:text="${accountDTO.supplier.primaryAddress.address2}"></span></small>
-																</div>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-2"></div>
-															<div class="col text-left">
-																<div class="card-text">
-																	<small><span id="primaryCity" th:text="${accountDTO.supplier.primaryAddress.city}"></span>, <span
-																		th:text="${accountDTO.supplier.primaryAddress.state}"></span></small>
-																</div>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-2"></div>
-															<div class="col text-left">
-																<div class="card-text">
-																	<small><span id="primaryCountry" th:text="${accountDTO.supplier.primaryAddress.country}"></span>, <span
-																		th:text="${accountDTO.supplier.primaryAddress.pincode}"></span></small>
-																</div>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-2">
-																<i class="fas fa-phone" data-fa-transform="flip-h"></i>
-															</div>
-															<div class="col text-left">
-																<div class="card-text">
-																	<small><span id="supplierPhone" th:text="${accountDTO.supplier.phone1}"></span></small>
-																</div>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-2">
-																<i class="fas fa-envelope"></i>
-															</div>
-															<div class="col text-left">
-																<div class="card-text">
-																	<small><span id="supplierEmail" th:text="${accountDTO.supplier.email}"></span></small>
-																</div>
-															</div>
-														</div>
+													<input type="hidden" th:field="*{supplierId}"></input> <input type="text" th:field="*{searchBean.searchText}" class="form-control input-sm"
+														th:placeholder="#{commerce.screen.supplier.search.text}" placeholder="Enter keyword to search" aria-describedby="searchHelp"></input>
+													<div class="input-group-append d-none" id="supplierSearchBusy">
+														<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>
+														</span>
 													</div>
 												</div>
-												<div class="row">
-													<div class="col">
-														<div class="card-text text-center">
-															<br /> <br />
-															<h4>
-																<span th:text="#{commerce.screen.order.supplier.address}"></span>
-															</h4>
-														</div>
-													</div>
+												<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.supplier.search.keywords}">Enter keywords like
+													id/Name/Email/Address/Phone#</small> <small th:if="${#fields.hasErrors('searchBean.searchText')}" th:errors="*{searchBean.searchText}" class="text-danger">Search
+													Text Error</small>
+												<div id="supplierMsg"></div>
+											</div>
+											
+										</div>
+										<div class="col-4">
+											<div class="form-group text-left">
+												<label for="locationId"><small><span th:text="#{commerce.screen.common.location}">Location </span></small></label>
+												<div class="input-group">
+													<select th:field="*{selectedLocation}" class="form-control input-sm">
+														<option value="0" th:text="#{commerce.screen.common.select.all}"></option>
+														<option th:each="location: ${accountDTO.locations}" th:value="${location.locationId}" th:text="${location.locationId} + ' - ' +${location.name}"></option>
+													</select>
 												</div>
 											</div>
 										</div>
+
+
+
+
+										<div class="col-3">
+										<div class="form-group text-left">
+												<label for="searchBtn"><small></small></label>
+												<div class="input-group">
+													<button type="submit" id="searchBtn" value="Search" class="btn btn-info">
+														<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.account.search}"></span>
+													</button>
+												</div>
+											</div>
+										</div>
+
 									</div>
+									<div class="row" th:if="${accountDTO.journals!=null}">
+										<div class="col-12">
+											<div id="tableBtns"></div>
+											<table id="paymentDetails" class="table table-hover">
+												<thead>
+													<tr>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.serial}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.date.created}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.comments}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.credit}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.debit}"></span></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="journal,itrStat:${accountDTO.journals}">
+														<td scope="row"><span th:text="${itrStat.index+1}"></span></td>
+														<td><span th:text="${#temporals.format(journal.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+														<td><span th:text="${journal.remarks}"></span></td>
+														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='full' or journal.journalType=='advance' or journal.journalType=='part'}"></span></td>
+														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='payment_due'}"></span></td>
+													</tr>
+												</tbody>
+											</table>
+
+
+										</div>
+									</div>
+
+
 								</div>
 
-								<div class="col-3">
-									<div id="supplierAccountDetails" th:class="${accountDTO.accountHead==null}?'d-none':''">
-										<div class="card border-box-filled">
-											<input type="hidden" th:field="*{accountHead.locationId}"></input> <input type="hidden" th:field="*{accountHead.accountId}"></input> <input
-												type="hidden" th:field="*{accountHead.entityType}"></input> <input type="hidden" th:field="*{accountHead.entityId}"></input> <input type="hidden"
-												th:field="*{accountHead.entityName}"></input> <input type="hidden" th:field="*{accountHead.advanceAmt}"></input> <input type="hidden"
-												th:field="*{accountHead.dueAmt}"></input>
+							</div>
+						</div>
+					</div>
 
-											<div class="card-body">
-												<div class="row">
-													<div class="col-6">
-														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.supplier.payment.amount.advance}">Net Advance Amount Balance</span></small></label>
-															<div class="input-group text-left">
-																<label><h3>
-																		<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_advanceAmt"> 0.00</span>
-																	</h3></label>
-															</div>
-														</div>
+					<div class="col-3">
+						<!-- Supplier Address Details Starts -->
+						<div id="supplierDetails" th:class="${accountDTO.supplierId==null}?'d-none':''">
+							<div class="card border-box-filled">
+								<input type="hidden" th:field="*{supplier.supplierId}"></input> <input type="hidden" th:field="*{supplier.name}"></input> <input type="hidden"
+									th:field="*{supplier.phone1}"></input> <input type="hidden" th:field="*{supplier.phone2}"></input> <input type="hidden" th:field="*{supplier.email}"></input>
+								<input type="hidden" th:field="*{supplier.primaryAddress.addressId}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.addressType}"></input>
+								<input type="hidden" th:field="*{supplier.primaryAddress.primary}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.address1}"></input>
+								<input type="hidden" th:field="*{supplier.primaryAddress.address2}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.city}"></input> <input
+									type="hidden" th:field="*{supplier.primaryAddress.state}"></input> <input type="hidden" th:field="*{supplier.primaryAddress.country}"></input> <input
+									type="hidden" th:field="*{supplier.primaryAddress.pincode}"></input>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-4">
+											<div class="card-text my-3">
+												<div class="fa-3x">
+													<span class="fa-layers fa-fw"> <i class="fas fa-map-marker"></i> <i class="fas fa-circle color-blue" data-fa-transform="shrink-10 up-2"></i></span>
+												</div>
+											</div>
+										</div>
+										<div class="col-8">
+											<div class="row">
+												<div class="col-2">
+													<i class="fas fa-address-card"></i>
+												</div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryAddress1" th:text="${accountDTO.supplier.primaryAddress.address1}"></span></small>
 													</div>
-													<div class="col-6">
-														<div class="form-group">
-															<label><small><span th:text="#{commerce.screen.supplier.payment.amount.due}">Net Due Amount Balance</span></small></label>
-															<div class="input-group text-left">
-																<label><h3>
-																		<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_dueAmt"> 0.00</span>
-																	</h3></label>
-															</div>
-														</div>
+												</div>
+											</div>
+											<div class="row" th:if="${accountDTO.supplier.primaryAddress.address2!=null}">
+												<div class="col-2"></div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryAddress2" th:text="${accountDTO.supplier.primaryAddress.address2}"></span></small>
 													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2"></div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryCity" th:text="${accountDTO.supplier.primaryAddress.city}"></span>, <span
+															th:text="${accountDTO.supplier.primaryAddress.state}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2"></div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryCountry" th:text="${accountDTO.supplier.primaryAddress.country}"></span>, <span
+															th:text="${accountDTO.supplier.primaryAddress.pincode}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2">
+													<i class="fas fa-phone" data-fa-transform="flip-h"></i>
+												</div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="supplierPhone" th:text="${accountDTO.supplier.phone1}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2">
+													<i class="fas fa-envelope"></i>
+												</div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="supplierEmail" th:text="${accountDTO.supplier.email}"></span></small>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<div class="card-text text-center">
+												<br /> <br />
+												<h4>
+													<span th:text="#{commerce.screen.order.supplier.address}"></span>
+												</h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Supplier Address Details Ends -->
+
+						<!-- Supplier Account Details Starts -->
+						<div id="supplierAccountDetails" th:class="${accountDTO.accountHead==null}?'d-none':''">
+							<div class="card border-box-filled">
+								<input type="hidden" th:field="*{accountHead.locationId}"></input> <input type="hidden" th:field="*{accountHead.accountId}"></input> <input
+									type="hidden" th:field="*{accountHead.entityType}"></input> <input type="hidden" th:field="*{accountHead.entityId}"></input> <input type="hidden"
+									th:field="*{accountHead.entityName}"></input> <input type="hidden" th:field="*{accountHead.advanceAmt}"></input> <input type="hidden"
+									th:field="*{accountHead.dueAmt}"></input>
+
+								<div class="card-body">
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.amount.advance}">Net Advance Amount Balance</span></small></label>
+												<div class="input-group text-left">
+													<label><h3>
+															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_advanceAmt"> 0.00</span>
+														</h3></label>
+												</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group">
+												<label><small><span th:text="#{commerce.screen.supplier.payment.amount.due}">Net Due Amount Balance</span></small></label>
+												<div class="input-group text-left">
+													<label><h3>
+															<span th:text="#{commerce.screen.common.currency.inr}">INR</span> <span id="lbl_dueAmt"> 0.00</span>
+														</h3></label>
 												</div>
 											</div>
 										</div>
@@ -206,13 +251,12 @@
 								</div>
 							</div>
 						</div>
+						<!-- Supplier Account Details Ends -->
+					</div>
 
-
-					</form>
 
 				</div>
-			</div>
-
+			</form>
 		</div>
 		<!-- /#page-content-wrapper -->
 	</div>
