@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class AccountJournalBean {
 
+	private AccountHeadBean accountHeadBean;
 	private BigInteger journalId;
 	private Integer accountId;
 	private String journalType;
@@ -193,6 +194,21 @@ public class AccountJournalBean {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the accountHeadBean
+	 */
+	public AccountHeadBean getAccountHeadBean() {
+		return accountHeadBean;
+	}
+
+	/**
+	 * @param accountHeadBean
+	 *            the accountHeadBean to set
+	 */
+	public void setAccountHeadBean(AccountHeadBean accountHeadBean) {
+		this.accountHeadBean = accountHeadBean;
 	}
 
 }

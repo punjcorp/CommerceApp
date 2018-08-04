@@ -99,7 +99,7 @@ public class AccountLookupController {
 	public String getSupplierAccountJournals(@ModelAttribute SupplierLookupDTO accountDTO, final BindingResult bindingResult, Model model, Locale locale) {
 		try {
 
-			if (accountDTO != null && accountDTO.getSupplierId() != null) {
+			if (accountDTO != null && accountDTO.getSupplierId() != null && accountDTO.getSupplier()!=null) {
 
 				Set<BigInteger> entityIds = new HashSet<>();
 				BigInteger entityId = new BigInteger(accountDTO.getSupplierId().toString());
@@ -117,7 +117,7 @@ public class AccountLookupController {
 						if(accountJournals!=null && !accountJournals.isEmpty()) {
 							Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 							Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(openLocationId);
-							List<AccountJournalBean> ajBeans = SupplierTransformer.transformAccountJournals(accountJournals, tenderMap);
+							List<AccountJournalBean> ajBeans = SupplierTransformer.transformAccountJournals(accountJournals, tenderMap,supplierAccounts,accountDTO.getSupplier().getName());
 							accountDTO.setJournals(ajBeans);
 						}
 						

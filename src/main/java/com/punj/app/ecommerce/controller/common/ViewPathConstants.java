@@ -96,6 +96,7 @@ public final class ViewPathConstants {
 	
 	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
 	public static final String CUSTOMER_LOOKUP_URL = "/customer_account_lookup";
+	public static final String CUSTOMER_LOOKUP_ADMIN_URL = "/admin/customer_account_lookup";
 	
 	
 	public static final String BULK_ORDER_URL = "/admin/bulk_order_action";
@@ -183,6 +184,8 @@ public final class ViewPathConstants {
 	
 	public static final String LOOKUP_ACCOUNT_URL = "/admin/account_lookup";
 	public static final String LOOKUP_ACCOUNT_PAGE= "lookup/account/account_lookup";
+	public static final String CUSTOMER_LOOKUP_ACCOUNT_URL = "/admin/customer_account_lookup";
+	public static final String CUSTOMER_LOOKUP_ACCOUNT_PAGE= "lookup/account/customer_account_lookup";
 	
 	/**
 	 * The lookup pages section ends

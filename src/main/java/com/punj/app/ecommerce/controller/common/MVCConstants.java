@@ -247,6 +247,7 @@ public final class MVCConstants {
 	public static final String ADD="ADD";
 	public static final String SUBTRACT="SUBTRACT";
 	public static final String SUPPLIER= "SUPPLIER";
+	public static final String CUSTOMER= "CUSTOMER";
 	
 	
 	public static final String PRIMARY_ADDRESS_PARAM="primaryAddress";

@@ -6,6 +6,7 @@ package com.punj.app.ecommerce.controller.common.transformer;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,24 +97,24 @@ public class SupplierTransformer {
 
 		List<SupplierBean> supplierBeanList = new ArrayList<>(supplierList.size());
 		SupplierBean supplierBean;
-		Boolean isSupplierAccountExisting=Boolean.FALSE;
-		BigInteger supplierId=null;
-		String supplierIdStr=null;
-		List<AccountHeadBean> supplierAccountBeans=null;
-		List<AccountHead> supplierAccountList=null;
-		AccountHead supplierAccount=null;
-		AccountHeadBean supplierAccountBean=null;
-		if(supplierAccounts!=null && !supplierAccounts.isEmpty()) {
-			isSupplierAccountExisting=Boolean.TRUE;
+		Boolean isSupplierAccountExisting = Boolean.FALSE;
+		BigInteger supplierId = null;
+		String supplierIdStr = null;
+		List<AccountHeadBean> supplierAccountBeans = null;
+		List<AccountHead> supplierAccountList = null;
+		AccountHead supplierAccount = null;
+		AccountHeadBean supplierAccountBean = null;
+		if (supplierAccounts != null && !supplierAccounts.isEmpty()) {
+			isSupplierAccountExisting = Boolean.TRUE;
 		}
 		for (Supplier supplier : supplierList) {
 			supplierBean = SupplierTransformer.transformSupplier(supplier);
-			if(isSupplierAccountExisting) {
-				supplierIdStr=supplier.getSupplierId().toString();
-				supplierId=new BigInteger(supplierIdStr);
-				supplierAccountList=supplierAccounts.get(supplierId);
-				if(supplierAccountList!=null && !supplierAccountList.isEmpty()) {
-					supplierAccountBeans=SupplierTransformer.transformAccountHeads(supplierAccountList, supplier.getName());
+			if (isSupplierAccountExisting) {
+				supplierIdStr = supplier.getSupplierId().toString();
+				supplierId = new BigInteger(supplierIdStr);
+				supplierAccountList = supplierAccounts.get(supplierId);
+				if (supplierAccountList != null && !supplierAccountList.isEmpty()) {
+					supplierAccountBeans = SupplierTransformer.transformAccountHeads(supplierAccountList, supplier.getName());
 					supplierBean.setSupplierAccounts(supplierAccountBeans);
 				}
 			}
@@ -146,20 +147,37 @@ public class SupplierTransformer {
 		return accountDTO;
 	}
 
-	public static List<AccountJournalBean> transformAccountJournals(List<AccountJournal> accountJournals, Map<Integer, Tender> tenderMap) {
+	public static List<AccountJournalBean> transformAccountJournals(List<AccountJournal> accountJournals, Map<Integer, Tender> tenderMap, List<AccountHead> entityAccounts, String entityName) {
+
+		List<AccountJournalBean> accountJournalBeans = new ArrayList<>(accountJournals.size());
+		AccountJournalBean accountJournalBean = null;
 		
-		List<AccountJournalBean> accountJournalBeans=new ArrayList<>(accountJournals.size());
-		AccountJournalBean accountJournalBean=null;
-		
-		for(AccountJournal accountJournal:accountJournals) {
-			accountJournalBean=SupplierTransformer.transformAccountJournalBean(accountJournal, null, tenderMap);
+		Map<Integer, AccountHeadBean> accountHeadBeanMap=SupplierTransformer.transformAccountsInMap(entityAccounts, entityName);
+		AccountHeadBean customerAccount=null;		
+		for (AccountJournal accountJournal : accountJournals) {
+			customerAccount=accountHeadBeanMap.get(accountJournal.getAccountId());
+			accountJournalBean = SupplierTransformer.transformAccountJournalBean(accountJournal, null, tenderMap);
+			accountJournalBean.setAccountHeadBean(customerAccount);
 			accountJournalBeans.add(accountJournalBean);
 		}
 		logger.info("The account journal details list has been transformed successfully");
 		return accountJournalBeans;
-		
+
 	}
-	
+
+	public static Map<Integer, AccountHeadBean> transformAccountsInMap(List<AccountHead> customerAccounts, String customerName){
+		Map<Integer, AccountHeadBean> accountHeadBeanMap=new HashMap<>(customerAccounts.size());
+		AccountHeadBean customerAccountBean=null;
+		
+		for(AccountHead accountHead:customerAccounts) {
+			customerAccountBean=SupplierTransformer.transformAccountHead(accountHead, customerName);
+			accountHeadBeanMap.put(customerAccountBean.getAccountId(), customerAccountBean);
+		}
+		logger.info("The customer account map has been transformed successfully");
+		
+		return accountHeadBeanMap;
+	}
+
 	public static AccountJournalBean transformAccountJournalBean(AccountJournal accountJournal, String username, Map<Integer, Tender> tenderMap) {
 		AccountJournalBean journalBean = new AccountJournalBean();
 		journalBean.setAccountId(accountJournal.getAccountId());
@@ -231,17 +249,17 @@ public class SupplierTransformer {
 	}
 
 	public static List<AccountHeadBean> transformAccountHeads(List<AccountHead> accountHeads, String entityName) {
-		List<AccountHeadBean> accountHeadBeans=new ArrayList<>();
-		AccountHeadBean accountHeadBean=null;
-		for(AccountHead accountHead: accountHeads) {
-			accountHeadBean=SupplierTransformer.transformAccountHead(accountHead, entityName);
+		List<AccountHeadBean> accountHeadBeans = new ArrayList<>();
+		AccountHeadBean accountHeadBean = null;
+		for (AccountHead accountHead : accountHeads) {
+			accountHeadBean = SupplierTransformer.transformAccountHead(accountHead, entityName);
 			accountHeadBeans.add(accountHeadBean);
 		}
 		logger.info("The account head detail list has been transformed successfully");
-		
+
 		return accountHeadBeans;
 	}
-	
+
 	public static AccountHeadBean transformAccountHead(AccountHead accountHead, String entityName) {
 		AccountHeadBean accountHeadBean = new AccountHeadBean();
 		accountHeadBean.setAccountId(accountHead.getAccountId());

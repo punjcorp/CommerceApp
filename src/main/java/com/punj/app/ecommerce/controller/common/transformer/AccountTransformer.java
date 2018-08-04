@@ -4,9 +4,11 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +24,7 @@ import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.domains.customer.Customer;
 import com.punj.app.ecommerce.domains.customer.CustomerDTO;
+import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.user.Password;
 import com.punj.app.ecommerce.domains.user.Role;
 import com.punj.app.ecommerce.domains.user.User;
@@ -35,6 +38,7 @@ import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.customer.CustomerBeanDTO;
+import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.utils.Pager;
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -302,23 +306,40 @@ public class AccountTransformer {
 
 		CustomerBeanDTO customerBeanDTO = new CustomerBeanDTO();
 		List<Customer> customers = customerDTO.getCustomers();
-		List<CustomerBean> customerBeans = null; 
-				
-		if(customers!=null && !customers.isEmpty()) {
-			customerBeans=AccountTransformer.transformCustomers(customers);
+		List<CustomerBean> customerBeans = null;
+
+		if (customers != null && !customers.isEmpty()) {
+			customerBeans = AccountTransformer.transformCustomers(customers);
 			customerBeanDTO.setCustomers(customerBeans);
 			customerBeanDTO.setPager(customerDTO.getPager());
 		}
-		
+
 		logger.info("The customer details has been transformed to customer bean DTO");
 		return customerBeanDTO;
 	}
 
+	public static List<CustomerBean> transformCustomersWithAccounts(List<Customer> customers, Map<BigInteger, List<AccountHead>> accounts) {
+		List<CustomerBean> customerBeanList = new ArrayList<>(customers.size());
+		CustomerBean customerBean = null;
+		List<AccountHead> customerAccounts = null;
+		List<AccountHeadBean> customerAccountBeans = null;
+		for (Customer customer : customers) {
+			customerBean = AccountTransformer.transformCustomer(customer);
+			customerAccounts = accounts.get(customerBean.getCustomerId());
+			customerAccountBeans=SupplierTransformer.transformAccountHeads(customerAccounts, customerBean.getName());
+			customerBean.setCustomerAccounts(customerAccountBeans);
+
+			customerBeanList.add(customerBean);
+		}
+		logger.info("The customer details list has been transformed to customer bean list successfully");
+		return customerBeanList;
+	}
+
 	public static List<CustomerBean> transformCustomers(List<Customer> customers) {
 		List<CustomerBean> customerBeanList = new ArrayList<>(customers.size());
-		CustomerBean customerBean=null;
-		for(Customer customer: customers) {
-			customerBean=AccountTransformer.transformCustomer(customer);
+		CustomerBean customerBean = null;
+		for (Customer customer : customers) {
+			customerBean = AccountTransformer.transformCustomer(customer);
 			customerBeanList.add(customerBean);
 		}
 		logger.info("The customer details list has been transformed to customer bean list successfully");
@@ -326,8 +347,8 @@ public class AccountTransformer {
 	}
 
 	public static CustomerBean transformCustomer(Customer customer) {
-		CustomerBean customerBean=new CustomerBean();
-		
+		CustomerBean customerBean = new CustomerBean();
+
 		customerBean.setCreatedBy(customer.getCreatedBy());
 		customerBean.setCreatedDate(customer.getCreatedDate());
 		customerBean.setCustomerId(customer.getCustomerId());
@@ -335,7 +356,7 @@ public class AccountTransformer {
 		customerBean.setEmail(customer.getEmail());
 		customerBean.setName(customer.getName());
 		customerBean.setPhone(customer.getPhone());
-		
+
 		logger.info("The customer details has been transformed to customer bean successfully");
 		return customerBean;
 	}

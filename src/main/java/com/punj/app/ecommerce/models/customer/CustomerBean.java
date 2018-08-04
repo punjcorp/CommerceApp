@@ -5,12 +5,14 @@ package com.punj.app.ecommerce.models.customer;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
+import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 
 /**
  * @author admin
@@ -40,6 +42,9 @@ public class CustomerBean {
 	private LocalDateTime createdDate;
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
+	
+	private Boolean searchAccount;
+	private List<AccountHeadBean> customerAccounts;
 
 	/**
 	 * @return the customerId
@@ -189,6 +194,22 @@ public class CustomerBean {
 	 */
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
+	}
+
+	public List<AccountHeadBean> getCustomerAccounts() {
+		return customerAccounts;
+	}
+
+	public void setCustomerAccounts(List<AccountHeadBean> customerAccounts) {
+		this.customerAccounts = customerAccounts;
+	}
+
+	public Boolean getSearchAccount() {
+		return searchAccount;
+	}
+
+	public void setSearchAccount(Boolean searchAccount) {
+		this.searchAccount = searchAccount;
 	}
 
 }

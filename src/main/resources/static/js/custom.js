@@ -265,3 +265,7 @@ function globalAction(cntl) {
 function hideAlert() {
 	$('#alertModal').modal('hide');
 }
+
+function showFormSubmit(){
+	$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+}
