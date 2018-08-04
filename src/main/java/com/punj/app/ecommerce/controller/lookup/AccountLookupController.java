@@ -32,6 +32,7 @@ import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.LocationBean;
+import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.models.financials.AccountJournalBean;
 import com.punj.app.ecommerce.models.supplier.SupplierLookupDTO;
 import com.punj.app.ecommerce.services.PaymentAccountService;
@@ -109,6 +110,8 @@ public class AccountLookupController {
 				if (accountHeads != null && !accountHeads.isEmpty()) {
 					List<AccountHead> supplierAccounts = accountHeads.get(entityId);
 					if (supplierAccounts != null && !supplierAccounts.isEmpty()) {
+						List<AccountHeadBean> supplierAccountBeans = SupplierTransformer.transformAccountHeads(supplierAccounts, accountDTO.getSupplier().getName());
+						accountDTO.getSupplier().setSupplierAccounts(supplierAccountBeans);
 						Set<Integer> accountIds = new HashSet<>();
 						for (AccountHead supplierAccount : supplierAccounts) {
 							accountIds.add(supplierAccount.getAccountId());

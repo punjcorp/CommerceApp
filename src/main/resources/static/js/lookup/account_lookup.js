@@ -3,12 +3,16 @@ var searchBean = new SearchBean();
 var token = $("meta[name='_csrf']").attr("content");
 var supplierChangeFlag = 'F';
 var selectedSupplierData;
+var journalTable;
 
 $(function() {
-
-	$("#selectedLocation").change(function() {
-		updateBasedOnLocation();
-	});
+	
+	$(window).keydown(function(event){
+	    if(event.keyCode == 13) {
+	      event.preventDefault();
+	      return false;
+	    }
+	  });
 
 	$("#searchBean\\.searchText").change(function() {
 
@@ -20,11 +24,12 @@ $(function() {
 
 			$('#supplierDetails').addClass('d-none');
 			$('#supplierAccountDetails').addClass('d-none');
+			$('#searchBtn').addClass('d-none');
 
 		}
 	});
 
-	var journalTable=$('#paymentDetails').DataTable( {
+	journalTable=$('#paymentDetails').DataTable( {
         keys: true,
         responsive : true,
         colReorder: true,
@@ -34,11 +39,20 @@ $(function() {
             'excelHtml5',
             'csvHtml5',
             'pdfHtml5'
-        ]
+        ],
+		columns: [ { "name": "sNo" },
+		    { "name": "createdOn" },
+		    { "name": "locationId" },
+		    { "name": "desc" },
+		    { "name": "credit" },
+		    { "name": "debit" } ]
     } );
 	
 	journalTable.buttons().container().appendTo( $('#tableBtns') );
-	$('#tableBtns').addClass('text-right');
+	
+	$("#selectedLocation").change(function() {
+		updateBasedOnLocation(this.value);
+	});
 	
 	$("#searchBean\\.searchText")
 			.autocomplete(
@@ -72,6 +86,7 @@ $(function() {
 												
 												$('#supplierDetails').addClass('d-none');
 												$('#supplierAccountDetails').addClass('d-none');
+												$('#searchBtn').addClass('d-none');
 											} else {
 												$('#supplierMsg').hide();
 
@@ -103,7 +118,7 @@ $(function() {
 																		state : supplier.primaryAddress.state,
 																		country : supplier.primaryAddress.country,
 																		pincode : supplier.primaryAddress.pincode,
-																		accountHeads : supplier.supplierAccounts
+																		supplierAccounts : supplier.supplierAccounts
 																	}
 																}));
 											}
@@ -111,12 +126,24 @@ $(function() {
 										beforeSend : function(xhr) {
 											xhr.setRequestHeader(
 													'X-CSRF-TOKEN', token)
+										},
+										error : function(e){
+											$('#supplierSearchBusy').addClass('d-none');
+											$('#supplierId').val('');
+											$('#supplierMsg').addClass('invalid-feedback');
+											$('#supplierMsg').html('<h6>No Supplier Found!</h6>');
+											$('#supplierMsg').show();
+											
+											$('#supplierDetails').addClass('d-none');
+											$('#supplierAccountDetails').addClass('d-none');
+											$('#searchBtn').addClass('d-none');
 										}
 									});
 
 						},
 						change : function(event, ui) {
 							if (ui.item == null || ui.item == undefined) {
+								$('#supplierSearchBusy').addClass('d-none');
 								$('#supplierId').val('');
 								$('#supplierMsg').addClass('invalid-feedback');
 								$('#supplierMsg').html('<h6>Please choose a valid Supplier from the list!</h6>');
@@ -124,7 +151,7 @@ $(function() {
 								
 								$('#supplierDetails').addClass('d-none');
 								$('#supplierAccountDetails').addClass('d-none');
-								
+								$('#searchBtn').addClass('d-none');
 							} else {
 								$('#supplierMsg').hide();
 							}
@@ -137,6 +164,7 @@ $(function() {
 						}
 					});
 
+	afterSuccessSearchRequest();
 });
 
 /* This section will allow the item listing to be in a specific format */
@@ -161,7 +189,7 @@ $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 };
 
 function getSupplierDetails(event, ui) {
-
+	$('#searchBtn').removeClass('d-none');
 	$('#searchBean\\.searchText').val(ui.item.name);
 	$('#supplierId').val(ui.item.supplierId);
 	selectedSupplierData = ui.item;
@@ -170,10 +198,32 @@ function getSupplierDetails(event, ui) {
 
 }
 
-function updateBasedOnLocation() {
-	this.renderSupplierPrimaryAddress(selectedSupplierData);
-	this.processAccountHeadDetails(selectedSupplierData);
+function afterSuccessSearchRequest(){
+	if(supplier_data!=undefined && supplier_data.supplierId!=null){
+		selectedSupplierData = supplier_data;
+		this.renderSupplierPrimaryAddress(selectedSupplierData);
+		this.processAccountHeadDetails(selectedSupplierData);
+		var selectedLocationVal=$('#selectedLocation').val();
+		updateBasedOnLocation(selectedLocationVal);
+	}
+	
+}
 
+function updateBasedOnLocation(selectedLocationVal) {
+	if (selectedSupplierData != undefined) {
+		this.renderSupplierPrimaryAddress(selectedSupplierData);
+		this.processAccountHeadDetails(selectedSupplierData);
+	}else{
+		$('#supplierDetails').addClass('d-none');
+		$('#supplierAccountDetails').addClass('d-none');
+	}
+
+	if(selectedLocationVal==0){
+		journalTable.search('').columns().search('').draw();
+	}else{
+		journalTable.column('locationId:name').search( selectedLocationVal ).draw();
+	}
+	
 }
 
 function renderSupplierPrimaryAddress(supplier) {
@@ -208,7 +258,7 @@ function renderSupplierPrimaryAddress(supplier) {
 function processAccountHeadDetails(supplier) {
 	var supplierStoreAccount;
 	var selectedStore = $('#selectedLocation').val();
-	var accounts = supplier.accountHeads;
+	var accounts = supplier.supplierAccounts;
 	if (accounts && accounts.length > 0) {
 		if (selectedStore == 0) {
 			supplierStoreAccount = new AccountHead();

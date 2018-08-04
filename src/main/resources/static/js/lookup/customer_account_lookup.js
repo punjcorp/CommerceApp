@@ -44,7 +44,6 @@ $(function() {
 	});
 
 	journalTable.buttons().container().appendTo($('#tableBtns'));
-	$('#tableBtns').addClass('text-right');
 
 	$("#selectedLocation").change(function() {
 		updateBasedOnLocation(this.value);

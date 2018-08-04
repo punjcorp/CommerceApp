@@ -313,14 +313,21 @@ public class TransactionServiceImpl implements TransactionService {
 
 		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
 		Customer customer = txnDTO.getCustomer();
+		List<AccountHead> accountHeads = null;
 		AccountHead accountHead = null;
 		if (customer != null && customer.getCustomerId() == null) {
-			accountHead = this.accountService.createCustomer(customer, txnDTO.getTxn().getTransactionId().getLocationId());
-			if (accountHead != null) {
+			accountHeads = this.accountService.createCustomer(customer);
+			if (accountHeads != null && !accountHeads.isEmpty()) {
+				for(AccountHead tmpAccount: accountHeads) {
+					if(tmpAccount.getLocationId().equals(txnCustomer.getTransactionCustomerId().getLocationId())) {
+						accountHead = tmpAccount;
+						break;
+					}
+				}
+				
 				logger.info("The {} customer details has been saved successfully", accountHead.getEntityId());
 				txnDTO.getTxnCustomer().getTransactionCustomerId().setCustomerId(accountHead.getEntityId());
 			}
-
 			else {
 				logger.info("There was an issue while saving customer details");
 			}

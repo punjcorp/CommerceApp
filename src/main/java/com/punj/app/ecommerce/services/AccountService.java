@@ -18,6 +18,8 @@ import com.punj.app.ecommerce.utils.Pager;
 public interface AccountService {
 
 	public AccountHead createCustomer(Customer customer, Integer locationId);
+	
+	public List<AccountHead> createCustomer(Customer customer);
 
 	public CustomerDTO searchCustomer(String searchText, Pager pager);
 

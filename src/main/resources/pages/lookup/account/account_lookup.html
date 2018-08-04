@@ -5,7 +5,7 @@
 <meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.item.search}">Supplier Account Lookup Page</title>
+<title th:text="#{commerce.screen.lookup.supplier.account}">Supplier Account Lookup Page</title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
 <link rel="stylesheet" href="../../css/utils/datatables.min.css" th:href="@{/css/utils/datatables.min.css}" />
@@ -27,7 +27,7 @@
 			<!-- This thymeleaf fragment is the body part for the page-->
 			<form class="form" id="searchForm" action="#" th:action="@{/admin/account_lookup}" th:object="${accountDTO}" method="post">
 				<div class="row content-container">
-					<div class="col-9">
+					<div class="col-8">
 						<div class="card">
 							<div class="card-header">
 								<h3 th:text="#{commerce.home.menu.lookup.supplier.account}">Supplier Account Lookup</h3>
@@ -80,7 +80,7 @@
 										<div class="form-group text-left">
 												<label for="searchBtn"><small></small></label>
 												<div class="input-group">
-													<button type="submit" id="searchBtn" value="Search" class="btn btn-info">
+													<button type="submit" id="searchBtn" value="Search" th:class="${accountDTO.supplier==null?'btn btn-info d-none':'btn btn-info'}" onClick="showFormSubmit()">
 														<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.account.search}"></span>
 													</button>
 												</div>
@@ -90,12 +90,13 @@
 									</div>
 									<div class="row" th:if="${accountDTO.journals!=null}">
 										<div class="col-12">
-											<div id="tableBtns"></div>
+											
 											<table id="paymentDetails" class="table table-hover">
 												<thead>
 													<tr>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.serial}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.date.created}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.location}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.comments}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.credit}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.debit}"></span></th>
@@ -105,13 +106,14 @@
 													<tr th:each="journal,itrStat:${accountDTO.journals}">
 														<td scope="row"><span th:text="${itrStat.index+1}"></span></td>
 														<td><span th:text="${#temporals.format(journal.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+														<td><span th:text="${journal.accountHeadBean.locationId}"></span></td>
 														<td><span th:text="${journal.remarks}"></span></td>
 														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='full' or journal.journalType=='advance' or journal.journalType=='part'}"></span></td>
 														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='payment_due'}"></span></td>
 													</tr>
 												</tbody>
 											</table>
-
+											<div id="tableBtns" class="text-center"></div>
 
 										</div>
 									</div>
@@ -123,7 +125,7 @@
 						</div>
 					</div>
 
-					<div class="col-3">
+					<div class="col">
 						<!-- Supplier Address Details Starts -->
 						<div id="supplierDetails" th:class="${accountDTO.supplierId==null}?'d-none':''">
 							<div class="card border-box-filled">
@@ -261,5 +263,14 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
+	
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		var supplier_data = /*[[${accountDTO.supplier}]]*/;
+		
+		/*]]>*/
+	</script>	
+		
 </body>
 </html>
