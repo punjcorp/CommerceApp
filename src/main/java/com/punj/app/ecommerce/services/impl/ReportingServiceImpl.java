@@ -128,13 +128,13 @@ public class ReportingServiceImpl implements ReportingService {
 
 	@Override
 	public DashboardDTO retrieveTotalsByWeek(Integer locationId, LocalDateTime businessDate) {
-		DashboardDTO dashboardDTO = null;
+		DashboardDTO dashboardDTO = new DashboardDTO();
 		LocalDateTime pastWeekDate=businessDate.minusDays(6);
 
 		List<DashboardReport> dashboardReports = this.dashboardReportRepository.getDailyReportWeekWise(locationId, businessDate.toString(),pastWeekDate.toString());
 		if (dashboardReports != null && !dashboardReports.isEmpty()) {
 			logger.info("The location {} totals for the date {} has been retrieved successfully", locationId, businessDate);
-			dashboardDTO = new DashboardDTO();
+			
 			Map<LocalDateTime, DashboardReport> weeklyReports = new HashMap<>();
 			for (DashboardReport dashboardReport : dashboardReports) {
 				weeklyReports.put(dashboardReport.getDashboardReportId().getBusinessDate(), dashboardReport);
@@ -166,6 +166,24 @@ public class ReportingServiceImpl implements ReportingService {
 			dashboardDTO.setCurrentDayReport(historicalReports.get(businessDate.toLocalDate().toString()));
 			logger.info("The location {} totals for the date {} has been retrieved successfully", locationId, businessDate);
 		} else {
+			
+			LocalDateTime tmpDate = businessDate.minusDays(6);
+			Map<String, DashboardReport> historicalReports = new HashMap<>();
+			DashboardReport dashboardReport = null;
+			List<String> bDates=new ArrayList<>();
+			String tmpDateStr=null;
+			
+			while (tmpDate.isBefore(businessDate) || tmpDate.isEqual(businessDate)) {
+				tmpDateStr=tmpDate.toLocalDate().toString();
+				historicalReports.put(tmpDateStr, ReportingConverter.createBlankDashboardReport(locationId, businessDate));
+				bDates.add(tmpDateStr);
+				tmpDate = tmpDate.plusDays(1);
+
+			}
+			dashboardDTO.setDates(bDates);
+			dashboardDTO.setHistoricalReports(historicalReports);
+			dashboardDTO.setCurrentDayReport(ReportingConverter.createBlankDashboardReport(locationId, businessDate));
+			
 			logger.info("There was no record found for the searched location {} and business date {}", locationId, businessDate);
 		}
 

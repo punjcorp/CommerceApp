@@ -12,7 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.search.annotations.DocumentId;
@@ -46,10 +48,14 @@ public class AccountJournal implements Serializable {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
-	private String comments;	
-	
+	private String comments;
+
 	@OneToMany(mappedBy = "journalTenderId.accountJournal", cascade = CascadeType.ALL)
 	List<JournalTender> journalTenders;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "journal_id")
+	AJReceipt journalReceipt;
 
 	/**
 	 * @return the journalId
@@ -194,10 +200,26 @@ public class AccountJournal implements Serializable {
 	}
 
 	/**
-	 * @param comments the comments to set
+	 * @param comments
+	 *            the comments to set
 	 */
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	/**
+	 * @return the journalReceipt
+	 */
+	public AJReceipt getJournalReceipt() {
+		return journalReceipt;
+	}
+
+	/**
+	 * @param journalReceipt
+	 *            the journalReceipt to set
+	 */
+	public void setJournalReceipt(AJReceipt journalReceipt) {
+		this.journalReceipt = journalReceipt;
 	}
 
 }

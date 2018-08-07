@@ -77,3 +77,15 @@ $.extend(Supplier.prototype, {
 
 });
 
+var Customer = function() {
+	this.customerSearchText;
+	this.customerId;
+	this.name;
+	this.phone;
+	this.email;
+	this.customerType;
+}
+
+$.extend(Customer.prototype, {
+
+});

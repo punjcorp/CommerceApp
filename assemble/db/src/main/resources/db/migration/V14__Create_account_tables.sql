@@ -82,6 +82,21 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal_tender` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`account_journal_receipts`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`account_journal_receipts` ;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal_receipts` (
+  `journal_id` BIGINT NOT NULL,
+  `receipt_data` LONGBLOB NOT NULL,
+  PRIMARY KEY (`journal_id`),
+  CONSTRAINT `fk_account_journal_receipts_account_journal1`
+    FOREIGN KEY (`journal_id`)
+    REFERENCES `commercedb`.`account_journal` (`journal_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 

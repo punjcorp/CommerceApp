@@ -132,6 +132,18 @@ public final class ViewPathConstants {
 	/**
 	 * The supplier pages section ends
 	 */
+	
+	/**
+	 * The customer pages section starts
+	 */
+	public static final String CUSTOMER_PAYMENT_URL ="/admin/customer/payment";
+	public static final String CUSTOMER_PAYMENT_PAGE ="customer/customer_payments";
+	
+	/**
+	 * The customer pages section ends
+	 */
+	
+	
 	/**
 	 * The card pages section starts
 	 */

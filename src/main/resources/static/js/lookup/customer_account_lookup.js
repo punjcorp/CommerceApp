@@ -142,7 +142,7 @@ $(function() {
 								$('#searchBtn').addClass('d-none');
 
 							} else {
-								$('#supplierMsg').hide();
+								$('#customerMsg').hide();
 							}
 						},
 						select : function(event, ui) {

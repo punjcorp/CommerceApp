@@ -11,6 +11,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.punj.app.ecommerce.models.customer.CustomerBean;
 
 /**
  * @author admin
@@ -57,6 +58,8 @@ public class AccountDTO {
 
 	private List<AccountJournalBean> accountJournalList;
 
+	private CustomerBean customer;
+	
 	/**
 	 * @return the accountJournalList
 	 */
@@ -457,6 +460,20 @@ public class AccountDTO {
 	 */
 	public void setSearchAccount(Boolean searchAccount) {
 		this.searchAccount = searchAccount;
+	}
+
+	/**
+	 * @return the customer
+	 */
+	public CustomerBean getCustomer() {
+		return customer;
+	}
+
+	/**
+	 * @param customer the customer to set
+	 */
+	public void setCustomer(CustomerBean customer) {
+		this.customer = customer;
 	}
 
 }

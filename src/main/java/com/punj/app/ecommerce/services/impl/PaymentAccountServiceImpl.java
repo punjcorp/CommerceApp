@@ -21,8 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.payment.AJReceipt;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
+import com.punj.app.ecommerce.repositories.payment.AJReceiptRepository;
 import com.punj.app.ecommerce.repositories.payment.AccountHeadRepository;
 import com.punj.app.ecommerce.repositories.payment.AccountJournalRepository;
 import com.punj.app.ecommerce.services.PaymentAccountService;
@@ -39,6 +41,7 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 	private static final Logger logger = LogManager.getLogger();
 	private AccountHeadRepository accountHeadRepository;
 	private AccountJournalRepository accountJournalRepository;
+	private AJReceiptRepository aJReceiptRepository;
 	private CommonService commonService;
 
 	@Value("${commerce.list.max.perpage}")
@@ -72,6 +75,15 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 	@Autowired
 	public void setAccountJournalRepository(AccountJournalRepository accountJournalRepository) {
 		this.accountJournalRepository = accountJournalRepository;
+	}
+
+	/**
+	 * @param aJReceiptRepository
+	 *            the aJReceiptRepository to set
+	 */
+	@Autowired
+	public void setAJReceiptRepository(AJReceiptRepository aJReceiptRepository) {
+		this.aJReceiptRepository = aJReceiptRepository;
 	}
 
 	@Override
@@ -126,13 +138,11 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		journalDetails = this.accountJournalRepository.save(journalDetails);
 		if (journalDetails != null) {
 			logger.info("The payment journal details has been successfully saved.");
-			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE)
-					|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)) {
+			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)) {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
-			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)
-					|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
 			}
 
@@ -249,14 +259,27 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 
 	@Override
 	public List<AccountJournal> retrievePaymentAccountJournals(Set<Integer> accountIds) {
-		 List<AccountJournal> accountJournals= this.accountJournalRepository.getAccountJournals(accountIds);
-		 if (accountJournals != null && !accountJournals.isEmpty()) {
-			 
-			 logger.info("There are some transactions existing in provided accounts which has been retrieved successfully");
-		 }else {
-			 logger.info("There were no transactions found for the provided accounts");
-		 }
+		List<AccountJournal> accountJournals = this.accountJournalRepository.getAccountJournals(accountIds);
+		if (accountJournals != null && !accountJournals.isEmpty()) {
+
+			logger.info("There are some transactions existing in provided accounts which has been retrieved successfully");
+		} else {
+			logger.info("There were no transactions found for the provided accounts");
+		}
 		return accountJournals;
+	}
+
+	@Override
+	public BigInteger savePaymentReceipt(AJReceipt ajReceipt) {
+		BigInteger accountJournalId = null;
+		ajReceipt = this.aJReceiptRepository.save(ajReceipt);
+		if (ajReceipt != null) {
+			accountJournalId = ajReceipt.getJournalId();
+			logger.info("The payment details receipt has been saved successfully");
+		} else {
+			logger.info("There was some issue while saving payment details receipt");
+		}
+		return accountJournalId;
 	}
 
 }

@@ -198,6 +198,8 @@ public final class MVCConstants {
 	public static final String PAYMENT_RECEIPT_TENDERS_REPORT="/reports/supplier/supplier_payment_tenders.jasper";
 	public static final String PAYMENT_TENDER_REPORT_PARAM="PAYMENT_TENDER_REPORT";
 	
+	public static final String CUSTOMER_PAYMENT_RECEIPT_REPORT="/reports/customer/customer_payment_receipt.jasper";
+	public static final String CUSTOMER_PAYMENT_RECEIPT_TENDERS_REPORT="/reports/customer/customer_payment_tenders.jasper";
 	
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";

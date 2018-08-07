@@ -36,8 +36,12 @@
 											</span><span th:text="#{commerce.home.menu.expense}">Expense</span>
 											</a> <a class="dropdown-item megamenu-item" sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin/supplier/payment}"> <span
 												class="fa-3x mx-2 fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-dollar-sign"
-													data-fa-transform="shrink-11 right-10 up-4"></i>
+													data-fa-transform="shrink-11 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.payment.supplier}">Supplier Payment</span></a>
+											<a class="dropdown-item megamenu-item" sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin/customer/payment}"> <span
+												class="fa-3x mx-2 fa-layers fa-fw"> <i class="fas fa-male"></i> <i class="far fa-money-bill-alt"
+									data-fa-transform="shrink-11 right-9 up-4 rotate--45"></i>
+											</span><span th:text="#{commerce.home.menu.payment.customer}">Customer Payment</span></a>
 										</div>
 									</div>
 								</div>

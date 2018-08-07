@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customer_payment_receipt" pageWidth="594" pageHeight="422" orientation="Landscape" columnWidth="580" leftMargin="14" rightMargin="0" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
+	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="accountBean" class="com.punj.app.ecommerce.models.financials.AccountHeadBean">
+		<fieldDescription><![CDATA[accountBean]]></fieldDescription>
+	</field>
+	<field name="locationBean" class="com.punj.app.ecommerce.models.common.LocationBean">
+		<fieldDescription><![CDATA[locationBean]]></fieldDescription>
+	</field>
+	<field name="journalBean" class="com.punj.app.ecommerce.models.financials.AccountJournalBean">
+		<fieldDescription><![CDATA[journalBean]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<rectangle>
+				<reportElement x="-14" y="0" width="594" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="90" y="0" width="400" height="18" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{locationBean}.getLocationId()+" - "+$F{locationBean}.getName()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="20" width="400" height="11" uuid="8f54dff4-7760-4e57-8057-8d7925464f4e"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{locationBean}.getAddress1()+", "+$F{locationBean}.getCity()+", "+$F{locationBean}.getState()+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="33" width="400" height="11" uuid="38491bf6-f59b-467a-81a1-787b7ba5904c"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Phone: "+$F{locationBean}.getTelephone1()+", Email: " +$F{locationBean}.getEmail()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-8" y="33" width="100" height="11" uuid="56642454-8dd1-4ae0-b433-2a7e05a11f05"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{locationBean}.getGstNo()!=null && $F{locationBean}.getGstNo()!=""?"GSTIN: "+$F{locationBean}.getGstNo():""]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="34" splitType="Stretch">
+			<textField>
+				<reportElement x="72" y="5" width="80" height="11" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getJournalId()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="254" y="4" width="100" height="11" uuid="e4a9d15c-effa-455f-bb5f-2843adc25d9e"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : Customer Payment"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="4" width="48" height="11" uuid="853f30af-900f-4c49-be13-e312746a8103"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Payment No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="4" width="40" height="11" uuid="d193960a-6ce3-41d5-8e4a-84a78934d511"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Bill Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="435" y="4" width="36" height="11" uuid="ad9a1b14-da01-4a09-adfd-acb1b2b207a4"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<textField pattern=" : MMM d, yyyy h:mm:ss a">
+				<reportElement x="472" y="4" width="94" height="11" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getCreatedDate()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="472" y="19" width="94" height="11" uuid="92e984d4-0a1c-442b-8d3f-848d32070dd7"/>
+				<textElement>
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getCreatedBy()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="435" y="19" width="36" height="11" uuid="e06afa84-4ef5-4be9-85e4-4c2faf11e848"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Cashier]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="274" splitType="Stretch">
+			<textField>
+				<reportElement x="72" y="11" width="100" height="11" uuid="018fefdf-fe12-4259-a58e-4236a92743ce"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : "+$F{accountBean}.getEntityName()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="11" width="48" height="14" uuid="04899ccf-1e68-4552-92c7-5efcf6fbe799"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Paid To]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="72" y="31" width="208" height="11" uuid="4375a073-6a44-4c5a-bc80-8f406eb1aedc"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getJournalType()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="31" width="70" height="14" uuid="fc140362-6b56-4295-97dd-64f947e8660a"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[For the purpose of]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="71" y="51" width="418" height="24" uuid="b3a3b3b4-4013-4bfc-adc0-15ff8b8f76d2"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getRemarks()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="51" width="60" height="14" uuid="2c0990b6-4ea7-442e-959a-30ca28ef1aab"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="1" y="122" width="565" height="148" uuid="93af2007-1f21-4096-a382-bd973ec783c7"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{journalBean}.getPaymentTenders())]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
+			</subreport>
+			<rectangle>
+				<reportElement x="-14" y="102" width="594" height="20" forecolor="#000000" backcolor="#ACDBFC" uuid="93a754d3-7c28-4802-9c39-a6e8428a565a"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="105" width="20" height="14" uuid="ee194fe9-53df-46e5-b5eb-d671ff4db1ae"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="25" y="105" width="100" height="14" uuid="ee194fe9-53df-46e5-b5eb-d671ff4db1ae"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Payment Method]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="105" width="140" height="14" uuid="e980695a-1e06-48ec-8c79-5bb6aa42459c"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Account#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="105" width="200" height="14" uuid="da1377e2-99c6-475a-a06d-b83ed814be8c"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="105" width="80" height="14" uuid="270edc18-68ee-42c2-9957-bb11eb74ff2f"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<textField pattern=" : INR  ##########.00">
+				<reportElement x="72" y="82" width="208" height="11" uuid="9fe64e6a-c140-4385-b7e4-69c877775bf9"/>
+				<textElement>
+					<font fontName="Calibri" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{journalBean}.getAmount()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="81" width="72" height="14" uuid="7fb4bd58-4211-4dff-9c99-10920b4a546b"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Amount]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-14" y="2" width="594" height="1" uuid="b22946e2-6172-47fb-9566-fd72e59acf81"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="34" splitType="Stretch">
+			<textField>
+				<reportElement x="460" y="2" width="60" height="11" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{commerce.screen.sale.receipt.printed.by}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="434" y="22" width="112" height="10" uuid="b79efd19-e870-4213-b7bf-0e4b8bbdc523"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{journalBean}.getPrintedBy()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-14" y="0" width="594" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>
