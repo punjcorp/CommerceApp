@@ -298,13 +298,7 @@ public class OrderServiceImpl implements OrderService {
 		finalOrders = this.orderRepository.save(finalOrders);
 		if (finalOrders != null && !finalOrders.isEmpty()) {
 			logger.info("All the {} purchase orders has been approved now", finalOrders.size());
-			/*List<AccountHead> accountHeads = this.getOrderAccounts(finalOrders);
-			accountHeads = this.paymentService.updateAccountsDue(accountHeads, username);
-			if (accountHeads != null && !accountHeads.isEmpty()) {
-				logger.info("All the order accounts has been updated for the due amounts");
-			} else {
-				logger.info("There was some errors while updating order accounts for the due amounts");
-			}*/
+			
 		}
 
 		return finalOrders;

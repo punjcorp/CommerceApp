@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.order.return.add.title}">Order Return Creation Screen</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<link rel="stylesheet" href="../../css/utils/datatables.min.css" th:href="@{/css/utils/datatables.min.css}" />
+<script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../js/parsley.min.js" th:src="@{/js/parsley.min.js}"></script>
+<script src="../../js/moment.js" th:src="@{/js/moment.js}"></script>
+<script src="../../js/utils/pdfmake.min.js" th:src="@{/js/utils/pdfmake.min.js}"></script>
+<script src="../../js/utils/vfs_fonts.js" th:src="@{/js/utils/vfs_fonts.js}"></script>
+<script src="../../js/utils/datatables.min.js" th:src="@{/js/utils/datatables.min.js}"></script>
+<script src="../../js/order/returns/order_return_classes.js" th:src="@{/js/order/returns/order_return_classes.js}"></script>
+<script src="../../js/order/returns/order_return.js" th:src="@{/js/order/returns/order_return.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper-no-menu">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<form class="form" id="addForm" action="#" th:action="@{/admin/add_order_return}" th:object="${returnDTO}" method="post" th:if="${returnDTO!=null}">
+				<div class="row m-3">
+					<div class="col">
+						<div class="card">
+							<div class="card-header">
+								<h3 th:text="#{commerce.screen.order.return.add.header}">Provide details for Order Return Creation</h3>
+							</div>
+							<div class="card-body">
+								<div class="card-text">
+									<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+									<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+									<div id="orderActions" class="col-12 p-4" th:if="${ alert!=null}">
+										<a th:href="@{/admin/edit_order_return(orderReturnId=${returnDTO.orderReturn.orderReturnId})}" class="btn btn-sm btn-info"
+											th:if="${returnDTO.orderReturn.status=='C'}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt"
+													data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-pencil-alt"
+													data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span>
+										</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_order_return}" class="btn btn-sm btn-success"><span
+											class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i
+													class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span>
+										</span> <span th:text="#{commerce.home.menu.add.order.return}"></span></a> <a th:href="@{/admin/manage_order_return}" class="btn btn-sm btn-success"> <span
+											class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i
+													class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span>
+										</span> <span th:text="#{commerce.home.menu.search.order.return}"></span>
+										</a>
+									</div>
+									<div class="row">
+										<div class="col-6">
+											<div class="form-group text-left">
+												<label><small><span th:text="#{commerce.screen.order.id}">Order Id</span></small></label>
+												<div class="input-group text-left">
+													<label><h5>
+															<span id="lbl_orderId" th:text="${returnDTO.orderReturn.orderId}"></span> 
+															<input type="hidden" th:field="*{orderReturn.orderId}"></input>
+															<input type="hidden" th:field="*{orderReturn.orderReturnId}"></input>
+															<input type="hidden" th:field="*{orderReturn.status}"></input>
+															<input type="hidden" th:field="*{orderReturn.createdBy}"></input>
+															<input type="hidden" th:field="*{orderReturn.createdDate}"></input>
+														</h5></label>
+												</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group text-left">
+												<label for="locationId"><small><span th:text="#{commerce.screen.common.location}">Location </span></small></label>
+												<div class="input-group">
+													<input type="hidden" th:field="*{orderReturn.order.locationId}"></input> <span
+														th:text="${returnDTO.orderReturn.order.locationId +' - '+ returnDTO.orderReturn.order.locationName}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<div class="form-group text-left">
+											<label for="searchText"><small><span th:text="#{commerce.screen.supplier.searchtext}">Supplier</span></small></label>
+											<div class="input-group">
+
+												<input type="hidden" th:field="*{orderReturn.order.supplierId}"></input> <span
+													th:text="${returnDTO.orderReturn.order.supplierId +' - '+ returnDTO.orderReturn.order.supplierName}"></span>
+											</div>
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.comments}">Comments</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{orderReturn.order.comments}"></input> <span th:text="${returnDTO.orderReturn.order.comments}"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-6">
+
+										<div class="form-group">
+											<label for="reasonCodeId"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.reason}"></span></small></label>
+											<div class="input-group text-left">
+												<select th:field="*{orderReturn.reasonCodeId}" class="form-control input-sm">
+													<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.order.return.reason}">Select Order Return
+													Reason Code</option>
+													<option th:each="reasonCode: ${returnDTO.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="${reasonCode.name}"></option>
+												</select>
+											</div>
+											<small th:if="${#fields.hasErrors('orderReturn.reasonCodeId')}" th:errors="*{orderReturn.reasonCodeId}" class="text-danger">Reason Code Error
+											</small>
+										</div>
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<div class="form-group">
+											<label><small><span th:text="#{commerce.screen.order.return.comments}">Order Return Comments</span></small></label>
+											<div class="input-group text-left">
+												<textarea rows="4" th:field="*{orderReturn.comments}" class="form-control input-sm" th:placeholder="#{commerce.screen.order.comments.placeholder}"></textarea>
+											</div>
+											<div id="commentsMsg"></div>
+										</div>
+									</div>
+								</div>
+								<div class="text-right">
+									<div class="form-group">
+										<button type="button" id="btnSearchReturnItem" class="btn btn-outline-secondary mx-2"
+											th:if="${returnDTO.orderReturn==null or returnDTO.orderReturn.orderReturnItems==null}">
+											<i class="fas fa-plus fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.add.return.items}"></span>
+										</button>
+									</div>
+								</div>
+								<div th:class="${returnDTO.orderReturn.orderReturnItems!=null?'orderitem':'orderitem d-none'}" id="selectedReturnItem"></div>
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-4">
+										<div class="form-group">
+											<label></label>
+											<div class="input-group text-left">
+												<button type="submit" id="btnSaveOrderReturn" name="saveOrderReturn" value="Save" class="btn btn-info mx-2"
+													th:if="${returnDTO.orderReturn.status==null || returnDTO.orderReturn.status=='C'}">
+													<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
+												</button>
+												<button type="submit" id="btnApproveOrderReturn" name="approveOrderReturn" value="Approve" class="btn btn-info"
+													th:if="${returnDTO.orderReturn.status==null || returnDTO.orderReturn.status=='C'}">
+													<i class="fas fa-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-3">
+						<div id="supplierDetails" th:class="${returnDTO.orderReturn.order.supplier.supplierId==null}?'d-none':''">
+							<div class="card border-box-filled">
+								<input type="hidden" th:field="*{orderReturn.order.supplier.supplierId}"></input> <input type="hidden" th:field="*{orderReturn.order.supplier.name}"></input>
+								<input type="hidden" th:field="*{orderReturn.order.supplier.phone1}"></input> <input type="hidden" th:field="*{orderReturn.order.supplier.phone2}"></input>
+								<input type="hidden" th:field="*{orderReturn.order.supplier.email}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.addressId}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.addressType}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.primary}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.address1}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.address2}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.city}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.state}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.country}"></input> <input type="hidden"
+									th:field="*{orderReturn.order.supplier.primaryAddress.pincode}"></input>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-4">
+											<div class="card-text my-3">
+												<div class="fa-3x">
+													<span class="fa-layers fa-fw"> <i class="fas fa-map-marker"></i> <i class="fas fa-circle color-blue" data-fa-transform="shrink-10 up-2"></i></span>
+												</div>
+											</div>
+										</div>
+										<div class="col-8">
+											<div class="row">
+												<div class="col-2">
+													<i class="fas fa-address-card"></i>
+												</div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryAddress1" th:text="${returnDTO.orderReturn.order.supplier.primaryAddress.address1}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row" th:if="${returnDTO.orderReturn.order.supplier.primaryAddress.address2!=null}">
+												<div class="col-2"></div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryAddress2" th:text="${returnDTO.orderReturn.order.supplier.primaryAddress.address2}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2"></div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryCity" th:text="${returnDTO.orderReturn.order.supplier.primaryAddress.city}"></span>, <span
+															th:text="${returnDTO.orderReturn.order.supplier.primaryAddress.state}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2"></div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="primaryCountry" th:text="${returnDTO.orderReturn.order.supplier.primaryAddress.country}"></span>, <span
+															th:text="${returnDTO.orderReturn.order.supplier.primaryAddress.pincode}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2">
+													<i class="fas fa-phone" data-fa-transform="flip-h"></i>
+												</div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="supplierPhone" th:text="${returnDTO.orderReturn.order.supplier.phone1}"></span></small>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-2">
+													<i class="fas fa-envelope"></i>
+												</div>
+												<div class="col text-left">
+													<div class="card-text">
+														<small><span id="supplierEmail" th:text="${returnDTO.orderReturn.order.supplier.email}"></span></small>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<div class="card-text text-center">
+												<br /> <br />
+												<h4>
+													<span th:text="#{commerce.screen.order.supplier.address}"></span>
+												</h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="orderTotals" th:class="${returnDTO.orderReturn.orderReturnItems==null?'card border-box-filled d-none':'card border-box-filled'}">
+
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.order.add.total.subtotal}">Sub Total Cost</span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{orderReturn.estimatedCost}"></input> <label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_estimatedCost" th:text="${returnDTO.orderReturn.estimatedCost}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.order.add.total.discount}">Total Discount</span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{orderReturn.discountAmount}"></input> <label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_discountAmount" th:text="${returnDTO.orderReturn.discountAmount}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.order.add.total.tax.sgst}">Total SGST Tax</span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{orderReturn.sgstTaxAmount}"></input> <label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_sgstTaxAmount" th:text="${returnDTO.orderReturn.sgstTaxAmount}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.order.add.total.tax.cgst}">Total CGST Tax</span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{orderReturn.cgstTaxAmount}"></input> <label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_cgstTaxAmount" th:text="${returnDTO.orderReturn.cgstTaxAmount}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.order.add.total.tax}">Total Tax</span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{orderReturn.taxAmount}"></input> <label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_taxAmount" th:text="${returnDTO.orderReturn.taxAmount}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label><small><span th:text="#{commerce.screen.order.add.total.amount}">Total Amount</span></small></label>
+										<div class="input-group text-left">
+											<input type="hidden" th:field="*{orderReturn.totalAmount}"></input> <label><h5>
+													<span th:text="#{commerce.screen.common.currency.inr}"></span> <span id="lbl_totalAmount" th:text="${returnDTO.orderReturn.totalAmount}"></span>
+												</h5></label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+
+	<!-- Order Item Selection Lookup Modal-->
+	<div class="modal fade " id="orderItemReportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.order.return.item.selection}"> Return Item Selection</span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body text-center">
+					<div id="orderItemDetailsSelection">
+
+						<table id="orderItemsTable" class="table table-hover table-stripped" width="100%">
+							<thead>
+								<tr>
+									<th></th>
+									<!-- <th scope="col"><span th:text="#{commerce.screen.lookup.account.serial}"></span></th> -->
+									<th scope="col"><span th:text="#{commerce.screen.order.item.itemid}"></span></th>
+									<th scope="col-2"><span th:text="#{commerce.screen.order.item.desc}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.order.item.qty}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.order.unit.cost}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.order.item.cost}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.order.item.discount}"></span></th>
+									<th scope="col-1"><span th:text="#{commerce.screen.order.item.sgst}"></span></th>
+									<th scope="col-1"><span th:text="#{commerce.screen.order.item.cgst}"></span></th>
+									<th scope="col-3"><span th:text="#{commerce.screen.order.item.total}"></span></th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="orderItem,itrStat:${returnDTO.orderReturn.order.orderItems}">
+									<tr>
+										<td></td>
+										<!-- <td><span th:text="${itrStat.index+1}"></span></td> -->
+										<td><span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].itemId}"></span></td>
+										<td>
+											<div class="form-group text-left">
+												<div class="input-group">
+													<small><span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].itemDesc}"></span></small> <input type="hidden"
+														th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].orderItemId}"></input> <input type="hidden"
+														th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
+														th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].itemId}"></input>
+												</div>
+											</div>
+										</td>
+										<td><div class="form-group">
+												<span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].delieveredQty}"></span> <input type="hidden"
+													th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].delieveredQty}"></input>
+											</div></td>
+										<td><div class="form-group">
+												<span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualUnitCost}"></span> <input type="hidden"
+													th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualUnitCost}"></input>
+
+											</div></td>
+										<td><div class="form-group">
+												<label> <span th:text="#{commerce.screen.common.currency.inr}"></span> <span
+													th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualCostAmount}"></span> <input type="hidden"
+													th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualCostAmount}"></input>
+												</label>
+											</div></td>
+										<td><div class="form-group">
+												<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span
+													th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualDiscountAmount}"></span></label>
+											</div></td>
+										
+										<td><div class="form-group">
+												<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span
+													th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstActualTaxAmount}"></span></label>
+												<div>
+													<small>(<span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstRate}"></span> %)
+													</small>
+												</div>
+											</div></td>
+										<td>
+											<div class="form-group">
+												<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span
+													th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstActualTaxAmount}"></span></label>
+												<div>
+													<small>(<span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstRate}"></span> %)
+													</small>
+												</div>
+
+											</div>
+										</td>
+										<td>
+											<div class="form-group">
+												<label><h6>
+														<span th:text="#{commerce.screen.common.currency.inr}"></span> <span
+															th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualTotalCost}"></span>
+													</h6></label> <input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualTotalCost}"></input> <span> </span>
+
+											</div>
+										</td>
+
+									</tr>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstTaxAmount}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstTaxAmount}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].igstTaxAmount}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].taxGroupId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstCode}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstCode}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].igstCode}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstRateRuleId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstRateRuleId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].igstRateRuleId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstRate}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstRate}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].igstRate}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstTaxId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].cgstTaxId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].igstTaxId}"></input>
+									<input type="hidden" th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].taxAmount}"></input>
+								</th:block>
+							</tbody>
+						</table>
+
+
+
+
+
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						<span th:text="#{commerce.btn.close}"></span>
+					</button>
+					<button type="button" id="btnChooseItems" class="btn btn-primary">
+						<span th:text="#{commerce.btn.choose.return.item}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /#wrapper -->
+
+
+
+	<!-- Order Report Lookup Modal-->
+	<div class="modal fade " id="orderReportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.order.return.report.print}"> Order Return Report Print</span>
+					</h5>
+				</div>
+				<div class="modal-body text-center">
+					<div id="receiptActions" class="col-12 text-center">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewOrderReturnReport">
+							<div class="fa-5x">
+								<i class="fas fa-receipt"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReportAndNewOrderReturn">
+							<div class="fa-5x">
+								<i class="fas fa-print"></i>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnEditOrderReturn" th:if="${returnDTO.orderReturn.status=='C'}">
+							<div class="fa-5x">
+								<span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint"
+									data-fa-transform="shrink-8"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnApproveOrderReturn" th:if="${returnDTO.orderReturn.status=='C'}">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint"
+									data-fa-transform="shrink-8"></i> <i class="fas fa-check" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewOrderReturn">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint"
+									data-fa-transform="shrink-8"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnSearchOrderReturn">
+							<div class="fa-5x mr-2">
+								<span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint"
+									data-fa-transform="shrink-8"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span>
+							</div>
+						</button>
+
+					</div>
+					<div class="col-12 d-none text-center" id="progressDiv">
+						<i class="fas fa-cog fa-spin fa-5x"></i>
+						<div>
+							<span th:text="#{commerce.screen.order.report.generate}"></span>
+						</div>
+					</div>
+					<iframe id="reportPDFContainer" class="p-5" width="90%" height="85%" frameBorder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /#wrapper -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+
+		var txn_orderId = /*[[${returnDTO.orderReturn.orderReturnId}]]*/;
+		var order_items = /*[[${returnDTO.orderReturn.order.orderItems}]]*/;
+		var order_item_taxes = /*[[${returnDTO.orderReturn.order.orderItemTaxes}]]*/;
+		var return_reason_codes = /*[[${returnDTO.reasonCodes}]]*/;
+		
+		var newOrderReturnURL = /*[[@{/admin/add_order_return}]]*/;
+		var searchOrderReturnURL = /*[[@{/admin/manage_order_return}]]*/;
+		var editOrderReturnURL = /*[[@{/admin/edit_order_return(orderReturnId)}]]*/;
+		var approveOrderReturnURL = /*[[@{/admin/approve_order_return(orderReturnId)}]]*/;
+		var txn_success = /*[[${success}]]*/;
+		
+		
+		
+		var print_rcpt_url= /*[[@{/admin/print_order_return_report(orderReturnId)}]]*/;
+		var view_rcpt_url= /*[[@{/admin/view_order_return_report(orderReturnId)}]]*/;
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;	
+		
+		
+		if(txn_success && txn_success!=undefined && txn_success!=''){
+			postOrderReturnSave();
+		}
+		
+		/*]]>*/
+	</script>
+</body>
+</html>

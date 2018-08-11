@@ -66,6 +66,19 @@ $(function() {
 									return_txn_validate_amount_refund : 'The refunded amount should be more than ₹ 0.00',
 									error_simple_success_header : 'Success Message',
 									customer_add_success : 'The customer details has been added and associated with transactions. However, the details will be saved along with transaction details',
+									screeen_lbl_common_serial : 'S',
+									screeen_lbl_order_item_id : 'Item Id',
+									screeen_lbl_order_item_desc : 'Item Description',
+									screeen_lbl_order_item_details : 'Item Details',
+									screeen_lbl_order_quantity : 'Quantity',
+									screeen_lbl_order_unit_cost : 'Unit Cost',
+									screeen_lbl_order_item_cost : 'Item Cost',
+									screeen_lbl_order_discount : 'Discount',
+									screeen_lbl_order_item_tax : 'Item Tax',
+									screeen_lbl_order_item_total : 'Item Total',
+									screeen_order_return_validate_qty : 'The quantity should be a greater than zero and less than or equal to original order\'s received quantity.Please correct the quantity.',
+									screeen_lbl_order_return_reason_code_select : 'Select Return Reason Code',
+									screeen_lbl_order_return_reason_code : 'Reason Code',
 								}
 							},
 							hi : {
@@ -120,6 +133,16 @@ $(function() {
 									return_txn_validate_amount_refund : 'धनवापसी राशि ₹0.00 से अधिक होनी चाहिए',
 									error_simple_success_header : 'सफल संदेश',
 									customer_add_success : 'ग्राहक विवरण लेनदेन विधि के साथ जोड़ दिया गया है। हालांकि, विवरण लेनदेन विधि के विवरण के साथ बचाया जाएगा',
+									screeen_lbl_common_serial : 'S#',
+									screeen_lbl_order_item_id : 'Item Id',
+									screeen_lbl_order_item_desc : 'Item Description',
+									screeen_lbl_order_item_details : 'Item Details',
+									screeen_lbl_order_quantity : 'Quantity',
+									screeen_lbl_order_unit_cost : 'Unit Cost',
+									screeen_lbl_order_item_cost : 'Item Cost',
+									screeen_lbl_order_discount : 'Discount',
+									screeen_lbl_order_item_tax : 'Item Tax',
+									screeen_lbl_order_item_total : 'Item Total',
 								}
 							},
 							pa : {
@@ -174,6 +197,16 @@ $(function() {
 									return_txn_validate_amount_refund : 'ਵਾਪਸੀ ਲਈ ਰਕਮ ਰੁ.0.00 ਤੋਂ ਵੱਧ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ',
 									error_simple_success_header : 'ਸਫਲ ਸੁਨੇਹਾ',
 									customer_add_success : 'ਗਾਹਕਾਂ ਦੇ ਵੇਰਵੇ ਟ੍ਰਾਂਜੈਕਸ਼ਨ ਨਾਲ ਸੰਬੰਧਿਤ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ. ਹਾਲਾਂਕਿ, ਵੇਰਵੇ ਟ੍ਰਾਂਜੈਕਸ਼ਨ ਵੇਰਵੇ ਦੇ ਨਾਲ ਸੰਭਾਲੇ ਜਾਣਗੇ',
+									screeen_lbl_common_serial : 'S#',
+									screeen_lbl_order_item_id : 'Item Id',
+									screeen_lbl_order_item_desc : 'Item Description',
+									screeen_lbl_order_item_details : 'Item Details',
+									screeen_lbl_order_quantity : 'Quantity',
+									screeen_lbl_order_unit_cost : 'Unit Cost',
+									screeen_lbl_order_item_cost : 'Item Cost',
+									screeen_lbl_order_discount : 'Discount',
+									screeen_lbl_order_item_tax : 'Item Tax',
+									screeen_lbl_order_item_total : 'Item Total',
 								}
 							}
 						}

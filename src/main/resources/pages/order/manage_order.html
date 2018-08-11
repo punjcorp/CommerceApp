@@ -121,7 +121,16 @@
 															class="btn btn-danger btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
 																	class="far fa-file-powerpoint"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-10 up-4"></i>
 															</span>
-														</span><span th:text="#{commerce.screen.actions.delete}">Delete</span></a> <a th:if="${orders.orders[__${itrStat.index}__].status=='C'}"
+														</span><span th:text="#{commerce.screen.actions.delete}">Delete</span></a> 
+														
+														<a th:if="${orders.orders[__${itrStat.index}__].status=='R'}"
+															th:href="@{/admin/add_order_return(orderId=${orders.orders[__${itrStat.index}__].orderId})}" 
+															class="btn btn-secondary btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt"
+													data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+															</span>
+														</span><span th:text="#{commerce.screen.actions.create.return}">Create Return</span></a>
+														
+														<a th:if="${orders.orders[__${itrStat.index}__].status=='C'}"
 															th:href="@{/admin/edit_order(orderId=${orders.orders[__${itrStat.index}__].orderId})}" href="../order/edit_order.html"
 															class="btn btn-secondary btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
 																	class="far fa-file-powerpoint"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>

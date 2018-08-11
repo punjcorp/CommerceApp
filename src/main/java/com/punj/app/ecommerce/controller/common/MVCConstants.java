@@ -111,6 +111,8 @@ public final class MVCConstants {
 	public static final String B_DATE_PARAM="businessDate";
 	public static final String DEFAULT_TENDER_PARAM="defaultTender";
 	public static final String REASON_CODE_ID_PARAM="reasonCodeId";
+	
+	public static final String REASON_TYPE_PO_RETURN="POR";
 
 	
 	public static final String AJAX_STATUS_FAILURE="F";
@@ -158,6 +160,9 @@ public final class MVCConstants {
 	public static final String DELETE_ACCOUNTS_PARAM= "deleteAccounts";
 	public static final String DISABLE_ACCOUNTS_PARAM= "disableAccounts";
 	
+	public static final String SAVE_ORDER_RETURN_PARAM= "saveOrderReturn";
+	public static final String APPROVE_ORDER_RETURN_PARAM= "approveOrderReturn";
+	
 	public static final String ORDER_BILL_PARAM= "billId";
 	public static final String ADD_ORDER_ITEM_PARAM= "addOrderItem";
 	public static final String REMOVE_ORDER_ITEM_PARAM= "removeOrderItem";
@@ -171,6 +176,7 @@ public final class MVCConstants {
 	public static final String RECEIVE_ORDER_PARAM= "receiveOrder";
 	public static final String RECEIVE_ALL_ORDERS_PARAM="receiveAllOrder";
 	public static final String ORDER_ID_PARAM= "orderId";
+	public static final String ORDER_RETURN_ID_PARAM= "orderReturnId";
 	public static final String USERNAME_PARAM= "username";
 	public static final String PASSWORD_BEAN_PARAM= "passwordBean";
 	public static final String USER_PASSWORD_BEAN_PARAM= "userDetails";
@@ -283,6 +289,7 @@ public final class MVCConstants {
 	public static final String LAST_ORDER_REPORT_JASPER= "lastOrderReportJasper";
 	public static final String LAST_ORDER_REPORT_PDF= "lastOrderReportPDF";
 	public static final String ORDER_BEAN_DTO= "orderBeanDTO";
+	public static final String ORDER_RETURN_BEAN_DTO= "returnDTO";
 	public static final String ORDER_BEAN= "orderBean";
 	public static final String CARD_BEAN="cardBean";
 	public static final String SUPPLIER_BEAN= "supplierBean";

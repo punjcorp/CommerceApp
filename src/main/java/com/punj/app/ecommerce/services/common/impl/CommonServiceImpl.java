@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.ReasonCode;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
@@ -39,6 +40,7 @@ import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.repositories.common.DenominationRepository;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
+import com.punj.app.ecommerce.repositories.common.ReasonCodeRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
 import com.punj.app.ecommerce.repositories.common.RegisterRepository;
 import com.punj.app.ecommerce.repositories.common.UOMRepository;
@@ -72,6 +74,7 @@ public class CommonServiceImpl implements CommonService {
 	private IdGeneratorRepository idGenRepository;
 	private TenderRepository tenderRepository;
 	private ReasonSearchRepository reasonRepository;
+	private ReasonCodeRepository reasonCodeRepository;
 	private ItemLocTaxRepository itemLocTaxRepository;
 	private SupplierItemRepository supItemRepository;
 	private TaxGroupRepository taxGroupRepository;
@@ -159,6 +162,15 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	public void setReasonRepository(ReasonSearchRepository reasonRepository) {
 		this.reasonRepository = reasonRepository;
+	}
+
+	/**
+	 * @param reasonCodeRepository
+	 *            the reasonCodeRepository to set
+	 */
+	@Autowired
+	public void setReasonCodeRepository(ReasonCodeRepository reasonCodeRepository) {
+		this.reasonCodeRepository = reasonCodeRepository;
 	}
 
 	/**
@@ -306,8 +318,8 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId) {
 		logger.info("The method to retrieve all the locations with last txn Status has been called");
-		Integer regKey=null;
-		Transaction txnDetails=null;
+		Integer regKey = null;
+		Transaction txnDetails = null;
 		RegisterDTO registerDTO = new RegisterDTO();
 		Register registerCriteria = new Register();
 		RegisterId registerId = new RegisterId();
@@ -316,25 +328,24 @@ public class CommonServiceImpl implements CommonService {
 
 		List<Register> registers = this.registerRepository.findAll(Example.of(registerCriteria));
 		registerDTO.setRegisters(registers);
-		
+
 		Map<Integer, Transaction> registerLastTxnMap = this.retrieveRegisterTxnStatus(locationId, registers);
-		if(registers!=null && !registers.isEmpty() && registerLastTxnMap!=null && !registerLastTxnMap.isEmpty()) {
+		if (registers != null && !registers.isEmpty() && registerLastTxnMap != null && !registerLastTxnMap.isEmpty()) {
 			registerDTO.setLastTxnStatus(registerLastTxnMap);
-			
-			for(Register register: registers) {
-				regKey=register.getRegisterId().getRegister();
-				txnDetails=registerLastTxnMap.get(regKey);
-				if(txnDetails!=null && !txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+
+			for (Register register : registers) {
+				regKey = register.getRegisterId().getRegister();
+				txnDetails = registerLastTxnMap.get(regKey);
+				if (txnDetails != null && !txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
 					registerDTO.setAllRegisterClosed(Boolean.FALSE);
 					break;
-				}else {
+				} else {
 					registerDTO.setAllRegisterClosed(Boolean.TRUE);
 				}
 			}
-		}else {
+		} else {
 			logger.error("There were no registers found for the store to perform the operations");
 		}
-		
 
 		logger.info("All the register details with daily status has been retrieved successfully");
 		return registerDTO;
@@ -350,18 +361,18 @@ public class CommonServiceImpl implements CommonService {
 			DailyTotals dailyTotalCriteria = new DailyTotals();
 			dailyTotalCriteria.setBusinessDate(businessDate);
 			dailyTotalCriteria.setLocationId(locationId);
-			List<DailyTotals> storeTotals=this.financeService.retrieveDailyTotals(dailyTotalCriteria);
-			Map<Integer, DailyTotals> regTotals=new HashMap<>();
-			if(storeTotals!=null && !storeTotals.isEmpty()) {
-				for(DailyTotals dailyTotal: storeTotals) {
-					if(dailyTotal.getRegisterId()!=null)
+			List<DailyTotals> storeTotals = this.financeService.retrieveDailyTotals(dailyTotalCriteria);
+			Map<Integer, DailyTotals> regTotals = new HashMap<>();
+			if (storeTotals != null && !storeTotals.isEmpty()) {
+				for (DailyTotals dailyTotal : storeTotals) {
+					if (dailyTotal.getRegisterId() != null)
 						regTotals.put(dailyTotal.getRegisterId(), dailyTotal);
 				}
 			}
 			registerDTO.setRegTotals(regTotals);
 			logger.info("The register totals has been added to register DTO object successfully");
-			
-		}else {
+
+		} else {
 			logger.info("There were no details found for any of the registers for location {}.", locationId);
 		}
 
@@ -558,20 +569,31 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public List<Register> retrieveRegisters(Integer locationId) {
-		
-		Register registerCriteria=new Register();
-		RegisterId registerId=new RegisterId();
+
+		Register registerCriteria = new Register();
+		RegisterId registerId = new RegisterId();
 		registerId.setLocationId(locationId);
-		
+
 		registerCriteria.setRegisterId(registerId);
-		
-		List<Register> registers=this.registerRepository.findAll(Example.of(registerCriteria));
-		
+
+		List<Register> registers = this.registerRepository.findAll(Example.of(registerCriteria));
+
 		if (registers != null && !registers.isEmpty())
 			logger.info("All the registers for location {} has been retrieved successfully", locationId);
 		else
 			logger.info("There is no register existing for the {} location", locationId);
 		return registers;
+	}
+
+	@Override
+	public List<ReasonCode> retrieveReasonCodes(ReasonCode reasonCodeCriteria) {
+		List<ReasonCode> reasonCodes=this.reasonCodeRepository.findAll(Example.of(reasonCodeCriteria));
+		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+			logger.info("The requested reason codes has been retrieved successfully");
+		}else {
+			logger.info("The requested reason codes were not found");
+		}
+		return reasonCodes;
 	}
 
 }

@@ -110,6 +110,24 @@ public final class ViewPathConstants {
 	/**
 	 * The purchase order pages section ends
 	 */
+	
+	/**
+	 * The purchase order returns pages section starts
+	 */
+	public static final String SEARCH_ORDER_RETURN_URL = "/admin/search_order_return";
+	public static final String MANAGE_ORDER_RETURN_PAGE = "order/returns/manage_order_return";
+	public static final String MANAGE_ORDER_RETURN_URL= "/admin/manage_order_return";
+	
+	public static final String ADD_ORDER_RETURN_URL = "/admin/add_order_return";
+	public static final String ADD_ORDER_RETURN_PAGE = "order/returns/add_order_return";	
+	
+	public static final String PRINT_ORDER_RETURN_URL = "/admin/print_order_return_report";
+	public static final String VIEW_ORDER_RETURN_URL = "/admin/view_order_return_report";
+	/**
+	 * The purchase order returns pages section ends
+	 */	
+	
+	
 	/**
 	 * The supplier pages section starts
 	 */

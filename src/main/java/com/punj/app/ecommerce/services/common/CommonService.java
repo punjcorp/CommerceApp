@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.ReasonCode;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
@@ -35,15 +36,15 @@ public interface CommonService {
 	public LocationDTO retrieveLocationWithDailyStatus();
 
 	public List<Register> retrieveRegisters(Integer locationId);
-	
+
 	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId);
-	
+
 	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate);
 
 	public List<Tender> retrieveAllTenders(Integer locationId);
 
 	public Map<Integer, Tender> retrieveAllTendersAsMap(Integer locationId);
-	
+
 	public Map<String, Tender> retrieveAllTenderNamesAsMap(Integer locationId);
 
 	public List<Tender> retrieveTendersForReconcilation(Integer locationId);
@@ -53,6 +54,8 @@ public interface CommonService {
 	public BigInteger getNewTxn(Integer locationId, Integer register);
 
 	public BigInteger resetId(String name);
+
+	public List<ReasonCode> retrieveReasonCodes(ReasonCode reasonCodeCriteria);
 
 	public ReasonDTO retrieveReasonCodes(String searchText, Pager pager);
 

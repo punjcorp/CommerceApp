@@ -28,21 +28,25 @@ public class ValidationGroup {
 	public interface ValidationGroupSKU {
 
 	}
-	
-	public interface ValidationGroupStoreOpen{
-		
-	}	
-	
-	public interface ValidationGroupRegOpen{
-		
+
+	public interface ValidationGroupStoreOpen {
+
 	}
-	
-	public interface VGReceiveOrder{
-		
+
+	public interface ValidationGroupRegOpen {
+
 	}
-	
-	public interface VGAddOrder{
-		
+
+	public interface VGReceiveOrder {
+
+	}
+
+	public interface VGAddOrder {
+
+	}
+
+	public interface VGAddOrderReturn {
+
 	}
 
 }

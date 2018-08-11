@@ -35,6 +35,9 @@ INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Damaged', 'POR', 'This is for damaged item returns', 'admin', '2018-07-26 12:20:17');
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Over Shipped', 'POR', 'This is for over shipment item returns', 'admin', '2018-07-26 12:20:17');
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Bad Quality', 'POR', 'This is for item returns due to bad quality', 'admin', '2018-07-26 12:20:17');
 
 commit;
 
