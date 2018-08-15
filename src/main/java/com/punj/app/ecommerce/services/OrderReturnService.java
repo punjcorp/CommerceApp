@@ -11,6 +11,6 @@ import com.punj.app.ecommerce.domains.order.returns.OrderReturn;
  */
 public interface OrderReturnService {
 
-	public OrderReturn createOrderReturn(OrderReturn orderReturn);
+	public OrderReturn createOrderReturn(OrderReturn orderReturn, String username);
 
 }

@@ -74,6 +74,9 @@ public class OrderItemBean {
 	private BigDecimal delieveredQty;
 	private LocalDateTime delieveredDate;
 
+	private BigDecimal returnedQty;
+	private Boolean isReturnAllowed=Boolean.FALSE;
+	
 	@NotNull(message = "{commerce.error.amount.empty}", groups = { ValidationGroup.VGReceiveOrder.class })
 	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
 	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
@@ -655,6 +658,34 @@ public class OrderItemBean {
 	 */
 	public void setActualMaxRetailPrice(BigDecimal actualMaxRetailPrice) {
 		this.actualMaxRetailPrice = actualMaxRetailPrice;
+	}
+
+	/**
+	 * @return the returnedQty
+	 */
+	public BigDecimal getReturnedQty() {
+		return returnedQty;
+	}
+
+	/**
+	 * @param returnedQty the returnedQty to set
+	 */
+	public void setReturnedQty(BigDecimal returnedQty) {
+		this.returnedQty = returnedQty;
+	}
+
+	/**
+	 * @return the isReturnAllowed
+	 */
+	public Boolean getIsReturnAllowed() {
+		return isReturnAllowed;
+	}
+
+	/**
+	 * @param isReturnAllowed the isReturnAllowed to set
+	 */
+	public void setIsReturnAllowed(Boolean isReturnAllowed) {
+		this.isReturnAllowed = isReturnAllowed;
 	}
 
 }

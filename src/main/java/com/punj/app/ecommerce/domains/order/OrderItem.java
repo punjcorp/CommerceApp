@@ -80,6 +80,9 @@ public class OrderItem implements Serializable {
 	@Column(name = "delievered_date")
 	private LocalDateTime delieveredDate;
 
+	@Column(name = "returned_qty")
+	private BigDecimal returnedQty = BigDecimal.ZERO;
+	
 	// Actual Amounts
 	@Column(name = "actual_cost_amount")
 	private BigDecimal actualCostAmount = BigDecimal.ZERO;
@@ -377,6 +380,20 @@ public class OrderItem implements Serializable {
 	 */
 	public void setActualMaxRetailPrice(BigDecimal actualMaxRetailPrice) {
 		this.actualMaxRetailPrice = actualMaxRetailPrice;
+	}
+
+	/**
+	 * @return the returnedQty
+	 */
+	public BigDecimal getReturnedQty() {
+		return returnedQty;
+	}
+
+	/**
+	 * @param returnedQty the returnedQty to set
+	 */
+	public void setReturnedQty(BigDecimal returnedQty) {
+		this.returnedQty = returnedQty;
 	}
 
 }

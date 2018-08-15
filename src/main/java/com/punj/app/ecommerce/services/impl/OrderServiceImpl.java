@@ -597,4 +597,32 @@ public class OrderServiceImpl implements OrderService {
 		return order;
 	}
 
+	@Override
+	public Order updateReturnedItems(BigInteger orderId, Map<BigInteger, BigDecimal> returnQtyMap, String username) {
+		Order order=this.orderRepository.findOne(orderId);
+		if(order!=null) {
+			
+			BigDecimal actualReturnedQty=null;
+			
+			List<OrderItem> originalOrderItems=order.getOrderItems();
+			for(OrderItem orderItem: originalOrderItems) {
+				actualReturnedQty=returnQtyMap.get(orderItem.getOrderItemId());
+				if(actualReturnedQty!=null)
+					orderItem.setReturnedQty(orderItem.getReturnedQty().add(actualReturnedQty));
+			}
+			order.setModifiedBy(username);
+			order.setModifiedDate(LocalDateTime.now());
+			order=this.orderRepository.save(order);
+			if(order!=null) {
+				logger.info("The order has been updated with the return quantity");
+			}else {
+				logger.info("There was some error while updating the returned quantity for the order");
+			}
+		}else {
+			logger.info("There was some error while updating the returned quantity for the order");
+		}
+		
+		return order;
+	}
+
 }

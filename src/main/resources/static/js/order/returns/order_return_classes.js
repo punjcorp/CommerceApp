@@ -117,7 +117,7 @@ $.extend(OrderReturnItem.prototype, {
 		this.itemId = returnItem.itemId;
 		this.itemName = returnItem.itemDesc;
 		this.itemDesc = returnItem.itemDesc;
-		this.qty = returnItem.delieveredQty;
+		this.qty = returnItem.delieveredQty-returnItem.returnedQty;
 		this.unitCost = returnItem.actualUnitCost;
 		this.price = returnItem.actualCostAmount;
 		this.discount = returnItem.actualDiscountAmount;
@@ -186,18 +186,25 @@ $.extend(OrderReturnItem.prototype, {
 		unitCostHtml += '</div>';
 
 		
-	
+		var globalReason=$('#orderReturn\\.reasonCodeId').val();
 		
 		var itemReasonCodeHtml = '<div class="col padding-sm">';
 		itemReasonCodeHtml += '<div class="form-group"><div class="input-group">';
 		itemReasonCodeHtml += '<select class="form-control form-control-sm " id="orderReturn.orderReturnItems' + sNo + '.reasonCodeId" ';
 		itemReasonCodeHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].reasonCodeId">';
-		itemReasonCodeHtml += '<option class="form-text text-muted" value="" selected="selected">';
+		if(globalReason=="")
+			itemReasonCodeHtml += '<option class="form-text text-muted" value="" selected>';
+		else
+			itemReasonCodeHtml += '<option class="form-text text-muted" value="">';
 		itemReasonCodeHtml += i18next.t('screeen_lbl_order_return_reason_code_select'); 
 		itemReasonCodeHtml += '</option>';
 		
 		$.each(return_reason_codes, function(index, return_reason_code) {
-			itemReasonCodeHtml += '<option value="'+ return_reason_code.reasonCodeId +'">';
+			if(globalReason==return_reason_code.reasonCodeId)
+				itemReasonCodeHtml += '<option value="'+ return_reason_code.reasonCodeId +'" selected>';
+			else
+				itemReasonCodeHtml += '<option value="'+ return_reason_code.reasonCodeId +'">';
+			
 			itemReasonCodeHtml += return_reason_code.name;
 			itemReasonCodeHtml += '</option>';
 		});
@@ -322,9 +329,18 @@ $.extend(OrderReturnItem.prototype, {
 		totalAmtHtml += '"></input>';
 		totalAmtHtml += '</div></div>';
 		totalAmtHtml += '</div>';
+		
+		var deleteHtml= '<div class="col-1">';
+		deleteHtml += '<div class="form-group"><div class="input-group">';
+		deleteHtml += '<button id="btnDelete' + sNo + '" ';
+		deleteHtml += 'type="button" class="btn btn-danger" onClick="deleteReturnItem(';
+		deleteHtml += this.itemId;
+		deleteHtml += ')"><i class="fas fa-trash-alt fa-2x"></i></button>';
+		deleteHtml += '</div></div>';
+		deleteHtml += '</div>';
 
 		finalItemHtml = rowStartHtml + itemSNoHtml + itemDescHtml + itemReasonCodeHtml + itemQtyHtml + unitCostHtml + itemCostHtml;
-		finalItemHtml += discountHtml + sgstTaxHtml + cgstTaxHtml + totalTaxHtml + totalAmtHtml + rowEndHtml;
+		finalItemHtml += discountHtml + sgstTaxHtml + cgstTaxHtml + totalTaxHtml + totalAmtHtml + deleteHtml+ rowEndHtml;
 
 		return finalItemHtml;
 	},
@@ -339,6 +355,7 @@ $.extend(OrderReturnItem.prototype, {
 		headerHtml += '<div class="col padding-sm text-center"><h6>' + i18next.t('screeen_lbl_order_discount') + '</h6></div>';
 		headerHtml += '<div class="col-1 padding-sm text-center"><h6>' + i18next.t('screeen_lbl_order_item_tax') + '</h6></div>';
 		headerHtml += '<div class="col-2"><h6>' + i18next.t('screeen_lbl_order_item_total') + '</h6></div>';
+		headerHtml += '<div class="col-1"></div>';
 		headerHtml += '</div>';
 
 		return headerHtml;

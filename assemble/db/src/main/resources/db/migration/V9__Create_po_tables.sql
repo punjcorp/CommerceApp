@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   `actual_unit_cost` DECIMAL(12,2) NULL DEFAULT 0.00,
   `delievered_date` DATETIME NULL,
   `delievered_qty` DECIMAL(12,2) NULL,
+  `returned_qty` DECIMAL(12,2) NULL,
   `actual_cost_amount` DECIMAL(12,2) NULL DEFAULT 0.00,
   `actual_suggested_price` DECIMAL(12,2) NULL DEFAULT 0.00,
   `actual_max_retail_price` DECIMAL(12,2) NULL DEFAULT 0.00,

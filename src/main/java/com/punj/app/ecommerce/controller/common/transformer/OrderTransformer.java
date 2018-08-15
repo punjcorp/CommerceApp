@@ -313,6 +313,14 @@ public class OrderTransformer {
 
 		orderItemBean.setDelieveredDate(orderItem.getDelieveredDate());
 		orderItemBean.setDelieveredQty(orderItem.getDelieveredQty());
+		orderItemBean.setReturnedQty(orderItem.getReturnedQty());
+				
+		if(orderItem.getDelieveredQty()!=null && orderItem.getReturnedQty()!=null && orderItem.getDelieveredQty().compareTo(orderItem.getReturnedQty())>0) {
+			orderItemBean.setIsReturnAllowed(Boolean.TRUE);
+		}else {
+			orderItemBean.setIsReturnAllowed(Boolean.FALSE);
+		}
+		
 		orderItemBean.setTaxAmount(orderItem.getTaxAmount());
 		orderItemBean.setTotalCost(orderItem.getTotalCost());
 

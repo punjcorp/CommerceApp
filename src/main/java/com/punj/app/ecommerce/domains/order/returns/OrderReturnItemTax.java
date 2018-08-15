@@ -34,7 +34,7 @@ public class OrderReturnItemTax implements Serializable {
 	private BigInteger returnItemTaxId;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "order_return_item_id")
+	@JoinColumn(name = "order_return_item_id", referencedColumnName = "order_return_item_id")
 	private OrderReturnItem orderReturnItem;
 
 	@Column(name = "tax_group_id")

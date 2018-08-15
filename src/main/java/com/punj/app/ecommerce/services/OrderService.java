@@ -3,8 +3,10 @@
  */
 package com.punj.app.ecommerce.services;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.punj.app.ecommerce.domains.order.Order;
@@ -56,5 +58,7 @@ public interface OrderService {
 	public void deleteBill(OrderBill orderBill);
 
 	public OrderBill retrieveOrderBillDoc(BigInteger orderBillId);
+	
+	public Order updateReturnedItems(BigInteger orderId, Map<BigInteger, BigDecimal> returnQtyMap, String username);
 
 }

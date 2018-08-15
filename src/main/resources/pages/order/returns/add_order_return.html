@@ -60,12 +60,9 @@
 												<label><small><span th:text="#{commerce.screen.order.id}">Order Id</span></small></label>
 												<div class="input-group text-left">
 													<label><h5>
-															<span id="lbl_orderId" th:text="${returnDTO.orderReturn.orderId}"></span> 
-															<input type="hidden" th:field="*{orderReturn.orderId}"></input>
-															<input type="hidden" th:field="*{orderReturn.orderReturnId}"></input>
-															<input type="hidden" th:field="*{orderReturn.status}"></input>
-															<input type="hidden" th:field="*{orderReturn.createdBy}"></input>
-															<input type="hidden" th:field="*{orderReturn.createdDate}"></input>
+															<span id="lbl_orderId" th:text="${returnDTO.orderReturn.orderId}"></span> <input type="hidden" th:field="*{orderReturn.orderId}"></input> <input
+																type="hidden" th:field="*{orderReturn.orderReturnId}"></input> <input type="hidden" th:field="*{orderReturn.status}"></input> <input
+																type="hidden" th:field="*{orderReturn.createdBy}"></input> <input type="hidden" th:field="*{orderReturn.createdDate}"></input>
 														</h5></label>
 												</div>
 											</div>
@@ -113,8 +110,8 @@
 													<option th:each="reasonCode: ${returnDTO.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="${reasonCode.name}"></option>
 												</select>
 											</div>
-											<small th:if="${#fields.hasErrors('orderReturn.reasonCodeId')}" th:errors="*{orderReturn.reasonCodeId}" class="text-danger">Reason Code Error
-											</small>
+											<small
+												th:if="${#fields.hasErrors('orderReturn.reasonCodeId')}" th:errors="*{orderReturn.reasonCodeId}" class="text-danger">Reason Code Error </small>
 										</div>
 
 									</div>
@@ -138,7 +135,124 @@
 										</button>
 									</div>
 								</div>
-								<div th:class="${returnDTO.orderReturn.orderReturnItems!=null?'orderitem':'orderitem d-none'}" id="selectedReturnItem"></div>
+								<small th:if="${#fields.hasErrors('orderReturn.orderReturnItems')}" th:errors="*{orderReturn.orderReturnItems}" class="text-danger">Order Return
+									Items Error</small>
+								<div th:class="${returnDTO.orderReturn.orderReturnItems!=null?'orderitem':'orderitem d-none'}" id="selectedReturnItem">
+
+									<th:block th:each="orderReturnItem,itrStat:${returnDTO.orderReturn.orderReturnItems}">
+											<div class="row" th:id="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemId +'Container'}">
+												<div class="col col-width-sm">
+													<div class="form-group text-left">
+														<span th:text="${itrStat.index+1}"></span>
+													</div>
+												</div>
+												<div class="col-2 padding-sm">
+													<div class="form-group text-left">
+														<div class="input-group">
+															<span th:text="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemId}"></span><br /> <span
+																th:text="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemDesc}"></span> <input type="hidden"
+																th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemId}"> </input><input type="hidden"
+																th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
+																th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].orderReturnItemId}"></input>
+
+														</div>
+													</div>
+												</div>
+												<div class="col padding-sm">
+													<div class="form-group">
+														<select th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].reasonCodeId}" class="form-control input-sm">
+															<option class="form-text text-muted" value="" th:text="#{commerce.screen.order.return.reason}">Select Order Return
+													Reason Code</option>
+															<option th:each="reasonCode: ${returnDTO.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="${reasonCode.name}"></option>
+														</select> <small th:if="${#fields.hasErrors('orderReturn.orderReturnItems[__${itrStat.index}__].reasonCodeId')}"
+															th:errors="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].reasonCodeId}" class="text-danger">Reason Code Error</small>
+													</div>
+												</div>
+
+												<div class="col padding-sm">
+													<div class="form-group">
+														<input type="number" th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].returnedQty}" 
+														th:onChange="${'qtyChanged('+itrStat.index+','+returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemId+')'}"
+															class="form-control input-sm" th:placeholder="#{commerce.screen.order.item.returned.qty}" step="1"></input> <small
+															th:if="${#fields.hasErrors('orderReturn.orderReturnItems[__${itrStat.index}__].returnedQty')}"
+															th:errors="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].returnedQty}" class="text-danger">Return Quantity Error</small>
+													</div>
+												</div>
+												<div class="col padding-sm">
+													<div class="form-group">
+														<span th:text="#{commerce.screen.common.currency.inr.short}"></span>
+														<span th:text="${' '+returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].unitCost}"></span>
+														<input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].unitCost}"></input>
+													</div>
+												</div>
+												<div class="col padding-sm text-center">
+													<div class="form-group">
+														<label> <span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_costAmount'+${itrStat.index}"
+															th:text="${' '+returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].costAmount}"></span> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].costAmount}"></input>
+														</label>
+													</div>
+												</div>
+												<div class="col padding-sm text-center">
+													<div class="form-group">
+														<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_discountAmount'+${itrStat.index}"
+															th:text="${' '+returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].discountAmount}"></span></label>
+															<input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].discountAmount}"></input>
+														
+													</div>
+												</div>
+												<div class="col-1 padding-sm text-center">
+													<div class="form-group">
+														<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_taxAmount'+${itrStat.index}"
+															th:text="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].taxAmount}"></span></label>
+														<input type="hidden" th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].taxAmount}"></input> 
+														
+														<input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].sgstTaxAmount}"></input>
+														<input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].cgstTaxAmount}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].igstTaxAmount}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].taxGroupId}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].sgstCode}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].cgstCode}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].igstCode}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].sgstRateRuleId}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].cgstRateRuleId}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].igstRateRuleId}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].sgstRate}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].cgstRate}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].igstRate}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].sgstTaxId}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].cgstTaxId}"></input> <input type="hidden"
+															th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].igstTaxId}"></input> 
+													</div>
+												</div>
+												<div class="col-2">
+													<div class="form-group">
+														<div class="input-group">
+														<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span th:id="'lbl_totalCost'+${itrStat.index}"
+															th:text="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].totalCost}"></span></label>
+														<input type="hidden" th:field="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].totalCost}"></input>
+														</div></div>
+												</div>
+												<div class="col-1">
+													<div class="form-group">
+														<div class="input-group">
+														
+														<button th:id="${'btnDelete'+itrStat.index}" type="button" class="btn btn-danger" 
+														th:onClick="${'deleteReturnItem('+returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemId+')'}">
+															<i class="fas fa-trash-alt fa-2x"></i>
+														</button>
+														
+													</div></div>
+												</div>
+											</div>
+
+									</th:block>
+
+								</div>
 								<div class="row">
 									<div class="col-xs-4 col-sm-4 col-md-4">
 										<div class="form-group">
@@ -357,6 +471,7 @@
 									<th scope="col"><span th:text="#{commerce.screen.order.item.itemid}"></span></th>
 									<th scope="col-2"><span th:text="#{commerce.screen.order.item.desc}"></span></th>
 									<th scope="col"><span th:text="#{commerce.screen.order.item.qty}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.order.item.returned.qty}"></span></th>
 									<th scope="col"><span th:text="#{commerce.screen.order.unit.cost}"></span></th>
 									<th scope="col"><span th:text="#{commerce.screen.order.item.cost}"></span></th>
 									<th scope="col"><span th:text="#{commerce.screen.order.item.discount}"></span></th>
@@ -367,7 +482,7 @@
 							</thead>
 							<tbody>
 								<th:block th:each="orderItem,itrStat:${returnDTO.orderReturn.order.orderItems}">
-									<tr>
+									<tr th:class="${(returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].isReturnAllowed)?'return-allowed':'return-not-allowed' }">
 										<td></td>
 										<!-- <td><span th:text="${itrStat.index+1}"></span></td> -->
 										<td><span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].itemId}"></span></td>
@@ -386,6 +501,10 @@
 													th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].delieveredQty}"></input>
 											</div></td>
 										<td><div class="form-group">
+												<span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].returnedQty}"></span> <input type="hidden"
+													th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].returnedQty}"></input>
+											</div></td>
+										<td><div class="form-group">
 												<span th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualUnitCost}"></span> <input type="hidden"
 													th:field="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualUnitCost}"></input>
 
@@ -400,7 +519,7 @@
 												<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span
 													th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].actualDiscountAmount}"></span></label>
 											</div></td>
-										
+
 										<td><div class="form-group">
 												<label><span th:text="#{commerce.screen.common.currency.inr}"></span> <span
 													th:text="${returnDTO.orderReturn.order.orderItems[__${itrStat.index}__].sgstActualTaxAmount}"></span></label>
@@ -451,7 +570,7 @@
 								</th:block>
 							</tbody>
 						</table>
-
+						<div id="tableBtns" class="text-left"></div>
 
 
 

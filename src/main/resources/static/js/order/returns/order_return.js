@@ -44,7 +44,7 @@ $(function() {
 		} ],
 		select : {
 			style : 'os',
-			selector : 'tr',
+			selector : 'tr.return-allowed',
 			style : 'multi'
 		},
 		order : [ [ 1, 'asc' ] ],
@@ -56,6 +56,8 @@ $(function() {
 			"data" : "itemDesc"
 		}, {
 			"data" : "qty"
+		},{
+			"data" : "returnedQty"
 		}, {
 			"data" : "unitCost"
 		}, {
@@ -69,8 +71,25 @@ $(function() {
 		}, {
 			"data" : "itemTotal"
 		}, ],
+		dom: 'Bfrtip',
+		buttons: [
+            {
+                text: 'Select all',
+                action: function () {
+                	orderItemsTable.rows('.return-allowed').select();
+                }
+            },
+            {
+                text: 'Select none',
+                action: function () {
+                	orderItemsTable.rows('.return-allowed').deselect();
+                }
+            }
+        ]
 	});
 
+	orderItemsTable.buttons().container().appendTo($('#tableBtns'));
+	
 	$('#btnChooseItems').click(function() {
 		displaySelectedItems();
 
@@ -355,7 +374,7 @@ function reRenderAllItems() {
 	
 	$('#selectedReturnItem').html(finalItemsHtml);
 	$('#selectedReturnItem').removeClass('d-none');
-	
+	$('#orderTotals').removeClass('d-none');
 	calculateTotals();
 }
 
@@ -370,7 +389,7 @@ function qtyChanged(index, itemId) {
 			return itemIndex;
 	});
 
-	var changedQty = +$('#orderReturn\\.orderReturnItems' + index + '\\.orderedQty').val();
+	var changedQty = +$('#orderReturn\\.orderReturnItems' + index + '\\.returnedQty').val();
 	if (validateQty(itemId, changedQty, index)) {
 		//returnItems.splice(returnItemIndex,1);
 		updateReturnItemDetails(changedQty, changedReturnItem[0], index, returnItemIndex);
@@ -384,8 +403,9 @@ function validateQty(itemId, changedQty, index) {
 		var existingOrderItem = $.grep(order_items, function(order_item, itemIndex) {
 			return order_item.itemId == itemId;
 		});
-		if (existingOrderItem[0].delieveredQty < changedQty) {
-			$('#orderReturn\\.orderReturnItems' + index + '\\.orderedQty').val(1);
+		var validReturnableQty=existingOrderItem[0].delieveredQty - existingOrderItem[0].returnedQty;
+		if (validReturnableQty < changedQty) {
+			$('#orderReturn\\.orderReturnItems' + index + '\\.returnedQty').val(1);
 			qtyChanged(index, itemId);
 			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
 			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('screeen_order_return_validate_qty'), btnLabels);
@@ -394,7 +414,7 @@ function validateQty(itemId, changedQty, index) {
 			return true;
 		}
 	} else {
-		$('#orderReturn\\.orderReturnItems' + index + '\\.orderedQty').val(1);
+		$('#orderReturn\\.orderReturnItems' + index + '\\.returnedQty').val(1);
 		qtyChanged(index, itemId);
 		btnLabels = [ i18next.t('alert_btn_ok'), '' ];
 		alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('screeen_order_return_validate_qty'), btnLabels);
@@ -423,4 +443,26 @@ function updateReturnItemDetails(changedQty, changedReturnItem, index, returnIte
 	var itemTotal = taxableAmt + taxAmount;
 	changedReturnItem.itemTotal = itemTotal;
 	returnItems[returnItemIndex]=changedReturnItem;
+}
+
+
+function deleteReturnItem(itemId){
+	var returnItemIndex= $.grep(returnItems, function(returnItem, itemIndex) {
+		if(returnItem.itemId == itemId)
+			return itemIndex;
+	});
+	returnItems.splice(returnItemIndex,1);
+	
+	$('#'+itemId+'Container').remove();
+	
+	if(returnItems.length>0){
+		$('#selectedReturnItem').html('');
+		reRenderAllItems();
+		$('#selectedReturnItem').removeClass('d-none');
+		$('#orderTotals').removeClass('d-none');
+	}else{
+		$('#selectedReturnItem').addClass('d-none');
+		$('#orderTotals').addClass('d-none');
+	}
+	
 }

@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -23,10 +27,12 @@ public class OrderReturnBean implements Serializable {
 	private static final long serialVersionUID = -2850831538217022879L;
 
 	private BigInteger orderReturnId;
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private BigInteger orderId;
 	private OrderBean order;
 
 	@Valid
+	@NotEmpty(message = "{commerce.error.option.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private List<OrderReturnItemBean> orderReturnItems;
 
 	private List<OrderReturnItemTaxBean> orderReturnItemTaxes;
@@ -46,6 +52,7 @@ public class OrderReturnBean implements Serializable {
 	private String status;
 	private String displayStatus;
 	private String comments;
+	@NotNull(message = "{commerce.error.option.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private Integer reasonCodeId;
 	private String reasonCode;
 

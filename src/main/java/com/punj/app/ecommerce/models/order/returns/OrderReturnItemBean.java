@@ -6,11 +6,7 @@ package com.punj.app.ecommerce.models.order.returns;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Range;
 
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 
@@ -22,7 +18,7 @@ public class OrderReturnItemBean {
 
 	private BigInteger orderReturnItemId;
 
-	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private BigInteger itemId;
 
 	private String itemDesc;
@@ -30,15 +26,12 @@ public class OrderReturnItemBean {
 	private BigInteger orderReturnId;
 	private Integer taxGroupId;
 
-	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
-	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}", groups = { ValidationGroup.VGAddOrder.class })
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private BigDecimal returnedQty;
 
+	@NotNull(message = "{commerce.error.option.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private Integer reasonCodeId;
 
-	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
-	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGAddOrder.class })
-	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGAddOrder.class })
 	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal costAmount = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;

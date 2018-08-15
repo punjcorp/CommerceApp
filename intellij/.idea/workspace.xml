@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="599db034-cc0a-4160-8aa9-a89d9a03c641" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html" afterDir="false" />
-    </list>
+    <list default="true" id="599db034-cc0a-4160-8aa9-a89d9a03c641" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/../target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -63,7 +61,8 @@
     <session id="1921177470">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="5" />
+          <entry key="project.closed" value="6" />
+          <entry key="project.open.time.150" value="1" />
           <entry key="project.open.time.298" value="1" />
           <entry key="project.open.time.319" value="1" />
           <entry key="project.open.time.52" value="1" />
@@ -71,7 +70,7 @@
           <entry key="project.open.time.71" value="1" />
           <entry key="project.open.time.76" value="1" />
           <entry key="project.open.time.77" value="1" />
-          <entry key="project.opened" value="7" />
+          <entry key="project.opened" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -118,32 +117,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="136" column="46" lean-forward="true" selection-start-line="136" selection-start-column="46" selection-end-line="136" selection-end-column="46" />
-              <folding>
-                <element signature="e#2#29#0" expanded="true" />
-                <element signature="e#2#29#0" expanded="true" />
-                <element signature="e#2#34#0" expanded="true" />
-                <element signature="e#2#28#0" expanded="true" />
-                <element signature="e#2#38#0" expanded="true" />
-                <element signature="e#2#38#0" expanded="true" />
-                <element signature="e#2#25#0" expanded="true" />
-                <element signature="e#2#27#0" expanded="true" />
-                <element signature="e#2#34#0" expanded="true" />
-                <element signature="e#2#25#0" expanded="true" />
-                <element signature="e#2#35#0" expanded="true" />
-                <element signature="e#2#37#0" expanded="true" />
-                <element signature="e#2#30#0" expanded="true" />
-                <element signature="e#2#30#0" expanded="true" />
-                <element signature="e#2#33#0" expanded="true" />
-                <element signature="e#2#34#0" expanded="true" />
-                <element signature="e#2#35#0" expanded="true" />
-                <element signature="e#2#37#0" expanded="true" />
-                <element signature="e#2#33#0" expanded="true" />
-                <element signature="e#2#35#0" expanded="true" />
-                <element signature="e#2#38#0" expanded="true" />
-                <element signature="e#2#36#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="498">
+              <caret line="145" column="44" selection-start-line="145" selection-start-column="44" selection-end-line="145" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -161,7 +136,7 @@
         <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1904">
-              <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="180" selection-end-column="34" />
+              <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -249,9 +224,9 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1649" />
-    <option name="y" value="217" />
-    <option name="width" value="1296" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1234" />
     <option name="height" value="816" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -403,11 +378,12 @@
       <workItem from="1532704675420" duration="4249000" />
       <workItem from="1532712340860" duration="441000" />
       <workItem from="1532749593645" duration="1365000" />
+      <workItem from="1534082298770" duration="118000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33680000" />
+    <option name="totallyTimeSpent" value="33798000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -419,7 +395,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1272" y="-8" width="1874" height="1096" extended-state="6" />
+    <frame x="-8" y="-8" width="1234" height="816" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49903288" weight="0.20698467" />
       <window_info id="Structure" order="1" sideWeight="0.50096714" side_tool="true" weight="0.1582139" />
@@ -474,26 +450,26 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages.properties">
-      <provider editor-type-id="ResourceBundle" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
           <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
         </state>
       </provider>
+      <provider editor-type-id="ResourceBundle" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages_en_US.properties">
-      <provider editor-type-id="ResourceBundle" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
         </state>
       </provider>
+      <provider editor-type-id="ResourceBundle" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/i18n/messages_hi_IN.properties">
-      <provider editor-type-id="ResourceBundle" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-459" />
       </provider>
+      <provider editor-type-id="ResourceBundle" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/java/com/punj/app/ecommerce/models/transaction/TransactionHeader.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -797,32 +773,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/manage_item.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="136" column="46" lean-forward="true" selection-start-line="136" selection-start-column="46" selection-end-line="136" selection-end-column="46" />
-          <folding>
-            <element signature="e#2#29#0" expanded="true" />
-            <element signature="e#2#29#0" expanded="true" />
-            <element signature="e#2#34#0" expanded="true" />
-            <element signature="e#2#28#0" expanded="true" />
-            <element signature="e#2#38#0" expanded="true" />
-            <element signature="e#2#38#0" expanded="true" />
-            <element signature="e#2#25#0" expanded="true" />
-            <element signature="e#2#27#0" expanded="true" />
-            <element signature="e#2#34#0" expanded="true" />
-            <element signature="e#2#25#0" expanded="true" />
-            <element signature="e#2#35#0" expanded="true" />
-            <element signature="e#2#37#0" expanded="true" />
-            <element signature="e#2#30#0" expanded="true" />
-            <element signature="e#2#30#0" expanded="true" />
-            <element signature="e#2#33#0" expanded="true" />
-            <element signature="e#2#34#0" expanded="true" />
-            <element signature="e#2#35#0" expanded="true" />
-            <element signature="e#2#37#0" expanded="true" />
-            <element signature="e#2#33#0" expanded="true" />
-            <element signature="e#2#35#0" expanded="true" />
-            <element signature="e#2#38#0" expanded="true" />
-            <element signature="e#2#36#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="498">
+          <caret line="145" column="44" selection-start-line="145" selection-start-column="44" selection-end-line="145" selection-end-column="44" />
         </state>
       </provider>
     </entry>
@@ -836,7 +788,7 @@
     <entry file="file://$PROJECT_DIR$/../src/main/resources/pages/item/add_style.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1904">
-          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="180" selection-end-column="34" />
+          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
         </state>
       </provider>
     </entry>

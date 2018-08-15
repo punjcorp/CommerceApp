@@ -4,12 +4,14 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.OrderItemTax;
@@ -31,13 +33,26 @@ public class OrderReturnTransformer {
 	private OrderReturnTransformer() {
 		throw new IllegalStateException("OrderReturnTransformer class");
 	}
+	
+	public static OrderReturn updateReturnBasedOnAction(OrderReturn orderReturn, String username, String action) {
+		if(action.equals(MVCConstants.STATUS_CREATED) || (action.equals(MVCConstants.STATUS_APPROVED) && orderReturn.getOrderReturnId()==null)) {
+			orderReturn.setCreatedBy(username);
+			orderReturn.setCreatedDate(LocalDateTime.now());
+		} else if(action.equals(MVCConstants.STATUS_APPROVED) && orderReturn.getOrderReturnId()!=null) {
+			orderReturn.setModifiedBy(username);
+			orderReturn.setModifiedDate(LocalDateTime.now());
+		}
+		logger.info("The order return details has been updated based on the action {} ", action);
+		return orderReturn;
+		
+	}
 
 	public static OrderReturn transformOrderReturnBean(OrderReturnBean orderReturnBean, String username, String status) {
 		OrderReturn orderReturn = new OrderReturn();
 
 		orderReturn.setOrderReturnId(orderReturnBean.getOrderReturnId());
 		orderReturn.setComments(orderReturnBean.getComments());
-		orderReturn.setStatus(orderReturnBean.getStatus());
+		orderReturn.setStatus(status);
 		orderReturn.setReasonCodeId(orderReturnBean.getReasonCodeId());
 
 		orderReturn.setDiscountAmount(orderReturnBean.getDiscountAmount());
@@ -142,26 +157,26 @@ public class OrderReturnTransformer {
 		returnItemTax.setTaxableAmt(returnItemBean.getCostAmount().subtract(returnItemBean.getDiscountAmount()));
 
 		if (igstFlag != null && igstFlag) {
-			returnItemTax.setReturnItemTaxId(returnItemBean.getIgstTaxId());
+
 			returnItemTax.setTaxRuleAmt(returnItemBean.getIgstTaxAmount());
 			returnItemTax.setTaxRulePercentage(returnItemBean.getIgstRate());
 			returnItemTax.setTaxCode(returnItemBean.getIgstCode());
 
 			logger.info("The IGST taxes has been created successfully");
 		} else if (sgstFlag != null && sgstFlag) {
-			returnItemTax.setReturnItemTaxId(returnItemBean.getSgstTaxId());
+
 			returnItemTax.setTaxRuleAmt(returnItemBean.getSgstTaxAmount());
 			returnItemTax.setTaxRulePercentage(returnItemBean.getSgstRate());
 			returnItemTax.setTaxCode(returnItemBean.getSgstCode());
 
 			returnCGSTTax.setTaxableAmt(returnItemBean.getCostAmount().subtract(returnItemBean.getDiscountAmount()));
-			returnCGSTTax.setReturnItemTaxId(returnItemBean.getCgstTaxId());
+
 			returnCGSTTax.setTaxRuleAmt(returnItemBean.getCgstTaxAmount());
 			returnCGSTTax.setTaxRulePercentage(returnItemBean.getCgstRate());
 			returnCGSTTax.setTaxCode(returnItemBean.getCgstCode());
 
 			
-			orderReturnItemTaxes.add(returnItemTax);
+			orderReturnItemTaxes.add(returnCGSTTax);
 			logger.info("The SGST and CGST taxes has been created successfully");
 		}
 		orderReturnItemTaxes.add(returnItemTax);
