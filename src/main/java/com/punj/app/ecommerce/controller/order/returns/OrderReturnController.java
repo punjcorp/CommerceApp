@@ -26,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
@@ -43,6 +44,7 @@ import com.punj.app.ecommerce.models.inventory.InvReasonBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
 import com.punj.app.ecommerce.models.order.returns.OrderReturnBean;
 import com.punj.app.ecommerce.models.order.returns.OrderReturnDTO;
+import com.punj.app.ecommerce.models.order.returns.validator.OrderReturnBeanValidator;
 import com.punj.app.ecommerce.services.OrderReturnService;
 import com.punj.app.ecommerce.services.OrderService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -60,7 +62,17 @@ public class OrderReturnController {
 	private OrderService orderService;
 	private MessageSource messageSource;
 	private CommonService commonService;
+	private OrderReturnBeanValidator returnValidator;
 
+	/**
+	 * @param returnValidator
+	 *            the returnValidator to set
+	 */
+	@Autowired
+	public void setOrderReturnBeanValidator(OrderReturnBeanValidator returnValidator) {
+		this.returnValidator = returnValidator;
+	}
+	
 	/**
 	 * @param orderReturnService
 	 *            the orderReturnService to set
@@ -158,29 +170,45 @@ public class OrderReturnController {
 		LocationDTO locationDTO = this.commonService.retrieveLocationWithDailyStatus();
 		List<LocationBean> locations = CommonMVCTransformer.transformLocationDTO(locationDTO);
 		orderReturnDTO.setLocations(locations);
-		
-		ReasonCode reasonCodeCriteria=new ReasonCode();
+
+		ReasonCode reasonCodeCriteria = new ReasonCode();
 		reasonCodeCriteria.setType(MVCConstants.REASON_TYPE_PO_RETURN);
 		List<ReasonCode> reasonCodes = this.commonService.retrieveReasonCodes(reasonCodeCriteria);
-		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+		if (reasonCodes != null && !reasonCodes.isEmpty()) {
 			orderReturnDTO.setReasonCodes(reasonCodes);
 		}
+		
+		BigInteger orderId=orderReturnDTO.getOrderReturn().getOrderId();
 
+		Order order = this.orderService.searchOrder(orderId);
+		if (order != null) {
+			if (order.getStatus().equals(MVCConstants.STATUS_RECEIVED)) {
+				OrderBean orderBean = OrderTransformer.transformOrder(order);
+				orderReturnDTO.getOrderReturn().setOrder(orderBean);
+			}
+		}
+		
 		model.addAttribute(MVCConstants.ORDER_RETURN_BEAN_DTO, orderReturnDTO);
 
 		logger.info("The order return screen model objects has been updated successfully");
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_ORDER_RETURN_URL, params = { MVCConstants.SAVE_ORDER_RETURN_PARAM })
-	public String saveOrderReturn(@ModelAttribute @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult, Model model,
+	public String saveOrderReturn(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult, Model model,
 			Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			logger.error("There are some validation errors which needs to be corrected before processing");
 			this.updateOrderReturnModelDetails(model, returnDTO);
 			return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
+		}else {
+			this.returnValidator.validate(returnDTO, bindingResult);
+			if (bindingResult.hasErrors()) {
+				this.updateOrderReturnModelDetails(model, returnDTO);
+				return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
+			}
 		}
 		try {
-			this.prepareReturnDetailsForSaving(returnDTO, model, session, authentication, locale, MVCConstants.STATUS_CREATED);
+			this.prepareReturnDetailsForSaving(returnDTO, model, session, authentication, locale, MVCConstants.STATUS_CREATED, Boolean.FALSE);
 
 		} catch (Exception e) {
 			logger.error("There is an error while creating new purchase order", e);
@@ -191,14 +219,20 @@ public class OrderReturnController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_ORDER_RETURN_URL, params = { MVCConstants.APPROVE_ORDER_RETURN_PARAM })
-	public String approveOrderReturn(@ModelAttribute @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO, BindingResult bindingResult, Model model,
+	public String approveOrderReturn(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO, BindingResult bindingResult, Model model,
 			Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderReturnModelDetails(model, orderReturnDTO);
 			return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
+		}else {
+			this.returnValidator.validate(orderReturnDTO, bindingResult);
+			if (bindingResult.hasErrors()) {
+				this.updateOrderReturnModelDetails(model, orderReturnDTO);
+				return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
+			}
 		}
 		try {
-			this.prepareReturnDetailsForSaving(orderReturnDTO, model, session, authentication, locale, MVCConstants.STATUS_APPROVED);
+			this.prepareReturnDetailsForSaving(orderReturnDTO, model, session, authentication, locale, MVCConstants.STATUS_APPROVED, Boolean.FALSE);
 
 		} catch (Exception e) {
 			logger.error("There is an error while creating new purchase order", e);
@@ -208,14 +242,17 @@ public class OrderReturnController {
 		return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
 	}
 
-	private void prepareReturnDetailsForSaving(OrderReturnDTO orderReturnDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status)
-			throws IOException {
+	private void prepareReturnDetailsForSaving(OrderReturnDTO orderReturnDTO, Model model, HttpSession session, Authentication authentication, Locale locale, String status,
+			Boolean isUpdate) throws IOException {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String username = userDetails.getUsername();
 		OrderReturnBean orderReturnBean = orderReturnDTO.getOrderReturn();
 		OrderReturn orderReturn = OrderReturnTransformer.transformOrderReturnBean(orderReturnBean, username, status);
-		orderReturn =OrderReturnTransformer.updateReturnBasedOnAction(orderReturn, username, status);
-		orderReturn = this.orderReturnService.createOrderReturn(orderReturn,username);
+		orderReturn = OrderReturnTransformer.updateReturnBasedOnAction(orderReturn, username, status);
+		if (isUpdate)
+			orderReturn = this.orderReturnService.updateOrderReturn(orderReturn, username);
+		else
+			orderReturn = this.orderReturnService.createOrderReturn(orderReturn, username);
 		logger.info("The {} order return details has been saved successfully", orderReturn.getOrderReturnId());
 		orderReturnBean.setOrderReturnId(orderReturn.getOrderReturnId());
 		orderReturnBean.setStatus(orderReturn.getStatus());
@@ -261,6 +298,93 @@ public class OrderReturnController {
 			invAdjustBean.setReasonCodes(reasonCodes);
 		}
 		logger.info("The Reason Code details has been set in Inventory Adjustment object");
+	}
+
+	@GetMapping(ViewPathConstants.EDIT_ORDER_RETURN_URL)
+	public String approveOrderReturn(Model model, RedirectAttributes redirectAttrs, final HttpServletRequest req, Locale locale, Authentication authentication) {
+		try {
+			BigInteger orderReturnId = new BigInteger(req.getParameter(MVCConstants.ORDER_RETURN_ID_PARAM));
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+			if (orderReturnId.compareTo(BigInteger.ZERO) > 0) {
+				OrderReturn orderReturn = this.orderReturnService.searchOrderReturn(orderReturnId);
+				if (orderReturn != null) {
+					if (orderReturn.getStatus().equals(MVCConstants.STATUS_CREATED)) {
+						OrderReturnBean orderReturnBean = OrderReturnTransformer.transformOrderReturn(orderReturn);
+						OrderReturnDTO orderReturnDTO = new OrderReturnDTO();
+						orderReturnDTO.setOrderReturn(orderReturnBean);
+
+						this.updateOrderReturnModelDetails(model, orderReturnDTO);
+
+						logger.info("The selected order return has been retrieved successfully for editing");
+					} else {
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.return.editing.status", null, locale));
+						logger.info("There order return is not eligible for the editing as status is not 'created'!!");
+					}
+				} else {
+					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.return.not.found", null, locale));
+					logger.info("There order return was not found in the database!!");
+				}
+
+			} else {
+				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.return.manage.editing.noorder", null, locale));
+				logger.info("There is no order return number specified for editing");
+			}
+		} catch (Exception e) {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There is an error while retrieving purchase order return for editing", e);
+		}
+
+		return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_RETURN_URL, params = { MVCConstants.SAVE_ORDER_RETURN_PARAM })
+	public String saveOrderReturnAfterEditing(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult, Model model,
+			Locale locale, HttpSession session, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			logger.error("There are some validation errors which needs to be corrected before processing");
+			this.updateOrderReturnModelDetails(model, returnDTO);
+			return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
+		}else {
+			this.returnValidator.validate(returnDTO, bindingResult);
+			if (bindingResult.hasErrors()) {
+				this.updateOrderReturnModelDetails(model, returnDTO);
+				return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
+			}
+		}
+		try {
+			this.prepareReturnDetailsForSaving(returnDTO, model, session, authentication, locale, MVCConstants.STATUS_CREATED, Boolean.TRUE);
+
+		} catch (Exception e) {
+			logger.error("There is an error while saving purchase order after editing", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateOrderReturnModelDetails(model, returnDTO);
+		}
+		return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
+	}
+
+	@PostMapping(value = ViewPathConstants.EDIT_ORDER_RETURN_URL, params = { MVCConstants.APPROVE_ORDER_RETURN_PARAM })
+	public String approveOrderReturnAfterEditing(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO, BindingResult bindingResult,
+			Model model, Locale locale, HttpSession session, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
+			this.updateOrderReturnModelDetails(model, orderReturnDTO);
+			return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
+		}else {
+			this.returnValidator.validate(orderReturnDTO, bindingResult);
+			if (bindingResult.hasErrors()) {
+				this.updateOrderReturnModelDetails(model, orderReturnDTO);
+				return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
+			}
+		}
+		try {
+			this.prepareReturnDetailsForSaving(orderReturnDTO, model, session, authentication, locale, MVCConstants.STATUS_APPROVED, Boolean.TRUE);
+
+		} catch (Exception e) {
+			logger.error("There is an error while creating new purchase order", e);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			this.updateOrderReturnModelDetails(model, orderReturnDTO);
+		}
+		return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
 	}
 
 }

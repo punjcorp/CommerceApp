@@ -4,7 +4,7 @@
 <meta th:name="_csrf" th:content="${_csrf.token}" />
 <meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.order.return.add.title}">Order Return Creation Screen</title>
+<title th:text="#{commerce.screen.order.return.edit.title}">Order Return Modification Screen</title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <div th:replace="common/header:: header"></div>
 <link rel="stylesheet" href="../../css/utils/datatables.min.css" th:href="@{/css/utils/datatables.min.css}" />
@@ -27,36 +27,31 @@
 			<div th:include="common/navbar :: navbarMenu"></div>
 			<!-- This thymeleaf fragment is the body part for the page-->
 
-			<form class="form" id="addForm" action="#" th:action="@{/admin/add_order_return}" th:object="${returnDTO}" method="post" th:if="${returnDTO!=null}">
+			<form class="form" id="addForm" action="#" th:action="@{/admin/edit_order_return}" th:object="${returnDTO}" method="post" th:if="${returnDTO!=null}">
 				<div class="row m-3">
 					<div class="col">
 						<div class="card">
 							<div class="card-header">
-								<h3 th:text="#{commerce.screen.order.return.add.header}">Provide details for Order Return Creation</h3>
+								<h3 th:text="#{commerce.screen.order.return.edit.header}">Provide details for Editing the Order Return</h3>
 							</div>
 							<div class="card-body">
 								<div class="card-text">
 									<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 									<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-
 									<script type="text/javascript" th:inline="javascript">
 									/*<![CDATA[*/
 							
 										var txn_errors = /*[[${#fields.hasErrors('all')}]]*/;	
 									
 									/*]]>*/
-								</script>
+									</script>
 									<div id="orderActions" class="col-12 p-4" th:if="${ alert!=null}">
 										<a th:href="@{/admin/edit_order_return(orderReturnId=${returnDTO.orderReturn.orderReturnId})}" class="btn btn-sm btn-info"
 											th:if="${returnDTO.orderReturn.status=='C'}"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt"
 													data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-pencil-alt"
 													data-fa-transform="shrink-10 right-10 up-4"></i>
 											</span>
-										</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_order_return}" class="btn btn-sm btn-success"><span
-											class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i
-													class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
-											</span>
-										</span> <span th:text="#{commerce.home.menu.add.order.return}"></span></a> <a th:href="@{/admin/manage_order_return}" class="btn btn-sm btn-success"> <span
+										</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/manage_order_return}" class="btn btn-sm btn-success"> <span
 											class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt" data-fa-transform="rotate-180"></i> <i
 													class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
 											</span>
@@ -101,7 +96,7 @@
 									<div class="col-6">
 										<div class="form-group">
 											<label><small><span th:text="#{commerce.screen.order.comments}">Comments</span></small></label>
-											<div class="input-group text-left">
+											<div class="input-group text-left crop">
 												<input type="hidden" th:field="*{orderReturn.order.comments}"></input> <span th:text="${returnDTO.orderReturn.order.comments}"></span>
 											</div>
 										</div>
@@ -119,16 +114,17 @@
 													<option th:each="reasonCode: ${returnDTO.reasonCodes}" th:value="${reasonCode.reasonCodeId}" th:text="${reasonCode.name}"></option>
 												</select>
 											</div>
-											<small th:errors="${returnDTO.orderReturn.reasonCodeId}" class="text-danger">Reason Code Error </small>
+											<small th:if="${#fields.hasErrors('orderReturn.reasonCodeId')}" th:errors="*{orderReturn.reasonCodeId}" class="text-danger">Reason Code Error
+											</small>
 										</div>
 
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-12 text-wrap">
+									<div class="col-12">
 										<div class="form-group">
 											<label><small><span th:text="#{commerce.screen.order.return.comments}">Order Return Comments</span></small></label>
-											<div class="input-group text-left crop">
+											<div class="input-group text-left">
 												<textarea rows="4" th:field="*{orderReturn.comments}" class="form-control input-sm" th:placeholder="#{commerce.screen.order.comments.placeholder}"></textarea>
 											</div>
 											<div id="commentsMsg"></div>
@@ -138,45 +134,16 @@
 								<div class="text-right">
 									<div class="form-group">
 										<button type="button" id="btnSearchReturnItem" class="btn btn-outline-secondary mx-2"
-											th:if="${returnDTO.orderReturn==null or returnDTO.orderReturn.orderReturnItems==null or returnDTO.orderReturn.status=='' or returnDTO.orderReturn.status=='C'}">
+											th:if="${returnDTO.orderReturn==null or returnDTO.orderReturn.orderReturnItems==null or returnDTO.orderReturn.status=='C'}">
 											<i class="fas fa-plus fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.add.return.items}"></span>
 										</button>
 									</div>
-									<small th:if="${#fields.hasErrors('orderReturn.orderReturnItems')}" th:errors="*{orderReturn.orderReturnItems}" class="text-danger">Order
-										Return Items Error</small>
+									<small th:if="${#fields.hasErrors('orderReturn.orderReturnItems')}" th:errors="*{orderReturn.orderReturnItems}" class="text-danger">Order Return
+									Items Error</small>
 								</div>
-
+								
 								<div th:class="${returnDTO.orderReturn.orderReturnItems!=null?'orderitem':'orderitem d-none'}" id="selectedReturnItem">
-									<div class="row">
-										<div class="col col-width-sm">
-											<h6><span th:text="#{commerce.screen.order.return.serial}"></span></h6>
-										</div>
-										<div class="col-2 padding-sm">
-											<h6><span th:text="#{commerce.screen.item.details}"></span></h6>
-										</div>
-										<div class="col padding-sm">
-											<h6 class="pos-mandatory"><span th:text="#{commerce.screen.common.reason}"></span></h6>
-										</div>
-										<div class="col padding-sm">
-											<h6 class="pos-mandatory"><span th:text="#{commerce.screen.common.qty}"></span></h6>
-										</div>
-										<div class="col padding-sm">
-											<h6><span th:text="#{commerce.screen.item.unit.cost}"></span></h6>
-										</div>
-										<div class="col padding-sm">
-											<h6><span th:text="#{commerce.screen.order.item.cost}"></span></h6>
-										</div>
-										<div class="col padding-sm text-center">
-											<h6><span th:text="#{commerce.screen.order.item.discount}"></span></h6>
-										</div>
-										<div class="col-1 padding-sm text-center">
-											<h6><span th:text="#{commerce.screen.order.return.total.tax}"></span></h6>
-										</div>
-										<div class="col-2">
-											<h6><span th:text="#{commerce.screen.order.item.total}"></span></h6>
-										</div>
-										<div class="col-1"></div>
-									</div>
+
 									<th:block th:each="orderReturnItem,itrStat:${returnDTO.orderReturn.orderReturnItems}">
 										<div class="row" th:id="${returnDTO.orderReturn.orderReturnItems[__${itrStat.index}__].itemId +'Container'}">
 											<div class="col col-width-sm">
@@ -683,15 +650,10 @@
 			</div>
 		</div>
 	</div>
-
-
-
 	<!-- /#wrapper -->
 	<script type="text/javascript" th:inline="javascript" th:if="${returnDTO!=null and returnDTO.orderReturn!=null}">
 		/*<![CDATA[*/
 
-		var txn_errors = /*[[${#fields.errors('*')}]]*/;	
-			
 		var txn_orderId = /*[[${returnDTO.orderReturn.orderReturnId}]]*/;
 		var txn_order_items = /*[[${returnDTO.orderReturn.orderReturnItems}]]*/;
 		

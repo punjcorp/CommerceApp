@@ -121,6 +121,13 @@ public final class ViewPathConstants {
 	public static final String ADD_ORDER_RETURN_URL = "/admin/add_order_return";
 	public static final String ADD_ORDER_RETURN_PAGE = "order/returns/add_order_return";	
 	
+	public static final String EDIT_ORDER_RETURN_URL = "/admin/edit_order_return";
+	public static final String EDIT_ORDER_RETURN_PAGE = "order/returns/edit_order_return";
+	
+	public static final String APPROVE_ORDER_RETURN_URL = "/admin/approve_order_return";
+	public static final String DELETE_ORDER_RETURN_URL = "/admin/delete_order_return";
+
+	
 	public static final String PRINT_ORDER_RETURN_URL = "/admin/print_order_return_report";
 	public static final String VIEW_ORDER_RETURN_URL = "/admin/view_order_return_report";
 	/**

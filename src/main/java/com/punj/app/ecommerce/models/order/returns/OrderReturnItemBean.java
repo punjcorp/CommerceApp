@@ -21,6 +21,8 @@ public class OrderReturnItemBean {
 	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private BigInteger itemId;
 
+	private BigInteger orderId;
+
 	private String itemDesc;
 
 	private BigInteger orderReturnId;
@@ -511,6 +513,21 @@ public class OrderReturnItemBean {
 	 */
 	public void setReasonCodeId(Integer reasonCodeId) {
 		this.reasonCodeId = reasonCodeId;
+	}
+
+	/**
+	 * @return the orderId
+	 */
+	public BigInteger getOrderId() {
+		return orderId;
+	}
+
+	/**
+	 * @param orderId
+	 *            the orderId to set
+	 */
+	public void setOrderId(BigInteger orderId) {
+		this.orderId = orderId;
 	}
 
 }

@@ -32,7 +32,7 @@ public class OrderReturnBean implements Serializable {
 	private OrderBean order;
 
 	@Valid
-	@NotEmpty(message = "{commerce.error.option.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
+	@NotEmpty(message = "{commerce.error.order.return.qty.zero}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private List<OrderReturnItemBean> orderReturnItems;
 
 	private List<OrderReturnItemTaxBean> orderReturnItemTaxes;

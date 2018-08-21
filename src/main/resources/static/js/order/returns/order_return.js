@@ -23,6 +23,7 @@ var orderItemsTable;
 var selectedItems = new Array();
 var returnItems = new Array();
 var alertUtil = new Utils();
+var existingORIs = new Array();
 
 $(function() {
 	
@@ -138,6 +139,11 @@ $(function() {
 	});
 
 	calculateTotals();
+	
+	if(typeof(txn_order_items)!=="undefined" && txn_order_items!= null && txn_order_items.length>0 && !txn_errors){
+		parseRetrievedItems();
+	}
+	
 
 });
 
@@ -270,7 +276,7 @@ function viewOrderReturnReport() {
 
 function printOrderReturnReport() {
 
-	//The AJAX call for receipt printing
+	// The AJAX call for receipt printing
 	orderDTO.orderId = txn_orderId;
 
 	executePrintReturnReport(orderDTO);
@@ -337,19 +343,26 @@ function displaySelectedItems() {
 
 function renderSelectedItems(selectedItems) {
 	var finalItemsHtml = '';
-
+	var existingORIId='';
+	
 	var returnItemHeader = new OrderReturnItem();
 	var itemHeaderHtml = returnItemHeader.renderHeaders();
 	finalItemsHtml = finalItemsHtml + itemHeaderHtml;
-
+	returnItems=[];
 	$.each(selectedItems, function(index, selectedItemId) {
 
 		var existingOrderItem = $.grep(order_items, function(order_item, itemIndex) {
 			return order_item.itemId == selectedItemId;
 		});
-
+		
+		existingORIId='';
+		if(existingORIs.length>0){
+			existingORIId=retrieveExistingORIId(selectedItemId);
+		}
+		
+		
 		var returnItem = new OrderReturnItem();
-		returnItem.parse(existingOrderItem[0]);
+		returnItem.parse(existingOrderItem[0], existingORIId);
 		var itemHtml = returnItem.render(index);
 		finalItemsHtml = finalItemsHtml + itemHtml;
 		returnItems.push(returnItem);
@@ -358,6 +371,15 @@ function renderSelectedItems(selectedItems) {
 	$('#selectedReturnItem').html(finalItemsHtml);
 	$('#selectedReturnItem').removeClass('d-none');
 	$('#orderTotals').removeClass('d-none');
+}
+
+function retrieveExistingORIId(searchItemId){
+	
+	for (var i=0; i < existingORIs.length; i++) {
+        if (existingORIs[i].oriItemId == searchItemId) {
+            return existingORIs[i].oriId;
+        }
+    }
 }
 
 function reRenderAllItems() {
@@ -391,7 +413,7 @@ function qtyChanged(index, itemId) {
 
 	var changedQty = +$('#orderReturn\\.orderReturnItems' + index + '\\.returnedQty').val();
 	if (validateQty(itemId, changedQty, index)) {
-		//returnItems.splice(returnItemIndex,1);
+		// returnItems.splice(returnItemIndex,1);
 		updateReturnItemDetails(changedQty, changedReturnItem[0], index, returnItemIndex);
 		reRenderAllItems();
 	}
@@ -434,7 +456,13 @@ function updateReturnItemDetails(changedQty, changedReturnItem, index, returnIte
 	var discountAmount = +$('#orderReturn\\.orderReturnItems' + index + '\\.actualDiscountAmount').val();
 	var taxableAmt = itemCost - discountAmount;
 	var sgstRate = +$('#orderReturn\\.orderReturnItems' + index + '\\.sgstRate').val();
+	var sgstTaxAmount= taxableAmt * (sgstRate / 100);
+	changedReturnItem.sgstTax = sgstTaxAmount;
+	
 	var cgstRate = +$('#orderReturn\\.orderReturnItems' + index + '\\.cgstRate').val();
+	var cgstTaxAmount= taxableAmt * (cgstRate / 100);
+	changedReturnItem.cgstTax = cgstTaxAmount;
+	
 	var totalRate = sgstRate + cgstRate;
 
 	var taxAmount = taxableAmt * (totalRate / 100);
@@ -447,10 +475,8 @@ function updateReturnItemDetails(changedQty, changedReturnItem, index, returnIte
 
 
 function deleteReturnItem(itemId){
-	var returnItemIndex= $.grep(returnItems, function(returnItem, itemIndex) {
-		if(returnItem.itemId == itemId)
-			return itemIndex;
-	});
+	var returnItemIndex = returnItems.findIndex(returnItem => returnItem.itemId==itemId);
+
 	returnItems.splice(returnItemIndex,1);
 	
 	$('#'+itemId+'Container').remove();
@@ -466,3 +492,28 @@ function deleteReturnItem(itemId){
 	}
 	
 }
+
+function parseRetrievedItems(){
+	var tmpReturnItem;
+	returnItems=[];
+	var selectOrderItems=[];
+	$.each(txn_order_items, function(index, txn_order_item){
+		tmpReturnItem = new OrderReturnItem();
+		tmpReturnItem.parseReturnItem(txn_order_item);
+		selectOrderItems.push(tmpReturnItem.itemId);
+		returnItems.push(tmpReturnItem);
+		existingORIs.push({oriId:tmpReturnItem.orderReturnItemId, oriItemId: tmpReturnItem.itemId});
+	});
+
+	reRenderAllItems();
+	
+	orderItemsTable.column('itemId:name').search( selectOrderItems ).rows('tr.return-allowed').select();
+		
+}
+
+
+
+
+
+
+

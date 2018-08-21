@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -39,12 +40,14 @@ public class OrderReturn implements Serializable {
 	private static final long serialVersionUID = -4082259643918443060L;
 
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "order_return_id", updatable = false, nullable = false)
 	private BigInteger orderReturnId;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "order_id")
+	@IndexedEmbedded(includeEmbeddedObjectId = true)
 	private Order order;
 
 	@Field

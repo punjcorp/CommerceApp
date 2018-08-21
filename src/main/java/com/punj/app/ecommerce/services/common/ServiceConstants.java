@@ -85,6 +85,7 @@ public final class ServiceConstants {
 	public static final String SALE_TXN_FUNCTIONALITY = "SALE_TXN";
 	public static final String RETURN_TXN_FUNCTIONALITY = "RETURN_TXN";
 	public static final String RECEIVE_ORDER_FUNCTIONALITY = "RECEIVE_ORDER";
+	public static final String SUPPLIER_ORDER_RETURN_FUNCTIONALITY = "SUPPLIER_ORDER_RETURN";
 	public static final String STOCK_ADJUSTMENT_FUNCTIONALITY = "STOCK_ADJUSTMENT";
 
 	public static final String OPTION_ALL = "all";
@@ -102,6 +103,8 @@ public final class ServiceConstants {
 	public static final String PAYMENT_PART = "part";
 	public static final String PAYMENT_ADVANCE = "advance";
 	public static final String PAYMENT_DUE = "payment_due";
+	public static final String PAYMENT_CREDIT = "payment_credit";
+	
 	public static final String JOURNAL_CREDIT = "credit";
 	public static final String JOURNAL_CREDIT_RETURN = "credit_return";
 

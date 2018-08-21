@@ -102,7 +102,8 @@ public class OrderTransformer {
 		SupplierBean supplierBean = SupplierTransformer.transformSupplier(order.getSupplier());
 		orderBean.setSupplier(supplierBean);
 		orderBean.setSupplierId(order.getSupplier().getSupplierId());
-
+		orderBean.setSupplierName(order.getSupplier().getName());
+		
 		orderBean.setCreatedBy(order.getCreatedBy());
 		orderBean.setCreatedDate(order.getCreatedDate());
 

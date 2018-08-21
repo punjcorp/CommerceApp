@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.domains.order.returns.OrderReturn;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.domains.payment.JournalTender;
 import com.punj.app.ecommerce.domains.payment.ids.JournalTenderId;
@@ -27,6 +28,37 @@ public class TxnToAJConverter {
 
 	private TxnToAJConverter() {
 		throw new IllegalStateException("TxnToAJConverter class");
+	}
+
+	public static AccountJournal convertOrderReturnAmounts(OrderReturn orderReturn, Integer accountId, Integer tenderId, String username) {
+		AccountJournal accountJournal = new AccountJournal();
+		accountJournal.setAccountId(accountId);
+		accountJournal.setAmount(orderReturn.getTotalAmount());
+
+		accountJournal.setCreatedBy(username);
+		accountJournal.setCreatedDate(LocalDateTime.now());
+		accountJournal.setJournalType(ServiceConstants.PAYMENT_CREDIT);
+
+		accountJournal.setComments("Order : " + orderReturn.getOrderReturnId() + " Received on: " + LocalDateTime.now());
+
+		List<JournalTender> journalTenders = new ArrayList<>();
+		JournalTender journalTender = new JournalTender();
+
+		JournalTenderId journalTenderId = new JournalTenderId();
+		journalTenderId.setAccountJournal(accountJournal);
+		journalTenderId.setTenderId(tenderId);
+		journalTender.setJournalTenderId(journalTenderId);
+		journalTender.setAmount(orderReturn.getTotalAmount());
+		journalTender.setCreatedBy(accountJournal.getCreatedBy());
+		journalTender.setCreatedDate(LocalDateTime.now());
+		journalTender.setDescription("Order Tender is Cash By Default");
+
+		journalTenders.add(journalTender);
+		accountJournal.setJournalTenders(journalTenders);
+
+		logger.info("The account journal object has been created from order return details successfully");
+
+		return accountJournal;
 	}
 
 	public static AccountJournal convertReceiveOrderAmounts(Order order, Integer accountId, Integer tenderId) {

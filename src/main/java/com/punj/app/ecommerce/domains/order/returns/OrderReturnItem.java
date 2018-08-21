@@ -39,7 +39,7 @@ public class OrderReturnItem implements Serializable {
 	@Column(name = "order_return_item_id", updatable = false, nullable = false)
 	private BigInteger orderReturnItemId;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "order_return_id")
 	private OrderReturn orderReturn;
 

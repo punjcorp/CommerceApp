@@ -85,6 +85,7 @@ $.extend(OrderReturn.prototype, {
 });
 
 var OrderReturnItem = function() {
+	this.orderReturnItemId;
 	this.itemId;
 	this.itemName;
 	this.itemDesc;
@@ -92,16 +93,16 @@ var OrderReturnItem = function() {
 	this.unitCost;
 	this.price;
 	this.discount;
-	
+
 	this.taxGroupId;
-	
+
 	this.cgstRateRuleId;
 	this.cgstCode;
 	this.cgstTaxId;
 	this.cgstTax;
 	this.sgstTax;
 	this.igstTax;
-	
+
 	this.sgstRateRuleId;
 	this.sgstCode;
 	this.sgstTaxId;
@@ -113,11 +114,17 @@ var OrderReturnItem = function() {
 }
 
 $.extend(OrderReturnItem.prototype, {
-	parse : function(returnItem) {
+	parse : function(returnItem, roiId) {
+		if (returnItem.orderReturnItemId == undefined && roiId == undefined )
+			this.orderReturnItemId = -1;
+		else if (roiId != undefined && roiId!='')
+			this.orderReturnItemId = roiId;
+		else
+			this.orderReturnItemId = returnItem.orderReturnItemId;
 		this.itemId = returnItem.itemId;
 		this.itemName = returnItem.itemDesc;
 		this.itemDesc = returnItem.itemDesc;
-		this.qty = returnItem.delieveredQty-returnItem.returnedQty;
+		this.qty = returnItem.delieveredQty - returnItem.returnedQty;
 		this.unitCost = returnItem.actualUnitCost;
 		this.price = returnItem.actualCostAmount;
 		this.discount = returnItem.actualDiscountAmount;
@@ -129,16 +136,68 @@ $.extend(OrderReturnItem.prototype, {
 		this.igstTaxRate = returnItem.igstRate;
 		this.taxTotal = returnItem.actualTaxAmount;
 		this.itemTotal = returnItem.actualTotalCost;
+
+		this.taxGroupId = returnItem.taxGroupId;
+
+		if (returnItem.orderReturnItemId == undefined)
+			this.cgstTaxId = -1;
+		else
+			this.cgstTaxId = returnItem.cgstTaxId;
+
+		this.cgstRateRuleId = returnItem.cgstRateRuleId;
+		this.cgstCode = returnItem.cgstCode;
+
+		if (returnItem.orderReturnItemId == undefined)
+			this.sgstTaxId = -1;
+		else
+			this.sgstTaxId = returnItem.sgstTaxId;
+
+		this.sgstRateRuleId = returnItem.sgstRateRuleId;
+		this.sgstCode = returnItem.sgstCode;
+
+	},
+	parseReturnItem : function(returnItem) {
+		if (returnItem.orderReturnItemId == undefined)
+			this.orderReturnItemId = -1;
+		else
+			this.orderReturnItemId = returnItem.orderReturnItemId;
 		
-		this.taxGroupId= returnItem.taxGroupId;
+		this.itemId = returnItem.itemId;
+		this.itemName = returnItem.itemDesc;
+		this.itemDesc = returnItem.itemDesc;
+		this.qty = returnItem.returnedQty;
+		this.unitCost = returnItem.unitCost;
+		this.price = returnItem.costAmount;
+		this.discount = returnItem.discountAmount;
+		this.cgstTax = returnItem.cgstActualTaxAmount;
+		this.sgstTax = returnItem.sgstActualTaxAmount;
+		this.igstTax = returnItem.igstActualTaxAmount;
+		this.cgstTaxRate = returnItem.cgstRate;
+		this.sgstTaxRate = returnItem.sgstRate;
+		this.igstTaxRate = returnItem.igstRate;
+		this.taxTotal = returnItem.taxAmount;
+		this.itemTotal = returnItem.totalCost;
+
+		this.taxGroupId = returnItem.taxGroupId;
+
+		if (returnItem.orderReturnItemId == undefined)
+			this.cgstTaxId = -1;
+		else
+			this.cgstTaxId = returnItem.cgstTaxId;
 		
-		this.cgstRateRuleId= returnItem.cgstRateRuleId;
-		this.cgstCode= returnItem.cgstCode;
-		this.cgstTaxId= returnItem.cgstTaxId;
 		
-		this.sgstRateRuleId= returnItem.sgstRateRuleId;
-		this.sgstCode= returnItem.sgstCode;
-		this.sgstTaxId= returnItem.sgstTaxId;
+		this.cgstRateRuleId = returnItem.cgstRateRuleId;
+		this.cgstCode = returnItem.cgstCode;
+		
+
+		if (returnItem.orderReturnItemId == undefined)
+			this.sgstTaxId = -1;
+		else
+			this.sgstTaxId = returnItem.sgstTaxId;
+		
+		this.sgstRateRuleId = returnItem.sgstRateRuleId;
+		this.sgstCode = returnItem.sgstCode;
+		
 
 	},
 	render : function(sNo) {
@@ -169,7 +228,9 @@ $.extend(OrderReturnItem.prototype, {
 		itemDescHtml += '"></input>';
 		itemDescHtml += '<input id="orderReturn.orderReturnItems' + sNo + '.orderReturnItemId" ';
 		itemDescHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].orderReturnItemId" ';
-		itemDescHtml += 'type="hidden" value=""></input>';		
+		itemDescHtml += 'type="hidden" value="';
+		itemDescHtml += this.orderReturnItemId;
+		itemDescHtml += '"></input>';
 		itemDescHtml += '</div>';
 		itemDescHtml += '</div>';
 
@@ -185,35 +246,33 @@ $.extend(OrderReturnItem.prototype, {
 		unitCostHtml += '</div></div>';
 		unitCostHtml += '</div>';
 
-		
-		var globalReason=$('#orderReturn\\.reasonCodeId').val();
-		
+		var globalReason = $('#orderReturn\\.reasonCodeId').val();
+
 		var itemReasonCodeHtml = '<div class="col padding-sm">';
 		itemReasonCodeHtml += '<div class="form-group"><div class="input-group">';
 		itemReasonCodeHtml += '<select class="form-control form-control-sm " id="orderReturn.orderReturnItems' + sNo + '.reasonCodeId" ';
 		itemReasonCodeHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].reasonCodeId">';
-		if(globalReason=="")
+		if (globalReason == "")
 			itemReasonCodeHtml += '<option class="form-text text-muted" value="" selected>';
 		else
 			itemReasonCodeHtml += '<option class="form-text text-muted" value="">';
-		itemReasonCodeHtml += i18next.t('screeen_lbl_order_return_reason_code_select'); 
+		itemReasonCodeHtml += i18next.t('screeen_lbl_order_return_reason_code_select');
 		itemReasonCodeHtml += '</option>';
-		
+
 		$.each(return_reason_codes, function(index, return_reason_code) {
-			if(globalReason==return_reason_code.reasonCodeId)
-				itemReasonCodeHtml += '<option value="'+ return_reason_code.reasonCodeId +'" selected>';
+			if (globalReason == return_reason_code.reasonCodeId)
+				itemReasonCodeHtml += '<option value="' + return_reason_code.reasonCodeId + '" selected>';
 			else
-				itemReasonCodeHtml += '<option value="'+ return_reason_code.reasonCodeId +'">';
-			
+				itemReasonCodeHtml += '<option value="' + return_reason_code.reasonCodeId + '">';
+
 			itemReasonCodeHtml += return_reason_code.name;
 			itemReasonCodeHtml += '</option>';
 		});
-		
-		
+
 		itemReasonCodeHtml += '</select>';
 		itemReasonCodeHtml += '</div></div>';
-		itemReasonCodeHtml += '</div>';		
-		
+		itemReasonCodeHtml += '</div>';
+
 		var itemQtyHtml = '<div class="col padding-sm">';
 		itemQtyHtml += '<div class="form-group"><div class="input-group">';
 		itemQtyHtml += '<input class="form-control form-control-sm " onChange="qtyChanged(' + sNo + ',' + this.itemId + ');"';
@@ -228,7 +287,7 @@ $.extend(OrderReturnItem.prototype, {
 		var itemCostHtml = '<div class="col padding-sm">';
 		itemCostHtml += '<div class="form-group"><div class="input-group">';
 		itemCostHtml += '<span>' + i18next.t('common_currency_sign_inr') + ' </span>';
-		itemCostHtml += '<span id="lbl_costAmount'+ sNo +'">' + this.price.toFixed(2) + '</span>';
+		itemCostHtml += '<span id="lbl_costAmount' + sNo + '">' + this.price.toFixed(2) + '</span>';
 		itemCostHtml += '<input id="orderReturn.orderReturnItems' + sNo + '.costAmount" ';
 		itemCostHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].costAmount" ';
 		itemCostHtml += 'type="hidden" value="';
@@ -240,7 +299,7 @@ $.extend(OrderReturnItem.prototype, {
 		var discountHtml = '<div class="col padding-sm text-center">';
 		discountHtml += '<div class="form-group">';
 		discountHtml += '<span>' + i18next.t('common_currency_sign_inr') + '</span>';
-		discountHtml += '<span id="lbl_discountAmount'+ sNo +'">' +' '+this.discount.toFixed(2) + '</span>';
+		discountHtml += '<span id="lbl_discountAmount' + sNo + '">' + ' ' + this.discount.toFixed(2) + '</span>';
 		discountHtml += '<input id="orderReturn.orderReturnItems' + sNo + '.actualDiscountAmount" ';
 		discountHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].actualDiscountAmount" ';
 		discountHtml += 'type="hidden" value="';
@@ -278,7 +337,7 @@ $.extend(OrderReturnItem.prototype, {
 		sgstTaxHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].sgstTaxId" ';
 		sgstTaxHtml += 'type="hidden" value="';
 		sgstTaxHtml += this.sgstTaxId;
-		sgstTaxHtml += '"></input>';		
+		sgstTaxHtml += '"></input>';
 
 		var cgstTaxHtml = '<input id="orderReturn.orderReturnItems' + sNo + '.cgstTaxAmount" ';
 		cgstTaxHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].cgstTaxAmount" ';
@@ -305,11 +364,11 @@ $.extend(OrderReturnItem.prototype, {
 		cgstTaxHtml += 'type="hidden" value="';
 		cgstTaxHtml += this.cgstTaxId;
 		cgstTaxHtml += '"></input>';
-		
+
 		var totalTaxHtml = '<div class="col-1 padding-sm text-center">';
 		totalTaxHtml += '<div class="form-group">';
 		totalTaxHtml += '<span>' + i18next.t('common_currency_sign_inr') + ' </span>';
-		totalTaxHtml += '<span id="lbl_taxAmount'+ sNo +'">' + this.taxTotal.toFixed(2) + '</span>';
+		totalTaxHtml += '<span id="lbl_taxAmount' + sNo + '">' + this.taxTotal.toFixed(2) + '</span>';
 		totalTaxHtml += '<input id="orderReturn.orderReturnItems' + sNo + '.taxAmount" ';
 		totalTaxHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].taxAmount" ';
 		totalTaxHtml += 'type="hidden" value="';
@@ -321,7 +380,7 @@ $.extend(OrderReturnItem.prototype, {
 		var totalAmtHtml = '<div class="col-2">';
 		totalAmtHtml += '<div class="form-group"><div class="input-group">';
 		totalAmtHtml += '<b><span>' + i18next.t('common_currency_sign_inr') + ' </span>';
-		totalAmtHtml += '<span id="lbl_totalCost'+ sNo +'">' + this.itemTotal.toFixed(2) + '</span></b>';
+		totalAmtHtml += '<span id="lbl_totalCost' + sNo + '">' + this.itemTotal.toFixed(2) + '</span></b>';
 		totalAmtHtml += '<input id="orderReturn.orderReturnItems' + sNo + '.totalCost" ';
 		totalAmtHtml += 'name="orderReturn.orderReturnItems[' + sNo + '].totalCost" ';
 		totalAmtHtml += 'type="hidden" value="';
@@ -329,8 +388,8 @@ $.extend(OrderReturnItem.prototype, {
 		totalAmtHtml += '"></input>';
 		totalAmtHtml += '</div></div>';
 		totalAmtHtml += '</div>';
-		
-		var deleteHtml= '<div class="col-1">';
+
+		var deleteHtml = '<div class="col-1">';
 		deleteHtml += '<div class="form-group"><div class="input-group">';
 		deleteHtml += '<button id="btnDelete' + sNo + '" ';
 		deleteHtml += 'type="button" class="btn btn-danger" onClick="deleteReturnItem(';
@@ -340,7 +399,7 @@ $.extend(OrderReturnItem.prototype, {
 		deleteHtml += '</div>';
 
 		finalItemHtml = rowStartHtml + itemSNoHtml + itemDescHtml + itemReasonCodeHtml + itemQtyHtml + unitCostHtml + itemCostHtml;
-		finalItemHtml += discountHtml + sgstTaxHtml + cgstTaxHtml + totalTaxHtml + totalAmtHtml + deleteHtml+ rowEndHtml;
+		finalItemHtml += discountHtml + sgstTaxHtml + cgstTaxHtml + totalTaxHtml + totalAmtHtml + deleteHtml + rowEndHtml;
 
 		return finalItemHtml;
 	},

@@ -276,6 +276,7 @@ public final class MVCConstants {
 	public static final String REGISTER_BEANS= "registers";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
+	public static final String ORDER_RETURNS_BEAN= "orderReturns";
 	public static final String USERS_BEAN= "users";
 	public static final String DASHBOARD_REPORTS_BEAN= "reports";
 	

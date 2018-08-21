@@ -65,13 +65,13 @@
 									<nav aria-label="Pagination" th:if="${pager!=null}">
 										<ul class="pagination pagination-sm justify-content-end">
 											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
-												th:onclick="'searchResults(\'/search_item?page=1\')'">First</a></li>
+												th:onclick="'searchResults(\'/admin/manage_order?page=1\')'">First</a></li>
 											<th:block th:each="page,itrStat:${pager.displayPages}">
 												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
-													th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+													th:onclick="'searchResults(\'/admin/manage_order?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
 											</th:block>
 											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
-												th:onclick="'searchResults(\'/search_item?page='+${pager.lastPageNo}+'\')'">Last</a></li>
+												th:onclick="'searchResults(\'/admin/manage_order?page='+${pager.lastPageNo}+'\')'">Last</a></li>
 										</ul>
 									</nav>
 								</div>
@@ -125,7 +125,7 @@
 														
 														<a th:if="${orders.orders[__${itrStat.index}__].status=='R'}"
 															th:href="@{/admin/add_order_return(orderId=${orders.orders[__${itrStat.index}__].orderId})}" 
-															class="btn btn-secondary btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt"
+															class="btn btn-success btn-sm"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-redo-alt"
 													data-fa-transform="rotate-180"></i> <i class="far fa-file-powerpoint" data-fa-transform="shrink-8"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 															</span>
 														</span><span th:text="#{commerce.screen.actions.create.return}">Create Return</span></a>
@@ -160,13 +160,13 @@
 									<nav aria-label="Pagination" th:if="${pager!=null}">
 										<ul class="pagination pagination-sm justify-content-end">
 											<li th:class="${pager.firstPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#" tabindex="-1"
-												th:onclick="'searchResults(\'/search_item?page=1\')'">First</a></li>
+												th:onclick="'searchResults(\'/admin/manage_order?page=1\')'">First</a></li>
 											<th:block th:each="page,itrStat:${pager.displayPages}">
 												<li th:class="${pager.currentPageNo == page} ? 'page-item active': 'page-item'"><a class="page-link" href="#"
-													th:onclick="'searchResults(\'/search_item?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
+													th:onclick="'searchResults(\'/admin/manage_order?page='+${page}+'\')'"><span th:text="${page}"></span></a></li>
 											</th:block>
 											<li th:class="${pager.lastPage} ? 'page-item disabled': 'page-item'"><a class="page-link" href="#"
-												th:onclick="'searchResults(\'/search_item?page='+${pager.lastPageNo}+'\')'">Last</a></li>
+												th:onclick="'searchResults(\'/admin/manage_order?page='+${pager.lastPageNo}+'\')'">Last</a></li>
 										</ul>
 									</nav>
 								</div>
