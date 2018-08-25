@@ -54,7 +54,8 @@ public class ReturnSearchRepository {
 		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(OrderReturn.class).get();
 
 		// a very basic query by keywords
-		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("orderReturnId", "comments", "createdBy", "order.supplier.supplierId", "order.supplier.name", "order.orderId", "order.location.locationId", "order.location.name", "orderReturnItems.itemId", "orderReturnItems.itemDesc").matching(text).createQuery();
+		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("orderReturnId", "comments", "createdBy", "order.supplier.supplierId", "order.supplier.name",
+				"order.orderId", "order.location.locationId", "order.location.name", "orderReturnItems.itemId", "orderReturnItems.itemDesc").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
 		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, OrderReturn.class);

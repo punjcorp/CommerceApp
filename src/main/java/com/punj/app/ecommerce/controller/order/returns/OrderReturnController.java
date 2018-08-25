@@ -63,6 +63,16 @@ public class OrderReturnController {
 	private MessageSource messageSource;
 	private CommonService commonService;
 	private OrderReturnBeanValidator returnValidator;
+	private OrderReturnPrintUtil reportUtil;
+
+	/**
+	 * @param reportUtil
+	 *            the reportUtil to set
+	 */
+	@Autowired
+	public void setReportUtil(OrderReturnPrintUtil reportUtil) {
+		this.reportUtil = reportUtil;
+	}
 
 	/**
 	 * @param returnValidator
@@ -72,7 +82,7 @@ public class OrderReturnController {
 	public void setOrderReturnBeanValidator(OrderReturnBeanValidator returnValidator) {
 		this.returnValidator = returnValidator;
 	}
-	
+
 	/**
 	 * @param orderReturnService
 	 *            the orderReturnService to set
@@ -177,8 +187,8 @@ public class OrderReturnController {
 		if (reasonCodes != null && !reasonCodes.isEmpty()) {
 			orderReturnDTO.setReasonCodes(reasonCodes);
 		}
-		
-		BigInteger orderId=orderReturnDTO.getOrderReturn().getOrderId();
+
+		BigInteger orderId = orderReturnDTO.getOrderReturn().getOrderId();
 
 		Order order = this.orderService.searchOrder(orderId);
 		if (order != null) {
@@ -187,20 +197,20 @@ public class OrderReturnController {
 				orderReturnDTO.getOrderReturn().setOrder(orderBean);
 			}
 		}
-		
+
 		model.addAttribute(MVCConstants.ORDER_RETURN_BEAN_DTO, orderReturnDTO);
 
 		logger.info("The order return screen model objects has been updated successfully");
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_ORDER_RETURN_URL, params = { MVCConstants.SAVE_ORDER_RETURN_PARAM })
-	public String saveOrderReturn(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult, Model model,
-			Locale locale, HttpSession session, Authentication authentication) {
+	public String saveOrderReturn(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult,
+			Model model, Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			logger.error("There are some validation errors which needs to be corrected before processing");
 			this.updateOrderReturnModelDetails(model, returnDTO);
 			return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
-		}else {
+		} else {
 			this.returnValidator.validate(returnDTO, bindingResult);
 			if (bindingResult.hasErrors()) {
 				this.updateOrderReturnModelDetails(model, returnDTO);
@@ -219,12 +229,12 @@ public class OrderReturnController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_ORDER_RETURN_URL, params = { MVCConstants.APPROVE_ORDER_RETURN_PARAM })
-	public String approveOrderReturn(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO, BindingResult bindingResult, Model model,
-			Locale locale, HttpSession session, Authentication authentication) {
+	public String approveOrderReturn(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO, BindingResult bindingResult,
+			Model model, Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderReturnModelDetails(model, orderReturnDTO);
 			return ViewPathConstants.ADD_ORDER_RETURN_PAGE;
-		}else {
+		} else {
 			this.returnValidator.validate(orderReturnDTO, bindingResult);
 			if (bindingResult.hasErrors()) {
 				this.updateOrderReturnModelDetails(model, orderReturnDTO);
@@ -254,15 +264,18 @@ public class OrderReturnController {
 		else
 			orderReturn = this.orderReturnService.createOrderReturn(orderReturn, username);
 		logger.info("The {} order return details has been saved successfully", orderReturn.getOrderReturnId());
-		orderReturnBean.setOrderReturnId(orderReturn.getOrderReturnId());
-		orderReturnBean.setStatus(orderReturn.getStatus());
-		orderReturnBean.setCreatedBy(orderReturn.getCreatedBy());
-		orderReturnBean.setCreatedDate(orderReturn.getCreatedDate());
+		
+		orderReturn=this.orderReturnService.searchOrderReturn(orderReturn.getOrderReturnId());
+		Order order=this.orderService.searchOrder(orderReturn.getOrder().getOrderId());
+		orderReturn.setOrder(order);
+		
+		orderReturnBean=OrderReturnTransformer.transformOrderReturn(orderReturn);
+		orderReturnDTO.setOrderReturn(orderReturnBean);
 
 		this.updateOrderReturnModelDetails(model, orderReturnDTO);
 
-		// This section is to update order report details
-		// this.orderPrintUtil.createOrderReturnReport(orderReturnBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
+		// This section is to update order return report details
+		this.reportUtil.createOrderReturnReport(orderReturn, orderReturnBean, username, session, MVCConstants.REPORT_VIEW);
 		logger.info("The {} order return report objects has been updated successfully", orderReturn.getOrderReturnId());
 
 		if (status.equals(MVCConstants.STATUS_APPROVED)) {
@@ -339,13 +352,13 @@ public class OrderReturnController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_ORDER_RETURN_URL, params = { MVCConstants.SAVE_ORDER_RETURN_PARAM })
-	public String saveOrderReturnAfterEditing(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult, Model model,
-			Locale locale, HttpSession session, Authentication authentication) {
+	public String saveOrderReturnAfterEditing(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO returnDTO, BindingResult bindingResult,
+			Model model, Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			logger.error("There are some validation errors which needs to be corrected before processing");
 			this.updateOrderReturnModelDetails(model, returnDTO);
 			return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
-		}else {
+		} else {
 			this.returnValidator.validate(returnDTO, bindingResult);
 			if (bindingResult.hasErrors()) {
 				this.updateOrderReturnModelDetails(model, returnDTO);
@@ -364,12 +377,12 @@ public class OrderReturnController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_ORDER_RETURN_URL, params = { MVCConstants.APPROVE_ORDER_RETURN_PARAM })
-	public String approveOrderReturnAfterEditing(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO, BindingResult bindingResult,
-			Model model, Locale locale, HttpSession session, Authentication authentication) {
+	public String approveOrderReturnAfterEditing(@ModelAttribute("returnDTO") @Validated(ValidationGroup.VGAddOrderReturn.class) OrderReturnDTO orderReturnDTO,
+			BindingResult bindingResult, Model model, Locale locale, HttpSession session, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			this.updateOrderReturnModelDetails(model, orderReturnDTO);
 			return ViewPathConstants.EDIT_ORDER_RETURN_PAGE;
-		}else {
+		} else {
 			this.returnValidator.validate(orderReturnDTO, bindingResult);
 			if (bindingResult.hasErrors()) {
 				this.updateOrderReturnModelDetails(model, orderReturnDTO);

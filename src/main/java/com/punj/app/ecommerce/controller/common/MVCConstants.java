@@ -170,6 +170,8 @@ public final class MVCConstants {
 	public static final String REMOVE_ORDER_BILL_PARAM= "removeOrderBill";	
 	public static final String SAVE_ORDER_PARAM= "saveOrder";
 	public static final String APPROVE_ORDER_PARAM= "approveOrder";
+	public static final String APPROVE_ORDER_RETURNS_PARAM= "approveOrderReturns";
+	public static final String DELETE_ORDER_RETURNS_PARAM= "deleteOrderReturns";
 	public static final String SAVE_ORDERS_PARAM= "saveOrders";
 	public static final String APPROVE_ORDERS_PARAM= "approveOrders";
 	public static final String DELETE_ORDERS_PARAM= "deleteOrders";
@@ -184,6 +186,11 @@ public final class MVCConstants {
 		
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";
+	
+	public static final String ORDER_RETURN_REPORT="/reports/order/returns/order_return.jasper";
+	public static final String ORDER_RETURN_HEADER_REPORT="/reports/order/returns/order_return_header.jasper";
+	public static final String ORDER_RETURN_FOOTER_REPORT="/reports/order/returns/order_return_footer.jasper";
+	public static final String ORDER_RETURN_ITEMS_REPORT="/reports/order/returns/order_return_item.jasper";
 	
 	public static final String ORDER_REPORT="/reports/order/purchase_order.jasper";
 	public static final String ORDER_HEADER_REPORT="/reports/order/purchase_order_header.jasper";
@@ -215,6 +222,10 @@ public final class MVCConstants {
 	public static final String TXN_REG_CLOSE_REPORT="/reports/dailydeeds/register_close_report.jasper";
 	public static final String TXN_STORE_CLOSE_REPORT="/reports/dailydeeds/store_close_report.jasper";
 
+	public static final String ORDER_RETURN_HEADER_REPORT_PARAM="ORDER_RETURN_HEADER_REPORT";
+	public static final String ORDER_RETURN_FOOTER_REPORT_PARAM="ORDER_RETURN_FOOTER_REPORT";
+	public static final String ORDER_RETURN_ITEMS_REPORT_PARAM="ORDER_RETURN_ITEMS_REPORT";
+	
 	public static final String ORDER_HEADER_REPORT_PARAM="ORDER_HEADER_REPORT";
 	public static final String ORDER_FOOTER_REPORT_PARAM="ORDER_FOOTER_REPORT";
 	public static final String ORDER_ITEMS_REPORT_PARAM="ORDER_ITEMS_REPORT";
@@ -281,7 +292,8 @@ public final class MVCConstants {
 	public static final String DASHBOARD_REPORTS_BEAN= "reports";
 	
 	
-	
+	public static final String REPORT_PRINT= "P";
+	public static final String REPORT_VIEW= "V";
 	public static final String REPORT_ORDER_PRINT= "P";
 	public static final String REPORT_ORDER_VIEW= "V";
 	public static final String LAST_ORDER_BEAN= "lastOrder";
@@ -289,6 +301,11 @@ public final class MVCConstants {
 	public static final String LAST_ORDER_ID_REPORT= "lastOrderIdReport";
 	public static final String LAST_ORDER_REPORT_JASPER= "lastOrderReportJasper";
 	public static final String LAST_ORDER_REPORT_PDF= "lastOrderReportPDF";
+	
+	public static final String LAST_ORDER_RETURN_ID_REPORT= "lastOrderReturnIdReport";
+	public static final String LAST_ORDER_RETURN_REPORT_JASPER= "lastOrderReturnReportJasper";
+	public static final String LAST_ORDER_RETURN_REPORT_PDF= "lastOrderReturnReportPDF";
+	
 	public static final String ORDER_BEAN_DTO= "orderBeanDTO";
 	public static final String ORDER_RETURN_BEAN_DTO= "returnDTO";
 	public static final String ORDER_BEAN= "orderBean";

@@ -4,6 +4,7 @@ package com.punj.app.ecommerce.controller.order.returns;
  */
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
+import com.punj.app.ecommerce.domains.order.Order;
+import com.punj.app.ecommerce.domains.order.OrderItem;
 import com.punj.app.ecommerce.domains.order.returns.OrderReturn;
+import com.punj.app.ecommerce.domains.order.returns.OrderReturnItem;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.services.OrderReturnService;
 import com.punj.app.ecommerce.services.OrderService;
@@ -89,11 +93,20 @@ public class OrderReturnPhaseController {
 				OrderReturn orderReturn = this.orderReturnService.searchOrderReturn(orderReturnId);
 				if (orderReturn != null) {
 					if (orderReturn.getStatus().equals(MVCConstants.STATUS_CREATED)) {
-						this.orderReturnService.approveOrderReturn(orderReturnId, userDetails.getUsername());
-						redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS,
-								messageSource.getMessage("commerce.screen.order.return.manage.approve.success", new Object[] { orderReturnId }, locale));
+						if(this.validateReturnForApproval(orderReturnId)) {
+							this.orderReturnService.approveOrderReturn(orderReturnId, userDetails.getUsername());
+							redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS,
+									messageSource.getMessage("commerce.screen.order.return.manage.approve.success", new Object[] { orderReturnId }, locale));
 
-						logger.info("The selected order return has been approved successfully");
+							logger.info("The selected order return has been approved successfully");
+						}else {
+							redirectAttrs.addFlashAttribute(MVCConstants.ALERT,
+									messageSource.getMessage("commerce.screen.order.return.manage.valid.approve.success", new Object[] { orderReturnId }, locale));
+
+							logger.info("The selected order return has been approved successfully");
+						}
+						
+						
 					} else {
 						redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.order.return.approve.status", null, locale));
 						logger.info("There order return is not eligible for the approval as status is not 'created'!!");
@@ -142,4 +155,44 @@ public class OrderReturnPhaseController {
 		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.MANAGE_ORDER_RETURN_URL;
 	}
 
+	
+	private Boolean validateReturnForApproval(BigInteger orderReturnId) {
+		Boolean validationFlag=Boolean.TRUE;
+		
+		OrderReturn orderReturn = this.orderReturnService.searchOrderReturn(orderReturnId);
+		if (orderReturn != null) {
+			Order order = this.orderService.searchOrder(orderReturn.getOrder().getOrderId());
+
+			List<OrderItem> orderItems = order.getOrderItems();
+			List<OrderReturnItem> orderReturnItems = orderReturn.getOrderReturnItems();
+			BigInteger orderItemId=null;
+			BigInteger orderReturnItemId=null;
+			
+			for (OrderReturnItem orderReturnItem : orderReturnItems) {
+				orderReturnItemId=orderReturnItem.getItemId();
+				for (OrderItem orderItem : orderItems) {
+					orderItemId=orderItem.getItemId();
+					if (orderReturnItemId.equals(orderItemId)) {
+						if(orderReturnItem.getReturnQty().compareTo(orderItem.getDelieveredQty().subtract(orderItem.getReturnedQty()))>0)
+							validationFlag=Boolean.FALSE;
+						if(!validationFlag)
+							break;
+					}
+				}
+				if(!validationFlag)
+					break;
+			}
+
+		}
+		
+		if(validationFlag) {
+			logger.info("The order return is valid for approval");
+			return validationFlag;
+		}else {
+			logger.info("The order return is not valid for approval");
+			return validationFlag;
+		}
+		
+	}
+	
 }

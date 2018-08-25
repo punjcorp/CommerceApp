@@ -124,6 +124,9 @@ public class Pager implements Serializable {
 				size = this.maxDisplayPage;
 			} else {
 				start = this.currentPageNo - halfSize;
+				if(start<1) {
+					start = 1;
+				}
 				size = this.maxDisplayPage;
 			}
 		}

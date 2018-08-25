@@ -1,15 +1,29 @@
 
 
 var returnDTO = new OrderReturn();
+var selectedIds=new Array();
 
 $(function() {
 	
 	orderReturnsTable = $('#orderReturnsTable').DataTable({
+		dom: 'Bfrtip',
+		"paging":   false,
+        "info":     false,
+        "searching":     false,
 		columnDefs : [ {
 			orderable : false,
 			className : 'select-checkbox',
 			targets : 0
-		} ],
+		},{
+			"targets" : [1],
+			"visible": false,
+            "orderable": false
+		},{
+			"targets" : [2],
+			"visible": false,
+            "orderable": false
+		}
+		],
 		select : {
 			style : 'os',
 			selector : 'tr',
@@ -19,11 +33,17 @@ $(function() {
 		"columns" : [ {
 			"data" : "id"
 		}, {
+			"data" : "returnId"			
+		}, {
+			"data" : "returnIndex"			
+		}, {
 			"data" : "orderReturnId"
 		}, {
 			"data" : "comments"
 		}, {
-			"data" : "orderId"
+			"data" : "supplier"
+		}, {
+			"data" : "location"
 		},{
 			"data" : "status"
 		}, {
@@ -33,10 +53,6 @@ $(function() {
 		},{
 			"data" : "actions"
 		}],
-		dom: 'Bfrtip',
-		"paging":   false,
-        "info":     false,
-        "searching":     false,
 		buttons: [
             {
                 text: 'Select all',
@@ -54,6 +70,23 @@ $(function() {
 	});
 
 	orderReturnsTable.buttons().container().appendTo($('#returnTableBtns'));
+	
+	
+	orderReturnsTable
+     .on( 'select', function ( e, dt, type, indexes ) {
+         var rowData = orderReturnsTable.rows( indexes ).data().toArray();
+         if(rowData.length>0){
+        	recordSelection(rowData); 
+         }
+         
+     } )
+     .on( 'deselect', function ( e, dt, type, indexes ) {
+    	 var rowData = orderReturnsTable.rows( indexes ).data().toArray();
+         if(rowData.length>0){
+        	 recordDeSelection(rowData); 
+         }
+         
+     } );
 	
 });
 	
@@ -89,6 +122,39 @@ function printOrderReturnReportById(orderReturnId) {
 function searchResults(action) {
 	
 	$("#searchForm").attr("action", action);
-
 	$('#searchForm').submit();
 }
+
+function submitForm(action) {
+
+	$("#bulkForm").attr("action", action);
+	$('#bulkForm').submit();
+}
+
+function recordSelection(rowData){
+	$.each(rowData, function(index, row){
+		selectedIds.push(row.returnId+"_"+row.returnIndex);
+	});
+	$('#orderReturnIds').val(selectedIds);
+	$('#btnApprove').removeAttr("disabled");
+	$('#btnDelete').removeAttr("disabled");
+}
+
+
+
+function recordDeSelection(rowData){
+	$.each(rowData, function(index, row){
+		var index = selectedIds.indexOf(row.returnId+"_"+row.returnIndex);
+		if (index > -1) {
+			selectedIds.splice(index, 1);
+		}
+	});
+	
+	$('#orderReturnIds').val(selectedIds);
+	if(selectedIds.length<1){
+		$("#btnApprove").attr("disabled", "disabled");
+		$("#btnDelete").attr("disabled", "disabled");
+	}
+	
+}
+

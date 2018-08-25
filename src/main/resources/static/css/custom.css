@@ -497,13 +497,11 @@ body {
 
 .modal-lg {
 	max-width: 95% !important;
-    height: auto;
 	max-height: 95%;
 }
 
 .modal-lg .modal-body {
     /* 100% = dialog height, 120px = header + footer */
-    max-height: calc(100% - 50px);
     overflow-y: scroll;
 }
 

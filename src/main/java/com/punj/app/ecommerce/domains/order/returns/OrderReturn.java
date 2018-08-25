@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -76,6 +77,11 @@ public class OrderReturn implements Serializable {
 	private String status;
 	@Field
 	private String comments;
+	
+	@Lob
+	@Column(name = "invoice")
+	private byte[] orderReturnReport;	
+	
 	@Column(name = "reason_code_id")
 	private Integer reasonCodeId;
 
@@ -307,5 +313,21 @@ public class OrderReturn implements Serializable {
 	public void setReasonCodeId(Integer reasonCodeId) {
 		this.reasonCodeId = reasonCodeId;
 	}
+
+	/**
+	 * @return the orderReturnReport
+	 */
+	public byte[] getOrderReturnReport() {
+		return orderReturnReport;
+	}
+
+	/**
+	 * @param orderReturnReport the orderReturnReport to set
+	 */
+	public void setOrderReturnReport(byte[] orderReturnReport) {
+		this.orderReturnReport = orderReturnReport;
+	}
+	
+	
 
 }

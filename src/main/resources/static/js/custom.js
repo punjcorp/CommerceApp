@@ -302,3 +302,20 @@ function hideAlert() {
 function showFormSubmit(){
 	$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
 }
+
+function resizeModal(reportModalId, reportFrameId){
+	$('#'+reportModalId).find('.modal-lg').css({
+        height: $(window).height() +'px'});
+	
+	var modalMargin=$('#'+reportModalId).find('.modal-lg').css("marginTop");
+	modalMargin=+modalMargin.replace(/[^0-9]/gi, '');
+	modalMargin=modalMargin * 2;
+	
+	var modalHeight=$(window).height() - modalMargin;
+	$('#'+reportModalId).find('.modal-content').css({
+        height: modalHeight +'px'});
+	
+	var pdfHeight=modalHeight-230;
+	$('#'+reportFrameId).height(pdfHeight+'px');
+	
+}

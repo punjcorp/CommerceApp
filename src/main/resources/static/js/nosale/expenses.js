@@ -451,6 +451,9 @@ function postExpenseSave(data) {
 
 
 function viewExpenseReceipt() {
+	
+	resizeModal('expenseReceiptModal', 'receiptPDFContainer');
+	
 	$('#progressDiv').removeClass("d-none");
 	updateTxnIdDetails();
 	view_rcpt_url = encodeURIComponent(view_rcpt_url + '=' + this.txnId.uniqueTxnNo);

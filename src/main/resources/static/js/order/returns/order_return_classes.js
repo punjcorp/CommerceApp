@@ -115,7 +115,7 @@ var OrderReturnItem = function() {
 
 $.extend(OrderReturnItem.prototype, {
 	parse : function(returnItem, roiId) {
-		if (returnItem.orderReturnItemId == undefined && roiId == undefined )
+		if (returnItem.orderReturnItemId == undefined && (roiId == undefined || roiId == ""))
 			this.orderReturnItemId = -1;
 		else if (roiId != undefined && roiId!='')
 			this.orderReturnItemId = roiId;

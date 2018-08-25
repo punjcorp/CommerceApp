@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.punj.app.ecommerce.domains.order.returns.OrderReturn;
 import com.punj.app.ecommerce.domains.order.returns.OrderReturnDTO;
@@ -18,13 +19,17 @@ public interface OrderReturnService {
 	public OrderReturn createOrderReturn(OrderReturn orderReturn, String username);
 
 	public OrderReturn searchOrderReturn(BigInteger orderReturnId);
-	
+
 	public OrderReturnDTO searchOrderReturns(String text, Pager pager);
 
 	public OrderReturn approveOrderReturn(BigInteger orderReturnId, String username);
 
 	public Boolean deleteOrderReturn(BigInteger orderReturnId);
-	
+
 	public OrderReturn updateOrderReturn(OrderReturn orderReturn, String username);
+
+	public List<OrderReturn> approveOrderReturns(List<BigInteger> orderReturnIds, String username);
 	
+	public void deleteOrderReturns(List<BigInteger> orderReturnIds, String username);
+
 }

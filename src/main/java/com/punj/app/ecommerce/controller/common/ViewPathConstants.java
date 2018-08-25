@@ -98,6 +98,7 @@ public final class ViewPathConstants {
 	public static final String CUSTOMER_LOOKUP_URL = "/customer_account_lookup";
 	public static final String CUSTOMER_LOOKUP_ADMIN_URL = "/admin/customer_account_lookup";
 	
+	public static final String BULK_ORDER_RETURN_URL = "/admin/bulk_order_return_action";
 	
 	public static final String BULK_ORDER_URL = "/admin/bulk_order_action";
 	public static final String VIEW_ORDER_BILL_URL = "/admin/view_order_bill";

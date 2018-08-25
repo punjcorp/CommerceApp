@@ -13,8 +13,8 @@
 </head>
 <body>
 	<div id="wrapper">
-		
-		
+
+
 		<!-- Page Content -->
 		<div id="page-content-wrapper-no-menu">
 			<!-- This thymeleaf fragment include the top navigation bar-->
@@ -34,9 +34,8 @@
 									class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-clipboard"></i> <i class="fas fa-pencil-alt"
 											data-fa-transform="shrink-10 right-10 up-4"></i>
 									</span>
-								</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_inv_adjust}" class="btn btn-success"><span
-									class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-clipboard"></i> <i class="fas fa-plus"
-											data-fa-transform="shrink-10 right-10 up-4"></i>
+								</span> <span th:text="#{commerce.screen.actions.edit}"></span></a> <a th:href="@{/admin/add_inv_adjust}" class="btn btn-success"><span class="fa-2x mr-2">
+										<span class="fa-layers fa-fw"> <i class="fas fa-clipboard"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 									</span>
 								</span> <span th:text="#{commerce.home.menu.add.inventory}"></span></a> <a th:href="@{/admin/manage_inv_adjust}" class="btn btn-success"> <span
 									class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="fas fa-clipboard"></i> <i class="fas fa-cog"
@@ -52,8 +51,7 @@
 										<div class="input-group text-left">
 											<select th:field="*{locationId}" class="form-control input-sm">
 												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.location}">Select Location</option>
-												<option th:each="location: ${invAdjustBean.locations}" th:value="${location.locationId}"
-													th:text="${location.locationId} + ' - ' +${location.name}"></option>
+												<option th:each="location: ${invAdjustBean.locations}" th:value="${location.locationId}" th:text="${location.locationId} + ' - ' +${location.name}"></option>
 											</select>
 										</div>
 										<small th:if="${#fields.hasErrors('locationId')}" th:errors="*{locationId}" class="text-danger align-top">Location Error </small>
@@ -111,8 +109,8 @@
 											<div class="form-group">
 												<div class="input-group">
 													<div class="input-group-prepend">
-														<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-file-alt" data-fa-transform="rotate-180"></i>
-																<i class="fas fa-search" data-fa-transform="shrink-10 right-10 up-4"></i>
+														<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-file-alt" data-fa-transform="rotate-180"></i> <i
+																class="fas fa-search" data-fa-transform="shrink-10 right-10 up-4"></i>
 														</span>
 														</span>
 													</div>
@@ -125,8 +123,7 @@
 														</span>
 													</div>
 												</div>
-												<small th:id="'itemSearchErrorMsg'+${itrStat.index}" ></small>
-												<small th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
+												<small th:id="'itemSearchErrorMsg'+${itrStat.index}"></small> <small th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].itemId')}"
 													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].itemId}" class="text-danger">Item Error </small>
 											</div>
 										</div>
@@ -144,15 +141,14 @@
 											<div class="form-group">
 												<input type="number" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="form-control input-sm"
 													th:placeholder="#{commerce.screen.inventory.qty}" maxlength="150"></input> <small
-													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].qty')}"
-													th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}" class="text-danger">Quantity Error </small>
+													th:if="${#fields.hasErrors('invAdjustItems[__${itrStat.index}__].qty')}" th:errors="${invAdjustBean.invAdjustItems[__${itrStat.index}__].qty}"
+													class="text-danger">Quantity Error </small>
 											</div>
 										</div>
 										<div class="col">
 											<div class="form-group">
 												<input type="hidden" th:field="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></input> <span
-													th:id="'invAdjustItems'+${itrStat.index}+'.span.fromAvailable'"
-													th:text="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></span>
+													th:id="'invAdjustItems'+${itrStat.index}+'.span.fromAvailable'" th:text="${invAdjustBean.invAdjustItems[__${itrStat.index}__].fromAvailable}"></span>
 											</div>
 										</div>
 										<div class="col">
@@ -188,7 +184,8 @@
 										</button>
 										<a th:if="${invAdjustBean.invAdjustId!=null}" th:href="@{/admin/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}"
 											href="../inventory/inv_adjust.html" class="btn btn-secondary" target="_blank"><i class="fas fa-print fa-2x mx-2"></i><span
-											th:text="#{commerce.screen.actions.print}">Print</span></a> <a th:href="@{/admin/add_inv_adjust}" class="btn btn-success"> <i
+											th:text="#{commerce.screen.actions.print}">Print</span></a> 
+										<a th:href="@{/admin/add_inv_adjust}" class="btn btn-success"> <i
 											class="fas fa-plus fa-2x mx-2"></i> <span th:text="#{commerce.home.menu.add.inventory}"></span></a> <a th:href="@{/admin/manage_inv_adjust}"
 											class="btn btn-success"> <i class="fas fa-cog fa-2x mx-2"></i> <span th:text="#{commerce.home.menu.search.inventory}"></span>
 										</a>

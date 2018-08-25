@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,15 @@ import com.punj.app.ecommerce.domains.order.returns.OrderReturn;
 import com.punj.app.ecommerce.domains.order.returns.OrderReturnDTO;
 import com.punj.app.ecommerce.domains.order.returns.OrderReturnItem;
 import com.punj.app.ecommerce.domains.order.returns.OrderReturnItemTax;
+import com.punj.app.ecommerce.models.common.AddressBean;
+import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.order.OrderBean;
+import com.punj.app.ecommerce.models.order.OrderBeansDTO;
 import com.punj.app.ecommerce.models.order.returns.OrderReturnBean;
 import com.punj.app.ecommerce.models.order.returns.OrderReturnItemBean;
+import com.punj.app.ecommerce.models.order.returns.OrderReturnReportBean;
 import com.punj.app.ecommerce.models.order.returns.ReturnBeanDTO;
+import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.utils.Utils;
 
 /**
@@ -33,6 +39,33 @@ public class OrderReturnTransformer {
 
 	private OrderReturnTransformer() {
 		throw new IllegalStateException("OrderReturnTransformer class");
+	}
+
+	public static OrderReturnReportBean prepareORRB(OrderReturnBean orderReturnBean, LocationBean locationBean, String username) {
+		OrderReturnReportBean returnReportBean = new OrderReturnReportBean();
+
+		List<OrderReturnBean> orderReturnList=new ArrayList<>();
+		orderReturnList.add(orderReturnBean);
+		returnReportBean.setOrderReturn(orderReturnList);
+		
+		List<OrderBean> orderList=new ArrayList<>();
+		orderList.add(orderReturnBean.getOrder());
+		returnReportBean.setOrder(orderList);
+		
+		returnReportBean.setOrderReturnId(orderReturnBean.getOrderReturnId());
+		returnReportBean.setLocationDetails(locationBean);
+		
+		List<AddressBean> addressList=new ArrayList<>();
+		addressList.add(orderReturnBean.getOrder().getSupplier().getPrimaryAddress());
+		returnReportBean.setDelieveryLocation(addressList);
+		
+		List<SupplierBean> supplierList=new ArrayList<>();
+		supplierList.add(orderReturnBean.getOrder().getSupplier());
+		returnReportBean.setSupplier(supplierList);
+		returnReportBean.setUsername(username);
+
+		logger.info("The order return Report has been created successfully");
+		return returnReportBean;
 	}
 
 	public static ReturnBeanDTO transformOrderReturnDTO(OrderReturnDTO orderReturnsDTO) {
@@ -246,7 +279,7 @@ public class OrderReturnTransformer {
 		returnItem.setActualTotalCost(returnItemBean.getTotalCost());
 		returnItem.setReasonCodeId(returnItemBean.getReasonCodeId());
 
-		if(returnItemBean.getOrderReturnItemId()!=null && returnItemBean.getOrderReturnItemId().intValue()<0)
+		if (returnItemBean.getOrderReturnItemId() != null && returnItemBean.getOrderReturnItemId().intValue() < 0)
 			returnItem.setOrderReturnItemId(null);
 		else
 			returnItem.setOrderReturnItemId(returnItemBean.getOrderReturnItemId());
@@ -296,10 +329,10 @@ public class OrderReturnTransformer {
 			returnItemTax.setTaxRuleAmt(returnItemBean.getIgstTaxAmount());
 			returnItemTax.setTaxRulePercentage(returnItemBean.getIgstRate());
 			returnItemTax.setTaxCode(returnItemBean.getIgstCode());
-			if(returnItemBean.getIgstTaxId()!=null && returnItemBean.getIgstTaxId().intValue()<0)
+			if (returnItemBean.getIgstTaxId() != null && returnItemBean.getIgstTaxId().intValue() < 0)
 				returnItemTax.setReturnItemTaxId(null);
 			else
-			returnItemTax.setReturnItemTaxId(returnItemBean.getIgstTaxId());
+				returnItemTax.setReturnItemTaxId(returnItemBean.getIgstTaxId());
 
 			logger.info("The IGST taxes has been created successfully");
 		} else if (sgstFlag != null && sgstFlag) {
@@ -307,21 +340,21 @@ public class OrderReturnTransformer {
 			returnItemTax.setTaxRuleAmt(returnItemBean.getSgstTaxAmount());
 			returnItemTax.setTaxRulePercentage(returnItemBean.getSgstRate());
 			returnItemTax.setTaxCode(returnItemBean.getSgstCode());
-			if(returnItemBean.getSgstTaxId()!=null && returnItemBean.getSgstTaxId().intValue()<0)
+			if (returnItemBean.getSgstTaxId() != null && returnItemBean.getSgstTaxId().intValue() < 0)
 				returnItemTax.setReturnItemTaxId(null);
 			else
 				returnItemTax.setReturnItemTaxId(returnItemBean.getSgstTaxId());
-			
+
 			returnCGSTTax.setTaxableAmt(returnItemBean.getCostAmount().subtract(returnItemBean.getDiscountAmount()));
 
 			returnCGSTTax.setTaxRuleAmt(returnItemBean.getCgstTaxAmount());
 			returnCGSTTax.setTaxRulePercentage(returnItemBean.getCgstRate());
 			returnCGSTTax.setTaxCode(returnItemBean.getCgstCode());
-			if(returnItemBean.getCgstTaxId()!=null && returnItemBean.getCgstTaxId().intValue()<0)
+			if (returnItemBean.getCgstTaxId() != null && returnItemBean.getCgstTaxId().intValue() < 0)
 				returnCGSTTax.setReturnItemTaxId(null);
 			else
-			returnCGSTTax.setReturnItemTaxId(returnItemBean.getCgstTaxId());
-			
+				returnCGSTTax.setReturnItemTaxId(returnItemBean.getCgstTaxId());
+
 			orderReturnItemTaxes.add(returnCGSTTax);
 			logger.info("The SGST and CGST taxes has been created successfully");
 		}
@@ -331,4 +364,24 @@ public class OrderReturnTransformer {
 		return orderReturnItemTaxes;
 	}
 
+	public static List<BigInteger> retrieveEligibleOrderReturns(ReturnBeanDTO orderReturnDTO) {
+		List<OrderReturnBean> returnList = orderReturnDTO.getOrderReturns();
+		List<BigInteger> finalOrderReturnIds = new ArrayList<>();
+		List<String> selectedIds = orderReturnDTO.getOrderReturnIds();
+		BigInteger orderReturnId = null;
+		Integer orderReturnIndex = null;
+		OrderReturnBean orderReturnBean = null;
+		for (String selectedId : selectedIds) {
+			String[] splittedVals = selectedId.split("_");
+			orderReturnId = new BigInteger(splittedVals[0]);
+			orderReturnIndex = new Integer(splittedVals[1]);
+			orderReturnBean = returnList.get(orderReturnIndex);
+			if (orderReturnBean.getStatus().equals(MVCConstants.STATUS_CREATED)) {
+				finalOrderReturnIds.add(orderReturnId);
+			}
+		}
+		logger.info("The select order ids and index for bulk operations has been transformed successfully");
+		return finalOrderReturnIds;
+	}
+	
 }

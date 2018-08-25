@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -85,6 +86,10 @@ public class Order implements Serializable {
 	private String status;
 	@Field
 	private String comments;
+	
+	@Lob
+	@Column(name = "invoice")
+	private byte[] orderReport;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "supplier_id")
@@ -381,6 +386,20 @@ public class Order implements Serializable {
 	 */
 	public void setOrderBills(List<OrderBill> orderBills) {
 		this.orderBills = orderBills;
+	}
+
+	/**
+	 * @return the orderReport
+	 */
+	public byte[] getOrderReport() {
+		return orderReport;
+	}
+
+	/**
+	 * @param orderReport the orderReport to set
+	 */
+	public void setOrderReport(byte[] orderReport) {
+		this.orderReport = orderReport;
 	}
 
 }

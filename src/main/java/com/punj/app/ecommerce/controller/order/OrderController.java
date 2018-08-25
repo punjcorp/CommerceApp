@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.OrderReturnTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.order.Order;
@@ -185,15 +186,16 @@ public class OrderController {
 		Order order = OrderTransformer.transformOrderBean(orderBean, username, status, Boolean.FALSE);
 		order = this.orderService.createOrder(order);
 		logger.info("The {} order details has been saved successfully", order.getOrderId());
-		orderBean.setOrderId(order.getOrderId());
-		orderBean.setStatus(order.getStatus());
-		orderBean.setCreatedBy(order.getCreatedBy());
-		orderBean.setCreatedDate(order.getCreatedDate());
-
+		
+		order=this.orderService.searchOrder(order.getOrderId());
+		
+		orderBean=OrderTransformer.transformOrder(order);
+		orderBeanDTO.setOrder(orderBean);
+	
 		this.updateOrderModelDetails(model, orderBeanDTO);
 
 		// This section is to update order report details
-		this.orderPrintUtil.createOrderReport(orderBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
+		this.orderPrintUtil.createOrderReport(order, orderBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
 		logger.info("The {} order report objects has been updated successfully", order.getOrderId());
 
 		if (status.equals(MVCConstants.STATUS_APPROVED)) {
@@ -343,13 +345,15 @@ public class OrderController {
 		Order order = OrderTransformer.transformOrderBean(orderBean, username, status, Boolean.TRUE);
 		order = this.orderService.createOrder(order);
 		logger.info("The {} order details has been saved successfully", order.getOrderId());
-		orderBean.setOrderId(order.getOrderId());
-		orderBean.setStatus(order.getStatus());
+
+		order=this.orderService.searchOrder(order.getOrderId());
+		orderBean=OrderTransformer.transformOrder(order);
+		orderBeanDTO.setOrder(orderBean);
 		
 		this.updateOrderModelDetails(model, orderBeanDTO);
 
 		// This section is to update order report details
-		this.orderPrintUtil.createOrderReport(orderBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
+		this.orderPrintUtil.createOrderReport(order, orderBean, username, session, MVCConstants.REPORT_ORDER_VIEW);
 		logger.info("The {} order report objects has been updated successfully", order.getOrderId());
 
 		if (order.getStatus().equals(MVCConstants.STATUS_APPROVED)) {

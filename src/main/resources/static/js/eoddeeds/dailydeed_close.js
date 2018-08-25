@@ -382,6 +382,9 @@ function printTxnReceipt(){
 }
 
 function viewTxnReceipt(){
+	
+	resizeModal('txnReceiptModal', 'receiptPDFContainer');
+	
     $('#progressDiv').removeClass("d-none");
 
     var pdfRcptUrl = view_rcpt_viewer_url+'?file='+view_rcpt_url;

@@ -258,6 +258,8 @@ function calculateTotals() {
 }
 
 function postOrderReturnSave() {
+	
+
 	$('#orderReportModal').modal({
 		backdrop : 'static',
 		keyboard : false
@@ -266,6 +268,10 @@ function postOrderReturnSave() {
 }
 
 function viewOrderReturnReport() {
+
+	resizeModal('orderReportModal', 'reportPDFContainer');
+
+	
 	$('#progressDiv').removeClass("d-none");
 	view_rcpt_url = encodeURIComponent(view_rcpt_url + '=' + txn_orderId);
 	var pdfRcptUrl = view_rcpt_viewer_url + '?file=' + view_rcpt_url;

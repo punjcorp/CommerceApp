@@ -12,7 +12,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +103,7 @@ public class OrderPrintUtil {
 		return orderList;
 	}
 
-	public Object createOrderReport(OrderBean orderBean, String username, HttpSession session, String requestType) {
+	public Object createOrderReport(Order order, OrderBean orderBean, String username, HttpSession session, String requestType) {
 
 		BigInteger orderId = orderBean.getOrderId();
 		JasperPrint orderReport = null;
@@ -132,6 +131,13 @@ public class OrderPrintUtil {
 			// Step 5 - update the report in session if it is useful, we can check if cache is better option
 			this.updateOrderReportInSession(orderId, pdfBytes, session, orderReport);
 			logger.info("The order {} report details has been updated in session for later use ", orderId);
+			if(order!=null && pdfBytes!=null) {
+				order.setOrderReport(pdfBytes);
+				// Step 6 - save this report in order
+				order=this.saveOrderReport(order);
+				logger.info("The order {} report details has been saved in order table", orderId);
+
+			}
 
 		} else {
 			if (requestType.equals(MVCConstants.REPORT_ORDER_PRINT)) {
@@ -154,8 +160,8 @@ public class OrderPrintUtil {
 	public Object retrieveOrderReportInSession(BigInteger orderId, HttpSession session, String requestType) {
 		Object result = null;
 		// This is to print the order report
-		BigInteger sessionOrderId = (BigInteger)session.getAttribute(MVCConstants.LAST_ORDER_ID_REPORT);
-		if (sessionOrderId!=null && orderId.equals(sessionOrderId)) {
+		BigInteger sessionOrderId = (BigInteger) session.getAttribute(MVCConstants.LAST_ORDER_ID_REPORT);
+		if (sessionOrderId != null && orderId.equals(sessionOrderId)) {
 			if (requestType.equals(MVCConstants.REPORT_ORDER_PRINT)) {
 				result = session.getAttribute(MVCConstants.LAST_ORDER_REPORT_JASPER);
 			} else if (requestType.equals(MVCConstants.REPORT_ORDER_VIEW)) {
@@ -232,6 +238,12 @@ public class OrderPrintUtil {
 		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(orderReportStream);
 		logger.debug("The {} compiled report has been loaded now", reportName);
 		return jasperReport;
+	}
+
+	public Order saveOrderReport(Order order) {
+		order = this.orderService.createOrder(order);
+		logger.info("The order report data has been saved successfully");
+		return order;
 	}
 
 }

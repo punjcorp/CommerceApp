@@ -412,4 +412,27 @@ public class OrderReturnServiceImpl implements OrderReturnService {
 		return filteredList;
 	}
 
+	@Override
+	public List<OrderReturn> approveOrderReturns(List<BigInteger> orderReturnIds, String username) {
+		List<OrderReturn> orderReturns=new ArrayList<>(orderReturnIds.size());
+		OrderReturn orderReturn=null;
+		for(BigInteger orderReturnId:orderReturnIds) {
+			orderReturn=this.approveOrderReturn(orderReturnId, username);
+			orderReturns.add(orderReturn);
+		}
+		
+		logger.info("The order returns has been approved successfully");
+		return orderReturns;
+	}
+
+	@Override
+	public void deleteOrderReturns(List<BigInteger> orderReturnIds, String username) {
+		
+		for(BigInteger orderReturnId:orderReturnIds) {
+			this.deleteOrderReturn(orderReturnId);
+		}
+		logger.info("The provided order returns has been deleted successfully");
+		
+	}
+
 }
