@@ -12,13 +12,14 @@ import javax.persistence.Table;
 
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+
 @Indexed
 @Entity
 @Table(name = "address_master")
 public class Address implements Serializable {
-	
+
 	private static final long serialVersionUID = 2768790649760685698L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "address_id", updatable = false, nullable = false)
@@ -32,9 +33,15 @@ public class Address implements Serializable {
 	@Field
 	private String address2;
 	@Field
+	private String landmark;
+	@Field
 	private String city;
+	@Field
+	private String district;
+	@Field
 	private String state;
 	private String country;
+	@Field
 	private String pincode;
 
 	/**
@@ -169,6 +176,36 @@ public class Address implements Serializable {
 	 */
 	public void setPincode(String pincode) {
 		this.pincode = pincode;
+	}
+
+	/**
+	 * @return the landmark
+	 */
+	public String getLandmark() {
+		return landmark;
+	}
+
+	/**
+	 * @param landmark
+	 *            the landmark to set
+	 */
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+
+	/**
+	 * @return the district
+	 */
+	public String getDistrict() {
+		return district;
+	}
+
+	/**
+	 * @param district
+	 *            the district to set
+	 */
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 	/*

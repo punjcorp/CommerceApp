@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.customer.search}">Customer Management Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<link rel="stylesheet" href="../../css/utils/datatables.min.css" th:href="@{/css/utils/datatables.min.css}" />
+<script src="../../js/utils/pdfmake.min.js" th:src="@{/js/utils/pdfmake.min.js}"></script>
+<script src="../../js/utils/vfs_fonts.js" th:src="@{/js/utils/vfs_fonts.js}"></script>
+<script src="../../js/utils/datatables.min.js" th:src="@{/js/utils/datatables.min.js}"></script>
+<script src="../../js/customer/customer_classes.js" th:src="@{/js/customer/customer_classes.js}"></script>
+<script src="../../js/customer/manage_customer.js" th:src="@{/js/customer/manage_customer.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper-no-menu">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card m-5">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.customer.search}">Search Customer</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<form class="form" id="searchForm" action="#" th:action="@{/admin/manage_customer}" th:object="${searchBean}" method="post">
+							<div class="row">
+								<div class="col-7">
+									<div class="form-group text-left">
+										<div class="input-group">
+											<input type="text" th:field="*{searchText}" class="form-control input-sm" th:placeholder="#{commerce.screen.customer.search.text}"
+												placeholder="Enter keyword to search" aria-describedby="searchHelp"> </input>
+											<div class="input-group-append">
+												<button type="submit" value="Search" class="btn btn-info">
+													<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.search}"></span>
+												</button>
+
+												<a th:if="${customers==null or customers.customers==null or #lists.size(customers.customers)&lt;1}" th:href="@{/admin/add_customer}"
+													class="btn btn-success btn-sm"> <span class="fa-2x mx-2 fa-layers fa-fw"> <i class="fas fa-male"></i> <i class="fas fa-plus"
+														data-fa-transform="shrink-10 right-11 up-4"></i>
+												</span><span th:text="#{commerce.screen.customer.btn.new.customer}">Add New Customer</span></a>
+											</div>
+										</div>
+										<small id="searchHelp" class="form-text text-muted" th:text="#{commerce.screen.customer.search.keywords}">Enter keywords like
+											id/Name/Email/Address/Phone#</small>
+										<div th:if="${#fields.hasErrors('searchText')}" th:errors="*{searchText}" class="text-danger">Search Text Error</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form class="form" id="bulkForm" action="#" th:action="@{/admin/bulk_customer_action}" th:object="${customers}" method="post"
+							th:if="${customers!=null and customers.customers!=null and #lists.size(customers.customers)>0}">
+							<input type="hidden" th:field="*{customerIds}"></input>
+							<div class="row">
+								<div class="col-12 text-right">
+									<!-- This thymeleaf fragment is the body part for the page-->
+									<th:block th:include="common/display :: pagination"></th:block>
+								</div>
+							</div>
+							<table id="customersTable" class="table table-striped table-hover table-bordered" width="100%">
+								<thead class="thead-light">
+									<tr>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										<th scope="col"></th>
+										<th scope="col" th:text="#{commerce.screen.customer.name}">Customer Name</th>
+										<th scope="col" th:text="#{commerce.screen.customer.email}">Email</th>
+										<th scope="col" th:text="#{commerce.screen.customer.phone}">Phone 1</th>
+										<th scope="col" th:text="#{commerce.screen.customer.phone2}">Phone 2</th>
+										<th scope="col" th:text="#{commerce.screen.customer.created.date}">Created Date</th>
+										<th scope="col" th:text="#{commerce.screen.customer.created.user}">Created By</th>
+										<th scope="col-2" th:text="#{commerce.screen.actions}">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="customer,itrStat:${customers.customers}">
+										<tr>
+											<td></td>
+											<td th:text="${customers.customers[__${itrStat.index}__].customerId}"></td>
+											<td th:text="${itrStat.index}"></td>
+											<td><span th:text="${customers.customers[__${itrStat.index}__].customerId + ' - '+ customers.customers[__${itrStat.index}__].name}"></span> <input
+												type="hidden" th:field="${customers.customers[__${itrStat.index}__].customerId}"></input></td>
+											<td><span th:text="${customers.customers[__${itrStat.index}__].email}"></span></td>
+											<td><span th:text="${customers.customers[__${itrStat.index}__].phone}"></span></td>
+											<td><span
+												th:text="${customers.customers[__${itrStat.index}__].phone2==null or customers.customers[__${itrStat.index}__].phone2==''?' - ':customers.customers[__${itrStat.index}__].phone2}"></span></td>
+											<td><span th:text="${customers.customers[__${itrStat.index}__].createdDate}"></span></td>
+											<td><span th:text="${customers.customers[__${itrStat.index}__].createdBy}"></span></td>
+											<td>
+												<div class="btn-group">
+													<a th:href="@{/admin/edit_customer(customerId=${customers.customers[__${itrStat.index}__].customerId})}" class="btn btn-success btn-sm"><span
+														class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-male"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-11 up-4"></i>
+													</span><span th:text="#{commerce.screen.actions.edit}">Edit</span></a>
+													<button type="button"
+														th:onClick="'confirmDeletion(\'/admin/delete_customer?customerId='+${customers.customers[__${itrStat.index}__].customerId}+'\')'"
+														class="btn btn-danger btn-sm">
+														<span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-male"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
+														</span><span th:text="#{commerce.screen.actions.delete}">Delete</span>
+													</button>
+												</div>
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+							<div class="row">
+								<div class="col">
+									<div class="form-group">
+										<div id="customerTableBtns" class="text-left"></div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12 text-right">
+									<!-- This thymeleaf fragment is the body part for the page-->
+									<th:block th:include="common/display :: pagination"></th:block>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<div class="form-group">
+										<button type="button" th:onclick="'confirmDeleteMultiple(\'/admin/bulk_customer_action?deleteCustomers=\')'" id="btnDelete" value="Delete"
+											class="btn btn-danger btn-sm" aria-describedby="bulkHelp" disabled="disabled">
+											<span class="fa-2x mx-2 fa-layers fa-fw"> <i class="fas fa-male"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
+											</span><span th:text="#{commerce.screen.btn.submit.all.delete}"></span>
+										</button>
+										<a th:href="@{/admin/add_customer}" class="btn btn-success btn-sm"> <span class="fa-2x mx-2 fa-layers fa-fw"> <i class="fas fa-male"></i> <i
+												class="fas fa-plus" data-fa-transform="shrink-10 right-11 up-4"></i>
+										</span> <span th:text="#{commerce.screen.customer.btn.new.customer}">Add New Customer</span></a>
+									</div>
+								</div>
+							</div>
+							<div class="row text-left">
+								<div class="col-4">
+									<small id="btnActions" class="form-text text-muted" th:text="#{commerce.screen.search.action.bulk}">Please select records for the actions</small>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+	<script th:inline="javascript" th:if="${customers!=null and customers.customers!=null and #lists.size(customers.customers)>0}">
+	/*<![CDATA[*/
+	
+	    var totalRecords = [[${#lists.size(customers.customers)}]];
+	
+	/*]]>*/
+	</script>
+
+</body>
+</html>

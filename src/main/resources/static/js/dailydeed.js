@@ -144,8 +144,10 @@ function processLocationRequest(locValue, url){
 	
 	var defaultTenderVal=$('#'+locValue+'_loc_default_tender').val();
 	var locNameVal=$('#'+locValue+'_loc_name').val();
+	var locGstVal=$('#'+locValue+'_gst_no').val();
 	
 	$('#locationName').val(locNameVal);
+	$('#gstNo').val(locGstVal);
 	$('#defaultTender').val(defaultTenderVal);
 	
 	
@@ -154,10 +156,11 @@ function processLocationRequest(locValue, url){
 		var locBusinessDate=$('#'+locValue+'_loc_bdate').val();
 		var referrerURL=$('#referrerURL').val();
 		var locName=$('#'+locValue+'_loc_name').val();
+		var gstNo=$('#'+locValue+'_gst_no').val();
 		var locDefaultTender=$('#'+locValue+'_loc_default_tender').val();
 		var locStatus=cntl_check.val();
 		if(locStatus=='OPEN_STORE'){
-			url+="="+locValue+"&businessDate="+locBusinessDate+"&locName="+locName+"&defaultTender="+locDefaultTender+"&referrerURL="+referrerURL;
+			url+="="+locValue+"&businessDate="+locBusinessDate+"&locName="+locName+"&gstNo="+gstNo+"&defaultTender="+locDefaultTender+"&referrerURL="+referrerURL;
 			window.location.href=url;
 		}else{
 			$('#btnOpenStore').removeClass("d-none");

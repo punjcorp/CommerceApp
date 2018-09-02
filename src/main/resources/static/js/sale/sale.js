@@ -23,7 +23,7 @@ var viewType='COMPACT';
  */
 $(function() {
 	
-	introJs().start();
+	//introJs().start();
 	
 	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
@@ -37,6 +37,7 @@ $(function() {
 	
 	$("#searchText").autocomplete({
 		minLength : 3,
+		delay : 2000,
 		source : function(request, response) {
 			$('#itemErrorMsg').hide();
 			$('#itemSearchBusy').removeClass('d-none');
@@ -94,7 +95,7 @@ $(function() {
 	
 	$("#customerSearchText").autocomplete({
 		minLength : 3,
-		appendTo : $('#txnCustomerModal'),
+		delay : 2000,
 		source : function(request, response) {
 			$('#customerErrorMsg').hide();
 			$('#customerSearchBusy').removeClass('d-none');
@@ -124,14 +125,28 @@ $(function() {
 							
 							var itemlbl=item.name +' - '+ item.phone;
 							
+							var addressId=item.primaryAddress.addressId;
+							var address=item.primaryAddress.address1 +', ';
+							
+							if(typeof(item.primaryAddress.address2)!=='undefined' && item.primaryAddress.address2!=undefined && item.primaryAddress.address2!='')
+								address+='<br>'+item.primaryAddress.address2 +', ';
+							
+							address+='<br>'+item.primaryAddress.city +', '+item.primaryAddress.state+', ';
+							address+='<br>'+item.primaryAddress.country +' - '+item.primaryAddress.pincode+'.';
+							
 							return {
 								label : itemlbl,
 								value : item.name,
 								desc : item.email,
 								phone : item.phone,
+								phone2 : item.phone2,
 								email : item.email,
 								name : item.name,
-								customerId : item.customerId
+								gstNo : item.gstNo,
+								panNo : item.panNo,
+								customerId : item.customerId,
+								addressId : addressId,
+								address : address  
 								
 							}
 						}));
@@ -159,7 +174,7 @@ $(function() {
 		select : function(event, ui) {
 			event.preventDefault();
 			if (ui.item) {
-				showCustomerDetails(event, ui);
+				showTxnCustomerDetails(event, ui);
 			}
 		}
 	});	
@@ -175,6 +190,20 @@ $(function() {
 	$('#btnLastTxn').click(function() {
 		printLastxn();
 	});	
+	
+	$('#btnChooseAddress').click(function() {
+		renderSelectedAddress();
+	});
+	
+	$('#btnChangeCustomer').click(function() {
+		txnAction.deleteAllSaleItems();
+		$('#collapseTwo').removeClass('show');
+		$('#div_txn_header_dtls').addClass('d-none');
+		$('#txnCustomerLookupDiv').removeClass('d-none');
+		$('#txnItemLookupDiv').addClass('d-none');
+	});	
+	
+	
 	
 	$('#btnAssociateCustomer').click(function() {
 		$('#txnCustomerModal').modal({backdrop: 'static', keyboard: false});
@@ -353,7 +382,7 @@ $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 		}).append($('<div/>', {
 			'class' : 'card-text'
 		}).append($('<span/>', {
-			html : "<b>" + item.label + "</b><br/>" + item.desc
+			html : '<div class="p-3"><div class="address"><b>' + item.label + "</b><br/>" + item.desc + '<br/> <hr class="mx-1">' + item.address +'</div></div>'
 		}))))).appendTo(ul);
 		
 	}else{
@@ -385,9 +414,12 @@ $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
  */
 function getItemDetails(event, ui) {
 
+	updateGSTCalculationFlag();
+	
 	$.get("/sale_item_lookup", {
 		itemId : ui.item.value,
-		locationId : txn_locationId
+		locationId : txn_locationId,
+		gstFlag : isGSTFlag
 	}, function(data, status) {
 
 		txnAction.showSaleLineItem(data);
@@ -488,4 +520,125 @@ function printLastxn(){
 }
 
 
+function changeAddressPopUp(){
+	var customerId=$('#h_customerId').val();
+	var shippingAddressId=$('#h_shipping_addressId').val();
+	
+	var customerBean=new Customer();
+	customerBean.customerId=customerId;
+	var formdata=JSON.stringify(customerBean);
+		
+	$('#txnAddressModal').modal('show');
+	
+	
+	$.ajax({
+		url : '/customer_address_lookup',
+		type : 'POST',
+		cache : false,
+		data : formdata,
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			renderAddresses(data);
+		},
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});	
+	
+	
+}
 
+
+function renderAddresses(addresses){
+
+	var addressListing='<div class="album text-muted">';
+	var blankLineHtml='';
+	$.each(addresses,function(index,address){
+		blankLineHtml='';
+		addressListing+='<div class="card text-right" id="addressCard'+index+'"onclick="selectAddress(this)">';
+		addressListing+='<div class="row">';
+		addressListing+='<div class="col">';
+		addressListing+='<input type="radio" name="addressradio" id="addressradio" value="'+address.addressId+'"></input>';
+		addressListing+='</div>';
+		addressListing+='<div class="col-9 text-left" id="addressDtls'+address.addressId+'">';
+		addressListing+=address.address1+', ';
+		addressListing+='<br>';
+		if(typeof(address.address2)!=='undefined' && address.address2!=undefined && address.address2!=''){
+				addressListing+=address.address2+', ';
+				addressListing+='<br>';
+		}else{
+			blankLineHtml='<br>';
+		}
+		addressListing+=address.city+', '+address.state+', ';
+		addressListing+='<br>';
+		addressListing+=address.country+' - '+address.pincode+'.';
+		addressListing+=blankLineHtml;
+		
+		addressListing+='</div>';
+		addressListing+='</div>';
+		if(address.primary=='Y'){
+			addressListing+='<small class="text-danger">Primary Address</small>';
+			
+		}else{
+			addressListing+='<br><br>';
+		}
+		addressListing+='</div>';
+	});
+	
+	addressListing+='</div>';
+	
+		
+	$('#addressListContainer').html(addressListing);
+	$('#addressProgressDiv').addClass('d-none');
+	
+}
+
+function selectAddress(cntl){
+	var cntlId=cntl.id;
+	var radioName;
+	$.each($('#addressradio'), function(index, radio){
+		radioName=radio.name;
+		$('[name^='+radioName+']').removeAttr('checked');
+		$(this).removeAttr('checked');
+	});
+	$('#'+cntlId).find('#addressradio').attr('checked',true);
+}
+
+
+function renderSelectedAddress(){
+	
+	var selectedAddressId=$('input[name=addressradio]:checked').val();
+	$('#shippingAddressDiv').html($('#addressDtls'+selectedAddressId).html());
+	$('#h_shipping_addressId').val(selectedAddressId);
+
+	$('#txnAddressModal').modal('hide');
+	
+}
+
+function updateGSTCalculationFlag(){
+	var openLocGST=$('#gstNo').val();
+	var billingLocGST=$('#h_gstNo').val();
+	var openLocState='';
+	var billingLocState='';
+	
+	if(typeof(openLocGST)!=='undefined' && openLocGST!=undefined && openLocGST!=''){
+		openLocState=openLocGST.substr(0,2);
+	}
+	if(typeof(billingLocGST)!=='undefined' && billingLocGST!=undefined && billingLocGST!=''){
+		billingLocState=billingLocGST.substr(0,2);
+	}
+	
+	if(openLocState!='' && billingLocState!=''){
+		if(openLocState==billingLocState){
+			isGSTFlag='C';
+		}else{
+			isGSTFlag='I';
+		}
+	}else if(openLocState!='' && billingLocState==''){
+		isGSTFlag='C';
+	}else if(openLocState=='' && billingLocState!=''){
+		isGSTFlag='N';
+	}
+	
+}

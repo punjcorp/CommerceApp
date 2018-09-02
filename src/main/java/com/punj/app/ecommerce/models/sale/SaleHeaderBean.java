@@ -13,6 +13,7 @@ public class SaleHeaderBean {
 
 	private Integer locationId;
 	private String locationName;
+	private String gstNo;
 	private LocalDateTime businessDate;
 	private Integer registerId;
 	private String registerName;
@@ -106,6 +107,21 @@ public class SaleHeaderBean {
 	 */
 	public void setDefaultTender(String defaultTender) {
 		this.defaultTender = defaultTender;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 }

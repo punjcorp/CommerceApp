@@ -51,6 +51,7 @@ import com.punj.app.ecommerce.controller.common.transformer.TransactionTransform
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.NoSaleTransaction;
+import com.punj.app.ecommerce.domains.transaction.NoSaleTxnDTO;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
@@ -197,10 +198,10 @@ public class ExpenseController {
 		String username = userDetails.getUsername();
 		Transaction txnHeaderDetails = ExpenseTransformer.transformExpenseToTxn(expenseBean, username);
 		NoSaleTransaction noSaleTxn = ExpenseTransformer.transformExpenseDetails(expenseBean, txnHeaderDetails.getTransactionId(), username);
-		noSaleTxn = this.noSaleService.saveNoSaleTxn(txnHeaderDetails, noSaleTxn);
+		NoSaleTxnDTO noSaleTxnDTO = this.noSaleService.saveNoSaleTxn(txnHeaderDetails, noSaleTxn);
 		TransactionId txnId = null;
-		if (noSaleTxn != null) {
-			txnId = noSaleTxn.getTransactionId();
+		if (noSaleTxnDTO != null) {
+			txnId = noSaleTxnDTO.getNoSaleTxn().getTransactionId();
 
 			expenseBean = this.createExpenseReceiptDetails(locale, username, txnId, session, txnHeaderDetails.getComments());
 

@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services;
 
 import com.punj.app.ecommerce.domains.transaction.NoSaleTransaction;
+import com.punj.app.ecommerce.domains.transaction.NoSaleTxnDTO;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 
@@ -13,7 +14,7 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
  */
 public interface NoSaleService {
 
-	public NoSaleTransaction saveNoSaleTxn(Transaction txnHeaderDetails, NoSaleTransaction txnDetails);
+	public NoSaleTxnDTO saveNoSaleTxn(Transaction txnHeaderDetails, NoSaleTransaction txnDetails);
 
 	public NoSaleTransaction retrieveNoSaleTxn(TransactionId txnId);
 

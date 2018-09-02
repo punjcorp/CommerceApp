@@ -38,6 +38,7 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.domains.transaction.ids.TxnIdDTO;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
 import com.punj.app.ecommerce.models.transaction.SaleTransactionReceipt;
 import com.punj.app.ecommerce.models.transaction.TransactionHeader;
@@ -112,13 +113,13 @@ public class TransactionController {
 	@PostMapping(value = ViewPathConstants.TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@Transactional
-	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale,
-			Authentication authentication) {
+	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
-		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
+		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
-		if (txnId != null) {
+		if (txnIdDTO != null) {
+			TransactionId txnId=txnIdDTO.getTransactionId();
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
 			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
@@ -137,13 +138,13 @@ public class TransactionController {
 	@PostMapping(value = ViewPathConstants.RETURN_TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@Transactional
-	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale,
-			Authentication authentication) {
+	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		TransactionDTO txnDTO = TransactionTransformer.transformReturnTransaction(saleTxn, userDetails.getUsername());
-		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
+		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
-		if (txnId != null) {
+		if (txnIdDTO != null) {
+			TransactionId txnId=txnIdDTO.getTransactionId();
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
 			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
@@ -159,8 +160,7 @@ public class TransactionController {
 
 	}
 
-	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,
-			TransactionId txnId) {
+	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale, TransactionId txnId) {
 		SaleTransactionReceipt txnReceipt = null;
 		try {
 			txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);

@@ -96,6 +96,7 @@ public final class ViewPathConstants {
 	
 	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
 	public static final String CUSTOMER_LOOKUP_URL = "/customer_account_lookup";
+	public static final String CUSTOMER_ADDRESS_LOOKUP_URL = "/customer_address_lookup";
 	public static final String CUSTOMER_LOOKUP_ADMIN_URL = "/admin/customer_account_lookup";
 	
 	public static final String BULK_ORDER_RETURN_URL = "/admin/bulk_order_return_action";
@@ -162,6 +163,20 @@ public final class ViewPathConstants {
 	/**
 	 * The customer pages section starts
 	 */
+	
+	public static final String SEARCH_CUSTOMER_URL = "/admin/search_customer";
+	public static final String MANAGE_CUSTOMER_URL = "/admin/manage_customer";
+	public static final String MANAGE_CUSTOMER_PAGE = "customer/manage_customer";
+	
+	public static final String EDIT_CUSTOMER_URL ="/admin/edit_customer";
+	public static final String EDIT_CUSTOMER_PAGE ="customer/edit_customer";
+	
+	public static final String ADD_CUSTOMER_URL ="/admin/add_customer";
+	public static final String ADD_CUSTOMER_PAGE ="customer/add_customer";	
+	
+	public static final String DELETE_CUSTOMER_URL ="/admin/delete_customer";
+	public static final String BULK_CUSTOMER_URL ="/admin/bulk_customer_action";
+	
 	public static final String CUSTOMER_PAYMENT_URL ="/admin/customer/payment";
 	public static final String CUSTOMER_PAYMENT_PAGE ="customer/customer_payments";
 	

@@ -5,17 +5,17 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`location`
+-- Table `pi_pos_industry`.`location`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`location` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`location` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`location` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`location` (
   `location_id` INT(4) NOT NULL,
   `location_type` VARCHAR(15) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -45,11 +45,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`style_generator`
+-- Table `pi_pos_industry`.`style_generator`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`style_generator` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`style_generator` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`style_generator` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`style_generator` (
   `style_id` BIGINT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`style_id`))
@@ -58,11 +58,11 @@ AUTO_INCREMENT = 1000000;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`sku_generator`
+-- Table `pi_pos_industry`.`sku_generator`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`sku_generator` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`sku_generator` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`sku_generator` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`sku_generator` (
   `style_id` BIGINT NOT NULL,
   `sku_id` BIGINT ZEROFILL NOT NULL,
   `status` VARCHAR(1) NOT NULL DEFAULT 'N',
@@ -71,22 +71,22 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`seq_generator`
+-- Table `pi_pos_industry`.`seq_generator`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`seq_generator` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`seq_generator` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`seq_generator` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`seq_generator` (
   `name` VARCHAR(100) NOT NULL,
   `value` BIGINT NOT NULL,
   PRIMARY KEY (`name`))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`tender_master`
+-- Table `pi_pos_industry`.`tender_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`tender_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`tender_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`tender_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`tender_master` (
   `tender_id` INT(3) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(80) NOT NULL,
   `type` VARCHAR(30) NOT NULL,
@@ -99,20 +99,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tender_master` (
   PRIMARY KEY (`tender_id`),
   CONSTRAINT `fk_tender_master_tender_master1`
     FOREIGN KEY (`sub_tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    REFERENCES `pi_pos_industry`.`tender_master` (`tender_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_tender_master_tender_master1_idx` ON `commercedb`.`tender_master` (`sub_tender_id` ASC);
+CREATE INDEX `fk_tender_master_tender_master1_idx` ON `pi_pos_industry`.`tender_master` (`sub_tender_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`reason_codes`
+-- Table `pi_pos_industry`.`reason_codes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`reason_codes` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`reason_codes` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`reason_codes` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`reason_codes` (
   `reason_code_id` INT NOT NULL AUTO_INCREMENT,
   `reason_name` VARCHAR(100) NOT NULL,
   `type` VARCHAR(50) NOT NULL,
@@ -124,11 +124,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`uom_master`
+-- Table `pi_pos_industry`.`uom_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`uom_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`uom_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`uom_master` (
   `uom_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `code` VARCHAR(15) NOT NULL,
@@ -143,17 +143,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`uom_master` (
   INDEX `fk_uom_master_uom_master1_idx` (`parent_uom_id` ASC),
   CONSTRAINT `fk_uom_master_uom_master1`
     FOREIGN KEY (`parent_uom_id`)
-    REFERENCES `commercedb`.`uom_master` (`uom_id`)
+    REFERENCES `pi_pos_industry`.`uom_master` (`uom_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`denomination_master`
+-- Table `pi_pos_industry`.`denomination_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`denomination_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`denomination_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`denomination_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`denomination_master` (
   `denomination_id` INT NOT NULL AUTO_INCREMENT,
   `currency_code` VARCHAR(5) NOT NULL DEFAULT 'INR',
   `code` VARCHAR(15) NOT NULL,
@@ -162,9 +162,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`denomination_master` (
   PRIMARY KEY (`denomination_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `code_UNIQUE` ON `commercedb`.`denomination_master` (`code` ASC);
+CREATE UNIQUE INDEX `code_UNIQUE` ON `pi_pos_industry`.`denomination_master` (`code` ASC);
 
+-- -----------------------------------------------------
+-- Table `pi_pos_industry`.`gst_state_codes`
+-- -----------------------------------------------------
+DROP TABLE `pi_pos_industry`.`gst_state_codes`;
 
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`gst_state_codes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `state_code` VARCHAR(5) NOT NULL,
+  `state_name` VARCHAR(80) NOT NULL,
+  `state_name_short` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

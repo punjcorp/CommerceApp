@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_hierarchy`
+-- Table `pi_pos_industry`.`item_hierarchy`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_hierarchy` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_hierarchy` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_hierarchy` (
   `hierarchy_id` INT NOT NULL AUTO_INCREMENT,
   `level_code` VARCHAR(20) NOT NULL,
   `name` VARCHAR(80) NOT NULL,
@@ -27,20 +27,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_hierarchy` (
   PRIMARY KEY (`hierarchy_id`),
   CONSTRAINT `fk_item_hierarchy_item_hierarchy1`
     FOREIGN KEY (`parent_id`)
-    REFERENCES `commercedb`.`item_hierarchy` (`hierarchy_id`)
+    REFERENCES `pi_pos_industry`.`item_hierarchy` (`hierarchy_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_hierarchy_item_hierarchy1_idx` ON `commercedb`.`item_hierarchy` (`parent_id` ASC);
+CREATE INDEX `fk_item_hierarchy_item_hierarchy1_idx` ON `pi_pos_industry`.`item_hierarchy` (`parent_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item`
+-- Table `pi_pos_industry`.`item`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item` (
   `item_id` BIGINT NOT NULL,
   `name` VARCHAR(150) NOT NULL,
   `long_desc` VARCHAR(300) NOT NULL,
@@ -56,20 +56,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item` (
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_item_hierarchy1`
     FOREIGN KEY (`hierarchy_id`)
-    REFERENCES `commercedb`.`item_hierarchy` (`hierarchy_id`)
+    REFERENCES `pi_pos_industry`.`item_hierarchy` (`hierarchy_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_item_hierarchy1_idx` ON `commercedb`.`item` (`hierarchy_id` ASC);
+CREATE INDEX `fk_item_item_hierarchy1_idx` ON `pi_pos_industry`.`item` (`hierarchy_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_options`
+-- Table `pi_pos_industry`.`item_options`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_options` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_options` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_options` (
   `item_id` BIGINT NOT NULL,
   `uom` VARCHAR(20) NOT NULL,
   `discount_flag` TINYINT NOT NULL DEFAULT 1,
@@ -99,20 +99,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_options` (
   PRIMARY KEY (`item_id`),
   CONSTRAINT `fk_item_options_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_options_item1_idx` ON `commercedb`.`item_options` (`item_id` ASC);
+CREATE INDEX `fk_item_options_item1_idx` ON `pi_pos_industry`.`item_options` (`item_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`attribute_master`
+-- Table `pi_pos_industry`.`attribute_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`attribute_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`attribute_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`attribute_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`attribute_master` (
   `attribute_id` BIGINT NOT NULL AUTO_INCREMENT,
   `attr_code` VARCHAR(5) NOT NULL,
   `attr_name` VARCHAR(80) NOT NULL,
@@ -124,39 +124,39 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`attribute_master` (
   PRIMARY KEY (`attribute_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `index2` ON `commercedb`.`attribute_master` (`attr_code` ASC, `value_code` ASC, `value_seq_no` ASC);
+CREATE UNIQUE INDEX `index2` ON `pi_pos_industry`.`attribute_master` (`attr_code` ASC, `value_code` ASC, `value_seq_no` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_attributes`
+-- Table `pi_pos_industry`.`item_attributes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_attributes` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_attributes` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_attributes` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_attributes` (
   `item_id` BIGINT NOT NULL,
   `attribute_id` BIGINT NOT NULL,
   PRIMARY KEY (`item_id`, `attribute_id`),
   CONSTRAINT `fk_item_attributes_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_style_attribute_values_attribute_master1`
     FOREIGN KEY (`attribute_id`)
-    REFERENCES `commercedb`.`attribute_master` (`attribute_id`)
+    REFERENCES `pi_pos_industry`.`attribute_master` (`attribute_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_style_attribute_values_attribute_master1_idx` ON `commercedb`.`item_attributes` (`attribute_id` ASC);
+CREATE INDEX `fk_style_attribute_values_attribute_master1_idx` ON `pi_pos_industry`.`item_attributes` (`attribute_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_images`
+-- Table `pi_pos_industry`.`item_images`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_images` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_images` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_images` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_images` (
   `item_image_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
   `name` VARCHAR(80) NOT NULL,
@@ -168,20 +168,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_images` (
   PRIMARY KEY (`item_image_id`),
   CONSTRAINT `fk_item_images_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_images_item1_idx` ON `commercedb`.`item_images` (`item_id` ASC);
+CREATE INDEX `fk_item_images_item1_idx` ON `pi_pos_industry`.`item_images` (`item_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_kit`
+-- Table `pi_pos_industry`.`item_kit`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_kit` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_kit` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_kit` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_kit` (
   `item_id` BIGINT NOT NULL,
   `component_item_id` BIGINT NOT NULL,
   `qty` INT NOT NULL,
@@ -191,20 +191,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_kit` (
   PRIMARY KEY (`item_id`, `component_item_id`),
   CONSTRAINT `fk_item_kit_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_kit_item1_idx` ON `commercedb`.`item_kit` (`item_id` ASC);
+CREATE INDEX `fk_item_kit_item1_idx` ON `pi_pos_industry`.`item_kit` (`item_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_substitute`
+-- Table `pi_pos_industry`.`item_substitute`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_substitute` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_substitute` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_substitute` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_substitute` (
   `item_id` BIGINT NOT NULL,
   `substitute_item_id` BIGINT NOT NULL,
   `begin_date` DATETIME NOT NULL,
@@ -214,18 +214,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_substitute` (
   PRIMARY KEY (`item_id`, `substitute_item_id`),
   CONSTRAINT `fk_item_substitute_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_related`
+-- Table `pi_pos_industry`.`item_related`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_related` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_related` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_related` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_related` (
   `item_id` BIGINT NOT NULL,
   `related_item_id` BIGINT NOT NULL,
   `mandatory` VARCHAR(1) NOT NULL DEFAULT 'Y',
@@ -234,12 +234,12 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_related` (
   PRIMARY KEY (`item_id`, `related_item_id`),
   CONSTRAINT `fk_item_related_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_related_item1_idx` ON `commercedb`.`item_related` (`item_id` ASC);
+CREATE INDEX `fk_item_related_item1_idx` ON `pi_pos_industry`.`item_related` (`item_id` ASC);
 
 
 

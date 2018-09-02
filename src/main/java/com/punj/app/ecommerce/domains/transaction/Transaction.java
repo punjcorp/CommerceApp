@@ -34,8 +34,8 @@ public class Transaction implements Serializable {
 	private BigDecimal taxTotalAmt;
 	@Column(name = "discount_total")
 	private BigDecimal discountTotalAmt;
-	@Column(name = "round_total")
-	private BigDecimal roundTotalAmt;
+	@Column(name = "rounded_amount")
+	private BigDecimal roundedTotalAmt;
 	@Column(name = "subtotal")
 	private BigDecimal subTotalAmt;
 
@@ -152,18 +152,18 @@ public class Transaction implements Serializable {
 	}
 
 	/**
-	 * @return the roundTotalAmt
+	 * @return the roundedTotalAmt
 	 */
-	public BigDecimal getRoundTotalAmt() {
-		return roundTotalAmt;
+	public BigDecimal getRoundedTotalAmt() {
+		return roundedTotalAmt;
 	}
 
 	/**
-	 * @param roundTotalAmt
-	 *            the roundTotalAmt to set
+	 * @param roundedTotalAmt
+	 *            the roundedTotalAmt to set
 	 */
-	public void setRoundTotalAmt(BigDecimal roundTotalAmt) {
-		this.roundTotalAmt = roundTotalAmt;
+	public void setRoundedTotalAmt(BigDecimal roundedTotalAmt) {
+		this.roundedTotalAmt = roundedTotalAmt;
 	}
 
 	/**

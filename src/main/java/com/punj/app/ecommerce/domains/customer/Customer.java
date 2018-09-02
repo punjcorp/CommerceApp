@@ -47,8 +47,16 @@ public class Customer implements Serializable {
 	@Field
 	private String phone;
 	@Field
+	private String phone2;
+	@Field
 	private String email;
-
+	@Field
+	@Column(name = "gst_no")
+	private String gstNo;
+	@Field
+	@Column(name = "pan_no")
+	private String panNo;
+	@Field
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -197,6 +205,51 @@ public class Customer implements Serializable {
 	 */
 	public void setAddresses(List<Address> addresses) {
 		this.addresses = addresses;
+	}
+
+	/**
+	 * @return the phone2
+	 */
+	public String getPhone2() {
+		return phone2;
+	}
+
+	/**
+	 * @param phone2
+	 *            the phone2 to set
+	 */
+	public void setPhone2(String phone2) {
+		this.phone2 = phone2;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the panNo
+	 */
+	public String getPanNo() {
+		return panNo;
+	}
+
+	/**
+	 * @param panNo
+	 *            the panNo to set
+	 */
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
 	}
 
 }

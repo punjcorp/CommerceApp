@@ -106,6 +106,7 @@ public final class MVCConstants {
 	public static final String LOCATION_ID_PARAM="locationId";
 	
 	public static final String LOC_NAME_PARAM="locName";
+	public static final String LOC_GST_PARAM="gstNo";
 	public static final String REGISTER_ID_PARAM="registerId";
 	public static final String REG_NAME_PARAM="regName";	
 	public static final String B_DATE_PARAM="businessDate";
@@ -279,6 +280,7 @@ public final class MVCConstants {
 	public static final String DAILY_TOTALS_BEAN= "dailyTotalsBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String CUSTOMER_BEAN= "customerBean";
+	public static final String STATES_LIST= "states";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
 	public static final String ROLE_BEANS= "roles";
@@ -324,6 +326,13 @@ public final class MVCConstants {
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	public static final String ACCOUNT_DTO="accountDTO";
+	
+	
+	public static final String SAVE_CUSTOMER_PARAM= "saveCustomer";
+	public static final String CUSTOMER_ID_PARAM="customerId";
+	public static final String SAVE_CUSTOMERS_PARAM= "saveCustomers";
+	public static final String DELETE_CUSTOMERS_PARAM="deleteCustomers";
+	public static final String CUSTOMERS_BEAN= "customers";
 	
 	public static final String ADD_SUPPLIER_ADDRESS_PARAM= "addSupplierAddress";
 	public static final String REMOVE_SUPPLIER_ADDRESS_PARAM= "removeSupplierAddress";

@@ -3,6 +3,7 @@
  */
 var g_nbr_zero = 0.00;
 var alertUtil = new Utils();
+
 /**
  * Class definition for TxnAction Starts
  */
@@ -36,29 +37,40 @@ $.extend(TxnAction.prototype, {
 
 		$.each(this.saleItemList, function(itrIndex, itrSaleLineItem) {
 
-			itrSaleLineItem.renderSaleLineItem(itrSaleLineItem, viewType);
+			itrSaleLineItem.renderSaleLineItem(itrSaleLineItem, viewType, isGSTFlag);
 
 		});
 		this.renderHeaderTotals();
 
 	},
 	showSaleLineItem : function(data) {
+		
 		var actualSaleItem = this.saleLineItem.parseSaleLineItem(data);
+		
 		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
 
 			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
 			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_item'), btnLabels);
 
 		} else {
-			this.saleLineItem.renderSaleLineItem(actualSaleItem, viewType);
+			this.saleLineItem.renderSaleLineItem(actualSaleItem, viewType, isGSTFlag);
 			// Check when we need to add this to list it should be after successful render as per my understanding
 			this.saleItemList.push(actualSaleItem);
 			this.renderHeaderTotals();
 
-			if (this.saleItemList.length > 0)
+			if (this.saleItemList.length > 0){
 				$('#tenderOptionsContainer').removeClass('d-none');
-			else
+				$('#div_txn_header_dtls').removeClass('d-none');
+				$('#collapseTwo').addClass('show');
+				$('#collapseOne').removeClass('show');
+			}
+			else{
 				$('#tenderOptionsContainer').addClass('d-none');
+				$('#div_txn_header_dtls').addClass('d-none');
+				$('#collapseTwo').removeClass('show');
+				$('#collapseOne').addClass('show');
+			}
+				
 
 		}
 	},
@@ -75,6 +87,23 @@ $.extend(TxnAction.prototype, {
 		else
 			$('#tenderOptionsContainer').addClass('d-none');
 
+	},
+	deleteAllSaleItems: function() {
+		if(this.saleItemList.length>0){
+			var totalDueAmt = +$('#hc_totalDueAmt').val();
+			// Remove the Sale Line Item
+			$.each(this.saleItemList, function(index, saleLineItem){
+				saleLineItem.obscureSaleLineItem(saleLineItem.itemId);
+				
+			});
+			this.saleItemList=[];
+			this.removeAllTenderItems(totalDueAmt);
+			this.renderHeaderTotals();
+			if (this.saleItemList.length > 0)
+				$('#tenderOptionsContainer').removeClass('d-none');
+			else
+				$('#tenderOptionsContainer').addClass('d-none');
+		}
 	},
 	reCalculateSaleItemAmounts : function(cntl, itemId) {
 		if (this.saleLineItem.validateSaleLineItem(cntl, itemId)) {
@@ -136,8 +165,11 @@ $.extend(TxnAction.prototype, {
 			}
 		});
 
-		totalTax = totalSGSTTax + totalCGSTTax;
-
+		if(isGSTFlag=='C')
+			totalTax = totalSGSTTax + totalCGSTTax;
+		else if(isGSTFlag=='I')
+			totalTax = totalIGSTTax;
+		
 		$('#salesHeaderSubTotalAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalPrice.toFixed(2));
 		$('#salesHeaderDiscountAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalDiscount.toFixed(2));
 		$('#salesHeaderTaxAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalTax.toFixed(2));
@@ -417,6 +449,7 @@ $.extend(TxnAction.prototype, {
 			}
 
 	}
+	
 
 });
 /**

@@ -6,9 +6,11 @@ package com.punj.app.ecommerce.services.impl;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -81,7 +83,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 	}
 
 	@Override
-	public SaleItem getItem(BigInteger itemId, Integer locationId) throws UnsupportedEncodingException {
+	public SaleItem getItem(BigInteger itemId, Integer locationId, String gstFlag) throws UnsupportedEncodingException {
 		SaleItem saleItem = null;
 		// Step 1 - Is Item Valid
 		// Step 2 - Is Item Valid at the provided location
@@ -96,7 +98,17 @@ public class SaleItemServiceImpl implements SaleItemService {
 				// Step 4 - does the item has price defined
 				ItemPrice itemPrice = this.priceService.getCurrentItemPrice(itemId, locationId, LocalDateTime.now());
 				// Step 5 - does the item has tax defined
-				List<LocationTax> taxList = this.retrieveTax(locationId, item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_WITHIN_STATE);
+				List<LocationTax> taxList = null;
+				if(StringUtils.isNotBlank(gstFlag)) {
+					if(gstFlag.equals(ServiceConstants.TAX_GST_FLAG_CGST)) {
+						taxList = this.retrieveTax(locationId, item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_WITHIN_STATE);
+					}else if(gstFlag.equals(ServiceConstants.TAX_GST_FLAG_IGST)) {
+						taxList = this.retrieveTax(locationId, item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_OTHER_STATE);
+					}else if(gstFlag.equals(ServiceConstants.TAX_NO_GST_FLAG)) {
+						taxList = null;
+					}
+				}
+				
 
 				saleItem = this.transformItemDetails(item, itemStock, itemPrice, taxList);
 				this.updateItemImage(item, saleItem);
@@ -153,6 +165,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 		saleItem.setDiscountAmt(discountAmt);
 
 		BigDecimal totalTaxAmt = new BigDecimal("0");
+		BigDecimal totalTaxRate = new BigDecimal("0");
 		BigDecimal taxPercentage;
 		BigDecimal taxAmt;
 
@@ -168,13 +181,16 @@ public class SaleItemServiceImpl implements SaleItemService {
 				} else if (saleItemTax.getTypeCode().equals(ServiceConstants.TAX_IGST)) {
 					saleItem.setIgstTax(saleItemTax);
 				}
-				totalTaxAmt = totalTaxAmt.add(saleItemTax.getAmount());
+				totalTaxRate = totalTaxRate.add(saleItemTax.getPercentage());
 			}
 		}
 
-		BigDecimal finaTotalAmt = itemPriceAmt.subtract(discountAmt).add(totalTaxAmt);
+		if(totalTaxRate!=null && totalTaxRate.compareTo(BigDecimal.ZERO)>0)
+			totalTaxAmt=((itemPriceAmt.subtract(discountAmt)).multiply(totalTaxRate)).divide(new BigDecimal("100"));
+		
+		BigDecimal finalTotalAmt = itemPriceAmt.subtract(discountAmt).add(totalTaxAmt);
 		saleItem.setTaxAmt(totalTaxAmt);
-		saleItem.setTotalAmt(finaTotalAmt);
+		saleItem.setTotalAmt(finalTotalAmt.setScale(0, RoundingMode.HALF_UP));
 
 		return saleItem;
 	}

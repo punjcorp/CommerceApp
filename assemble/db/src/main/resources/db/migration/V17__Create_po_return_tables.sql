@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`po_return`
+-- Table `pi_pos_industry`.`po_return`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`po_return` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`po_return` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`po_return` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`po_return` (
   `order_return_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `reason_code_id` INT NOT NULL,
@@ -33,18 +33,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`po_return` (
   INDEX `fk_purchase_order_return_purchase_order1_idx` (`order_id` ASC),
   CONSTRAINT `fk_purchase_order_return_purchase_order1`
     FOREIGN KEY (`order_id`)
-    REFERENCES `commercedb`.`purchase_order` (`order_id`)
+    REFERENCES `pi_pos_industry`.`purchase_order` (`order_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`po_return_items`
+-- Table `pi_pos_industry`.`po_return_items`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`po_return_items` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`po_return_items` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`po_return_items` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`po_return_items` (
   `order_return_item_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_return_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
@@ -59,18 +59,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`po_return_items` (
   PRIMARY KEY (`order_return_item_id`),
   CONSTRAINT `fk_po_return_items_po_return1`
     FOREIGN KEY (`order_return_id`)
-    REFERENCES `commercedb`.`po_return` (`order_return_id`)
+    REFERENCES `pi_pos_industry`.`po_return` (`order_return_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`po_return_items_tax`
+-- Table `pi_pos_industry`.`po_return_items_tax`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`po_return_items_tax` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`po_return_items_tax` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`po_return_items_tax` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`po_return_items_tax` (
   `po_return_item_tax_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_return_item_id` BIGINT NOT NULL,
   `tax_group_id` INT NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`po_return_items_tax` (
   PRIMARY KEY (`po_return_item_tax_id`),
   CONSTRAINT `fk_po_return_items_tax_po_return_items1`
     FOREIGN KEY (`order_return_item_id`)
-    REFERENCES `commercedb`.`po_return_items` (`order_return_item_id`)
+    REFERENCES `pi_pos_industry`.`po_return_items` (`order_return_item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

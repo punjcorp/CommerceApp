@@ -148,10 +148,13 @@ public class SaleTransactionController {
 				
 				if(this.validateRegister(openLocId, registerId)) {
 					Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
+					Object openLocationGstNo= commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_GST_NO);
 					Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 					Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
 					if (openLocationName != null)
 						saleHeaderBean.setLocationName((String) openLocationName);
+					if (openLocationGstNo != null)
+						saleHeaderBean.setGstNo((String) openLocationGstNo);
 					if (openBusinessDate != null)
 						saleHeaderBean.setBusinessDate((LocalDateTime) openBusinessDate);
 					if (defaultTender != null) {

@@ -33,6 +33,7 @@ import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.AccountTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.CustomerTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.SupplierTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.customer.Customer;
@@ -40,6 +41,8 @@ import com.punj.app.ecommerce.domains.customer.CustomerDTO;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
@@ -48,6 +51,7 @@ import com.punj.app.ecommerce.models.customer.CustomerLookupDTO;
 import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.models.financials.AccountJournalBean;
 import com.punj.app.ecommerce.services.AccountService;
+import com.punj.app.ecommerce.services.CustomerService;
 import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.utils.Pager;
@@ -61,6 +65,7 @@ import com.punj.app.ecommerce.utils.Pager;
 public class CustomerLookupController {
 	private static final Logger logger = LogManager.getLogger();
 	private AccountService accountService;
+	private CustomerService customerService;
 	private PaymentAccountService paymentAccountService;
 	private CommonService commonService;
 	private CommerceContext commerceContext;
@@ -72,6 +77,15 @@ public class CustomerLookupController {
 	@Autowired
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
+	}
+
+	/**
+	 * @param customerService
+	 *            the customerService to set
+	 */
+	@Autowired
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
 	}
 
 	/**
@@ -115,7 +129,7 @@ public class CustomerLookupController {
 
 			CustomerDTO customerDTO = this.accountService.searchCustomer(customerBean.getCustomerSearchText(), pager);
 			if (customerDTO != null) {
-				CustomerBeanDTO customerBeanDTO = AccountTransformer.transformCustomerDTO(customerDTO);
+				CustomerBeanDTO customerBeanDTO = CustomerTransformer.transformCustomerDTO(customerDTO);
 				customerBeans = customerBeanDTO.getCustomers();
 				logger.info("The customer list based on the keyword has been retrieved");
 			}
@@ -125,6 +139,27 @@ public class CustomerLookupController {
 			return customerBeans;
 		}
 		return customerBeans;
+	}
+
+	@PostMapping(value = ViewPathConstants.CUSTOMER_ADDRESS_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public List<AddressBean> lookupCustomerAddresses(@RequestBody CustomerBean customerBean, Model model) {
+		List<AddressBean> finalAddresses = null;
+		try {
+
+			Customer customer = this.customerService.searchCustomerDetails(customerBean.getCustomerId());
+			if (customer != null) {
+				List<Address> addresses = customer.getAddresses();
+				if (addresses != null && !addresses.isEmpty()) {
+					finalAddresses = CommonMVCTransformer.transformAddresses(addresses);
+					logger.info("The customer addresses has been transformed");
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving customer addresses for transaction screen", e);
+		}
+		return finalAddresses;
 	}
 
 	@PostMapping(value = ViewPathConstants.CUSTOMER_LOOKUP_ADMIN_URL, produces = { MediaType.APPLICATION_JSON_VALUE })

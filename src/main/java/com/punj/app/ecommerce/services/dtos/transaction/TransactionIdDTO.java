@@ -85,9 +85,8 @@ public class TransactionIdDTO implements Serializable {
 	 */
 	public String toString() {
 
-		return String.join("", StringUtils.leftPad(this.locationId.toString(), LOCATION_SIZE, '0'),
-				StringUtils.leftPad(this.register.toString(), REGISTER_SIZE, '0'), StringUtils.leftPad(this.txnNo.toString(), TXN_SIZE, '0'),
-				Utils.formatDate(this.businessDate));
+		return String.join("", StringUtils.leftPad(this.locationId.toString(), LOCATION_SIZE, '0'), StringUtils.leftPad(this.register.toString(), REGISTER_SIZE, '0'),
+				StringUtils.leftPad(this.txnNo.toString(), TXN_SIZE, '0'), Utils.formatDate(this.businessDate));
 	}
 
 }

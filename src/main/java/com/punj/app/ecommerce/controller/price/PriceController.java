@@ -187,7 +187,7 @@ public class PriceController {
 		if (StringUtils.isNotBlank(priceBean.getPriceType()) && !priceBean.getPriceType().equals(MVCConstants.PRICE_TYPE_CLEARANCE_RESET)) {
 			SaleItem saleItem = null;
 			try {
-				saleItem = this.saleItemService.getItem(priceBean.getItemId(), priceBean.getLocationId());
+				saleItem = this.saleItemService.getItem(priceBean.getItemId(), priceBean.getLocationId(),"C");
 				if(saleItem !=null) {
 					logger.info("the {} item details for sale item has been retrieved successfully", priceBean.getItemId());
 					priceBean.setPriceDtls(saleItem);

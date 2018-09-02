@@ -7,10 +7,14 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 
@@ -22,29 +26,43 @@ public class CustomerBean {
 
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	private BigInteger customerId;
-	@NotNull
-	@Size(min = 2, max = 80, message = "{commerce.error.string.size}",groups = { ValidationGroup.ValidationGroupTwo.class })
-	private String name;
-
 	@NotNull(groups = { ValidationGroup.ValidationGroupOne.class })
 	private String customerSearchText;
 	private String customerType;
+
+	private BigInteger customerId;
 	@NotNull
-	@Size(min = 7, max = 10, message = "{commerce.error.int.size}",groups = { ValidationGroup.ValidationGroupTwo.class })
+	@Size(min = 2, max = 80, message = "{commerce.error.string.size}")
+	private String name;
+
+	@NotNull
+	@Size(min = 7, max = 10, message = "{commerce.error.int.size}")
 	private String phone;
 
-	@Size(min = 6, max = 80, message = "{commerce.error.string.size}",groups = { ValidationGroup.ValidationGroupTwo.class })
-	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}",groups = { ValidationGroup.ValidationGroupTwo.class })
+	private String phone2;
+
+	private String gstNo;
+	private String panNo;
+
+	@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
+	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
 	private String email;
 
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
-	
+
 	private Boolean searchAccount;
 	private List<AccountHeadBean> customerAccounts;
+
+	@Valid
+	@NotEmpty(message = "{commerce.error.no.address}")
+	private List<AddressBean> addresses;
+	private AddressBean primaryAddress;
+
+	@NotNull(message = "{commerce.error.select.empty}")
+	private Integer primaryAddressIndex;
 
 	/**
 	 * @return the customerId
@@ -166,6 +184,112 @@ public class CustomerBean {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public List<AccountHeadBean> getCustomerAccounts() {
+		return customerAccounts;
+	}
+
+	public void setCustomerAccounts(List<AccountHeadBean> customerAccounts) {
+		this.customerAccounts = customerAccounts;
+	}
+
+	public Boolean getSearchAccount() {
+		return searchAccount;
+	}
+
+	public void setSearchAccount(Boolean searchAccount) {
+		this.searchAccount = searchAccount;
+	}
+
+	/**
+	 * @return the phone2
+	 */
+	public String getPhone2() {
+		return phone2;
+	}
+
+	/**
+	 * @param phone2
+	 *            the phone2 to set
+	 */
+	public void setPhone2(String phone2) {
+		this.phone2 = phone2;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the panNo
+	 */
+	public String getPanNo() {
+		return panNo;
+	}
+
+	/**
+	 * @param panNo
+	 *            the panNo to set
+	 */
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
+	}
+
+	/**
+	 * @return the addresses
+	 */
+	public List<AddressBean> getAddresses() {
+		return addresses;
+	}
+
+	/**
+	 * @param addresses
+	 *            the addresses to set
+	 */
+	public void setAddresses(List<AddressBean> addresses) {
+		this.addresses = addresses;
+	}
+
+	/**
+	 * @return the primaryAddress
+	 */
+	public AddressBean getPrimaryAddress() {
+		return primaryAddress;
+	}
+
+	/**
+	 * @param primaryAddress
+	 *            the primaryAddress to set
+	 */
+	public void setPrimaryAddress(AddressBean primaryAddress) {
+		this.primaryAddress = primaryAddress;
+	}
+
+	/**
+	 * @return the primaryAddressIndex
+	 */
+	public Integer getPrimaryAddressIndex() {
+		return primaryAddressIndex;
+	}
+
+	/**
+	 * @param primaryAddressIndex
+	 *            the primaryAddressIndex to set
+	 */
+	public void setPrimaryAddressIndex(Integer primaryAddressIndex) {
+		this.primaryAddressIndex = primaryAddressIndex;
+	}
+
 	/**
 	 * @return the customerSearchText
 	 */
@@ -194,22 +318,6 @@ public class CustomerBean {
 	 */
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
-	}
-
-	public List<AccountHeadBean> getCustomerAccounts() {
-		return customerAccounts;
-	}
-
-	public void setCustomerAccounts(List<AccountHeadBean> customerAccounts) {
-		this.customerAccounts = customerAccounts;
-	}
-
-	public Boolean getSearchAccount() {
-		return searchAccount;
-	}
-
-	public void setSearchAccount(Boolean searchAccount) {
-		this.searchAccount = searchAccount;
 	}
 
 }

@@ -12,6 +12,7 @@ import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.ReasonCode;
 import com.punj.app.ecommerce.domains.common.Register;
+import com.punj.app.ecommerce.domains.common.State;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.HierarchyDTO;
@@ -28,6 +29,12 @@ import com.punj.app.ecommerce.utils.Pager;
  *
  */
 public interface CommonService {
+
+	public Map<String, State> statesAsMapByGSTCode();
+
+	public Map<String, State> statesAsMapByStateCode();
+
+	public List<State> retrieveAllStates();
 
 	public Location retrieveLocationDetails(Integer locationId);
 

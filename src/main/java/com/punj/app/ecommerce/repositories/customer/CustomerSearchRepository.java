@@ -54,7 +54,7 @@ public class CustomerSearchRepository {
 
 		// a very basic query by keywords
 		org.apache.lucene.search.Query query = queryBuilder.keyword()
-				.onFields("customerId", "name", "phone", "email", "addresses.address1", "addresses.address2", "addresses.city").matching(text).createQuery();
+				.onFields("customerId", "name", "phone", "email", "gstNo","panNo", "createdBy", "addresses.address1", "addresses.address2", "addresses.city", "addresses.state", "addresses.pincode").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
 		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Customer.class);

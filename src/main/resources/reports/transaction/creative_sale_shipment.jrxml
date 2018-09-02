@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="creative_sale_shipment" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="5" uuid="132dd138-c823-4933-81cc-25ad3c8a9ca1">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-INDUSTRY-DS"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="151" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="69" width="70" height="11" uuid="81fc4224-e793-411e-b60b-70c8fc9fb515"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Invoice No : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="99" width="70" height="11" uuid="1305b395-c2b3-4908-8288-17f3a93e47a8"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Order No : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="69" width="80" height="11" uuid="efa51d40-3b57-4780-81ff-705ca6152548"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["48"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="99" width="80" height="11" uuid="1f68daf9-1231-40c4-8d20-f24e52769d5c"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["69453"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="114" width="70" height="11" uuid="2d2fde79-09d6-48ec-bcaf-8fba5a04aedc"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Order Date : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="114" width="80" height="11" uuid="1efcf771-1078-427f-922a-1229ee5eb6b7"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["08-Aug-18"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="84" width="80" height="11" uuid="8a0c13c1-fdfb-4528-86de-ff6c4ef3ed8a"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["20-Aug-18"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="84" width="70" height="11" uuid="11bbcc7a-fa49-4323-9299-30467a2c9162"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Invoice Date : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="188" y="68" width="170" height="12" uuid="b7ab0668-11d8-4289-a986-06d2559cd2c8"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["M/s.  Winsome Yarns Ltd"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="84" width="146" height="11" uuid="4257d7f6-5ce9-49ec-b796-585ae6a1ee5e"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["GSTIN : 03AAACW1911H1ZU"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="99" width="110" height="11" uuid="8239f89c-2cca-48b5-b8a4-cda5f90365c8"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PAN : AAACW1911H"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="114" width="110" height="11" uuid="dc82a8b3-8bf2-4e24-9f99-4aadac2cdb92"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["State Code : 03"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="99" width="110" height="11" uuid="7013ee1c-03fe-4d45-b088-d2dc2d9a5f17"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["City, State,"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="114" width="110" height="11" uuid="a5731f91-c85c-461e-b3b3-2bac56a78122"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Country - 140301"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="84" width="146" height="11" uuid="de726af9-cc99-4a7b-8557-7484b3b5c165"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Address Line 1, Address Line 2,"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="420" y="69" width="70" height="11" uuid="130c9b54-d64a-49ca-91b5-9a78a32e3155"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Billing Address : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="211" y="129" width="148" height="11" uuid="55dd3e55-8141-4b91-97fc-576aea23a004"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Email : customer@email.com"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="129" width="120" height="11" uuid="92db60d6-5e03-44cd-a935-3fd37f0b2d45"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ph: 8847523677, 8283835904"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-20" y="61" width="595" height="1" uuid="a5b02191-e1b9-452b-a138-443b12ef9d01"/>
+			</line>
+			<line>
+				<reportElement x="-20" y="147" width="595" height="1" uuid="87381131-74fb-40e3-b697-0f3a501e635a"/>
+			</line>
+			<image>
+				<reportElement x="175" y="-1" width="210" height="40" uuid="884d495b-9d32-447b-80b2-d58b1d7fb827"/>
+				<imageExpression><![CDATA["images/creative_logo_small.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="80" y="45" width="400" height="14" uuid="fd2a0876-49c7-4993-895b-937424df6c13"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["D-68, Industrial Focal Point, Chanalon, P.O. Kurali - 140301, Punjab"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-9" y="12" width="138" height="11" uuid="1bb0a823-b0de-4611-bd0e-7de05225e0bb"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["GSTIN : 03AAEFC0339G1Z2"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-9" y="23" width="138" height="11" uuid="67c4dc81-fe1c-4ee9-a755-ded851591b37"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PAN : AAEFC0339G"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-9" y="1" width="138" height="11" uuid="d6e05956-0bfb-44a1-9a2f-a48f45927aac"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["State Code : 03"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="497" y="13" width="70" height="11" uuid="8d3285f7-5fc3-4a30-8140-459f91fed979"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["M. 9814139705"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="497" y="2" width="70" height="11" uuid="d3794b59-31c7-4d2b-aa32-6b2d66bf065b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["M. 9855499705"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="129" width="70" height="11" uuid="b084e413-1375-4a90-b0f1-b5ce28fe0a2e"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Invoice Type : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="129" width="100" height="11" uuid="5c5b997e-d2b8-483b-8f4a-186cd75578a1"/>
+				<textElement>
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Original/Duplicate Copy"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="-20" y="1" width="595" height="18" backcolor="#005EA4" uuid="d710f5c9-ddfd-44c1-9ff7-67f7c8adc98c"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="19" y="3" width="195" height="14" forecolor="#FFFFFF" uuid="15eca862-5907-4527-b174-a0fb7ab3c826"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Item Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="3" width="19" height="14" forecolor="#FFFFFF" uuid="86e22cf2-6452-490d-afab-6bc77e5eb7fa"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Sr.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="214" y="3" width="56" height="14" forecolor="#FFFFFF" uuid="49f64d95-d2ae-47b7-9317-56553887011d"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Unit Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="271" y="3" width="40" height="14" forecolor="#FFFFFF" uuid="90bcd21e-ecbc-4625-b806-4fa126671215"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Qty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="311" y="3" width="60" height="14" forecolor="#FFFFFF" uuid="da282796-c96d-4505-a7b1-e410a9a066c2"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Ext. Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="371" y="3" width="58" height="14" forecolor="#FFFFFF" uuid="948b6892-471c-454b-a153-0bd626c2a0e1"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Discount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="511" y="3" width="64" height="14" forecolor="#FFFFFF" uuid="bf40db30-82cd-4128-a3a1-714225ff3b1f"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" x="430" y="3" width="40" height="14" forecolor="#FFFFFF" uuid="ecb7ce0e-241a-4068-b473-7edfb78d2e38"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SGST"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" x="470" y="3" width="40" height="14" forecolor="#FFFFFF" uuid="1aefa9cb-6aaf-422e-bd66-0633125b7fc9"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CGST"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" x="430" y="3" width="80" height="14" forecolor="#FFFFFF" uuid="17a84055-605d-46a0-8bfa-6f6b9e433f1c"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["IGST"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="480" splitType="Stretch"/>
+	</detail>
+	<summary>
+		<band height="107" splitType="Stretch">
+			<line>
+				<reportElement x="-20" y="1" width="595" height="1" uuid="a5b02191-e1b9-452b-a138-443b12ef9d01"/>
+			</line>
+			<rectangle radius="5">
+				<reportElement x="0" y="86" width="361" height="16" backcolor="#005EA4" uuid="4a00a268-906f-4595-a21e-d5e443eb0fc8"/>
+			</rectangle>
+			<rectangle radius="7">
+				<reportElement x="371" y="2" width="193" height="100" backcolor="#005EA4" uuid="1f851199-2fc6-4fcb-a6ac-529c86ba16cd"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="#0.00#">
+				<reportElement x="491" y="17" width="64" height="14" forecolor="#FFFFFF" uuid="02e7c412-6a5f-41e6-b05d-bcb74db1f4e3"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00#">
+				<reportElement x="491" y="31" width="64" height="14" forecolor="#FFFFFF" uuid="fc26dd32-e0cc-4fdb-a185-771a6165654c"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00#" isBlankWhenNull="true">
+				<reportElement x="501" y="45" width="54" height="14" forecolor="#FFFFFF" uuid="e3e95a7e-54e9-43b8-b28b-ec396f595804"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00#" isBlankWhenNull="true">
+				<reportElement x="501" y="59" width="54" height="14" forecolor="#FFFFFF" uuid="d754fc0a-20d8-42fb-9170-1ad336f10b02"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00#">
+				<reportElement x="491" y="87" width="64" height="14" forecolor="#FFFFFF" uuid="42b5e82a-e33e-426b-9359-d12aa1acab97"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="ContainerBottom" x="371" y="17" width="100" height="14" forecolor="#FFFFFF" uuid="e05ac55d-1033-44dc-95fa-cd69831594e2"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Discount Amount :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ContainerBottom" x="370" y="31" width="100" height="14" forecolor="#FFFFFF" uuid="ca04a186-725e-4101-9a7b-55fd1ff10b28"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Total Tax Amount :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ContainerBottom" x="381" y="45" width="90" height="14" forecolor="#FFFFFF" uuid="3f63247d-d9e9-4d18-830d-8288aac21c90"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Total SGST :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="381" y="59" width="90" height="14" forecolor="#FFFFFF" uuid="b48eed7e-487a-4ee1-b555-265ac553c24e"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Total CGST :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ContainerBottom" x="371" y="87" width="100" height="14" forecolor="#FFFFFF" uuid="fe4b5f26-47ff-4536-ac97-e9978e97ebdf"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Total Amount :]]></text>
+			</staticText>
+			<textField pattern="#0.00#">
+				<reportElement x="491" y="3" width="64" height="14" forecolor="#FFFFFF" uuid="029e036f-6188-4460-a2ec-2580b6449a26"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="371" y="3" width="100" height="14" forecolor="#FFFFFF" uuid="af5b04b1-9920-4fcc-a82d-a75357aa85cd"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Subtotal Amount :]]></text>
+			</staticText>
+			<textField pattern="#0.00#" isBlankWhenNull="true">
+				<reportElement x="501" y="73" width="54" height="14" forecolor="#FFFFFF" uuid="5d67579d-03a8-4245-a18a-e4742b75374b"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INR 0.00"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="381" y="73" width="90" height="14" forecolor="#FFFFFF" uuid="6c88de70-8c95-474d-b3ff-e1080a69401b"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="9" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Total IGST :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="5" width="130" height="11" uuid="d695ed46-7af9-436b-8f72-4f1a53b217eb"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Bank Details : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="18" width="130" height="11" uuid="5e8b7109-9608-4c19-9c98-59ebecdf5f56"/>
+				<textElement>
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Punjab & Sind Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="31" width="130" height="11" uuid="3926c38f-70ea-458d-ba15-da93d8b30aa4"/>
+				<textElement>
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[A/C No. : 01941100000603]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="44" width="130" height="11" uuid="ea52db8a-ac0a-418a-8de0-2370f98eac77"/>
+				<textElement>
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[IFSC Code : PSIB0000194]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="110" y="87" width="247" height="14" forecolor="#FFFFFF" uuid="436ed02b-a634-449a-8c5c-0c73af22029d"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ten Thousand Five Hundred Fifty Three Only"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="87" width="106" height="14" forecolor="#FFFFFF" uuid="80545f5e-242e-48c0-900a-37995bf1a87a"/>
+				<textElement>
+					<font size="9" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Total Amount in words : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="7" width="130" height="11" uuid="a4237bcf-4ac4-4725-8a35-bdeabe4a0560"/>
+				<textElement textAlignment="Center">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[For CREATIVE INDIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="50" width="130" height="11" uuid="c3a03610-d033-4f93-8166-e27d8cc32c36"/>
+				<textElement textAlignment="Center">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Auth Signatory]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -18,7 +18,7 @@ import com.punj.app.ecommerce.domains.reports.dashboard.ids.DashboardReportId;
  */
 public interface DashboardReportRepository extends JpaRepository<DashboardReport, DashboardReportId> {
 
-	@Query(value = "select sales_data.* from commercedb.v_location_sales_data sales_data where sales_data.location_id=?1 and sales_data.business_date<=?2 and sales_data.business_date> ?3 ", nativeQuery = true)
+	@Query(value = "select sales_data.* from pi_pos_industry.v_location_sales_data sales_data where sales_data.location_id=?1 and sales_data.business_date<=?2 and sales_data.business_date> ?3 ", nativeQuery = true)
 	List<DashboardReport> getDailyReportWeekWise(Integer locationId, String businessDate, String businessDateFromPastWeek);
 
 }

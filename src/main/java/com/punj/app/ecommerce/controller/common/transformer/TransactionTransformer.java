@@ -269,7 +269,7 @@ public class TransactionTransformer {
 
 		saleLI.setSaleLineItemId(saleLIId);
 
-		
+		saleLI.setItemDesc(saleLineItem.getItemName());
 
 		saleLI.setUpc(saleLineItem.getItemId().toString());
 

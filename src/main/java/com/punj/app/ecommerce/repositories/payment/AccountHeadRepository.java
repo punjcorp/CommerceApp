@@ -18,6 +18,6 @@ import com.punj.app.ecommerce.domains.payment.AccountHead;
  */
 public interface AccountHeadRepository extends JpaRepository<AccountHead, Integer> {
 
-	@Query(value = "select ah.* from commercedb.account_head ah where ah.entity_id in (?1) and ah.entity_type=?2", nativeQuery = true)
+	@Query(value = "select ah.* from pi_pos_industry.account_head ah where ah.entity_id in (?1) and ah.entity_type=?2", nativeQuery = true)
 	List<AccountHead> getAccounts(Set<BigInteger> entityIds, String entityType);
 }

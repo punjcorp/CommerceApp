@@ -57,6 +57,7 @@ $(function() {
             {
                 text: 'Select all',
                 action: function () {
+                	selectedIds=[];
                 	orderReturnsTable.rows().select();
                 }
             },

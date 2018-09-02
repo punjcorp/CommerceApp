@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_price`
+-- Table `pi_pos_industry`.`item_price`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_price` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_price` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_price` (
   `item_price_id` BIGINT NOT NULL AUTO_INCREMENT,
   `item_id` BIGINT NOT NULL,
   `location_id` INT(4) NOT NULL,
@@ -31,27 +31,27 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price` (
   PRIMARY KEY (`item_price_id`),
   CONSTRAINT `fk_item_price_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_item_price_location1`
     FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
+    REFERENCES `pi_pos_industry`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_item_price_item1_idx` ON `commercedb`.`item_price` (`item_id` ASC);
+CREATE INDEX `fk_item_price_item1_idx` ON `pi_pos_industry`.`item_price` (`item_id` ASC);
 
-CREATE INDEX `fk_item_price_location1_idx` ON `commercedb`.`item_price` (`location_id` ASC);
+CREATE INDEX `fk_item_price_location1_idx` ON `pi_pos_industry`.`item_price` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`item_price_history`
+-- Table `pi_pos_industry`.`item_price_history`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`item_price_history` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`item_price_history` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`item_price_history` (
   `item_price_id` BIGINT NOT NULL,
   `archived_date` DATETIME NOT NULL,
   `item_id` BIGINT NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`item_price_history` (
   PRIMARY KEY (`item_price_id`, `archived_date`),
   CONSTRAINT `fk_item_price_history_location1`
     FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
+    REFERENCES `pi_pos_industry`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

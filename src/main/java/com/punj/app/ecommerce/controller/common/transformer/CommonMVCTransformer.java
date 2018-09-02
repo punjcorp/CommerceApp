@@ -309,7 +309,9 @@ public class CommonMVCTransformer {
 		addressBean.setPrimary(address.getPrimary());
 		addressBean.setAddress1(address.getAddress1());
 		addressBean.setAddress2(address.getAddress2());
+		addressBean.setLandmark(address.getLandmark());
 		addressBean.setCity(address.getCity());
+		addressBean.setDistrict(address.getDistrict());
 		addressBean.setState(address.getState());
 		addressBean.setCountry(address.getCountry());
 		addressBean.setPincode(address.getPincode());
@@ -326,7 +328,9 @@ public class CommonMVCTransformer {
 		address.setAddressId(addressBean.getAddressId());
 		address.setAddress1(addressBean.getAddress1());
 		address.setAddress2(addressBean.getAddress2());
+		address.setLandmark(addressBean.getLandmark());
 		address.setCity(addressBean.getCity());
+		address.setDistrict(addressBean.getDistrict());
 		address.setState(addressBean.getState());
 		address.setCountry(addressBean.getCountry());
 		address.setPincode(addressBean.getPincode());

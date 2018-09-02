@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`user`
+-- Table `pi_pos_industry`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`user` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`user` (
   `username` VARCHAR(50) NOT NULL,
   `first_name` VARCHAR(50) NOT NULL,
   `last_name` VARCHAR(50) NULL,
@@ -36,11 +36,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`user_password`
+-- Table `pi_pos_industry`.`user_password`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user_password` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`user_password` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`user_password` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`user_password` (
   `password_id` BIGINT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
   `password` VARCHAR(150) NOT NULL,
@@ -50,18 +50,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_password` (
   PRIMARY KEY (`password_id`),
   CONSTRAINT `fk_user_password_user`
     FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
+    REFERENCES `pi_pos_industry`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`role`
+-- Table `pi_pos_industry`.`role`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`role` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`role` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`role` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`role` (
   `role_id` INT NOT NULL AUTO_INCREMENT,
   `role_name` VARCHAR(75) NOT NULL,
   `description` VARCHAR(200) NULL,
@@ -72,11 +72,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`access`
+-- Table `pi_pos_industry`.`access`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`access` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`access` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`access` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`access` (
   `access_id` INT NOT NULL AUTO_INCREMENT,
   `access_name` VARCHAR(100) NOT NULL,
   `description` VARCHAR(200) NULL,
@@ -85,11 +85,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`role_access`
+-- Table `pi_pos_industry`.`role_access`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`role_access` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`role_access` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`role_access` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`role_access` (
   `role_id` INT NOT NULL,
   `access_id` INT NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
@@ -97,27 +97,27 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`role_access` (
   PRIMARY KEY (`role_id`, `access_id`),
   CONSTRAINT `fk_role_access_role1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `commercedb`.`role` (`role_id`)
+    REFERENCES `pi_pos_industry`.`role` (`role_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_role_access_access1`
     FOREIGN KEY (`access_id`)
-    REFERENCES `commercedb`.`access` (`access_id`)
+    REFERENCES `pi_pos_industry`.`access` (`access_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_role_access_role1_idx` ON `commercedb`.`role_access` (`role_id` ASC);
+CREATE INDEX `fk_role_access_role1_idx` ON `pi_pos_industry`.`role_access` (`role_id` ASC);
 
-CREATE INDEX `fk_role_access_access1_idx` ON `commercedb`.`role_access` (`access_id` ASC);
+CREATE INDEX `fk_role_access_access1_idx` ON `pi_pos_industry`.`role_access` (`access_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`user_role`
+-- Table `pi_pos_industry`.`user_role`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user_role` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`user_role` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`user_role` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`user_role` (
   `username` VARCHAR(50) NOT NULL,
   `role_id` INT NOT NULL,
   `location_id` INT(4) NOT NULL,
@@ -128,32 +128,32 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_role` (
   PRIMARY KEY (`username`, `role_id`, `location_id`),
   CONSTRAINT `fk_user_role_role1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `commercedb`.`role` (`role_id`)
+    REFERENCES `pi_pos_industry`.`role` (`role_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_role_user1`
     FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
+    REFERENCES `pi_pos_industry`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_role_location1`
     FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
+    REFERENCES `pi_pos_industry`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_user_role_user1_idx` ON `commercedb`.`user_role` (`username` ASC);
+CREATE INDEX `fk_user_role_user1_idx` ON `pi_pos_industry`.`user_role` (`username` ASC);
 
-CREATE INDEX `fk_user_role_location1_idx` ON `commercedb`.`user_role` (`location_id` ASC);
+CREATE INDEX `fk_user_role_location1_idx` ON `pi_pos_industry`.`user_role` (`location_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`user_recovery`
+-- Table `pi_pos_industry`.`user_recovery`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user_recovery` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`user_recovery` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`user_recovery` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`user_recovery` (
   `username` VARCHAR(50) NOT NULL,
   `question1` VARCHAR(150) NOT NULL,
   `answer1` VARCHAR(45) NULL,
@@ -162,18 +162,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_recovery` (
   PRIMARY KEY (`username`),
   CONSTRAINT `fk_user_recovery_user1`
     FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
+    REFERENCES `pi_pos_industry`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`login_logs`
+-- Table `pi_pos_industry`.`login_logs`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`login_logs` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`login_logs` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`login_logs` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`login_logs` (
   `username` VARCHAR(50) NOT NULL,
   `login_time` DATETIME NOT NULL,
   `login_result` VARCHAR(20) NOT NULL,
@@ -181,20 +181,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`login_logs` (
   PRIMARY KEY (`username`, `login_time`),
   CONSTRAINT `fk_login_logs_user1`
     FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
+    REFERENCES `pi_pos_industry`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_login_logs_user1_idx` ON `commercedb`.`login_logs` (`username` ASC);
+CREATE INDEX `fk_login_logs_user1_idx` ON `pi_pos_industry`.`login_logs` (`username` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`address_master`
+-- Table `pi_pos_industry`.`address_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`address_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`address_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`address_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`address_master` (
   `address_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `primary` VARCHAR(1) NOT NULL DEFAULT 'N',
   `address_type` VARCHAR(20) NOT NULL,
@@ -209,11 +209,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`user_credit_debit`
+-- Table `pi_pos_industry`.`user_credit_debit`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user_credit_debit` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`user_credit_debit` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`user_credit_debit` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`user_credit_debit` (
   `username` VARCHAR(50) NOT NULL,
   `card_no` VARCHAR(20) NOT NULL,
   `address_id` BIGINT NOT NULL,
@@ -223,41 +223,41 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user_credit_debit` (
   PRIMARY KEY (`username`, `card_no`),
   CONSTRAINT `fk_user_credit_debit_user1`
     FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
+    REFERENCES `pi_pos_industry`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_credit_debit_user_address1`
     FOREIGN KEY (`address_id`)
-    REFERENCES `commercedb`.`address_master` (`address_id`)
+    REFERENCES `pi_pos_industry`.`address_master` (`address_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_user_credit_debit_user_address1_idx` ON `commercedb`.`user_credit_debit` (`address_id` ASC);
+CREATE INDEX `fk_user_credit_debit_user_address1_idx` ON `pi_pos_industry`.`user_credit_debit` (`address_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`user_address`
+-- Table `pi_pos_industry`.`user_address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`user_address` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`user_address` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`user_address` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`user_address` (
   `username` VARCHAR(50) NOT NULL,
   `address_id` BIGINT(20) NOT NULL,
   PRIMARY KEY (`username`, `address_id`),
   CONSTRAINT `fk_user_address_address_master1`
     FOREIGN KEY (`address_id`)
-    REFERENCES `commercedb`.`address_master` (`address_id`)
+    REFERENCES `pi_pos_industry`.`address_master` (`address_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_address_user1`
     FOREIGN KEY (`username`)
-    REFERENCES `commercedb`.`user` (`username`)
+    REFERENCES `pi_pos_industry`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_user_address_user1_idx` ON `commercedb`.`user_address` (`username` ASC);
+CREATE INDEX `fk_user_address_user1_idx` ON `pi_pos_industry`.`user_address` (`username` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

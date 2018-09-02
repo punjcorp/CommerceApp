@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`purchase_order`
+-- Table `pi_pos_industry`.`purchase_order`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`purchase_order` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`purchase_order` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`purchase_order` (
   `order_id` BIGINT NOT NULL AUTO_INCREMENT,
   `supplier_id` INT NOT NULL,
   `location_id` INT(4) NOT NULL,
@@ -36,20 +36,20 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order` (
   PRIMARY KEY (`order_id`),
   CONSTRAINT `fk_purchase_order_supplier1`
     FOREIGN KEY (`supplier_id`)
-    REFERENCES `commercedb`.`supplier` (`supplier_id`)
+    REFERENCES `pi_pos_industry`.`supplier` (`supplier_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_purchase_order_supplier1_idx` ON `commercedb`.`purchase_order` (`supplier_id` ASC);
+CREATE INDEX `fk_purchase_order_supplier1_idx` ON `pi_pos_industry`.`purchase_order` (`supplier_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`purchase_order_items`
+-- Table `pi_pos_industry`.`purchase_order_items`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`purchase_order_items` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`purchase_order_items` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`purchase_order_items` (
   `order_item_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
@@ -72,27 +72,27 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   PRIMARY KEY (`order_item_id`),
   CONSTRAINT `fk_purchase_order_items_purchase_order1`
     FOREIGN KEY (`order_id`)
-    REFERENCES `commercedb`.`purchase_order` (`order_id`)
+    REFERENCES `pi_pos_industry`.`purchase_order` (`order_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_purchase_order_items_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `commercedb`.`item` (`item_id`)
+    REFERENCES `pi_pos_industry`.`item` (`item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_purchase_order_items_purchase_order1_idx` ON `commercedb`.`purchase_order_items` (`order_id` ASC);
+CREATE INDEX `fk_purchase_order_items_purchase_order1_idx` ON `pi_pos_industry`.`purchase_order_items` (`order_id` ASC);
 
-CREATE INDEX `fk_purchase_order_items_item1_idx` ON `commercedb`.`purchase_order_items` (`item_id` ASC);
+CREATE INDEX `fk_purchase_order_items_item1_idx` ON `pi_pos_industry`.`purchase_order_items` (`item_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`purchase_order_items_tax`
+-- Table `pi_pos_industry`.`purchase_order_items_tax`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`purchase_order_items_tax` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`purchase_order_items_tax` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items_tax` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`purchase_order_items_tax` (
   `order_item_tax_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_item_id` BIGINT NOT NULL,
   `tax_group_id` INT NOT NULL,
@@ -107,18 +107,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items_tax` (
   INDEX `fk_purchase_order_items_tax_purchase_order_items1_idx` (`order_item_id` ASC),
   CONSTRAINT `fk_purchase_order_items_tax_purchase_order_items1`
     FOREIGN KEY (`order_item_id`)
-    REFERENCES `commercedb`.`purchase_order_items` (`order_item_id`)
+    REFERENCES `pi_pos_industry`.`purchase_order_items` (`order_item_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`purchase_order_bills`
+-- Table `pi_pos_industry`.`purchase_order_bills`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`purchase_order_bills` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`purchase_order_bills` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_bills` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`purchase_order_bills` (
   `order_bill_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `bill_no` VARCHAR(50) NOT NULL,
@@ -129,18 +129,18 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_bills` (
   PRIMARY KEY (`order_bill_id`),
   CONSTRAINT `fk_table1_purchase_order1`
     FOREIGN KEY (`order_id`)
-    REFERENCES `commercedb`.`purchase_order` (`order_id`)
+    REFERENCES `pi_pos_industry`.`purchase_order` (`order_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`purchase_order_payment`
+-- Table `pi_pos_industry`.`purchase_order_payment`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`purchase_order_payment` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`purchase_order_payment` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_payment` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`purchase_order_payment` (
   `order_payment_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `tender_id` INT NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_payment` (
   PRIMARY KEY (`order_payment_id`),
   CONSTRAINT `fk_purchase_order_payment_purchase_order1`
     FOREIGN KEY (`order_id`)
-    REFERENCES `commercedb`.`purchase_order` (`order_id`)
+    REFERENCES `pi_pos_industry`.`purchase_order` (`order_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

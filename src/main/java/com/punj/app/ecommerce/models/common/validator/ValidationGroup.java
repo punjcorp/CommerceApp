@@ -48,5 +48,9 @@ public class ValidationGroup {
 	public interface VGAddOrderReturn {
 
 	}
+	
+	public interface VGAddCustomer {
+
+	}
 
 }

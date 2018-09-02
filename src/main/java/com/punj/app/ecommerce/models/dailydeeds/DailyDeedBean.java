@@ -23,6 +23,7 @@ public class DailyDeedBean {
 	@NotNull(message = "{commerce.error.location.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
 	private Integer locationId;
 	private String locationName;
+	private String gstNo;
 	private String defaultTender;
 
 	private String locationStatus;
@@ -326,6 +327,21 @@ public class DailyDeedBean {
 	 */
 	public void setAllRegOpenedFlag(Boolean allRegOpenedFlag) {
 		this.allRegOpenedFlag = allRegOpenedFlag;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 }

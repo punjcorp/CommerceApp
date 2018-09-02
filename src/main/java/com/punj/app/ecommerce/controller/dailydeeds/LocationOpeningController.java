@@ -169,6 +169,7 @@ public class LocationOpeningController {
 				for (LocationBean location : locations) {
 					if (location.getLocationId().equals(locationId)) {
 						dailyDeedBean.setLocationName(location.getName());
+						dailyDeedBean.setGstNo(location.getGstNo());
 						dailyDeedBean.setDefaultTender(location.getDefaultTender());
 						break;
 					}
@@ -201,6 +202,7 @@ public class LocationOpeningController {
 		Integer locationId = dailyDeedBean.getLocationId();
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
+		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_GST_NO, dailyDeedBean.getGstNo());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
 		// Get this from selected location later on
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER, dailyDeedBean.getDefaultTender()); // MVCConstants.TNDR_CASH

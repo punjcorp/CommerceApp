@@ -22,12 +22,14 @@ public class AddressBean {
 	@Size(min = 5, max = 150, message = "{commerce.error.string.size}")	
 	private String address1;
 	private String address2;
+	private String landmark;
 	@NotNull
 	@Size(min = 2, max = 30, message = "{commerce.error.string.size}")		
 	private String city;
-	@NotNull
+	@NotNull(message = "{commerce.error.option.empty}")
 	@Size(min = 2, max = 45, message = "{commerce.error.string.size}")		
 	private String state;
+	private String district;
 	@NotNull
 	@Size(min = 2, max = 45, message = "{commerce.error.string.size}")		
 	private String country;
@@ -168,6 +170,34 @@ public class AddressBean {
 	 */
 	public void setPrimary(String primary) {
 		this.primary = primary;
+	}
+
+	/**
+	 * @return the landmark
+	 */
+	public String getLandmark() {
+		return landmark;
+	}
+
+	/**
+	 * @param landmark the landmark to set
+	 */
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+
+	/**
+	 * @return the district
+	 */
+	public String getDistrict() {
+		return district;
+	}
+
+	/**
+	 * @param district the district to set
+	 */
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 }

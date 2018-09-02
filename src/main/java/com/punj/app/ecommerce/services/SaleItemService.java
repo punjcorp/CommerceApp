@@ -14,6 +14,6 @@ import com.punj.app.ecommerce.services.dtos.SaleItem;
  */
 public interface SaleItemService {
 
-	public SaleItem getItem(BigInteger itemId, Integer locationId)  throws UnsupportedEncodingException;
+	public SaleItem getItem(BigInteger itemId, Integer locationId, String gstFlag)  throws UnsupportedEncodingException;
 
 }

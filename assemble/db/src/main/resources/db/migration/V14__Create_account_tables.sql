@@ -5,18 +5,18 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`account_head`
+-- Table `pi_pos_industry`.`account_head`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`account_head` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`account_head` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`account_head` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`account_head` (
   `account_id` INT NOT NULL AUTO_INCREMENT,
   `location_id` INT(4) NOT NULL,
   `entity_type` VARCHAR(50) NOT NULL,
@@ -30,15 +30,15 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_head` (
   PRIMARY KEY (`account_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `account_head_unique_idx` ON `commercedb`.`account_head` (`location_id` ASC, `entity_type` ASC, `entity_id` ASC);
+CREATE UNIQUE INDEX `account_head_unique_idx` ON `pi_pos_industry`.`account_head` (`location_id` ASC, `entity_type` ASC, `entity_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`account_journal`
+-- Table `pi_pos_industry`.`account_journal`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`account_journal` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`account_journal` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`account_journal` (
   `journal_id` BIGINT NOT NULL AUTO_INCREMENT,
   `account_id` INT NOT NULL,
   `journal_type` VARCHAR(50) NOT NULL,
@@ -51,17 +51,17 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal` (
   PRIMARY KEY (`journal_id`),
   CONSTRAINT `fk_account_journal_account_head1`
     FOREIGN KEY (`account_id`)
-    REFERENCES `commercedb`.`account_head` (`account_id`)
+    REFERENCES `pi_pos_industry`.`account_head` (`account_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`account_journal_tender`
+-- Table `pi_pos_industry`.`account_journal_tender`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`account_journal_tender` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`account_journal_tender` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal_tender` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`account_journal_tender` (
   `journal_id` BIGINT NOT NULL,
   `tender_id` INT NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
@@ -76,24 +76,24 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal_tender` (
   PRIMARY KEY (`journal_id`, `tender_id`),
   CONSTRAINT `fk_account_journal_tender_account_journal1`
     FOREIGN KEY (`journal_id`)
-    REFERENCES `commercedb`.`account_journal` (`journal_id`)
+    REFERENCES `pi_pos_industry`.`account_journal` (`journal_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`account_journal_receipts`
+-- Table `pi_pos_industry`.`account_journal_receipts`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`account_journal_receipts` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`account_journal_receipts` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal_receipts` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`account_journal_receipts` (
   `journal_id` BIGINT NOT NULL,
   `receipt_data` LONGBLOB NOT NULL,
   PRIMARY KEY (`journal_id`),
   CONSTRAINT `fk_account_journal_receipts_account_journal1`
     FOREIGN KEY (`journal_id`)
-    REFERENCES `commercedb`.`account_journal` (`journal_id`)
+    REFERENCES `pi_pos_industry`.`account_journal` (`journal_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -103,11 +103,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`repository_master`
+-- Table `pi_pos_industry`.`repository_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`repository_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`repository_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`repository_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`repository_master` (
   `repository_id` INT NOT NULL AUTO_INCREMENT,
   `tender_id` INT(3) NOT NULL,
   `name` VARCHAR(80) NOT NULL,
@@ -122,21 +122,21 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`repository_master` (
   PRIMARY KEY (`repository_id`),
   CONSTRAINT `fk_repository_master_tender_master1`
     FOREIGN KEY (`tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    REFERENCES `pi_pos_industry`.`tender_master` (`tender_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_repository_master_tender_master1_idx` ON `commercedb`.`repository_master` (`tender_id` ASC);
+CREATE INDEX `fk_repository_master_tender_master1_idx` ON `pi_pos_industry`.`repository_master` (`tender_id` ASC);
 
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`daily_totals`
+-- Table `pi_pos_industry`.`daily_totals`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`daily_totals` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`daily_totals` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`daily_totals` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`daily_totals` (
   `daily_totals_id` BIGINT NOT NULL AUTO_INCREMENT,
   `location_id` INT NOT NULL,
   `register_id` VARCHAR(45) NULL,
@@ -156,11 +156,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`ledger_journal`
+-- Table `pi_pos_industry`.`ledger_journal`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`ledger_journal` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`ledger_journal` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`ledger_journal` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`ledger_journal` (
   `ledger_journal_id` BIGINT NOT NULL AUTO_INCREMENT,
   `business_date` DATETIME NOT NULL,
   `txn_no` VARCHAR(50) NOT NULL,
@@ -173,15 +173,15 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`ledger_journal` (
   PRIMARY KEY (`ledger_journal_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `business_date_UNIQUE` ON `commercedb`.`ledger_journal` (`business_date` ASC, `txn_no` ASC, `txn_type` ASC, `location_id` ASC, `action_code` ASC);
+CREATE UNIQUE INDEX `business_date_UNIQUE` ON `pi_pos_industry`.`ledger_journal` (`business_date` ASC, `txn_no` ASC, `txn_type` ASC, `location_id` ASC, `action_code` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`location_repo`
+-- Table `pi_pos_industry`.`location_repo`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`location_repo` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`location_repo` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`location_repo` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`location_repo` (
   `location_repository_id` BIGINT NOT NULL AUTO_INCREMENT,
   `repository_id` INT NOT NULL,
   `location_id` INT(4) NOT NULL,
@@ -194,34 +194,34 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`location_repo` (
   PRIMARY KEY (`location_repository_id`),
   CONSTRAINT `fk_location_repository_repository_master1`
     FOREIGN KEY (`repository_id`)
-    REFERENCES `commercedb`.`repository_master` (`repository_id`)
+    REFERENCES `pi_pos_industry`.`repository_master` (`repository_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_location_repository_location1`
     FOREIGN KEY (`location_id`)
-    REFERENCES `commercedb`.`location` (`location_id`)
+    REFERENCES `pi_pos_industry`.`location` (`location_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_location_repository_tender_master1`
     FOREIGN KEY (`tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    REFERENCES `pi_pos_industry`.`tender_master` (`tender_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_location_repository_location1_idx` ON `commercedb`.`location_repo` (`location_id` ASC);
+CREATE INDEX `fk_location_repository_location1_idx` ON `pi_pos_industry`.`location_repo` (`location_id` ASC);
 
-CREATE INDEX `fk_location_repository_tender_master1_idx` ON `commercedb`.`location_repo` (`tender_id` ASC);
+CREATE INDEX `fk_location_repository_tender_master1_idx` ON `pi_pos_industry`.`location_repo` (`tender_id` ASC);
 
 
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`daily_repository`
+-- Table `pi_pos_industry`.`daily_repository`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`daily_repository` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`daily_repository` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`daily_repository` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`daily_repository` (
   `daily_repository_id` BIGINT NOT NULL AUTO_INCREMENT,
   `location_repository_id` BIGINT NOT NULL,
   `business_date` DATETIME NOT NULL,
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`daily_repository` (
   PRIMARY KEY (`daily_repository_id`),
   CONSTRAINT `fk_location_repository_daily_location_repository1`
     FOREIGN KEY (`location_repository_id`)
-    REFERENCES `commercedb`.`location_repo` (`location_repository_id`)
+    REFERENCES `pi_pos_industry`.`location_repo` (`location_repository_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

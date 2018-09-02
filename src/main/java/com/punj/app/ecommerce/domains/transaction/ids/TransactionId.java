@@ -1,12 +1,14 @@
 package com.punj.app.ecommerce.domains.transaction.ids;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.Transient;
 
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -30,6 +32,7 @@ public class TransactionId implements Serializable {
 
 	@Column(name = "txn_no")
 	private Integer transactionSeq;
+
 
 	/**
 	 * @return the locationId
@@ -92,15 +95,12 @@ public class TransactionId implements Serializable {
 	}
 
 	/**
-	 * This method returns the actual transaction ID which need to be
-	 * stored in the database and will be printed on receipts
+	 * This method returns the actual transaction ID which need to be stored in the database and will be printed on receipts
 	 */
 	public String toString() {
 
-		return String.join("", StringUtils.leftPad(this.locationId.toString(), LOCATION_SIZE, '0'),
-				StringUtils.leftPad(this.register.toString(), REGISTER_SIZE, '0'),
-				StringUtils.leftPad(this.transactionSeq.toString(), TXN_SIZE, '0'),
-				Utils.formatDate(this.businessDate));
+		return String.join("", StringUtils.leftPad(this.locationId.toString(), LOCATION_SIZE, '0'), StringUtils.leftPad(this.register.toString(), REGISTER_SIZE, '0'),
+				StringUtils.leftPad(this.transactionSeq.toString(), TXN_SIZE, '0'), Utils.formatDate(this.businessDate));
 	}
 
 }

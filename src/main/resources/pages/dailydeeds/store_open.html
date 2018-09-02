@@ -47,8 +47,12 @@
 												</div>
 												<div>
 													<h3>
-														<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> <input type="hidden"
-															th:id="${location.locationId+'_loc_default_tender'}" th:value="${location.defaultTender}"></input> <span th:text="${location.name}"></span>
+														<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> 
+														<input type="hidden" th:id="${location.locationId+'_gst_no'}" th:value="${location.gstNo}"></input>
+														<input type="hidden"
+															th:id="${location.locationId+'_loc_default_tender'}" th:value="${location.defaultTender}"></input> 
+															
+															<span th:text="${location.name}"></span>
 													</h3>
 												</div>
 												<div>
@@ -93,6 +97,7 @@
 										<input type="text" th:field="*{businessDate}" class="form-control input-sm" data-input="data-input"
 											th:placeholder="#{commerce.screen.common.date.select}"></input> <input type="hidden" th:field="*{referrerURL}"></input>
 											<input type="hidden" th:field="*{locationName}"></input>
+											<input type="hidden" th:field="*{gstNo}"></input>
 											<input type="hidden" th:field="*{defaultTender}"></input>
 											
 										<div class="input-group-append">

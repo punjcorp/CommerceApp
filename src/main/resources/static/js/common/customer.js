@@ -107,6 +107,70 @@ function validateCustomer(){
 	return validationPassed;
 }
 
+function showTxnCustomerDetails(event, ui){
+	$('#div_txn_customer_dtls').removeClass('d-none');
+	
+	var customerHeaderHtml='<div class="row">';
+	customerHeaderHtml+='<div class="col">';
+	customerHeaderHtml+='<h4>'+ui.item.name+'</h4>';
+	customerHeaderHtml+='</div>';
+	customerHeaderHtml+='</div>';
+	customerHeaderHtml +='<input type="hidden" id="h_customerId" value="'+ui.item.customerId+'"></input>';
+	customerHeaderHtml +='<input type="hidden" id="h_gstNo" value="'+ui.item.gstNo+'"></input>';
+	customerHeaderHtml +='<input type="hidden" id="h_panNo" value="'+ui.item.panNo+'"></input>';
+	customerHeaderHtml+='<div class="row">';
+	customerHeaderHtml+='<div class="col">';
+	customerHeaderHtml+='<i class="fas fa-envelope mr-2"></i>';
+	customerHeaderHtml+=ui.item.email;
+	customerHeaderHtml+='</div>';
+	customerHeaderHtml+='</div>';
+	customerHeaderHtml+='<div class="row">';
+	customerHeaderHtml+='<div class="col">';
+	customerHeaderHtml+='<i class="fas fa-phone mr-2" data-fa-transform="flip-H"></i>';
+	customerHeaderHtml+=ui.item.phone;
+	
+	if(typeof(ui.item.phone2)!=='undefined' && ui.item.phone2!=undefined && ui.item.phone2!='')
+		customerHeaderHtml+=ui.item.phone2;
+	customerHeaderHtml+='</div>';
+	customerHeaderHtml+='</div>';
+	
+	customerHeaderHtml+='<div class="row">';
+	customerHeaderHtml+='<div class="col">';
+	customerHeaderHtml+='GST : ';
+	customerHeaderHtml+=ui.item.gstNo;
+	customerHeaderHtml+='</div>';
+	customerHeaderHtml+='</div>';
+	
+	var primaryAddressHtml='<div class="p-3">';
+	primaryAddressHtml+='<small>Billing Address</small>';
+	primaryAddressHtml +='<input type="hidden" id="h_primary_addressId" value="'+ui.item.addressId+'"></input>';
+	primaryAddressHtml+='<div class="address-white">';
+	primaryAddressHtml+=ui.item.address;
+	primaryAddressHtml+='</div>';
+	primaryAddressHtml+='</div>';
+	
+	
+	var shippingAddressHtml='<div class="p-3">';
+	shippingAddressHtml+='<small>Shipping Address</small>';
+	shippingAddressHtml +='<input type="hidden" id="h_shipping_addressId" value="'+ui.item.addressId+'"></input>';
+	shippingAddressHtml+='<div class="address-white">';
+	shippingAddressHtml+='<div id="shippingAddressDiv">';
+	shippingAddressHtml+=ui.item.address;
+	shippingAddressHtml+='</div>';
+	shippingAddressHtml+='<div class="text-right"><button type="button" id="btnCSAddress" onclick="changeAddressPopUp()" class="btn btn-info">Change Address</button></div>';
+	shippingAddressHtml+='</div>';
+	shippingAddressHtml+='</div>';	
+	
+	var finalHtml=customerHeaderHtml+primaryAddressHtml+shippingAddressHtml;
+	
+	$('#txnCustomerDetails').html(finalHtml);
+	$('#collapseOne').addClass('show');
+	
+	$('#txnCustomerLookupDiv').addClass('d-none');
+	$('#txnItemLookupDiv').removeClass('d-none');
+	
+}
+
 
 function showCustomerDetails(event, ui){
 	

@@ -5,18 +5,18 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- View `commercedb`.`v_location_tax`
+-- View `pi_pos_industry`.`v_location_tax`
 -- -----------------------------------------------------
-DROP VIEW IF EXISTS `commercedb`.`v_location_tax` ;
-DROP TABLE IF EXISTS `commercedb`.`v_location_tax`;
-USE `commercedb`;
+DROP VIEW IF EXISTS `pi_pos_industry`.`v_location_tax` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`v_location_tax`;
+USE `pi_pos_industry`;
 CREATE  
-VIEW `commercedb`.`v_location_tax` AS
+VIEW `pi_pos_industry`.`v_location_tax` AS
     SELECT 
         `tlm`.`location_id` AS `location_id`,
         `tl`.`code` AS `billing_location`,
@@ -55,13 +55,13 @@ VIEW `commercedb`.`v_location_tax` AS
 
 
 -- -----------------------------------------------------
--- View `commercedb`.`v_item_location_tax`
+-- View `pi_pos_industry`.`v_item_location_tax`
 -- -----------------------------------------------------
-DROP VIEW IF EXISTS `commercedb`.`v_item_location_tax` ;
-DROP TABLE IF EXISTS `commercedb`.`v_item_location_tax`;
-USE `commercedb`;
+DROP VIEW IF EXISTS `pi_pos_industry`.`v_item_location_tax` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`v_item_location_tax`;
+USE `pi_pos_industry`;
 CREATE 
-VIEW `commercedb`.`v_item_location_tax` AS
+VIEW `pi_pos_industry`.`v_item_location_tax` AS
     SELECT 
         `itm`.`item_id` AS `item_id`,
         `itm`.`name` AS `name`,
@@ -83,8 +83,8 @@ VIEW `commercedb`.`v_item_location_tax` AS
         `taxdtl`.`igst_amount` AS `igst_amount`,
         `taxdtl`.`igst_code` AS `igst_code`
     FROM
-        ((`commercedb`.`item` `itm`
-        LEFT JOIN `commercedb`.`item_options` `itmopt` ON ((`itm`.`item_id` = `itmopt`.`item_id`)))
+        ((`pi_pos_industry`.`item` `itm`
+        LEFT JOIN `pi_pos_industry`.`item_options` `itmopt` ON ((`itm`.`item_id` = `itmopt`.`item_id`)))
         LEFT JOIN (SELECT 
             `vlt`.`location_id` AS `location_id`,
                 `vlt`.`tax_group_id` AS `tax_group_id`,
@@ -126,18 +126,18 @@ VIEW `commercedb`.`v_item_location_tax` AS
                     WHEN (`vlt`.`tax_group_rate_name` = 'IGST') THEN `vlt`.`type_code`
                 END)) AS `igst_code`
         FROM
-            `commercedb`.`v_location_tax` `vlt`
+            `pi_pos_industry`.`v_location_tax` `vlt`
         GROUP BY `vlt`.`location_id` , `vlt`.`tax_group_id`) `taxdtl` ON ((`itmopt`.`tax_group_id` = `taxdtl`.`tax_group_id`)));
 
 
 -- -----------------------------------------------------
--- View `commercedb`.`v_receipt_li_item`
+-- View `pi_pos_industry`.`v_receipt_li_item`
 -- -----------------------------------------------------
-DROP VIEW IF EXISTS `commercedb`.`v_receipt_li_item` ;
-DROP TABLE IF EXISTS `commercedb`.`v_receipt_li_item`;
-USE `commercedb`;
+DROP VIEW IF EXISTS `pi_pos_industry`.`v_receipt_li_item` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`v_receipt_li_item`;
+USE `pi_pos_industry`;
 CREATE 
-VIEW `commercedb`.`v_receipt_li_item` AS
+VIEW `pi_pos_industry`.`v_receipt_li_item` AS
     SELECT 
         `itm`.`name` AS `name`,
         `itm`.`long_desc` AS `long_desc`,
@@ -168,9 +168,9 @@ VIEW `commercedb`.`v_receipt_li_item` AS
         `tax_dtl`.`IGST_percentage` AS `IGST_percentage`,
         `tax_dtl`.`IGST_amount` AS `IGST_amount`
     FROM
-        (((`commercedb`.`txn_li_item` `li_itm`
-        JOIN `commercedb`.`item` `itm`)
-        JOIN `commercedb`.`item_options` `itmopt`)
+        (((`pi_pos_industry`.`txn_li_item` `li_itm`
+        JOIN `pi_pos_industry`.`item` `itm`)
+        JOIN `pi_pos_industry`.`item_options` `itmopt`)
         JOIN (SELECT 
             `li_tax`.`location_id` AS `location_id`,
                 `li_tax`.`register` AS `register`,
@@ -214,8 +214,8 @@ VIEW `commercedb`.`v_receipt_li_item` AS
                     WHEN (`tax_rr`.`type_code` = 'IGST') THEN `li_tax`.`total_tax_amount`
                 END)) AS `IGST_amount`
         FROM
-            (`commercedb`.`txn_li_tax` `li_tax`
-        JOIN `commercedb`.`tax_rate_rule` `tax_rr`)
+            (`pi_pos_industry`.`txn_li_tax` `li_tax`
+        JOIN `pi_pos_industry`.`tax_rate_rule` `tax_rr`)
         WHERE
             (`tax_rr`.`tax_rate_rule_id` = `li_tax`.`tax_rule_rate_id`)
         GROUP BY `li_tax`.`location_id` , `li_tax`.`register` , `li_tax`.`business_date` , `li_tax`.`txn_no` , `li_tax`.`item_id`) `tax_dtl`)
@@ -230,13 +230,13 @@ VIEW `commercedb`.`v_receipt_li_item` AS
 
             
 -- -----------------------------------------------------
--- View `commercedb`.`v_location_sales_data`
+-- View `pi_pos_industry`.`v_location_sales_data`
 -- -----------------------------------------------------
-DROP VIEW IF EXISTS `commercedb`.`v_location_sales_data` ;
-DROP TABLE IF EXISTS `commercedb`.`v_location_sales_data`;
-USE `commercedb`;
+DROP VIEW IF EXISTS `pi_pos_industry`.`v_location_sales_data` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`v_location_sales_data`;
+USE `pi_pos_industry`;
 
-CREATE VIEW `commercedb`.`v_location_sales_data` AS
+CREATE VIEW `pi_pos_industry`.`v_location_sales_data` AS
     SELECT 
         t1.*,
         t2.customer_count,
@@ -260,7 +260,7 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
                 SUM(net_amount) AS basket_amounts,
                 SUM(gross_amount) AS gross_amounts
         FROM
-            commercedb.txn_master txn, commercedb.txn_li_item txn_itm
+            pi_pos_industry.txn_master txn, pi_pos_industry.txn_li_item txn_itm
         WHERE
             txn.txn_type IN ('SALE' , 'RETURN')
                 AND status IN ('COMPLETED')
@@ -275,7 +275,7 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
                 `txn`.`business_date` AS `business_date`,
                 count(txn_cust.customer_id) AS `customer_count`
         FROM
-            commercedb.txn_master `txn` LEFT JOIN commercedb.txn_customer txn_cust
+            pi_pos_industry.txn_master `txn` LEFT JOIN pi_pos_industry.txn_customer txn_cust
             on (txn.location_id=txn_cust.location_id
             and txn.register=txn_cust.register
             and txn.business_date=txn_cust.business_date
@@ -299,7 +299,7 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
                 SUM(discount_amount) AS total_discount,
                 SUM(extended_amount) AS total_price
         FROM
-            commercedb.txn_master txn, commercedb.txn_li_item txn_itm
+            pi_pos_industry.txn_master txn, pi_pos_industry.txn_li_item txn_itm
         WHERE
             txn.txn_type IN ('SALE' , 'RETURN')
                 AND status IN ('COMPLETED')
@@ -322,8 +322,8 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
                 `txn_itm`.`txn_no` AS `txn_no`,
                 SUM(`txn_itm`.`discount_amount`) AS `total_discount`
         FROM
-            (`commercedb`.`txn_master` `txn`
-        JOIN `commercedb`.`txn_li_item` `txn_itm`)
+            (`pi_pos_industry`.`txn_master` `txn`
+        JOIN `pi_pos_industry`.`txn_li_item` `txn_itm`)
         WHERE
             (`txn`.`txn_type` IN ('SALE' , 'RETURN'))
                 AND (`txn`.`status` = 'COMPLETED')

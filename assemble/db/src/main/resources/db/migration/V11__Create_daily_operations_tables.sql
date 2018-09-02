@@ -5,16 +5,16 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema commercedb
+-- Schema pi_pos_industry
 -- -----------------------------------------------------
-USE `commercedb` ;
+USE `pi_pos_industry` ;
 
 -- -----------------------------------------------------
--- Table `commercedb`.`tender_master`
+-- Table `pi_pos_industry`.`tender_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`tender_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`tender_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`tender_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`tender_master` (
   `tender_id` INT(3) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(80) NOT NULL,
   `type` VARCHAR(30) NOT NULL,
@@ -27,19 +27,19 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tender_master` (
   PRIMARY KEY (`tender_id`),
   CONSTRAINT `fk_tender_master_tender_master1`
     FOREIGN KEY (`sub_tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    REFERENCES `pi_pos_industry`.`tender_master` (`tender_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_tender_master_tender_master1_idx` ON `commercedb`.`tender_master` (`sub_tender_id` ASC);
+CREATE INDEX `fk_tender_master_tender_master1_idx` ON `pi_pos_industry`.`tender_master` (`sub_tender_id` ASC);
 
 -- -----------------------------------------------------
--- Table `commercedb`.`txn_tender_count`
+-- Table `pi_pos_industry`.`txn_tender_count`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`txn_tender_count` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`txn_tender_count` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_count` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_tender_count` (
   `location_id` INT(4) NOT NULL,
   `business_date` DATETIME NOT NULL,
   `register` INT(3) NOT NULL,
@@ -57,25 +57,25 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_count` (
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`),
   CONSTRAINT `fk_txn_tndr_count_txn_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
-    REFERENCES `commercedb`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
+    REFERENCES `pi_pos_industry`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_txn_tndr_count_tender_master1`
     FOREIGN KEY (`tender_id`)
-    REFERENCES `commercedb`.`tender_master` (`tender_id`)
+    REFERENCES `pi_pos_industry`.`tender_master` (`tender_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_txn_tndr_count_tender_master1_idx` ON `commercedb`.`txn_tender_count` (`tender_id` ASC);
+CREATE INDEX `fk_txn_tndr_count_tender_master1_idx` ON `pi_pos_industry`.`txn_tender_count` (`tender_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`denomination_master`
+-- Table `pi_pos_industry`.`denomination_master`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`denomination_master` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`denomination_master` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`denomination_master` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`denomination_master` (
   `denomination_id` INT NOT NULL AUTO_INCREMENT,
   `currency_code` VARCHAR(5) NOT NULL DEFAULT 'INR',
   `code` VARCHAR(15) NOT NULL,
@@ -84,15 +84,15 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`denomination_master` (
   PRIMARY KEY (`denomination_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `code_UNIQUE` ON `commercedb`.`denomination_master` (`code` ASC);
+CREATE UNIQUE INDEX `code_UNIQUE` ON `pi_pos_industry`.`denomination_master` (`code` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`txn_tender_denomination`
+-- Table `pi_pos_industry`.`txn_tender_denomination`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`txn_tender_denomination` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`txn_tender_denomination` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_denomination` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_tender_denomination` (
   `location_id` INT(4) NOT NULL,
   `business_date` DATETIME NOT NULL,
   `register` INT(3) NOT NULL,
@@ -110,25 +110,25 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_tender_denomination` (
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `tender_id`, `denomination_id`),
   CONSTRAINT `fk_txn_tndr_denomination_txn_tndr_count1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
-    REFERENCES `commercedb`.`txn_tender_count` (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
+    REFERENCES `pi_pos_industry`.`txn_tender_count` (`location_id` , `business_date` , `register` , `txn_no` , `tender_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_txn_tender_denomination_denomination_master1`
     FOREIGN KEY (`denomination_id`)
-    REFERENCES `commercedb`.`denomination_master` (`denomination_id`)
+    REFERENCES `pi_pos_industry`.`denomination_master` (`denomination_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_txn_tender_denomination_denomination_master1_idx` ON `commercedb`.`txn_tender_denomination` (`denomination_id` ASC);
+CREATE INDEX `fk_txn_tender_denomination_denomination_master1_idx` ON `pi_pos_industry`.`txn_tender_denomination` (`denomination_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `commercedb`.`tender_movement`
+-- Table `pi_pos_industry`.`tender_movement`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `commercedb`.`tender_movement` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`tender_movement` ;
 
-CREATE TABLE IF NOT EXISTS `commercedb`.`tender_movement` (
+CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`tender_movement` (
   `location_id` INT(4) NOT NULL,
   `business_date` DATETIME NOT NULL,
   `register` INT(3) NOT NULL,
@@ -145,12 +145,12 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tender_movement` (
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
   CONSTRAINT `fk_txn_tender_control_txn_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
-    REFERENCES `commercedb`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
+    REFERENCES `pi_pos_industry`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_txn_tender_control_txn_master1_idx` ON `commercedb`.`tender_movement` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC);
+CREATE INDEX `fk_txn_tender_control_txn_master1_idx` ON `pi_pos_industry`.`tender_movement` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
