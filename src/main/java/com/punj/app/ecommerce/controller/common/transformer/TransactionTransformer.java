@@ -4,17 +4,18 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.punj.app.ecommerce.domains.supplier.Supplier;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.customer.Customer;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.domains.transaction.ReceiptItemTax;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
@@ -28,8 +29,13 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionCustomerId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
+import com.punj.app.ecommerce.domains.transaction.shipment.Shipment;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
+import com.punj.app.ecommerce.models.customer.or.CustomerORBean;
+import com.punj.app.ecommerce.models.shipment.ShipmentBean;
 import com.punj.app.ecommerce.models.transaction.SaleReceiptLineItem;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
 import com.punj.app.ecommerce.models.transaction.SaleTransactionReceipt;
@@ -50,6 +56,26 @@ public class TransactionTransformer {
 		throw new IllegalStateException("TransactionTransformer class");
 	}
 
+	public static Shipment transformShipmentDetails(TransactionId txnId, ShipmentBean shipmentBean, CustomerORBean orderRequest) {
+		Shipment shipment=new Shipment();
+
+		shipment.setTxnId(txnId);
+		
+		shipment.setOrderRequestNo(orderRequest.getCustomerOrderNo());
+		shipment.setOrderRequestDate(orderRequest.getOrderDate());
+		
+		shipment.setDriverName(shipmentBean.getDriverName());
+		shipment.setDriverPhone(shipmentBean.getDriverPhone());
+		shipment.setVehicleNo(shipmentBean.getVehicleNo());
+		
+		shipment.setTransportCompany(shipmentBean.getShippingCompany());
+		shipment.setGpPrNo(shipmentBean.getGpPrNo());
+		shipment.setGpPrDate(shipmentBean.getGpPrDate());
+		
+		logger.info("The txn shipment details has been transformed successfully");
+		return shipment;
+	}
+
 	public static TransactionDTO transformSaleTransaction(SaleTransaction saleTxn, String username) {
 		TransactionDTO txnDTO = new TransactionDTO();
 
@@ -67,13 +93,14 @@ public class TransactionTransformer {
 		List<TenderLineItem> tenderLIs = TransactionTransformer.transformTenderLineItems(saleTxn, saleTxn.getTxnTenderLineItems(), txnId);
 		txnDTO.setTenderLineItems(tenderLIs);
 
-		if (saleTxn.getCustomer() != null && StringUtils.isNotBlank(saleTxn.getCustomer().getName())) {
+		if (saleTxn.getCustomer() != null && saleTxn.getCustomer().getCustomerId() != null) {
 			TransactionCustomer txnCustomer = TransactionTransformer.transformCustomerBean(saleTxn.getCustomer(), txnId);
 			txnDTO.setTxnCustomer(txnCustomer);
-			if (txnCustomer.getTransactionCustomerId().getCustomerId() == null) {
-				Customer customer = TransactionTransformer.transformCustomerBeanToCustomer(saleTxn.getCustomer(), username);
-				txnDTO.setCustomer(customer);
-			}
+		}
+
+		if (saleTxn.getOrderRequest() != null && saleTxn.getShipment() != null) {
+			Shipment shipment = TransactionTransformer.transformShipmentDetails(txnId, saleTxn.getShipment(), saleTxn.getOrderRequest());
+			txnDTO.setShipment(shipment);
 		}
 
 		return txnDTO;
@@ -104,7 +131,7 @@ public class TransactionTransformer {
 				txnDTO.setCustomer(customer);
 			}
 		}
-		
+
 		return txnDTO;
 	}
 
@@ -136,12 +163,11 @@ public class TransactionTransformer {
 		txn.setDiscountTotalAmt(txnHeader.getTotalDiscountAmt());
 
 		txn.setTaxTotalAmt(txnHeader.getTotalCGSTTaxAmt().add(txnHeader.getTotalSGSTTaxAmt()));
-		if(MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
+		if (MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
 			txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).add(txn.getDiscountTotalAmt()));
-		}else {
+		} else {
 			txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).subtract(txn.getDiscountTotalAmt()));
 		}
-		
 
 		txn.setTxnType(txnType);
 		logger.info("The transaction header details has been transformed now");
@@ -191,8 +217,8 @@ public class TransactionTransformer {
 		return txnLIs;
 	}
 
-	public static List<TransactionLineItem> transformTxnTaxItems(SaleTransaction saleTxn,
-			List<com.punj.app.ecommerce.models.transaction.TaxLineItem> taxLineItems, TransactionId txnId) {
+	public static List<TransactionLineItem> transformTxnTaxItems(SaleTransaction saleTxn, List<com.punj.app.ecommerce.models.transaction.TaxLineItem> taxLineItems,
+			TransactionId txnId) {
 		List<TransactionLineItem> txnLIs = new ArrayList<>();
 		TransactionLineItem txnLI;
 		for (com.punj.app.ecommerce.models.transaction.TaxLineItem taxLineItem : taxLineItems) {
@@ -222,8 +248,8 @@ public class TransactionTransformer {
 		return txnLIs;
 	}
 
-	public static List<TransactionLineItem> transformTxnTenderItems(SaleTransaction saleTxn,
-			List<com.punj.app.ecommerce.models.transaction.TenderLineItem> tenderLineItems, TransactionId txnId) {
+	public static List<TransactionLineItem> transformTxnTenderItems(SaleTransaction saleTxn, List<com.punj.app.ecommerce.models.transaction.TenderLineItem> tenderLineItems,
+			TransactionId txnId) {
 		List<TransactionLineItem> txnLIs = new ArrayList<>();
 		TransactionLineItem txnLI;
 		for (com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem : tenderLineItems) {
@@ -253,8 +279,8 @@ public class TransactionTransformer {
 		return txnLIs;
 	}
 
-	public static SaleLineItem transformSaleLineItem(SaleTransaction saleTxn, com.punj.app.ecommerce.models.transaction.SaleLineItem saleLineItem,
-			TransactionId txnId, String txnType) {
+	public static SaleLineItem transformSaleLineItem(SaleTransaction saleTxn, com.punj.app.ecommerce.models.transaction.SaleLineItem saleLineItem, TransactionId txnId,
+			String txnType) {
 
 		SaleLineItem saleLI = new SaleLineItem();
 
@@ -289,30 +315,28 @@ public class TransactionTransformer {
 			saleLI.setTaxAmt(saleLineItem.getSgstTax().add(saleLineItem.getCgstTax()));
 		}
 
-		
 		// All the amounts are recalculated
 		saleLI.setBaseExtendedAmt(saleLI.getUnitPrice().multiply(saleLI.getQty()));
-		
+
 		/**
 		 * The inventory should be subtracted for all the sale line items
 		 */
-		if(MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
-			
+		if (MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
+
 			saleLI.setTxnType(MVCConstants.TXN_RETURN_PARAM);
 			saleLI.setInvAction(MVCConstants.ADD);
-			
+
 			saleLI.setExtendedAmt(saleLI.getBaseExtendedAmt().add(saleLI.getDiscountAmt()));
-		
-			
-		}else if(MVCConstants.TXN_SALE_PARAM.equals(txnType)) {
-			
+
+		} else if (MVCConstants.TXN_SALE_PARAM.equals(txnType)) {
+
 			saleLI.setTxnType(MVCConstants.TXN_SALE_PARAM);
 			saleLI.setInvAction(MVCConstants.SUBTRACT);
-			
+
 			saleLI.setExtendedAmt(saleLI.getBaseExtendedAmt().subtract(saleLI.getDiscountAmt()));
-			
+
 		}
-		
+
 		saleLI.setNetAmt(saleLI.getExtendedAmt());
 		saleLI.setGrossAmt(saleLI.getExtendedAmt().add(saleLI.getTaxAmt()));
 
@@ -362,8 +386,8 @@ public class TransactionTransformer {
 		return txnDTO;
 	}
 
-	public static TaxLineItem transformTaxLineItem(SaleTransaction saleTxn, SaleLineItem saleLI,
-			com.punj.app.ecommerce.models.transaction.TaxLineItem taxLineItem, TransactionId txnId) {
+	public static TaxLineItem transformTaxLineItem(SaleTransaction saleTxn, SaleLineItem saleLI, com.punj.app.ecommerce.models.transaction.TaxLineItem taxLineItem,
+			TransactionId txnId) {
 
 		TaxLineItem taxLI = new TaxLineItem();
 
@@ -407,8 +431,8 @@ public class TransactionTransformer {
 
 	}
 
-	public static List<TaxLineItem> transformTaxLineItems(SaleTransaction saleTxn, SaleLineItem saleLI,
-			List<com.punj.app.ecommerce.models.transaction.TaxLineItem> taxLineItems, TransactionId txnId) {
+	public static List<TaxLineItem> transformTaxLineItems(SaleTransaction saleTxn, SaleLineItem saleLI, List<com.punj.app.ecommerce.models.transaction.TaxLineItem> taxLineItems,
+			TransactionId txnId) {
 
 		List<TaxLineItem> taxLIs = new ArrayList<>(taxLineItems.size());
 		TaxLineItem taxLI;
@@ -422,8 +446,7 @@ public class TransactionTransformer {
 		return taxLIs;
 	}
 
-	public static TenderLineItem transformTenderLineItem(SaleTransaction saleTxn, com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem,
-			TransactionId txnId) {
+	public static TenderLineItem transformTenderLineItem(SaleTransaction saleTxn, com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem, TransactionId txnId) {
 
 		TenderLineItem tndrLI = new TenderLineItem();
 
@@ -448,8 +471,8 @@ public class TransactionTransformer {
 		return tndrLI;
 	}
 
-	public static List<TenderLineItem> transformTenderLineItems(SaleTransaction saleTxn,
-			List<com.punj.app.ecommerce.models.transaction.TenderLineItem> tenderLineItems, TransactionId txnId) {
+	public static List<TenderLineItem> transformTenderLineItems(SaleTransaction saleTxn, List<com.punj.app.ecommerce.models.transaction.TenderLineItem> tenderLineItems,
+			TransactionId txnId) {
 		List<TenderLineItem> tenderLIs = new ArrayList<>(tenderLineItems.size());
 		TenderLineItem tenderLI;
 		for (com.punj.app.ecommerce.models.transaction.TenderLineItem tenderLineItem : tenderLineItems) {
@@ -474,6 +497,11 @@ public class TransactionTransformer {
 		txnCustomerId.setTransactionSeq(txnId.getTransactionSeq());
 
 		txnCustomer.setTransactionCustomerId(txnCustomerId);
+		txnCustomer.setBillingAddressId(customerBean.getBillingAddressId());
+		txnCustomer.setShippingAddressId(customerBean.getShippingAddressId());
+
+		if (StringUtils.isNotBlank(customerBean.getGstNo()) && customerBean.getGstNo().length() == 15)
+			customerBean.setStateCode(customerBean.getGstNo().substring(0, 2));
 
 		logger.info("The customer details has been transformed");
 		return txnCustomer;
@@ -496,16 +524,19 @@ public class TransactionTransformer {
 	public static SaleTransactionReceipt transformReceiptDetails(SaleTransactionReceiptDTO receiptDetails, String username) {
 
 		SaleTransactionReceipt txnReceipt = new SaleTransactionReceipt();
-
+		txnReceipt.setInvoiceNo(receiptDetails.getInvoiceNo());
 		TransactionHeader txnHeader = TransactionTransformer.transformTxnDetails(receiptDetails.getTxn());
 		txnHeader.setPrintedBy(username);
 		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems(), txnHeader);
 
-		if(receiptDetails.getTxnCustomer()!=null){
-			CustomerBean customerBean=TransactionTransformer.tranformTransactionCustomer(receiptDetails.getTxnCustomer(),receiptDetails.getCustomerDetails(),receiptDetails.getSupplierDetails());
+		if (receiptDetails.getTxnCustomer() != null) {
+			CustomerBean customerBean = TransactionTransformer.tranformTransactionCustomer(receiptDetails.getTxnCustomer(), receiptDetails.getCustomerDetails(),
+					receiptDetails.getSupplierDetails());
 			txnReceipt.setCustomer(customerBean);
 		}
-
+		if (receiptDetails.getShipmentDetails()!= null) {
+			TransactionTransformer.updateShipmentInReceipt(receiptDetails.getShipmentDetails(),txnReceipt);
+		}
 
 		txnReceipt.setTransactionHeader(txnHeader);
 		txnReceipt.setTxnSaleLineItems(receiptItemList);
@@ -513,10 +544,27 @@ public class TransactionTransformer {
 		LocationBean locationBean = CommonMVCTransformer.transformLocationDomainPartially(receiptDetails.getLocation(), Boolean.FALSE);
 		txnReceipt.setLocationDetails(locationBean);
 
-
-
 		logger.info("All the tender line items has been transformed now");
 		return txnReceipt;
+	}
+	
+	public static void updateShipmentInReceipt(Shipment shipment,SaleTransactionReceipt txnReceipt) {
+		
+		CustomerORBean orderRequest=new CustomerORBean();
+		orderRequest.setCustomerOrderNo(shipment.getOrderRequestNo());
+		orderRequest.setOrderDate(shipment.getOrderRequestDate());
+		txnReceipt.setOrderRequest(orderRequest);
+		
+		ShipmentBean shipmentBean=new ShipmentBean();
+		shipmentBean.setDriverName(shipment.getDriverName());
+		shipmentBean.setDriverPhone(shipment.getDriverPhone());
+		shipmentBean.setVehicleNo(shipment.getVehicleNo());
+		shipmentBean.setShippingCompany(shipment.getTransportCompany());
+		shipmentBean.setGpPrNo(shipment.getGpPrNo());
+		shipmentBean.setGpPrDate(shipment.getGpPrDate());
+		txnReceipt.setShipmentDetails(shipmentBean);
+		
+		logger.info("The shipment details has been trasnformed and updated in receipt object successfully");
 	}
 
 	public static TransactionHeader transformTxnDetails(Transaction txnDetails) {
@@ -631,18 +679,45 @@ public class TransactionTransformer {
 	}
 
 	public static CustomerBean tranformTransactionCustomer(TransactionCustomer txnCustomer, Customer customer, Supplier supplier) {
-		CustomerBean customerBean=new CustomerBean();
+		CustomerBean customerBean = new CustomerBean();
 		customerBean.setCustomerId(txnCustomer.getTransactionCustomerId().getCustomerId());
 		customerBean.setCustomerType(txnCustomer.getTransactionCustomerId().getCustomerType());
 
-		if(customer!=null){
+		if (customer != null) {
 			customerBean.setEmail(customer.getEmail());
 			customerBean.setName(customer.getName());
+			customerBean.setEmail(customer.getEmail());
 			customerBean.setPhone(customer.getPhone());
-		} else if(supplier!=null){
+			customerBean.setPhone2(customer.getPhone2());
+			customerBean.setGstNo(customer.getGstNo());
+			customerBean.setPanNo(customer.getPanNo());
+			if (StringUtils.isNotBlank(customer.getGstNo()) && customer.getGstNo().length() == 15)
+				customerBean.setStateCode(customer.getPanNo().substring(0, 2));
+		} else if (supplier != null) {
 			customerBean.setEmail(supplier.getEmail());
 			customerBean.setName(supplier.getName());
 			customerBean.setPhone(supplier.getPhone1());
+		}
+
+		AddressBean shippingAddressBean = null;
+		AddressBean billingAddressBean = null;
+
+		List<Address> customerAddresses = customer.getAddresses();
+		if (customerAddresses != null && !customerAddresses.isEmpty()) {
+			BigInteger billingAddressId = txnCustomer.getBillingAddressId();
+			BigInteger shippingAddressId = txnCustomer.getShippingAddressId();
+			for (Address address : customerAddresses) {
+				if (address.getAddressId().equals(billingAddressId)) {
+					billingAddressBean = CommonMVCTransformer.transformAddress(address);
+					customerBean.setPrimaryAddress(billingAddressBean);
+				}
+
+				if (address.getAddressId().equals(shippingAddressId)) {
+					shippingAddressBean = CommonMVCTransformer.transformAddress(address);
+					customerBean.setShippingAddress(shippingAddressBean);
+				}
+
+			}
 		}
 
 		logger.info("The customer details has been transformed successfully");

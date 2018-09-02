@@ -12,6 +12,7 @@ import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
+import com.punj.app.ecommerce.domains.transaction.shipment.Shipment;
 
 /**
  * @author admin
@@ -25,6 +26,7 @@ public class TransactionDTO {
 	private List<TenderLineItem> tenderLineItems;
 	private TransactionCustomer txnCustomer;
 	private Customer customer;
+	private Shipment shipment;
 
 	/**
 	 * @return the txn
@@ -124,10 +126,26 @@ public class TransactionDTO {
 	}
 
 	/**
-	 * @param customer the customer to set
+	 * @param customer
+	 *            the customer to set
 	 */
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	/**
+	 * @return the shipment
+	 */
+	public Shipment getShipment() {
+		return shipment;
+	}
+
+	/**
+	 * @param shipment
+	 *            the shipment to set
+	 */
+	public void setShipment(Shipment shipment) {
+		this.shipment = shipment;
 	}
 
 }

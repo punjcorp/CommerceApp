@@ -42,7 +42,9 @@ import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
+import com.punj.app.ecommerce.models.customer.or.CustomerORBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
+import com.punj.app.ecommerce.models.shipment.ShipmentBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -60,7 +62,6 @@ public class SaleTransactionController {
 	private CommerceContext commerceContext;
 	private MessageSource messageSource;
 
-	
 	/**
 	 * @param messageSource
 	 *            the messageSource to set
@@ -69,7 +70,7 @@ public class SaleTransactionController {
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-	
+
 	/**
 	 * @param transactionService
 	 *            the transactionService to set
@@ -144,11 +145,10 @@ public class SaleTransactionController {
 			}
 
 			if (registerId != null) {
-				
-				
-				if(this.validateRegister(openLocId, registerId)) {
+
+				if (this.validateRegister(openLocId, registerId)) {
 					Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
-					Object openLocationGstNo= commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_GST_NO);
+					Object openLocationGstNo = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_GST_NO);
 					Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 					Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
 					if (openLocationName != null)
@@ -167,16 +167,16 @@ public class SaleTransactionController {
 					saleHeaderBean.setRegisterId(registerId);
 					saleHeaderBean.setRegisterName(registerName);
 					model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
+					model.addAttribute(MVCConstants.SHIPMENT_BEAN, new ShipmentBean());
+					model.addAttribute(MVCConstants.CUSTOMER_OR_BEAN, new CustomerORBean());
 					logger.info("All the needed beans for return transaction screen has been set in the model");
-				}else {
+				} else {
 					req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 					redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.POS_URL);
 					redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
 					logger.info("There is no valid store or register provided for the transaction screen");
 					return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 				}
-				
-				
 
 			} else {
 				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
@@ -196,16 +196,15 @@ public class SaleTransactionController {
 
 	private Boolean validateRegister(Integer locationId, Integer registerId) {
 
-		Boolean result= this.transactionService.isTransactionAlllowed(locationId, registerId);
-		if(result)
+		Boolean result = this.transactionService.isTransactionAlllowed(locationId, registerId);
+		if (result)
 			logger.info("The provided location and registers are in valid status");
-		else		
+		else
 			logger.info("The provided location and registers are in not valid");
-		
+
 		return result;
 	}
-	
-	
+
 	private List<TenderBean> retrieveValidTenders(Integer locationId) {
 		List<Tender> tenders = this.commonService.retrieveAllTenders(locationId);
 		List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);

@@ -14,6 +14,9 @@ var TxnAction = function() {
 	this.tenderLineItem = new TenderLineItem();
 	this.customer = new Customer();
 
+	this.orderRequest=new OrderRequest();
+	this.shipment=new Shipment();
+	
 	this.saleItemList = new Array();
 	this.tenderLineItems = new Array();
 	this.remainingAmount = 0.00;
@@ -119,17 +122,13 @@ $.extend(TxnAction.prototype, {
 		}
 
 	},
-	associateCustomer : function(customerId, customerType, customerName, customerPhone, customerEmail) {
+	associateCustomer : function(customerId, customerType, gstNo, panNo, billingAddressId, shippingAddressId) {
 		this.customer.customerId = customerId;
-		this.customer.name = customerName;
-		this.customer.phone = customerPhone;
-		this.customer.email = customerEmail;
+		this.customer.gstNo= gstNo;
+		this.customer.panNo= panNo;
+		this.customer.billingAddressId = billingAddressId;
+		this.customer.shippingAddressId = shippingAddressId;
 		this.customer.customerType = customerType;
-
-		if (customerName != 'undefined' && customerName != '') {
-			$('#salesHeaderCustomer').text(customerName);
-			$('#customerHeader').removeClass('d-none');
-		}
 
 	},
 	renderHeaderTotals : function() {
@@ -353,6 +352,8 @@ $.extend(TxnAction.prototype, {
 		this.saleTxn.txnSaleLineItems = this.saleItemList;
 		this.saleTxn.txnTenderLineItems = this.tenderLineItems;
 		this.saleTxn.customer = this.customer;
+		this.saleTxn.shipment = this.shipment;
+		this.saleTxn.orderRequest = this.orderRequest;
 
 		this.saleTxn.saveTxnDetails();
 
@@ -448,6 +449,32 @@ $.extend(TxnAction.prototype, {
 				$('#dueAmt').focus();
 			}
 
+	}, 
+	updateShipmentDetails(){
+		var orderRequestNo=$('#customerOrderNo').val();
+		var orderRequestDate=$('#orderDate').val();
+		
+		
+		var transportCo=$('#shippingCompany').val();
+		var gpNo=$('#gpPrNo').val();
+		var gpDate=$('#gpPrDate').val();
+		
+		var driverName=$('#driverName').val();
+		var driverPhone=$('#driverPhone').val();
+		var vehicleNo=$('#vehicleNo').val();
+		
+		
+		this.orderRequest.customerOrderNo=orderRequestNo;
+		this.orderRequest.orderDate=orderRequestDate+" 00:00:00";
+		
+		this.shipment.shippingCompany=transportCo;
+		this.shipment.gpPrNo=gpNo;
+		this.shipment.gpPrDate=gpDate+" 00:00:00";
+		this.shipment.driverName=driverName;
+		this.shipment.driverPhone=driverPhone;
+		this.shipment.vehicleNo=vehicleNo;
+
+		
 	}
 	
 

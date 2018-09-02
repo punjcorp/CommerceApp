@@ -43,6 +43,7 @@ public class CustomerBean {
 
 	private String gstNo;
 	private String panNo;
+	private String stateCode;
 
 	@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
 	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
@@ -60,6 +61,10 @@ public class CustomerBean {
 	@NotEmpty(message = "{commerce.error.no.address}")
 	private List<AddressBean> addresses;
 	private AddressBean primaryAddress;
+	private AddressBean shippingAddress;
+
+	private BigInteger billingAddressId;
+	private BigInteger shippingAddressId;
 
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer primaryAddressIndex;
@@ -318,6 +323,65 @@ public class CustomerBean {
 	 */
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
+	}
+
+	/**
+	 * @return the billingAddressId
+	 */
+	public BigInteger getBillingAddressId() {
+		return billingAddressId;
+	}
+
+	/**
+	 * @param billingAddressId
+	 *            the billingAddressId to set
+	 */
+	public void setBillingAddressId(BigInteger billingAddressId) {
+		this.billingAddressId = billingAddressId;
+	}
+
+	/**
+	 * @return the shippingAddressId
+	 */
+	public BigInteger getShippingAddressId() {
+		return shippingAddressId;
+	}
+
+	/**
+	 * @param shippingAddressId
+	 *            the shippingAddressId to set
+	 */
+	public void setShippingAddressId(BigInteger shippingAddressId) {
+		this.shippingAddressId = shippingAddressId;
+	}
+
+	/**
+	 * @return the shippingAddress
+	 */
+	public AddressBean getShippingAddress() {
+		return shippingAddress;
+	}
+
+	/**
+	 * @param shippingAddress
+	 *            the shippingAddress to set
+	 */
+	public void setShippingAddress(AddressBean shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
+
+	/**
+	 * @return the stateCode
+	 */
+	public String getStateCode() {
+		return stateCode;
+	}
+
+	/**
+	 * @param stateCode the stateCode to set
+	 */
+	public void setStateCode(String stateCode) {
+		this.stateCode = stateCode;
 	}
 
 }

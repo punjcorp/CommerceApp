@@ -9,6 +9,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.punj.app.ecommerce.models.customer.CustomerBean;
+import com.punj.app.ecommerce.models.customer.or.CustomerORBean;
+import com.punj.app.ecommerce.models.shipment.ShipmentBean;
 
 /**
  * @author admin
@@ -20,6 +22,8 @@ public class SaleTransaction {
 	private List<SaleLineItem> txnSaleLineItems;
 	private List<TenderLineItem> txnTenderLineItems;
 	private CustomerBean customer;
+	private ShipmentBean shipment;
+	private CustomerORBean orderRequest;
 
 	public SaleTransaction() {
 		transactionHeader = new TransactionHeader();
@@ -80,10 +84,39 @@ public class SaleTransaction {
 	}
 
 	/**
-	 * @param customer the customer to set
+	 * @param customer
+	 *            the customer to set
 	 */
 	public void setCustomer(CustomerBean customer) {
 		this.customer = customer;
+	}
+
+	/**
+	 * @return the shipment
+	 */
+	public ShipmentBean getShipment() {
+		return shipment;
+	}
+
+	/**
+	 * @param shipment the shipment to set
+	 */
+	public void setShipment(ShipmentBean shipment) {
+		this.shipment = shipment;
+	}
+
+	/**
+	 * @return the orderRequest
+	 */
+	public CustomerORBean getOrderRequest() {
+		return orderRequest;
+	}
+
+	/**
+	 * @param orderRequest the orderRequest to set
+	 */
+	public void setOrderRequest(CustomerORBean orderRequest) {
+		this.orderRequest = orderRequest;
 	}
 
 }

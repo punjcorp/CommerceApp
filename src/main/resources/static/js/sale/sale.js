@@ -15,6 +15,8 @@ var token = $("meta[name='_csrf']").attr("content");
 var txnStartTime;
 var txnEndTime;
 var viewType='COMPACT';
+var orderRequestDate;
+var gpPrDate;
 
 /**
  * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
@@ -27,6 +29,14 @@ $(function() {
 	
 	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
+	
+	orderRequestDate=$('#orderDate').flatpickr({
+		dateFormat : 'd-M-y'
+	});
+	
+	gpPrDate=$('#gpPrDate').flatpickr({
+		dateFormat : 'd-M-y'
+	});
 	
 	$(window).keydown(function(event){
 	    if(event.keyCode == 13) {
@@ -235,10 +245,18 @@ $(function() {
 	});
 		
 	
-	$('#btnCompleteTxn').click(function() {
+	$('#btnFinishTxnAfterShipment').click(function() {
 		$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+		$('#txnShipmentModal').modal('hide');
+		txnAction.updateShipmentDetails();
 		txnEndTime = moment().format("DD-MMM-YY hh:mm:ss");
 		txnAction.processCompletedTxn();
+	});
+	
+	$('#btnCompleteTxn').click(function() {
+		
+		$('#txnShipmentModal').modal('show');
+		
 	});
 	
 	$('[id^=btnDeleteTLI]').focus(function() {
@@ -611,6 +629,7 @@ function renderSelectedAddress(){
 	var selectedAddressId=$('input[name=addressradio]:checked').val();
 	$('#shippingAddressDiv').html($('#addressDtls'+selectedAddressId).html());
 	$('#h_shipping_addressId').val(selectedAddressId);
+	txnAction.customer.shippingAddressId=selectedAddressId;
 
 	$('#txnAddressModal').modal('hide');
 	
@@ -642,3 +661,8 @@ function updateGSTCalculationFlag(){
 	}
 	
 }
+
+
+
+
+

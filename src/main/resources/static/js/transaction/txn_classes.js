@@ -29,12 +29,44 @@ var Customer = function() {
 	this.name;
 	this.phone;
 	this.email;
+	this.gstNo;
+	this.panNo;
 	this.customerType;
+	this.billingAddressId;
+	this.shippingAddressId;
 }
 
 $.extend(Customer.prototype, {
 
 });
+
+var OrderRequest = function() {
+	this.customerORId;
+	this.customerOrderNo;
+	this.orderDate;
+}
+
+$.extend(OrderRequest.prototype, {
+
+});
+
+
+var Shipment = function() {
+	this.shipmentId;
+	this.shippingCompany;
+	this.gpPrNo;
+	this.gpPrDate;
+	this.driverName;
+	this.driverPhone;
+	this.vehicleNo;
+	this.shippingInstructions;
+}
+
+$.extend(Shipment.prototype, {
+
+});
+
+
 
 /**
  * Class definition for Transaction Header Details Starts
@@ -1329,6 +1361,9 @@ var SaleTransaction = function() {
 	this.txnTenderLineItems = [];
 	this.transactionHeader = new TransactionHeader();
 	this.customer = new Customer();
+	this.orderRequest=new OrderRequest();
+	this.shipment=new Shipment();
+	
 }
 
 $.extend(SaleTransaction.prototype, {

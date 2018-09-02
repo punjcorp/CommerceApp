@@ -66,6 +66,11 @@ public class CustomerTransformer {
 		customerBean.setPhone2(customer.getPhone2());
 		customerBean.setGstNo(customer.getGstNo());
 		customerBean.setPanNo(customer.getPanNo());
+		
+		if(customer.getGstNo()!=null && customer.getGstNo().length()==15) {
+			customerBean.setStateCode(customer.getGstNo().substring(0, 2));
+		}
+		
 		customerBean.setCreatedBy(customer.getCreatedBy());
 		customerBean.setCreatedDate(customer.getCreatedDate());
 		customerBean.setModifiedBy(customer.getModifiedBy());

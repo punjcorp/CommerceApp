@@ -47,6 +47,7 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.domains.transaction.ids.TxnIdDTO;
+import com.punj.app.ecommerce.domains.transaction.shipment.Shipment;
 import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
@@ -56,7 +57,9 @@ import com.punj.app.ecommerce.repositories.transaction.TransactionCustomerReposi
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
+import com.punj.app.ecommerce.repositories.transaction.shipment.ShipmentRepository;
 import com.punj.app.ecommerce.services.AccountService;
+import com.punj.app.ecommerce.services.CustomerService;
 import com.punj.app.ecommerce.services.FinanceService;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.PaymentAccountService;
@@ -89,11 +92,31 @@ public class TransactionServiceImpl implements TransactionService {
 	private TransactionReceiptRepository txnReceiptRepository;
 	private TransactionCustomerRepository txnCustomerRepository;
 	private TenderMovementRepository tenderMovementRepository;
+	private ShipmentRepository txnShipmentRepository;
 	private FinanceService financeService;
 	private AccountService accountService;
 	private SupplierService supplierService;
 	private PaymentAccountService paymentAccountService;
 	private TransactionSeqService txnSeqService;
+	private CustomerService customerService;
+
+	/**
+	 * @param txnShipmentRepository
+	 *            the txnShipmentRepository to set
+	 */
+	@Autowired
+	public void setTxnShipmentRepository(ShipmentRepository txnShipmentRepository) {
+		this.txnShipmentRepository = txnShipmentRepository;
+	}
+
+	/**
+	 * @param customerService
+	 *            the customerService to set
+	 */
+	@Autowired
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
 
 	/**
 	 * @param txnSeqService
@@ -384,6 +407,15 @@ public class TransactionServiceImpl implements TransactionService {
 				}
 			}
 
+			Shipment shipment = txnDTO.getShipment();
+
+			if (shipment != null) {
+				shipment=this.txnShipmentRepository.save(shipment);
+				if(shipment!=null) {
+					logger.info("The transaction shipment details has been saved successfully");
+				}
+			}
+
 			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
 			logger.info("The credit tender details has been added to Customer account now");
 
@@ -571,6 +603,18 @@ public class TransactionServiceImpl implements TransactionService {
 				logger.info("The receipt line items were not found for the provided transaction");
 			}
 
+			Shipment shipmentCriteria=new Shipment();
+			shipmentCriteria.setTxnId(txnId);
+			Shipment shipment=this.txnShipmentRepository.findOne(Example.of(shipmentCriteria));
+			if(shipment!=null) {
+				txnReceipt.setShipmentDetails(shipment);
+				logger.info("The transaction shipment details has been updated in receipt details");
+			}
+			
+			
+			
+			
+			
 			TransactionCustomerId txnCustomerId = new TransactionCustomerId();
 			txnCustomerId.setBusinessDate(txnId.getBusinessDate());
 			txnCustomerId.setLocationId(txnId.getLocationId());
@@ -586,7 +630,7 @@ public class TransactionServiceImpl implements TransactionService {
 				String custType = txnCustomer.getTransactionCustomerId().getCustomerType();
 				BigInteger custId = txnCustomer.getTransactionCustomerId().getCustomerId();
 				if (custType.equals(ServiceConstants.CUSTOMER_TYPE_CLIENT)) {
-					Customer customer = this.accountService.searchCustomerDetails(custId);
+					Customer customer = this.customerService.searchCustomerDetails(custId);
 					txnReceipt.setCustomerDetails(customer);
 					logger.info("The customer details has been updated successfully");
 				} else if (custType.equals(ServiceConstants.CUSTOMER_TYPE_SUPPLIER)) {

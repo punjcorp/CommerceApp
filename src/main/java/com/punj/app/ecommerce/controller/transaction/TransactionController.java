@@ -39,6 +39,7 @@ import com.punj.app.ecommerce.controller.common.transformer.TransactionTransform
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TxnIdDTO;
+import com.punj.app.ecommerce.domains.transaction.shipment.Shipment;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
 import com.punj.app.ecommerce.models.transaction.SaleTransactionReceipt;
 import com.punj.app.ecommerce.models.transaction.TransactionHeader;
@@ -119,8 +120,9 @@ public class TransactionController {
 		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnIdDTO != null) {
-			TransactionId txnId=txnIdDTO.getTransactionId();
+			TransactionId txnId = txnIdDTO.getTransactionId();
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
+			receiptDetails.setInvoiceNo(txnIdDTO.getInvoiceNo());
 			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
 		}
@@ -144,7 +146,7 @@ public class TransactionController {
 		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnIdDTO != null) {
-			TransactionId txnId=txnIdDTO.getTransactionId();
+			TransactionId txnId = txnIdDTO.getTransactionId();
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
 			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 

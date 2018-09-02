@@ -215,7 +215,8 @@ public final class MVCConstants {
 	public static final String CUSTOMER_PAYMENT_RECEIPT_REPORT="/reports/customer/customer_payment_receipt.jasper";
 	public static final String CUSTOMER_PAYMENT_RECEIPT_TENDERS_REPORT="/reports/customer/customer_payment_tenders.jasper";
 	
-	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
+	//public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
+	public static final String TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_shipment.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
 
@@ -279,6 +280,8 @@ public final class MVCConstants {
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String DAILY_TOTALS_BEAN= "dailyTotalsBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
+	public static final String CUSTOMER_OR_BEAN= "customerORBean";
+	public static final String SHIPMENT_BEAN= "shipmentBean";
 	public static final String CUSTOMER_BEAN= "customerBean";
 	public static final String STATES_LIST= "states";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";

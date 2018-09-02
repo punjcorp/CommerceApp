@@ -10,7 +10,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-DS"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-INDUSTRY-DS"/>
 	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
 		<queryString>
 			<![CDATA[]]>

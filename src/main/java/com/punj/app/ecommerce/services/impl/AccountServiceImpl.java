@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 	private PaymentAccountService customerAccountService;
 	private CommonService commonService;
 
-	@Value("${commerce.list.max.perpage}")
+	@Value("${commerce.list.max.customer.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")

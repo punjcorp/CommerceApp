@@ -1,7 +1,9 @@
 package com.punj.app.ecommerce.domains.transaction;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,6 +19,11 @@ public class TransactionCustomer implements Serializable {
 	@EmbeddedId
 	private TransactionCustomerId transactionCustomerId;
 
+	@Column(name = "billing_address_id")
+	private BigInteger billingAddressId;
+	@Column(name = "shipping_address_id")
+	private BigInteger shippingAddressId;
+
 	/**
 	 * @return the transactionCustomerId
 	 */
@@ -30,6 +37,36 @@ public class TransactionCustomer implements Serializable {
 	 */
 	public void setTransactionCustomerId(TransactionCustomerId transactionCustomerId) {
 		this.transactionCustomerId = transactionCustomerId;
+	}
+
+	/**
+	 * @return the billingAddressId
+	 */
+	public BigInteger getBillingAddressId() {
+		return billingAddressId;
+	}
+
+	/**
+	 * @param billingAddressId
+	 *            the billingAddressId to set
+	 */
+	public void setBillingAddressId(BigInteger billingAddressId) {
+		this.billingAddressId = billingAddressId;
+	}
+
+	/**
+	 * @return the shippingAddressId
+	 */
+	public BigInteger getShippingAddressId() {
+		return shippingAddressId;
+	}
+
+	/**
+	 * @param shippingAddressId
+	 *            the shippingAddressId to set
+	 */
+	public void setShippingAddressId(BigInteger shippingAddressId) {
+		this.shippingAddressId = shippingAddressId;
 	}
 
 }

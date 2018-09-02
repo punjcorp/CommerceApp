@@ -76,6 +76,19 @@ body {
 	height: auto;
 }
 
+.address-blue {
+	position: relative;
+	box-sizing: border-box;
+	border: 1px solid;
+	border-radius: 5px;
+	border-color: #05386B;
+	text-align: left;
+	height: auto;
+	padding: 10px;
+	height: auto;
+}
+
+
 .album {
 	padding-top: 3rem;
 	padding-left: 2rem;

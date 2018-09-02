@@ -15,6 +15,8 @@
 <script src="../../static/js/moment.js" th:src="@{/js/moment.js}"></script>
 <script src="../../static/js/mousetrap.min.js" th:src="@{/js/mousetrap.min.js}"></script>
 <script src="../../static/js/utils/mousetrap-global-bind.min.js" th:src="@{/js/utils/mousetrap-global-bind.min.js}"></script>
+<link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
+<script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 <script src="../../static/js/transaction/txn_classes.js" th:src="@{/js/transaction/txn_classes.js}"></script>
 <script src="../../static/js/common/customer.js" th:src="@{/js/common/customer.js}"></script>
 <script src="../../static/js/sale/sale_txn.js" th:src="@{/js/sale/sale_txn.js}"></script>
@@ -532,6 +534,109 @@
 					</button>
 					<button type="button" id="btnChooseAddress" class="btn btn-primary">
 						<span th:text="#{commerce.btn.choose.address}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Shipment Details Modal -->
+	<div class="modal fade " id="txnShipmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.sale.org.order.shipment.details}"> Order Request and Shipment Details</span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body text-center">
+					<div class="m-3 text-left">
+						<label><h6><span th:text="#{commerce.screen.sale.org.order.request.header}">Order Request Information</span></h6></label>
+						<div class="row address-blue mb-2">
+							<div class="col-6">
+								<div class="form-group text-left">
+									<label for="customerOrderNo"><small><span th:text="#{commerce.screen.sale.org.order.request}">Customer Order Request#</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${customerORBean.customerOrderNo}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.org.order.request.placeholder}" maxlength="20"></input>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="form-group text-left">
+									<label for="orderDate"><small><span th:text="#{commerce.screen.sale.org.order.request.date}">Customer Order Request Date</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${customerORBean.orderDate}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.org.order.request.date.placeholder}" maxlength="20"></input>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<label><h6><span th:text="#{commerce.screen.sale.transport.header}">Shipping Information</span></h6></label>
+						<div class="row address-blue mb-2">
+							<div class="col-6">
+								<div class="form-group text-left">
+									<label for="shippingCompany"><small><span th:text="#{commerce.screen.sale.transport.company}">Transport Company</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.shippingCompany}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.company.placeholder}" maxlength="50"></input>
+									</div>
+								</div>
+
+								<div class="form-group text-left">
+									<label for="gpPrNo"><small><span th:text="#{commerce.screen.sale.transport.gp.no}">GP/PR No</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.gpPrNo}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.gp.no.placeholder}" maxlength="15"></input>
+									</div>
+								</div>
+
+								<div class="form-group text-left">
+									<label for="gpPrDate"><small><span th:text="#{commerce.screen.sale.transport.gp.date}">Transport Company</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.gpPrDate}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.gp.date.placeholder}" maxlength="15"></input>
+									</div>
+								</div>
+
+							</div>
+							<div class="col-6">
+								<div class="form-group text-left">
+									<label for="driverName"><small><span th:text="#{commerce.screen.sale.transport.driver.name}">Driver Name</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.driverName}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.driver.name.placeholder}" maxlength="30"></input>
+									</div>
+								</div>
+
+								<div class="form-group text-left">
+									<label for="driverPhone"><small><span th:text="#{commerce.screen.sale.transport.driver.phone}">Driver's Phone</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.driverPhone}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.driver.phone.placeholder}" maxlength="10"></input>
+									</div>
+								</div>
+
+								<div class="form-group text-left">
+									<label for="vehicleNo"><small><span th:text="#{commerce.screen.sale.transport.vehicle.no}">Vehicle No</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.vehicleNo}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.vehicle.no.placeholder}" maxlength="15"></input>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="btnFinishTxnAfterShipment" class="btn btn-primary">
+						<span th:text="#{commerce.btn.finish.txn}"></span>
 					</button>
 				</div>
 			</div>
