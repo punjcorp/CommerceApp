@@ -21,12 +21,12 @@ public class NumberToWordConverter {
 	private static String numberToWord(int number) {
 		// variable to hold string representation of number
 		String words = "";
-		String unitsArray[] = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen",
-				"fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
-		String tensArray[] = { "zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+		String unitsArray[] = { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+				"Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+		String tensArray[] = { "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
 
 		if (number == 0) {
-			return "zero";
+			return "Zero";
 		}
 		// add minus before conversion if the number is less than 0
 		if (number < 0) {
@@ -39,21 +39,21 @@ public class NumberToWordConverter {
 		}
 		// check if number is divisible by 1 million
 		if ((number / 10000000) > 0) {
-			words += numberToWord(number / 10000000) + " crore ";
+			words += numberToWord(number / 10000000) + " Crore ";
 			number %= 10000000;
 		}
 		if ((number / 100000) > 0) {
-			words += numberToWord(number / 100000) + " lac ";
+			words += numberToWord(number / 100000) + " Lac ";
 			number %= 100000;
 		}
 		// check if number is divisible by 1 thousand
 		if ((number / 1000) > 0) {
-			words += numberToWord(number / 1000) + " thousand ";
+			words += numberToWord(number / 1000) + " Thousand ";
 			number %= 1000;
 		}
 		// check if number is divisible by 1 hundred
 		if ((number / 100) > 0) {
-			words += numberToWord(number / 100) + " hundred ";
+			words += numberToWord(number / 100) + " Hundred ";
 			number %= 100;
 		}
 
@@ -98,9 +98,9 @@ public class NumberToWordConverter {
 		StringBuilder word = new StringBuilder();
 
 		word.append(numberToWord(beforeDecimal));
-		word.append(" rupees and ");
+		word.append(" Rupees and ");
 		word.append(numberToWord(afterDecimal));
-		word.append(" paise only");
+		word.append(" Paise Only");
 
 		return word.toString();
 

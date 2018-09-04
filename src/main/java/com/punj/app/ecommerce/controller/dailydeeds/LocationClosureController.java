@@ -397,7 +397,7 @@ public class LocationClosureController {
 					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM, pdfBytes);
 
 					// This section will save the receipt in database
-					List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+					List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username,Boolean.TRUE);
 					Boolean result = this.txnService.saveTransactionReceipt(txnReceipts);
 					if (result) {
 						logger.info("The transaction receipts has been saved in DB successfully");

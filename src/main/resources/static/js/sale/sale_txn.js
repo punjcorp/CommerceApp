@@ -164,7 +164,7 @@ $.extend(TxnAction.prototype, {
 			}
 		});
 
-		if(isGSTFlag=='C')
+		if(isGSTFlag=='S')
 			totalTax = totalSGSTTax + totalCGSTTax;
 		else if(isGSTFlag=='I')
 			totalTax = totalIGSTTax;
@@ -465,11 +465,13 @@ $.extend(TxnAction.prototype, {
 		
 		
 		this.orderRequest.customerOrderNo=orderRequestNo;
-		this.orderRequest.orderDate=orderRequestDate+" 00:00:00";
+		if(orderRequestDate!=undefined && orderRequestDate!="")
+			this.orderRequest.orderDate=orderRequestDate+" 00:00:00";
 		
 		this.shipment.shippingCompany=transportCo;
 		this.shipment.gpPrNo=gpNo;
-		this.shipment.gpPrDate=gpDate+" 00:00:00";
+		if(gpDate!=undefined && gpDate!="")
+			this.shipment.gpPrDate=gpDate+" 00:00:00";
 		this.shipment.driverName=driverName;
 		this.shipment.driverPhone=driverPhone;
 		this.shipment.vehicleNo=vehicleNo;

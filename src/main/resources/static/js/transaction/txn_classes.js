@@ -91,6 +91,8 @@ var TransactionHeader = function() {
 	this.totalTaxAmt = 0.00;
 	this.totalDueAmt = 0.00;
 
+	this.applicableTax;
+	
 }
 
 $.extend(TransactionHeader.prototype, {
@@ -413,7 +415,7 @@ $.extend(SaleLineItem.prototype, {
 		var cgstTaxAmt = 0 ;
 		var igstTaxAmt = 0 ;
 		
-		if(isGSTFlag=='C'){
+		if(isGSTFlag=='S'){
 			var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
 			if (txn_type == 'R') 
 				sgstTaxAmt = (itemPrice + discountAmt) * sgstUnitTax / 100;
@@ -445,7 +447,7 @@ $.extend(SaleLineItem.prototype, {
 		
 		
 		if(viewType=='COMPACT'){
-			if(isGSTFlag=='C'){
+			if(isGSTFlag=='S'){
 				$('#li_uh_sgstAmt' + itemId).val(sgstTaxAmt);
 				$('#li_uh_cgstAmt' + itemId).val(cgstTaxAmt);
 			}else if(isGSTFlag=='I'){
@@ -453,7 +455,7 @@ $.extend(SaleLineItem.prototype, {
 			}
 			
 		}else if(viewType=='DETAILED'){
-			if(isGSTFlag=='C'){
+			if(isGSTFlag=='S'){
 				$('#li_sgstAmt' + itemId).text(sgstTaxAmt);
 				$('#li_uh_sgstAmt' + itemId).val(sgstTaxAmt);
 				$('#li_cgstAmt' + itemId).text(cgstTaxAmt);
@@ -467,7 +469,7 @@ $.extend(SaleLineItem.prototype, {
 		}
 		
 		var totalTaxAmt=0.00;
-		if(isGSTFlag=='C'){
+		if(isGSTFlag=='S'){
 			totalTaxAmt=(+sgstTaxAmt) + (+cgstTaxAmt);
 		}else if(isGSTFlag=='I'){
 			totalTaxAmt=(+igstTaxAmt);
@@ -497,7 +499,7 @@ $.extend(SaleLineItem.prototype, {
 
 		var totalTaxAmt=0.00;
 		
-		if(isGSTFlag=='C'){
+		if(isGSTFlag=='S'){
 			var sgstTaxAmt = +$('#li_uh_sgstAmt' + itemId).val();
 			this.sgstTax = sgstTaxAmt;
 
@@ -683,7 +685,7 @@ $.extend(SaleLineItem.prototype, {
 		var totalTaxAmtVal = 0.00;
 		var itemTaxAmt ='';
 			
-		if(isGSTFlag=='C'){
+		if(isGSTFlag=='S'){
 			compactSgstTaxAmt = '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
 			compactSgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
 			compactSgstTaxAmt += '"></input>';
@@ -807,7 +809,7 @@ $.extend(SaleLineItem.prototype, {
 			
 			finalSaleItemHtml += outerContainer +firstRowStarts;
 			finalSaleItemHtml += saleLineItemHtml + qty + compactUnitPriceAmt+ compactSuggestedPriceAmt + compactMaxRetailPriceAmt;
-			if(isGSTFlag=='C'){
+			if(isGSTFlag=='S'){
 				finalSaleItemHtml +=compactSgstTaxAmt + compactCgstTaxAmt + priceAmt + discountAmt + itemTaxAmt + total; 
 			}else if(isGSTFlag=='I'){
 				finalSaleItemHtml +=compactIgstTaxAmt + priceAmt + discountAmt + itemTaxAmt + total;
@@ -821,7 +823,7 @@ $.extend(SaleLineItem.prototype, {
 			finalSaleItemHtml += outerContainer +firstRowStarts;
 			finalSaleItemHtml += saleLineItemHtml + qty +  unitPriceAmt + suggestedPriceAmt + maxRetailPriceAmt
 			
-			if(isGSTFlag=='C'){
+			if(isGSTFlag=='S'){
 				finalSaleItemHtml += sgstTaxAmt + cgstTaxAmt;
 				finalSaleItemHtml += firstRowEnds +secondRowStarts;
 				finalSaleItemHtml += priceAmt + discountAmt + itemTaxAmt + total;
@@ -1162,7 +1164,7 @@ $.extend(SaleLineItem.prototype, {
 			igstTaxRate = data.igstTax.percentage;
 
 			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate);
-		} else if(isGSTFlag=='C') {
+		} else if(isGSTFlag=='S') {
 			cgstTax = data.cgstTax.amount;
 			cgstTaxRate = data.cgstTax.percentage;
 			sgstTax = data.sgstTax.amount;
@@ -1182,7 +1184,7 @@ $.extend(SaleLineItem.prototype, {
 		 */
 		if (isGSTFlag=='I') {
 			saleLineItem.taxLineItems.push(igstTaxLineItem);
-		} else if(isGSTFlag=='C'){
+		} else if(isGSTFlag=='S'){
 			saleLineItem.taxLineItems.push(sgstTaxLineItem);
 			saleLineItem.taxLineItems.push(cgstTaxLineItem);
 		}

@@ -17,6 +17,8 @@ import com.punj.app.ecommerce.models.shipment.ShipmentBean;
  */
 public class SaleTransactionReceipt {
 	private BigInteger invoiceNo;
+	private String applicableTax;
+	private String receiptType = "Original";
 	private LocationBean locationDetails;
 	private TransactionHeader transactionHeader;
 	private CustomerBean customer;
@@ -136,6 +138,36 @@ public class SaleTransactionReceipt {
 	 */
 	public void setInvoiceNo(BigInteger invoiceNo) {
 		this.invoiceNo = invoiceNo;
+	}
+
+	/**
+	 * @return the applicableTax
+	 */
+	public String getApplicableTax() {
+		return applicableTax;
+	}
+
+	/**
+	 * @param applicableTax
+	 *            the applicableTax to set
+	 */
+	public void setApplicableTax(String applicableTax) {
+		this.applicableTax = applicableTax;
+	}
+
+	/**
+	 * @return the receiptType
+	 */
+	public String getReceiptType() {
+		return receiptType;
+	}
+
+	/**
+	 * @param receiptType
+	 *            the receiptType to set
+	 */
+	public void setReceiptType(String receiptType) {
+		this.receiptType = receiptType;
 	}
 
 }

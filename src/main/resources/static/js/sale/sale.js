@@ -650,15 +650,16 @@ function updateGSTCalculationFlag(){
 	
 	if(openLocState!='' && billingLocState!=''){
 		if(openLocState==billingLocState){
-			isGSTFlag='C';
+			isGSTFlag='S';
 		}else{
 			isGSTFlag='I';
 		}
 	}else if(openLocState!='' && billingLocState==''){
-		isGSTFlag='C';
+		isGSTFlag='S';
 	}else if(openLocState=='' && billingLocState!=''){
 		isGSTFlag='N';
 	}
+	txnAction.txnHeader.applicableTax=isGSTFlag;
 	
 }
 

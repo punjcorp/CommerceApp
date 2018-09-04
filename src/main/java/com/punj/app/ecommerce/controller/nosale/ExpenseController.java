@@ -277,7 +277,7 @@ public class ExpenseController {
 		session.setAttribute(txnId + MVCConstants.RCPT_PARAM, pdfBytes);
 
 		// This section will save the receipt in database
-		List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+		List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username,Boolean.TRUE);
 		Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 		if (result) {
 			logger.info("The expense transaction receipts has been saved in DB successfully");

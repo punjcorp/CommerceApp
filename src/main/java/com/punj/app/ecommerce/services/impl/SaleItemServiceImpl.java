@@ -100,7 +100,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 				// Step 5 - does the item has tax defined
 				List<LocationTax> taxList = null;
 				if(StringUtils.isNotBlank(gstFlag)) {
-					if(gstFlag.equals(ServiceConstants.TAX_GST_FLAG_CGST)) {
+					if(gstFlag.equals(ServiceConstants.TAX_GST_FLAG_SGST)) {
 						taxList = this.retrieveTax(locationId, item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_WITHIN_STATE);
 					}else if(gstFlag.equals(ServiceConstants.TAX_GST_FLAG_IGST)) {
 						taxList = this.retrieveTax(locationId, item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_OTHER_STATE);

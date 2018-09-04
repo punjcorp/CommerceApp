@@ -145,6 +145,7 @@ function showTxnCustomerDetails(event, ui) {
 
 	var finalHtml = customerHeaderHtml + primaryAddressHtml + shippingAddressHtml;
 
+	$('#div_txn_customer_dtls').removeClass('d-none');
 	$('#txnCustomerDetails').html(finalHtml);
 	$('#collapseOne').addClass('show');
 

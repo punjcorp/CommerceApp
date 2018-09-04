@@ -158,6 +158,12 @@
 			<artifactId>pdfbox</artifactId>
 			<version>2.0.4</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.punj.app.ecommerce</groupId>
+			<artifactId>pi_pos_fonts</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 	</dependencies>
 

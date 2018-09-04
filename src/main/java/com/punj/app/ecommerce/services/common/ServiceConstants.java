@@ -67,7 +67,7 @@ public final class ServiceConstants {
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";
-	public static final String TAX_GST_FLAG_CGST = "C";
+	public static final String TAX_GST_FLAG_SGST = "S";
 	public static final String TAX_GST_FLAG_IGST = "I";
 	public static final String TAX_NO_GST_FLAG = "N";
 	public static final String TAX_SGST = "SGST";

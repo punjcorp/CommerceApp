@@ -55,6 +55,8 @@ public class TransactionHeader {
 	private BigDecimal totalTaxAmt;
 	private BigDecimal totalDueAmt;
 
+	private String applicableTax;
+	
 	private String totalDueAmtWords;
 
 	/**
@@ -460,6 +462,20 @@ public class TransactionHeader {
 	 */
 	public void setPdfbytes(byte[] pdfbytes) {
 		this.pdfbytes = pdfbytes;
+	}
+
+	/**
+	 * @return the applicableTax
+	 */
+	public String getApplicableTax() {
+		return applicableTax;
+	}
+
+	/**
+	 * @param applicableTax the applicableTax to set
+	 */
+	public void setApplicableTax(String applicableTax) {
+		this.applicableTax = applicableTax;
 	}
 
 }

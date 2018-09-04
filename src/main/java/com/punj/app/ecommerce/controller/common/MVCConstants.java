@@ -69,6 +69,7 @@ public final class MVCConstants {
 	public static final String PAYMENT_JASPER_PARAM="PAYMENT_JASPER";
 	public static final String RCPT_JASPER_PARAM="_JASPER";
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_DUPLICATE="Sale Duplicate Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 	public static final String RCPT_SALE_GIFT="Gift Receipt";
 	public static final String RCPT_NO_SALE="No Sale Receipt";
@@ -217,7 +218,7 @@ public final class MVCConstants {
 	
 	//public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_shipment.jasper";
-	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
+	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/creative_sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
 
 
