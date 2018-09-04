@@ -45,43 +45,43 @@ commit;
 -- Seed data for reason_codes
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`gst_state_codes`;
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	01	'),trim('	Jammu and Kashmir	'),trim('	JK	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	02	'),trim('	Himachal Pradesh	'),trim('	HP	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	03	'),trim('	Punjab	'),trim('	PB	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	04	'),trim('	Chandigarh	'),trim('	CH	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	05	'),trim('	Uttarakhand	'),trim('	UK	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	06	'),trim('	Haryana	'),trim('	HR	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	07	'),trim('	Delhi	'),trim('	DL	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	08	'),trim('	Rajasthan	'),trim('	RJ	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	09	'),trim('	Uttar Pradesh	'),trim('	UP	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	10	'),trim('	Bihar	'),trim('	BR	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	11	'),trim('	Sikkim	'),trim('	SK	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	12	'),trim('	Arunachal Pradesh	'),trim('	AR	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	13	'),trim('	Nagaland	'),trim('	NL	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	14	'),trim('	Manipur	'),trim('	MN	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	15	'),trim('	Mizoram	'),trim('	MZ	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	16	'),trim('	Tripura	'),trim('	TR	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	17	'),trim('	Meghalaya	'),trim('	ML	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	18	'),trim('	Assam	'),trim('	AS	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	19	'),trim('	West Bengal	'),trim('	WB	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	20	'),trim('	Jharkhand	'),trim('	JH	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	21	'),trim('	Odisha	'),trim('	OD	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	22	'),trim('	Chattisgarh	'),trim('	CG	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	23	'),trim('	Madhya Pradesh	'),trim('	MP	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	24	'),trim('	Gujarat	'),trim('	GJ	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	25	'),trim('	Daman and Diu	'),trim('	DD	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	26	'),trim('	Dadra and Nagar Haveli	'),trim('	DN	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	27	'),trim('	Maharashtra	'),trim('	MH	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	28	'),trim('	Andhra Pradesh (Before)	'),trim('	AD	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	29	'),trim('	Karnataka	'),trim('	KA	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	30	'),trim('	Goa	'),trim('	GA	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	31	'),trim('	Lakshadweep Islands	'),trim('	LD	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	32	'),trim('	Kerala	'),trim('	KL	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	33	'),trim('	Tamil Nadu	'),trim('	TN	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	34	'),trim('	Pondicherry	'),trim('	PY	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	35	'),trim('	Andaman and Nicobar Islands	'),trim('	AN	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	36	'),trim('	Telangana	'),trim('	TS	'));
-insert into 	pi_pos_industry.	gst_state_codes 	(state_code, state_name, state_name_short)	values(trim('	37	'),trim('	Andhra Pradesh (New)	'),trim('	AD	'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('01'),trim('Jammu and Kashmir'),trim('JK'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('02'),trim('Himachal Pradesh'),trim('HP'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('03'),trim('Punjab'),trim('PB'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('04'),trim('Chandigarh'),trim('CH'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('05'),trim('Uttarakhand'),trim('UK'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('06'),trim('Haryana'),trim('HR'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('07'),trim('Delhi'),trim('DL'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('08'),trim('Rajasthan'),trim('RJ'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('09'),trim('Uttar Pradesh'),trim('UP'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('10'),trim('Bihar'),trim('BR'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('11'),trim('Sikkim'),trim('SK'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('12'),trim('Arunachal Pradesh'),trim('AR'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('13'),trim('Nagaland'),trim('NL'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('14'),trim('Manipur'),trim('MN'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('15'),trim('Mizoram'),trim('MZ'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('16'),trim('Tripura'),trim('TR'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('17'),trim('Meghalaya'),trim('ML'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('18'),trim('Assam'),trim('AS'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('19'),trim('West Bengal'),trim('WB'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('20'),trim('Jharkhand'),trim('JH'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('21'),trim('Odisha'),trim('OD'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('22'),trim('Chattisgarh'),trim('CG'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('23'),trim('Madhya Pradesh'),trim('MP'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('24'),trim('Gujarat'),trim('GJ'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('25'),trim('Daman and Diu'),trim('DD'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('26'),trim('Dadra and Nagar Haveli'),trim('DN'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('27'),trim('Maharashtra'),trim('MH'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('28'),trim('Andhra Pradesh (Before)'),trim('AD'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('29'),trim('Karnataka'),trim('KA'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('30'),trim('Goa'),trim('GA'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('31'),trim('Lakshadweep Islands'),trim('LD'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('32'),trim('Kerala'),trim('KL'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('33'),trim('Tamil Nadu'),trim('TN'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('34'),trim('Pondicherry'),trim('PY'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('35'),trim('Andaman and Nicobar Islands'),trim('AN'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('36'),trim('Telangana'),trim('TS'));
+insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('37'),trim('Andhra Pradesh (New)'),trim('AD'));
 
 commit;
 
@@ -398,7 +398,7 @@ INSERT INTO `pi_pos_industry`.`role` (`role_name`, `description`, `created_by`, 
 -- -----------------------------------------------------
 insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
 values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 7997, 'A', 'admin', '2018-01-16 20:19:09');
-insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
+insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
 values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 27, 'A', 'admin', '2018-01-16 20:19:09');
 
 

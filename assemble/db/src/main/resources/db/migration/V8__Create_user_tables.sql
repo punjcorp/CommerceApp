@@ -204,6 +204,8 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`address_master` (
   `state` VARCHAR(45) NOT NULL,
   `country` VARCHAR(45) NOT NULL,
   `pincode` VARCHAR(6) NOT NULL,
+  `district` VARCHAR(50) NULL,
+  `landmark` VARCHAR(150) NULL,
   PRIMARY KEY (`address_id`))
 ENGINE = InnoDB;
 

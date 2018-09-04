@@ -52,15 +52,15 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_master` (
   `total` DECIMAL(12,2) NULL DEFAULT 0.00,
   `tax_total` DECIMAL(12,2) NULL DEFAULT 0.00,
   `discount_total` DECIMAL(12,2) NULL DEFAULT 0.00,
-  `round_total` DECIMAL(12,2) NULL DEFAULT 0.00,
+  `rounded_amount` DECIMAL(12,2) NULL DEFAULT 0.00,
   `subtotal` DECIMAL(12,2) NULL DEFAULT 0.00,
   `cancel_reason_code` VARCHAR(20) NULL,
   `txn_type` VARCHAR(50) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
-  `comments` VARCHAR(300) NULL,
   `post_void_flag` TINYINT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
+  `comments` VARCHAR(300) NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
   CONSTRAINT `fk_txn_master_register_master1`
     FOREIGN KEY (`location_id` , `register`)
@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_li_item` (
   `txn_no` INT(5) NOT NULL,
   `seq_no` INT(3) NOT NULL,
   `item_id` BIGINT NOT NULL,
+  `item_desc` VARCHAR(150) NOT NULL,
   `qty` INT(5) NOT NULL,
   `gross_qty` INT(5) NOT NULL,
   `unit_price` DECIMAL(12,2) NOT NULL,
@@ -131,7 +132,6 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_li_item` (
   `gross_amount` DECIMAL(12,2) NULL,
   `returned_qty` INT(5) NULL,
   `upc_no` VARCHAR(20) NULL,
-  `hsn_no` VARCHAR(20) NULL,
   `txn_type` VARCHAR(20) NULL,
   `inv_action_code` VARCHAR(20) NULL,
   `org_location_id` INT(4) NULL,
@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_li_item` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
+  `hsn_no` VARCHAR(20) NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `seq_no`, `item_id`),
   CONSTRAINT `fk_txn_li_item_item1`
     FOREIGN KEY (`item_id`)
@@ -184,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_receipt` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
+  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `receipt_type`),
   CONSTRAINT `fk_txn_receipt_txn_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
     REFERENCES `pi_pos_industry`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)
@@ -365,6 +366,8 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_customer` (
   `txn_no` INT(5) NOT NULL,
   `customer_id` BIGINT NOT NULL,
   `customer_type` VARCHAR(10) NOT NULL,
+  `billing_address_id` BIGINT NULL,
+  `shipping_address_id` BIGINT NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `customer_id`, `customer_type`),
   CONSTRAINT `fk_txn_customer_txn_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
