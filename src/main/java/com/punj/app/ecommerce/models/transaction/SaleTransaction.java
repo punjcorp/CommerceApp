@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.models.transaction;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class SaleTransaction {
 	private CustomerBean customer;
 	private ShipmentBean shipment;
 	private CustomerORBean orderRequest;
+
+	private BigInteger invoiceNo;
 
 	public SaleTransaction() {
 		transactionHeader = new TransactionHeader();
@@ -99,7 +102,8 @@ public class SaleTransaction {
 	}
 
 	/**
-	 * @param shipment the shipment to set
+	 * @param shipment
+	 *            the shipment to set
 	 */
 	public void setShipment(ShipmentBean shipment) {
 		this.shipment = shipment;
@@ -113,10 +117,25 @@ public class SaleTransaction {
 	}
 
 	/**
-	 * @param orderRequest the orderRequest to set
+	 * @param orderRequest
+	 *            the orderRequest to set
 	 */
 	public void setOrderRequest(CustomerORBean orderRequest) {
 		this.orderRequest = orderRequest;
+	}
+
+	/**
+	 * @return the invoiceNo
+	 */
+	public BigInteger getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	/**
+	 * @param invoiceNo the invoiceNo to set
+	 */
+	public void setInvoiceNo(BigInteger invoiceNo) {
+		this.invoiceNo = invoiceNo;
 	}
 
 }

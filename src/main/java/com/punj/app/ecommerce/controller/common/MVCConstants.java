@@ -77,8 +77,10 @@ public final class MVCConstants {
 	
 	public static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
+	public static final String TXN_ALL="ALL";
 	public static final String TXN_SALE_PARAM="SALE";
 	public static final String TXN_RETURN_PARAM="RETURN";
+	public static final String TXN_NOSALE_PARAM="NOSALE";
 
 	public static final Integer STYLE_LEVEL=1;
 	public static final Integer ITEM_LEVEL=2;
@@ -216,9 +218,10 @@ public final class MVCConstants {
 	public static final String CUSTOMER_PAYMENT_RECEIPT_REPORT="/reports/customer/customer_payment_receipt.jasper";
 	public static final String CUSTOMER_PAYMENT_RECEIPT_TENDERS_REPORT="/reports/customer/customer_payment_tenders.jasper";
 	
-	//public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
-	public static final String TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_shipment.jasper";
-	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/creative_sale_receipt_items.jasper";
+	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
+	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
+	public static final String CREATIVE_TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_txn.jasper";
+	public static final String CREATIVE_TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/creative_sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
 
 
@@ -323,6 +326,8 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTS_BEAN= "invAdjusts";
 	public static final String SUPPLIERS_BEAN= "suppliers";
 	public static final String SEARCH_BEAN= "searchBean";
+	public static final String TXN_SEARCH_BEAN= "txnSearchBean";
+	public static final String TXN_TYPES_BEAN= "txnTypes";
 	public static final String COLOR_LIST_BEAN="colorList";
 	public static final String SIZE_LIST_BEAN="sizeList";
 	public static final String TAX_GROUP_LIST_BEAN="taxGroups";
@@ -330,6 +335,8 @@ public final class MVCConstants {
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	public static final String ACCOUNT_DTO="accountDTO";
+	
+	public static final String TXN_LOOKUP_BEAN_LIST= "txns";
 	
 	
 	public static final String SAVE_CUSTOMER_PARAM= "saveCustomer";

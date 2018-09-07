@@ -5,7 +5,9 @@ package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +42,7 @@ import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.TransactionCustomer;
 import com.punj.app.ecommerce.domains.transaction.TransactionLineItem;
+import com.punj.app.ecommerce.domains.transaction.TransactionLookup;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.SaleLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionCustomerId;
@@ -47,6 +50,7 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.domains.transaction.ids.TxnIdDTO;
+import com.punj.app.ecommerce.domains.transaction.seqs.SaleInvoice;
 import com.punj.app.ecommerce.domains.transaction.shipment.Shipment;
 import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
@@ -55,6 +59,7 @@ import com.punj.app.ecommerce.repositories.transaction.TaxLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TenderLineItemRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionCustomerRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionLineItemRepository;
+import com.punj.app.ecommerce.repositories.transaction.TransactionLookupRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
 import com.punj.app.ecommerce.repositories.transaction.shipment.ShipmentRepository;
@@ -91,6 +96,7 @@ public class TransactionServiceImpl implements TransactionService {
 	private ReceiptItemTaxRepository receiptItemTaxRepository;
 	private TransactionReceiptRepository txnReceiptRepository;
 	private TransactionCustomerRepository txnCustomerRepository;
+	private TransactionLookupRepository txnLookupRepository;
 	private TenderMovementRepository tenderMovementRepository;
 	private ShipmentRepository txnShipmentRepository;
 	private FinanceService financeService;
@@ -99,6 +105,15 @@ public class TransactionServiceImpl implements TransactionService {
 	private PaymentAccountService paymentAccountService;
 	private TransactionSeqService txnSeqService;
 	private CustomerService customerService;
+
+	/**
+	 * @param txnLookupRepository
+	 *            the txnLookupRepository to set
+	 */
+	@Autowired
+	public void setTxnLookupRepository(TransactionLookupRepository txnLookupRepository) {
+		this.txnLookupRepository = txnLookupRepository;
+	}
 
 	/**
 	 * @param txnShipmentRepository
@@ -410,8 +425,8 @@ public class TransactionServiceImpl implements TransactionService {
 			Shipment shipment = txnDTO.getShipment();
 
 			if (shipment != null) {
-				shipment=this.txnShipmentRepository.save(shipment);
-				if(shipment!=null) {
+				shipment = this.txnShipmentRepository.save(shipment);
+				if (shipment != null) {
 					logger.info("The transaction shipment details has been saved successfully");
 				}
 			}
@@ -603,18 +618,14 @@ public class TransactionServiceImpl implements TransactionService {
 				logger.info("The receipt line items were not found for the provided transaction");
 			}
 
-			Shipment shipmentCriteria=new Shipment();
+			Shipment shipmentCriteria = new Shipment();
 			shipmentCriteria.setTxnId(txnId);
-			Shipment shipment=this.txnShipmentRepository.findOne(Example.of(shipmentCriteria));
-			if(shipment!=null) {
+			Shipment shipment = this.txnShipmentRepository.findOne(Example.of(shipmentCriteria));
+			if (shipment != null) {
 				txnReceipt.setShipmentDetails(shipment);
 				logger.info("The transaction shipment details has been updated in receipt details");
 			}
-			
-			
-			
-			
-			
+
 			TransactionCustomerId txnCustomerId = new TransactionCustomerId();
 			txnCustomerId.setBusinessDate(txnId.getBusinessDate());
 			txnCustomerId.setLocationId(txnId.getLocationId());
@@ -770,6 +781,162 @@ public class TransactionServiceImpl implements TransactionService {
 		logger.info("The location {} and register {} has been validated if they are in OPEN status", locationId, registerId);
 
 		return result;
+	}
+
+	public List<TransactionLookup> searchTxnJournals(String txnType, LocalDateTime startDate, LocalDateTime endDate) {
+		List<TransactionLookup> txnList = null;
+
+		Set<String> txnTypes = new HashSet<>();
+
+		if (txnType.equals(ServiceConstants.TXN_ALL)) {
+			txnTypes.add(ServiceConstants.TXN_NOSALE);
+			txnTypes.add(ServiceConstants.TXN_SALE);
+			txnTypes.add(ServiceConstants.TXN_RETURN);
+		} else {
+			txnTypes.add(txnType);
+		}
+
+		if (endDate == null) {
+			endDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+			endDate.plusDays(1);
+		} else {
+			endDate.plusDays(1);
+		}
+
+		txnList = this.txnLookupRepository.searchTxns(txnTypes, startDate.toString(), endDate.toString());
+
+		logger.info("The {} no of txns has been found since Start Date {} and till End Date {} of type {} txns.", txnList.size(), startDate, endDate, txnType);
+
+		return txnList;
+	}
+
+	@Override
+	public TransactionDTO searchTransactionDetails(String uniqueTxnNo) {
+		TransactionDTO txnDTO = null;
+		TransactionId txnId = TransactionConverter.convertUniqueTxnToId(uniqueTxnNo);
+		if (txnId != null) {
+			txnDTO = new TransactionDTO();
+			Transaction txn = this.transactionRepository.findOne(txnId);
+			txnDTO.setTxn(txn);
+
+			/**
+			 * Transaction Invoice Retrieval
+			 */
+			SaleInvoice invoiceCriteria = new SaleInvoice();
+			invoiceCriteria.setBusinessDate(txnId.getBusinessDate());
+			invoiceCriteria.setLocationId(txnId.getLocationId());
+			invoiceCriteria.setRegister(txnId.getRegister());
+			invoiceCriteria.setTransactionSeq(txnId.getTransactionSeq());
+
+			BigInteger invoiceNo = this.txnSeqService.retrieveSaleInvoiceNo(invoiceCriteria);
+			if (invoiceNo != null) {
+				txnDTO.setInvoiceNo(invoiceNo);
+				logger.info("The transaction invoice number has been retrieved successfully");
+			}
+
+			/**
+			 * SaleLine Item Details Retrieval
+			 */
+			SaleLineItem itemCriteria = new SaleLineItem();
+			SaleLineItemId itemCriteriaId = new SaleLineItemId();
+			itemCriteriaId.setBusinessDate(txnId.getBusinessDate());
+			itemCriteriaId.setLocationId(txnId.getLocationId());
+			itemCriteriaId.setRegister(txnId.getRegister());
+			itemCriteriaId.setTransactionSeq(txnId.getTransactionSeq());
+			itemCriteria.setSaleLineItemId(itemCriteriaId);
+
+			List<SaleLineItem> txnLineItems = this.saleLineItemRepository.findAll(Example.of(itemCriteria));
+			if (txnLineItems != null && !txnLineItems.isEmpty()) {
+				txnDTO.setSaleLineItems(txnLineItems);
+				logger.info("The item details for the transaction has been retrieved successfully");
+			}
+
+			/**
+			 * Transaction Tax Line Item Details Retrieval
+			 */
+			TaxLineItem taxCriteria = new TaxLineItem();
+			TransactionLineItemId txnitemCriteriaId = new TransactionLineItemId();
+			txnitemCriteriaId.setBusinessDate(txnId.getBusinessDate());
+			txnitemCriteriaId.setLocationId(txnId.getLocationId());
+			txnitemCriteriaId.setRegister(txnId.getRegister());
+			txnitemCriteriaId.setTransactionSeq(txnId.getTransactionSeq());
+			taxCriteria.setTransactionLineItemId(txnitemCriteriaId);
+
+			List<TaxLineItem> taxLineItems = this.taxLineItemRepository.findAll(Example.of(taxCriteria));
+			if (taxLineItems != null && !taxLineItems.isEmpty()) {
+				txnDTO.setTaxLineItems(taxLineItems);
+				logger.info("The item tax details for the transaction has been retrieved successfully");
+			}
+
+			/**
+			 * Transaction Tender Line Item Details Retrieval
+			 */
+			TenderLineItem tenderCriteria = new TenderLineItem();
+			TransactionLineItemId tenderCriteriaId = new TransactionLineItemId();
+			tenderCriteriaId.setBusinessDate(txnId.getBusinessDate());
+			tenderCriteriaId.setLocationId(txnId.getLocationId());
+			tenderCriteriaId.setRegister(txnId.getRegister());
+			tenderCriteriaId.setTransactionSeq(txnId.getTransactionSeq());
+			tenderCriteria.setTransactionLineItemId(tenderCriteriaId);
+			List<TenderLineItem> tenderItems = this.tenderLineItemRepository.findAll(Example.of(tenderCriteria));
+			if (tenderItems != null && !tenderItems.isEmpty()) {
+				txnDTO.setTenderLineItems(tenderItems);
+				logger.info("The tender details for the transaction has been retrieved successfully");
+			}
+
+			TransactionCustomer txnCustomer = new TransactionCustomer();
+			TransactionCustomerId txnCustomerId = new TransactionCustomerId();
+			txnCustomerId.setBusinessDate(txnId.getBusinessDate());
+			txnCustomerId.setLocationId(txnId.getLocationId());
+			txnCustomerId.setRegister(txnId.getRegister());
+			txnCustomerId.setTransactionSeq(txnId.getTransactionSeq());
+			txnCustomer.setTransactionCustomerId(txnCustomerId);
+
+			txnCustomer = this.txnCustomerRepository.findOne(Example.of(txnCustomer));
+			if (txnCustomer != null) {
+				Customer customer = this.customerService.searchCustomerDetails(txnCustomer.getTransactionCustomerId().getCustomerId());
+				if (customer != null) {
+					txnDTO.setTxnCustomer(txnCustomer);
+					txnDTO.setCustomer(customer);
+					logger.info("The customer details for the transaction has been retrieved successfully");
+				}
+			}
+
+			Shipment shipment = this.txnShipmentRepository.findOne(txnId);
+			if (shipment != null) {
+				txnDTO.setShipment(shipment);
+				logger.info("The transaction shipment details has been retrieved successfully");
+			}
+
+		} else {
+			logger.error("There were no details found for the transaction {} in database", uniqueTxnNo);
+		}
+		return txnDTO;
+	}
+
+	public TransactionReceipt searchTransactionReceipt(String uniqueTxnNo, String receiptType) {
+		TransactionReceipt txnReceipt = null;
+		TransactionId txnId = TransactionConverter.convertUniqueTxnToId(uniqueTxnNo);
+		if (txnId != null) {
+			TransactionReceiptId txnReceiptId= new TransactionReceiptId();
+			txnReceiptId.setBusinessDate(txnId.getBusinessDate());
+			txnReceiptId.setLocationId(txnId.getLocationId());
+			if(receiptType.equals("ORIGINAL"))
+				txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
+			else
+				txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_DUPLICATE);
+			
+			txnReceiptId.setRegister(txnId.getRegister());
+			txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
+			
+			txnReceipt = this.txnReceiptRepository.findOne(txnReceiptId);
+			if(txnReceipt!=null)
+				logger.info("The {} report for transaction {} has been successfully retrieved", receiptType, uniqueTxnNo);
+			else
+				logger.info("There is an issue retrieving {} receipt for the transaction {}.", receiptType, uniqueTxnNo);
+		}
+		return txnReceipt;
+
 	}
 
 }

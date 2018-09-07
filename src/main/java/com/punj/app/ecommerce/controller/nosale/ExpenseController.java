@@ -58,6 +58,7 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.nosale.ExpenseBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
+import com.punj.app.ecommerce.models.transaction.TransactionHeader;
 import com.punj.app.ecommerce.services.NoSaleService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -277,7 +278,7 @@ public class ExpenseController {
 		session.setAttribute(txnId + MVCConstants.RCPT_PARAM, pdfBytes);
 
 		// This section will save the receipt in database
-		List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username,Boolean.TRUE);
+		List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, Boolean.TRUE);
 		Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 		if (result) {
 			logger.info("The expense transaction receipts has been saved in DB successfully");
@@ -290,9 +291,9 @@ public class ExpenseController {
 
 	@PostMapping(value = ViewPathConstants.TXN_EXPENSE_PRINT_RECEIPT_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public TransactionId printExpenseReceipt(@RequestBody TransactionId txnId, Model model, Authentication authentication, HttpSession session) {
+	public TransactionHeader printExpenseReceipt(@RequestBody TransactionHeader txnId, Model model, Authentication authentication, HttpSession session) {
 		try {
-			JasperPrint jasperPrint = (JasperPrint) session.getAttribute(txnId.toString() + MVCConstants.RCPT_JASPER_PARAM);
+			JasperPrint jasperPrint = (JasperPrint) session.getAttribute(txnId.getUniqueTxnNo() + MVCConstants.RCPT_JASPER_PARAM);
 			if (jasperPrint != null) {
 				JasperPrintManager.printReport(jasperPrint, Boolean.FALSE);
 				logger.info("The {} expense receipt has been printed successfully", txnId.toString());

@@ -3,6 +3,7 @@
  */
 package com.punj.app.ecommerce.services.dtos.transaction;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.customer.Customer;
@@ -27,6 +28,8 @@ public class TransactionDTO {
 	private TransactionCustomer txnCustomer;
 	private Customer customer;
 	private Shipment shipment;
+
+	private BigInteger invoiceNo;
 
 	/**
 	 * @return the txn
@@ -146,6 +149,21 @@ public class TransactionDTO {
 	 */
 	public void setShipment(Shipment shipment) {
 		this.shipment = shipment;
+	}
+
+	/**
+	 * @return the invoiceNo
+	 */
+	public BigInteger getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	/**
+	 * @param invoiceNo
+	 *            the invoiceNo to set
+	 */
+	public void setInvoiceNo(BigInteger invoiceNo) {
+		this.invoiceNo = invoiceNo;
 	}
 
 }

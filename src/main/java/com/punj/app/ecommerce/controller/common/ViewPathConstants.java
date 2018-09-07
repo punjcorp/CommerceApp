@@ -98,6 +98,9 @@ public final class ViewPathConstants {
 	public static final String CUSTOMER_LOOKUP_URL = "/customer_account_lookup";
 	public static final String CUSTOMER_ADDRESS_LOOKUP_URL = "/customer_address_lookup";
 	public static final String CUSTOMER_LOOKUP_ADMIN_URL = "/admin/customer_account_lookup";
+	public static final String TXN_DETAILS_LOOKUP_URL = "/pos/txn_details_lookup";
+	public static final String TXN_LOOKUP_URL = "/admin/transaction_lookup";
+	public static final String TXN_LOOKUP_PAGE = "lookup/txn_lookup";
 	
 	public static final String BULK_ORDER_RETURN_URL = "/admin/bulk_order_return_action";
 	
@@ -348,7 +351,9 @@ public final class ViewPathConstants {
 	public static final String TXN_SAVE_URL="/pos/save_txn";
 	public static final String RETURN_TXN_SAVE_URL="/pos/save_return_txn";
 	public static final String TXN_RCPT_PRINT_URL="/pos/receipt_print";
+	public static final String TXN_RCPT_RETURN_PRINT_URL="/pos/return_receipt_print";
 	public static final String TXN_RCPT_VIEW_URL="/pos/view_last_receipt";
+	public static final String VIEW_RCPT_TXN_NO_URL="/pos/view_txn_receipt";
 	public static final String TXN_POST_VOID_URL="/pos/post_void_txn";
 	public static final String TXN_PROCESS_EXPENSE_URL="/pos/process_expense";
 	public static final String TXN_EXPENSE_URL="/pos/expenses";

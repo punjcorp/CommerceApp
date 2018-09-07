@@ -54,10 +54,13 @@ public class TransactionHeader {
 	private BigDecimal totalIGSTTaxAmt;
 	private BigDecimal totalTaxAmt;
 	private BigDecimal totalDueAmt;
+	private BigDecimal roundedTotalAmt;
 
 	private String applicableTax;
-	
+
 	private String totalDueAmtWords;
+
+	private String comments;
 
 	/**
 	 * @return the locationId
@@ -472,10 +475,41 @@ public class TransactionHeader {
 	}
 
 	/**
-	 * @param applicableTax the applicableTax to set
+	 * @param applicableTax
+	 *            the applicableTax to set
 	 */
 	public void setApplicableTax(String applicableTax) {
 		this.applicableTax = applicableTax;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	/**
+	 * @return the roundedTotalAmt
+	 */
+	public BigDecimal getRoundedTotalAmt() {
+		return roundedTotalAmt;
+	}
+
+	/**
+	 * @param roundedTotalAmt
+	 *            the roundedTotalAmt to set
+	 */
+	public void setRoundedTotalAmt(BigDecimal roundedTotalAmt) {
+		this.roundedTotalAmt = roundedTotalAmt;
 	}
 
 }

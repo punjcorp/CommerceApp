@@ -64,11 +64,6 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`expense_txn_vouchers` (
   `txn_no` INT(5) NOT NULL,
   PRIMARY KEY (`voucher_no`),
   INDEX `fk_expenses_txn_vouchers_txn_master1_idx` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC),
-  UNIQUE INDEX `voucher_no_UNIQUE` (`voucher_no` ASC),
-  UNIQUE INDEX `location_id_UNIQUE` (`location_id` ASC),
-  UNIQUE INDEX `business_date_UNIQUE` (`business_date` ASC),
-  UNIQUE INDEX `txn_no_UNIQUE` (`txn_no` ASC),
-  UNIQUE INDEX `register_UNIQUE` (`register` ASC),
   CONSTRAINT `fk_expenses_txn_vouchers_txn_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
     REFERENCES `pi_pos_industry`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)

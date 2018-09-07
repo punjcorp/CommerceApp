@@ -459,8 +459,8 @@ $.extend(TxnAction.prototype, {
 		var gpNo=$('#gpPrNo').val();
 		var gpDate=$('#gpPrDate').val();
 		
-		var driverName=$('#driverName').val();
-		var driverPhone=$('#driverPhone').val();
+		//var driverName=$('#driverName').val();
+		//var driverPhone=$('#driverPhone').val();
 		var vehicleNo=$('#vehicleNo').val();
 		
 		
@@ -472,8 +472,8 @@ $.extend(TxnAction.prototype, {
 		this.shipment.gpPrNo=gpNo;
 		if(gpDate!=undefined && gpDate!="")
 			this.shipment.gpPrDate=gpDate+" 00:00:00";
-		this.shipment.driverName=driverName;
-		this.shipment.driverPhone=driverPhone;
+		//this.shipment.driverName=driverName;
+		//this.shipment.driverPhone=driverPhone;
 		this.shipment.vehicleNo=vehicleNo;
 
 		

@@ -5,9 +5,11 @@ package com.punj.app.ecommerce.services.converter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,11 +65,11 @@ public class TransactionConverter {
 	public static AccountJournal convertCreditToAJ(AccountHead accountHead, List<TenderLineItem> txnCreditTenders, BigDecimal totalCreditAmt, String username, String txnType) {
 		AccountJournal accountJournal = new AccountJournal();
 
-		if(ServiceConstants.TXN_SALE.equals(txnType))
+		if (ServiceConstants.TXN_SALE.equals(txnType))
 			accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT);
-		else if(ServiceConstants.TXN_RETURN.equals(txnType))
+		else if (ServiceConstants.TXN_RETURN.equals(txnType))
 			accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT_RETURN);
-		
+
 		accountJournal.setAccountId(accountHead.getAccountId());
 		accountJournal.setAmount(totalCreditAmt);
 		accountJournal.setComments("Transaction " + txnCreditTenders.get(0).getTransactionLineItemId().toString() + "Credit related entries");
@@ -114,19 +116,39 @@ public class TransactionConverter {
 		logger.info("The ledger has the txn details saved successfully");
 		return ledgerJournal;
 	}
-	
+
 	public static DailyTotals createDailyTotals(Transaction txnDetails) {
 		DailyTotals dailyTotals = new DailyTotals();
 
 		dailyTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
 		dailyTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
 		dailyTotals.setRegisterId(txnDetails.getTransactionId().getRegister());
-		
+
 		dailyTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
 		dailyTotals.setTotalTxnCount(BigDecimal.ONE.intValue());
-		
+
 		logger.info("The daily totals has been created for posting related to the transaction successfully");
 		return dailyTotals;
 	}
 
+	public static TransactionId convertUniqueTxnToId(String uniqueTxnNo) {
+		TransactionId txnId = null;
+
+		if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 17) {
+			txnId = new TransactionId();
+			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
+			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
+			txnId.setTransactionSeq(new Integer(uniqueTxnNo.substring(7, 11)));
+			String bDate = uniqueTxnNo.substring(11, 17);
+			bDate=bDate+" 00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy HH:mm");
+			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
+
+			txnId.setBusinessDate(bDateTime);
+
+			logger.info("The unique transction number has been successfully transformed to txn Id");
+		}
+
+		return txnId;
+	}
 }

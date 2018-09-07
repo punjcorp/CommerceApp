@@ -15,8 +15,9 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
-	public static final String RCPT_SALE_STORE = "Sale Store Copy";
-	public static final String RCPT_SALE_CUSTOMER = "Sale Customer Copy";
+	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_DUPLICATE="Sale Duplicate Copy";
+	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 
 	public static final String ACTION_EXPENSE = "Expense";
 
@@ -64,6 +65,7 @@ public final class ServiceConstants {
 	public static final String TXN_NOSALE = "NOSALE";
 	public static final String TXN_SALE = "SALE";
 	public static final String TXN_RETURN= "RETURN";
+	public static final String TXN_ALL= "All";
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";

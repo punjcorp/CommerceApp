@@ -49,8 +49,9 @@ public class SaleLineItem {
 	// this is temp due to JS
 	private BigDecimal price;
 
-	private BigDecimal returnedQty;
+	private Integer returnedQty;
 	private String upcNo;
+	private String hsnNo;
 	private String txnType;
 	private String invAction;
 
@@ -381,7 +382,7 @@ public class SaleLineItem {
 	/**
 	 * @return the returnedQty
 	 */
-	public BigDecimal getReturnedQty() {
+	public Integer getReturnedQty() {
 		return returnedQty;
 	}
 
@@ -389,7 +390,7 @@ public class SaleLineItem {
 	 * @param returnedQty
 	 *            the returnedQty to set
 	 */
-	public void setReturnedQty(BigDecimal returnedQty) {
+	public void setReturnedQty(Integer returnedQty) {
 		this.returnedQty = returnedQty;
 	}
 
@@ -851,10 +852,26 @@ public class SaleLineItem {
 	}
 
 	/**
-	 * @param discountPct the discountPct to set
+	 * @param discountPct
+	 *            the discountPct to set
 	 */
 	public void setDiscountPct(BigDecimal discountPct) {
 		this.discountPct = discountPct;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 }

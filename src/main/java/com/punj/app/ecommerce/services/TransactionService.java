@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.punj.app.ecommerce.domains.finance.TenderMovement;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.TransactionLookup;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TxnIdDTO;
@@ -44,5 +45,11 @@ public interface TransactionService {
 	public TransactionReceipt retrieveLastTransaction(TransactionId txnIdCriteria);
 
 	public Boolean isTransactionAlllowed(Integer locationId, Integer registerId);
+
+	public List<TransactionLookup> searchTxnJournals(String txnType, LocalDateTime startDate, LocalDateTime endDate);
+
+	public TransactionDTO searchTransactionDetails(String uniqueTxnNo);
+	
+	public TransactionReceipt searchTransactionReceipt(String uniqueTxnNo, String receiptType);
 
 }

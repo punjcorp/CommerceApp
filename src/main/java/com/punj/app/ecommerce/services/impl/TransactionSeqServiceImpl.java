@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.transaction.Transaction;
@@ -125,6 +126,18 @@ public class TransactionSeqServiceImpl implements TransactionSeqService {
 			logger.error("A unique invoice no generation for the expense transaction {} has failed!!", txnHeader.getTransactionId());
 		}
 		return txnVoucherNo;
+	}
+	
+	public BigInteger retrieveSaleInvoiceNo(SaleInvoice saleInvoice) {
+		BigInteger invoiceNo=null;
+		saleInvoice=this.saleInvoiceRepository.findOne(Example.of(saleInvoice));
+		if(saleInvoice!=null) {
+			invoiceNo=saleInvoice.getInvoiceNo();
+			logger.info("The sale invoice number has been successfully retrieved");
+		}else {
+			logger.error("The sale invoice number was not retrieved for the transaction");
+		}
+		return invoiceNo;
 	}
 
 }

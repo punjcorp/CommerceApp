@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.lookup.txn.title}">Transaction Lookup Page</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<link rel="stylesheet" href="../../css/utils/datatables.min.css" th:href="@{/css/utils/datatables.min.css}" />
+<link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
+<script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
+<script src="../../js/utils/pdfmake.min.js" th:src="@{/js/utils/pdfmake.min.js}"></script>
+<script src="../../js/utils/vfs_fonts.js" th:src="@{/js/utils/vfs_fonts.js}"></script>
+<script src="../../js/utils/datatables.min.js" th:src="@{/js/utils/datatables.min.js}"></script>
+<script src="../../static/js/lookup/txn_lookup.js" th:src="@{/js/lookup/txn_lookup.js}"></script>
+</head>
+<body>
+	<div id="wrapper">
+
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper-no-menu">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+
+			<div class="card content-container">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.lookup.txn.header}">Search Transactions</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<form class="form" id="searchTxnForm" action="#" th:action="@{/admin/transaction_lookup}" th:object="${txnSearchBean}" method="post">
+							<div class="row">
+								<div class="col-3">
+									<div class="form-group text-left">
+
+										<label for="txnType"><small><span th:text="#{commerce.screen.lookup.txn.field.txntype}">Transaction Type</span></small></label>
+										<div class="input-group">
+											<select th:field="*{txnType}" class="form-control input-sm">
+												<option class="form-text text-muted" value="All" th:text="#{commerce.screen.lookup.txn.field.txntype.placeholder}">All Transactions</option>
+												<option th:each="txnTypeVal: ${txnTypes}" th:value="${txnTypeVal.key}" th:text="${txnTypeVal.value}"></option>
+											</select>
+
+										</div>
+										<div th:if="${#fields.hasErrors('txnType')}" th:errors="*{txnType}" class="text-danger">Transaction Type Error</div>
+									</div>
+								</div>
+
+								<div class="col-3">
+									<div class="form-group text-left">
+
+										<label for="startDateTime"><small><span class="pos-mandatory" th:text="#{commerce.screen.lookup.txn.field.date.start}">Start
+													Date</span></small></label>
+										<div class="input-group">
+											<input type="text" th:field="*{startDateTime}" class="form-control input-sm"
+												th:placeholder="#{commerce.screen.lookup.txn.field.date.start.placeholder}"></input>
+
+										</div>
+										<div th:if="${#fields.hasErrors('startDateTime')}" th:errors="*{startDateTime}" class="text-danger">Start Date Error</div>
+									</div>
+								</div>
+
+								<div class="col-3">
+									<div class="form-group text-left">
+
+										<label for="startDateTime"><small><span th:text="#{commerce.screen.lookup.txn.field.date.end}">End Date</span></small></label>
+										<div class="input-group">
+											<input type="text" th:field="*{endDateTime}" class="form-control input-sm" th:placeholder="#{commerce.screen.lookup.txn.field.date.end.placeholder}"></input>
+
+										</div>
+										<div th:if="${#fields.hasErrors('endDateTime')}" th:errors="*{endDateTime}" class="text-danger">End Date Error</div>
+									</div>
+								</div>
+
+								<div class="col">
+									<div class="form-group text-left">
+										<label><small></small></label>
+										<div class="input-group">
+											<button type="submit" id="searchBtn" value="Search" class="btn btn-info">
+												<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.search}"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="card-text" th:if="${txns!=null and #lists.size(txns)>0}">
+						<div id="response"></div>
+						<table id="txnDataTable" class="table table-striped table-hover table-bordered">
+							<thead>
+								<tr>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.invoice.no}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.created.on}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.type}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.customer}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.created.by}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.tax.amount}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.total.amount}"></span></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="txn,itrStat:${txns}">
+									<td scope="row"><a href="#" th:onclick="'showTxnDetailsModal(\''+${txn.uniqueTxnNo}+'\')'"><span th:text="${txn.invoiceNo}"></span></a></td>
+									<td><span th:text="${#temporals.format(txn.createdDate, 'dd-MMM-yyyy')}"></span></td>
+									<td><span th:text="${txn.txnType}"></span></td>
+									<td><span th:text="${txn.customerName}"></span></td>
+									<td><span th:text="${txn.createdBy}"></span></td>
+									<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${txn.totalTaxAmount}"></span></td>
+									<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${txn.totalAmount}"></span></td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="tableBtns" class="text-center"></div>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Transaction Details Modal Starts -->
+
+			<div class="modal fade " id="txnDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">
+								<span th:text="#{commerce.screen.lookup.txn.details.modal.title}">Transaction Details</span>
+							</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body text-center">
+							<div class="m-3 text-left d-none" id="txnModalBodyContainer">
+								<label><h6>
+										<span th:text="#{commerce.screen.lookup.txn.details.modal.body.header}">Transaction Header</span>
+									</h6></label>
+								<div class="address-blue mb-2" id="txnModalHeader"></div>
+								<label><h6>
+										<span th:text="#{commerce.screen.lookup.txn.details.modal.body.customer}">Customer Details</span>
+									</h6></label>
+								<div class="address-blue mb-2" id="txnModalCustomerDetails"></div>
+								<label><h6>
+										<span th:text="#{commerce.screen.lookup.txn.details.modal.body.details}">Item Details</span>
+									</h6></label>
+								<div class="address-blue mb-2" id="txnModalItemDetails"></div>
+
+								<div class="address-blue mb-2 d-none" id="txnModalTenderDetails"></div>
+							</div>
+
+							<div class="col-12 text-center" id="txnDetailsProgressDiv">
+								<i class="fas fa-cog fa-spin fa-9x"></i>
+								<div>
+									<span th:text="#{commerce.screen.txn.ajax.progress}"></span>
+								</div>
+							</div>
+
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" id="btnCloseModal" class="btn btn-primary m-3" data-dismiss="modal" aria-label="Close">
+								<span th:text="#{commerce.screen.lookup.txn.details.modal.btn.close}"></span>
+							</button>
+
+							<button type="button" id="btnPrintOriginal" class="btn btn-success m-3">
+								<span th:text="#{commerce.screen.lookup.txn.details.modal.btn.print.original}"></span>
+							</button>
+
+							<button type="button" id="btnPrintDuplicate" class="btn btn-success m-3">
+								<span th:text="#{commerce.screen.lookup.txn.details.modal.btn.print.duplicate}"></span>
+							</button>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Transaction Details Modal Ends -->
+
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
+		var view_rcpt_url= /*[[@{/pos/view_txn_receipt(txnId)}]]*/;
+		
+		/*]]>*/
+	</script>
+
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+</body>
+</html>

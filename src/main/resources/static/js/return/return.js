@@ -25,6 +25,9 @@ $(function() {
 	
 	introJs().start();
 	
+	//Until this screen is fixed
+	isGSTFlag='S';
+	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
 
 	$(window).keydown(function(event){
@@ -388,7 +391,8 @@ function getItemDetails(event, ui) {
 
 	$.get("/sale_item_lookup", {
 		itemId : ui.item.value,
-		locationId : txn_locationId
+		locationId : txn_locationId,
+		gstFlag : isGSTFlag
 	}, function(data, status) {
 
 		txnAction.showSaleLineItem(data);
@@ -505,5 +509,33 @@ function printLastxn(){
 	var txnWindow=window.open(pdfRcptUrl);
 	txnWindow.document.title=i18next.t('last_txn_title');
 	return false;
+}
+
+function updateGSTCalculationFlag(){
+	var openLocGST=$('#gstNo').val();
+	var billingLocGST=$('#h_gstNo').val();
+	var openLocState='';
+	var billingLocState='';
+	
+	if(typeof(openLocGST)!=='undefined' && openLocGST!=undefined && openLocGST!=''){
+		openLocState=openLocGST.substr(0,2);
+	}
+	if(typeof(billingLocGST)!=='undefined' && billingLocGST!=undefined && billingLocGST!=''){
+		billingLocState=billingLocGST.substr(0,2);
+	}
+	
+	if(openLocState!='' && billingLocState!=''){
+		if(openLocState==billingLocState){
+			isGSTFlag='S';
+		}else{
+			isGSTFlag='I';
+		}
+	}else if(openLocState!='' && billingLocState==''){
+		isGSTFlag='S';
+	}else if(openLocState=='' && billingLocState!=''){
+		isGSTFlag='N';
+	}
+	txnAction.txnHeader.applicableTax=isGSTFlag;
+	
 }
 

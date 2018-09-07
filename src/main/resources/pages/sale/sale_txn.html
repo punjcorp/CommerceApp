@@ -555,7 +555,9 @@
 				</div>
 				<div class="modal-body text-center">
 					<div class="m-3 text-left">
-						<label><h6><span th:text="#{commerce.screen.sale.org.order.request.header}">Order Request Information</span></h6></label>
+						<label><h6>
+								<span th:text="#{commerce.screen.sale.org.order.request.header}">Order Request Information</span>
+							</h6></label>
 						<div class="row address-blue mb-2">
 							<div class="col-6">
 								<div class="form-group text-left">
@@ -576,17 +578,13 @@
 								</div>
 							</div>
 						</div>
-						
-						<label><h6><span th:text="#{commerce.screen.sale.transport.header}">Shipping Information</span></h6></label>
+
+						<label><h6>
+								<span th:text="#{commerce.screen.sale.transport.header}">Shipping Information</span>
+							</h6></label>
 						<div class="row address-blue mb-2">
 							<div class="col-6">
-								<div class="form-group text-left">
-									<label for="shippingCompany"><small><span th:text="#{commerce.screen.sale.transport.company}">Transport Company</span></small></label>
-									<div class="input-group text-left">
-										<input type="text" th:field="${shipmentBean.shippingCompany}" class="form-control form-control-sm"
-											th:placeholder="#{commerce.screen.sale.transport.company.placeholder}" maxlength="50"></input>
-									</div>
-								</div>
+
 
 								<div class="form-group text-left">
 									<label for="gpPrNo"><small><span th:text="#{commerce.screen.sale.transport.gp.no}">GP/PR No</span></small></label>
@@ -606,7 +604,7 @@
 
 							</div>
 							<div class="col-6">
-								<div class="form-group text-left">
+								<!-- 								<div class="form-group text-left">
 									<label for="driverName"><small><span th:text="#{commerce.screen.sale.transport.driver.name}">Driver Name</span></small></label>
 									<div class="input-group text-left">
 										<input type="text" th:field="${shipmentBean.driverName}" class="form-control form-control-sm"
@@ -619,6 +617,14 @@
 									<div class="input-group text-left">
 										<input type="text" th:field="${shipmentBean.driverPhone}" class="form-control form-control-sm"
 											th:placeholder="#{commerce.screen.sale.transport.driver.phone.placeholder}" maxlength="10"></input>
+									</div>
+								</div> -->
+
+								<div class="form-group text-left">
+									<label for="shippingCompany"><small><span th:text="#{commerce.screen.sale.transport.company}">Transport Company</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" th:field="${shipmentBean.shippingCompany}" class="form-control form-control-sm"
+											th:placeholder="#{commerce.screen.sale.transport.company.placeholder}" maxlength="50"></input>
 									</div>
 								</div>
 

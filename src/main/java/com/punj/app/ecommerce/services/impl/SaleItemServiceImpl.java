@@ -156,6 +156,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 		saleItem.setUnitCostAmt(item.getItemOptions().getUnitCost());
 		saleItem.setSuggestedPrice(item.getItemOptions().getSuggestedPrice());
 		saleItem.setMaxRetailPrice(item.getItemOptions().getMaxRetailPrice());
+		saleItem.setHsnNo(item.getItemOptions().getHsnNo());
 
 		BigDecimal itemPriceAmt = itemPrice.getItemPrice();
 		saleItem.setPriceAmt(itemPriceAmt);

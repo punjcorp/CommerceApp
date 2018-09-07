@@ -10,6 +10,9 @@ var alertUtil = new Utils();
 var TxnAction = function() {
 	this.saleTxn = new SaleTransaction();
 	this.txnHeader = new TransactionHeader();
+	
+	this.txnHeader.applicableTax='S';
+	
 	this.saleLineItem = new SaleLineItem();
 	this.tenderLineItem = new TenderLineItem();
 	this.customer = new Customer();

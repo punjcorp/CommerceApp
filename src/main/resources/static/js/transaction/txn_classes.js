@@ -107,6 +107,7 @@ $.extend(TransactionHeader.prototype, {
  */
 var SaleLineItem = function(
 		itemId,
+		hsnNo,
 		itemName,
 		itemDesc,
 		qty,
@@ -125,6 +126,7 @@ var SaleLineItem = function(
 		itemImage) {
 	if (arguments.length > 0) {
 		this.itemId = itemId;
+		this.hsnNo = hsnNo;
 		this.itemName = itemName;
 		this.itemDesc = itemDesc;
 		this.qty = qty;
@@ -143,6 +145,7 @@ var SaleLineItem = function(
 		this.itemImage = itemImage;
 	} else {
 		this.itemId;
+		this.hsnNo;
 		this.itemName;
 		this.itemDesc;
 		this.qty;
@@ -552,8 +555,11 @@ $.extend(SaleLineItem.prototype, {
 		var saleLineItemHtml = '<div class="col-1 padding-sm">';
 		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
-		saleLineItemHtml += '<div class="col-2 padding-sm"><label>';
-		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b></label><br/>';
+		saleLineItemHtml += '<div class="col-3 padding-sm"><label>';
+		if(typeof(saleLineItem.hsnNo)!=="undefined" && saleLineItem.hsnNo!=undefined && saleLineItem.hsnNo!="")
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + ' - ' +saleLineItem.hsnNo + '</b></label><br/>';
+		else
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b></label><br/>';
 		saleLineItemHtml += '<input class="form-control form-control-sm " onChange="saleItemChanged(this);"';
 		saleLineItemHtml += 'onmouseover="txnAction.txnLIHoverEffect(this)" onfocus="txnAction.txnLIHoverEffect(this)"';
 		saleLineItemHtml += 'onmouseout="txnAction.txnLIHoverAwayEffect(this)" onblur="txnAction.txnLIHoverAwayEffect(this)"';
@@ -908,9 +914,17 @@ $.extend(SaleLineItem.prototype, {
 		var saleLineItemHtml = '<div class="col-1 padding-sm">';
 		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
-		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
-		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
+		saleLineItemHtml += '<div class="col-3 padding-sm"><label>';
+		if(typeof(saleLineItem.hsnNo)!=="undefined" && saleLineItem.hsnNo!=undefined && saleLineItem.hsnNo!="")
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + ' - ' +saleLineItem.hsnNo + '</b><br/>';
+		else
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br/>';
 		saleLineItemHtml += saleLineItem.itemName;
+		saleLineItemHtml += '<input ';
+		saleLineItemHtml += ' id="li_name';
+		saleLineItemHtml += saleLineItem.itemId + '" type="hidden" value="';
+		saleLineItemHtml += saleLineItem.itemName;
+		saleLineItemHtml += '"></input>';
 		saleLineItemHtml += '</span></div>';
 
 		
@@ -1132,6 +1146,7 @@ $.extend(SaleLineItem.prototype, {
 	},
 	parseSaleLineItem : function(data) {
 		var itemId = data.itemId;
+		var hsnNo = data.hsnNo;
 		var itemName = data.name;
 		var itemDesc = data.longDesc;
 		var qty = data.qty;
@@ -1176,7 +1191,7 @@ $.extend(SaleLineItem.prototype, {
 
 		// calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
-		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstTax, sgstTax, igstTax,
+		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstTax, sgstTax, igstTax,
 				cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
 
 		/**
