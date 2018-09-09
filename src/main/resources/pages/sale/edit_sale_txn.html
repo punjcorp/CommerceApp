@@ -384,7 +384,7 @@
 		var new_txn_prefix= /*[[@{/pos/sale}]]*/;
 		var new_return_txn_prefix= /*[[@{/pos/return_txn}]]*/;
 		
-		var edit_txn_prefix= /*[[@{/admin/edit_sale_txn(txnId=${saleTxnDTO.transactionHeader.uniqueTxnNo})}]]*/;
+		var edit_txn_prefix= /*[[@{/admin/edit_sale_txn(txnId=${saleHeaderBean.uniqueTxnNo})}]]*/;
 		var txn_lookup_prefix= /*[[@{/admin/transaction_lookup}]]*/;
 		
 		var register_close_url= /*[[@{/pos/close_register(registerId)}]]*/;
@@ -499,12 +499,12 @@
 						</button>
 
 						<button type="button" class="btn btn-info p-3 m-2" id="btnEditTxn">
-							<span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-pencil-alt"></i>
-							</span>
+							 <i class="fas fa-pencil-alt fa-5x"></i>
+							
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnTxnLookup">
-							<span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-shopping-cart"></i> <i class="fas fa-search"
-								data-fa-transform="shrink-10 right-12 up-4"></i>
+							<span class="fa-5x mx-3 fa-layers fa-fw"> <i class="fas fa-shopping-cart"></i> <i class="fas fa-search"
+								data-fa-transform="shrink-10 right-13 up-4"></i>
 							</span>
 						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnNewSaleTxn">

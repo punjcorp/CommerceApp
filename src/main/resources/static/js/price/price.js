@@ -265,7 +265,8 @@ function getItemDetails(event, ui) {
 		
 		$.get("/sale_item_lookup", {
 			itemId : itemIdVal,
-			locationId : locationIdVal
+			locationId : locationIdVal,
+			gstFlag: 'S'
 		}, function(data, status) {
 			
 			if(!data.length>0){

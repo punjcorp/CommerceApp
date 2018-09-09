@@ -249,7 +249,7 @@ public class SaleTransactionController {
 					Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnDTO.getTxn().getTransactionId().getLocationId());
 					SaleTransaction saleTxn = TransactionTransformer.transformSaleTxn(txnDTO, tenderMap, itemImagesMap);
 
-					this.updateBeansForModification(model, session, req, redirectAttrs, locale, saleTxn);
+					this.updateBeansForModification(model, saleTxn, uniqueTxnNo);
 					logger.info("The edit sale screen is ready for display now");
 				} else {
 					model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sale.edit.no.txn.found", null, locale));
@@ -271,8 +271,7 @@ public class SaleTransactionController {
 	 * This method is to set all the bean objects in model needed for the return screen functionalities
 	 * 
 	 */
-	private void updateBeansForModification(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale,
-			SaleTransaction saleTxn) {
+	private void updateBeansForModification(Model model, SaleTransaction saleTxn, String uniqueTxnNo) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 		model.addAttribute(MVCConstants.CUSTOMER_BEAN, saleTxn.getCustomer());
@@ -284,6 +283,7 @@ public class SaleTransactionController {
 		saleHeaderBean.setLocationId(locationId);
 		saleHeaderBean.setRegisterId(registerId);
 		saleHeaderBean.setBusinessDate(txnHeader.getBusinessDate());
+		saleHeaderBean.setUniqueTxnNo(uniqueTxnNo);
 
 		Location location = this.commonService.retrieveLocationDetails(locationId);
 		saleHeaderBean.setLocationName(location.getName());

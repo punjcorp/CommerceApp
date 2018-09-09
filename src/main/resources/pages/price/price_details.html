@@ -218,7 +218,7 @@
 											<input type="text" th:field="*{startDate}" class="form-control input-sm" data-input="data-input"
 												th:placeholder="#{commerce.screen.common.date.start.placeholder}"></input>
 											<div class="input-group-append">
-												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="material-icons">done</i></a>
+												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check"></i></a>
 											</div>
 										</div>
 										<small th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger align-top">Start Date Error </small>
@@ -232,7 +232,7 @@
 											<input type="text" th:field="*{endDate}" class="form-control input-sm" data-input="data-input"
 												th:placeholder="#{commerce.screen.common.date.end.placeholder}"></input>
 											<div class="input-group-append">
-												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="material-icons">done</i></a>
+												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check"></i></a>
 											</div>
 										</div>
 										<small th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger align-top">End Date Error</small>

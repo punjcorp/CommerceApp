@@ -1282,9 +1282,9 @@ $.extend(SaleLineItem.prototype, {
 
 		// calculate the total for item after taxes and everything for sale item
 		var itemTotal = Math.round(data.grossAmount);
-		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstCode, sgstCode, igstCode,cgstTax, sgstTax, igstTax,
+		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty,  price,unitPrice, suggestedPrice, maxRetailPrice, discount, cgstCode, sgstCode, igstCode,cgstTax, sgstTax, igstTax,
 				cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
-
+		
 		/**
 		 * Update the tax line items in the sale item
 		 */

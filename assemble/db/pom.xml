@@ -31,7 +31,7 @@
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<!-- <url>jdbc:mysql://pos.crjn48listps.us-east-2.rds.amazonaws.com:3306/commercedb?autoreconnect=true</url> -->
-					<url>jdbc:mysql://localhost:3306/commercedb?autoreconnect=true</url> 
+					<url>jdbc:mysql://localhost:3306/pi_pos_industry?autoreconnect=true</url> 
 					<user>admin</user>
 					<password>admin</password>
 					<!-- <user>mysqlroot</user>
@@ -39,7 +39,7 @@
   					<!-- <user>root</user>
 					<password>G00gl3r$</password> --> 
 					<schemas>
-						<schema>commercedb</schema>
+						<schema>pi_pos_industry</schema>
 					</schemas>
 				</configuration>
 				<dependencies>

@@ -18,6 +18,8 @@ public class SaleHeaderBean {
 	private Integer registerId;
 	private String registerName;
 	private String defaultTender;
+	
+	private String uniqueTxnNo;
 
 	/**
 	 * @return the locationId
@@ -122,6 +124,20 @@ public class SaleHeaderBean {
 	 */
 	public void setGstNo(String gstNo) {
 		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the uniqueTxnNo
+	 */
+	public String getUniqueTxnNo() {
+		return uniqueTxnNo;
+	}
+
+	/**
+	 * @param uniqueTxnNo the uniqueTxnNo to set
+	 */
+	public void setUniqueTxnNo(String uniqueTxnNo) {
+		this.uniqueTxnNo = uniqueTxnNo;
 	}
 
 }

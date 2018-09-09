@@ -155,6 +155,20 @@
 													Error</small>
 											</div>
 										</div>
+										<div class="col-4">
+											<div class="form-group text-left" th:if="${locations!=null and #lists.size(locations)>0}">
+												<label for="defaultLocationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.default.location}">Default Locations</span></small></label>
+												<div class="input-group">
+													<select th:field="*{defaultLocationId}" class="form-control input-sm">
+														<option class="form-text text-muted" value="" th:text="#{commerce.screen.register.default.location.placeholder}">Select Default Location for
+															Account</option>
+														<option th:each="location: ${locations}" th:value="${location.locationId}" th:text="${location.locationId+' - '+ location.name}"></option>
+													</select>
+												</div>
+												<small th:if="${#fields.hasErrors('defaultLocationId')}" th:errors="defaultLocationId" class="text-danger">Default Location Id
+													Error</small>
+											</div>
+										</div>
 									</div>
 									<div class="row">
 										<div class="col-xs-8 col-sm-8 col-md-8">

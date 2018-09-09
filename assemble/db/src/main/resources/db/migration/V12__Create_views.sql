@@ -344,6 +344,7 @@ CREATE VIEW `pi_pos_industry`.`v_location_sales_data` AS
             AND t3.location_id = t4.location_id
             AND t3.business_date = t4.business_date;                
             
+            
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

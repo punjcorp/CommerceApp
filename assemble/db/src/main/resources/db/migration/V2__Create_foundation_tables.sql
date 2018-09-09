@@ -167,7 +167,7 @@ CREATE UNIQUE INDEX `code_UNIQUE` ON `pi_pos_industry`.`denomination_master` (`c
 -- -----------------------------------------------------
 -- Table `pi_pos_industry`.`gst_state_codes`
 -- -----------------------------------------------------
-DROP TABLE `pi_pos_industry`.`gst_state_codes`;
+DROP TABLE IF EXISTS `pi_pos_industry`.`gst_state_codes`;
 
 CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`gst_state_codes` (
   `id` INT NOT NULL AUTO_INCREMENT,

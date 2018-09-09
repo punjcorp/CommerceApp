@@ -19,10 +19,18 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
 import com.punj.app.ecommerce.domains.user.Address;
 
@@ -30,6 +38,10 @@ import com.punj.app.ecommerce.domains.user.Address;
  * @author admin
  *
  */
+@AnalyzerDef(name = "customerEdgeNgram", tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class), filters = {
+		@TokenFilterDef(factory = LowerCaseFilterFactory.class), // Lowercase all characters
+		@TokenFilterDef(factory = EdgeNGramFilterFactory.class, // Generate prefix tokens
+				params = { @Parameter(name = "minGramSize", value = "1"), @Parameter(name = "maxGramSize", value = "10") }) })
 @Indexed
 @Entity
 @Table(name = "customer")
@@ -42,7 +54,7 @@ public class Customer implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "customer_id", updatable = false, nullable = false)
 	private BigInteger customerId;
-	@Field
+	@Field(analyzer = @Analyzer(definition = "customerEdgeNgram"))
 	private String name;
 	@Field
 	private String phone;
