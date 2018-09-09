@@ -3,9 +3,11 @@ package com.punj.app.ecommerce.controller.lookup;
  * 
  */
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -27,10 +29,13 @@ import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
+import com.punj.app.ecommerce.domains.item.ItemImage;
+import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.TransactionLookup;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
 import com.punj.app.ecommerce.models.transaction.TxnBean;
 import com.punj.app.ecommerce.models.transaction.TxnSearchBean;
+import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
@@ -45,6 +50,7 @@ public class TransactionLookupController {
 	private static final Logger logger = LogManager.getLogger();
 	private TransactionService txnService;
 	private CommonService commonService;
+	private ItemService itemService;
 	private CommerceContext commerceContext;
 
 	/**
@@ -54,6 +60,15 @@ public class TransactionLookupController {
 	@Autowired
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
+	}
+
+	/**
+	 * @param itemService
+	 *            the itemService to set
+	 */
+	@Autowired
+	public void setItemService(ItemService itemService) {
+		this.itemService = itemService;
 	}
 
 	/**
@@ -121,12 +136,18 @@ public class TransactionLookupController {
 
 			TransactionDTO txnDTO = this.txnService.searchTransactionDetails(uniqueTxnNo);
 			if (txnDTO != null) {
-				saleTxn = TransactionTransformer.transformSaleTxn(txnDTO);
+				Map<BigInteger, List<ItemImage>> itemImagesMap = null;
+				if (txnDTO.getSaleLineItems() != null && !txnDTO.getSaleLineItems().isEmpty()) {
+					Set<BigInteger> itemIds = TransactionTransformer.retrieveItemIds(txnDTO.getSaleLineItems());
+					itemImagesMap = this.itemService.retrieveItems(itemIds);
+				}
+				Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnDTO.getTxn().getTransactionId().getLocationId());
+				saleTxn = TransactionTransformer.transformSaleTxn(txnDTO, tenderMap, itemImagesMap);
 				logger.info("The transaction details has been retrieved successfully");
-			}else {
+			} else {
 				logger.info("The transaction details retreival has failed");
 			}
-				
+
 		} catch (Exception e) {
 			logger.error("There is an error while retrieving transaction details", e);
 		}

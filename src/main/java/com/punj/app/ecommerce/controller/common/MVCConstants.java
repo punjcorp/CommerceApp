@@ -288,6 +288,7 @@ public final class MVCConstants {
 	public static final String SHIPMENT_BEAN= "shipmentBean";
 	public static final String CUSTOMER_BEAN= "customerBean";
 	public static final String STATES_LIST= "states";
+	public static final String TXN_SALE_DTO= "saleTxnDTO";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
 	public static final String ROLE_BEANS= "roles";

@@ -4,7 +4,7 @@
 <meta th:name="_csrf" th:content="${_csrf.token}" />
 <meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="utf-8" />
-<title th:text="#{commerce.screen.sale.add.title}"></title>
+<title th:text="#{commerce.screen.sale.edit.title}"></title>
 <!-- This thymeleaf fragment include all the header stuff -->
 <link href="../../static/css/utils/introjs.min.css" th:href="@{/css/utils/introjs.min.css}" rel="stylesheet" />
 <script src="../../static/js/utils/intro.js" th:src="@{/js/utils/intro.js}"></script>
@@ -20,6 +20,7 @@
 <script src="../../static/js/transaction/txn_classes.js" th:src="@{/js/transaction/txn_classes.js}"></script>
 <script src="../../static/js/common/customer.js" th:src="@{/js/common/customer.js}"></script>
 <script src="../../static/js/sale/sale_txn.js" th:src="@{/js/sale/sale_txn.js}"></script>
+<script src="../../static/js/sale/edit_sale.js" th:src="@{/js/sale/edit_sale.js}"></script>
 <script src="../../static/js/sale/sale.js" th:src="@{/js/sale/sale.js}"></script>
 <link href="../../static/css/box_radio.css" th:href="@{/css/box_radio.css}" rel="stylesheet" />
 
@@ -36,7 +37,7 @@
 			<div class="row m-3">
 				<div class="col">
 					<!-- Customer Look up Card Starts -->
-					<div class="card" id="txnCustomerLookupDiv">
+					<div class="card d-none" id="txnCustomerLookupDiv">
 						<div class="card-body">
 							<div class="card-text">
 								<div class="row">
@@ -70,11 +71,11 @@
 					<!-- Customer Look up Card Ends -->
 
 					<!-- Transaction Item Look up Card Starts -->
-					<div class="card d-none" id="txnItemLookupDiv">
+					<div class="card" id="txnItemLookupDiv">
 						<div class="card-body">
 							<div class="card-text">
-								<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
-								<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+								<div id="successDiv" th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+								<div id="alertDiv" th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 								<form id="autoCompleteForm" action="#" th:action="@{/sku_lookup}" th:object="${searchBean}" method="post">
 									<div class="row">
 										<div class="col-6" data-step="2" data-th-attr="data-intro=#{commerce.help.txn.item.search}">
@@ -369,6 +370,10 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 
+		var txn_saleTxnDTO = /*[[${saleTxnDTO}]]*/;
+		var txn_saleHeaderBean = /*[[${saleHeaderBean}]]*/;
+		
+		
 		var txn_locationId = /*[[${saleHeaderBean.locationId}]]*/;
 		var txn_registerId = /*[[${saleHeaderBean.registerId}]]*/;
 		var txn_registerName = /*[[${saleHeaderBean.registerName}]]*/;
@@ -483,16 +488,16 @@
 				</div>
 				<div class="modal-body text-center">
 					<div id="receiptActions" class="col-12 text-center">
-						<button type="button" class="btn btn-info p-3 m-2" id="btnViewTxnReceipt"  th:title="#{commerce.tooltip.btn.view.receipt}">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnViewTxnReceipt">
 							<i class="fas fa-receipt fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewTxn" th:title="#{commerce.tooltip.btn.print.receipt}">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewTxn">
 							<i class="fas fa-print fa-5x"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-2" id="btnNewSaleTxn" th:title="#{commerce.tooltip.btn.new.sale}">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewSaleTxn">
 							<i class="fas fa-cart-plus fa-5x" data-fa-transform="flip-h"></i>
 						</button>
-						<button type="button" class="btn btn-info p-3 m-2" id="btnNewReturnTxn" th:title="#{commerce.tooltip.btn.new.return}">
+						<button type="button" class="btn btn-info p-3 m-2" id="btnNewReturnTxn">
 							<span class="fa-layers fa-fw fa-5x"> <i class="fas fa-shopping-cart" data-fa-transform="flip-H"></i> <i
 								class="fas fa-minus-circle icon-blue-theme" data-fa-transform="shrink-10 right--2 up-2"></i>
 							</span>

@@ -122,8 +122,9 @@ $.extend(TxnAction.prototype, {
 		}
 
 	},
-	associateCustomer : function(customerId, customerType, gstNo, panNo, billingAddressId, shippingAddressId) {
+	associateCustomer : function(customerId, name, customerType, gstNo, panNo, billingAddressId, shippingAddressId) {
 		this.customer.customerId = customerId;
+		this.customer.name = name;
 		this.customer.gstNo= gstNo;
 		this.customer.panNo= panNo;
 		this.customer.billingAddressId = billingAddressId;
@@ -205,6 +206,14 @@ $.extend(TxnAction.prototype, {
 		this.txnHeader.totalTaxAmt = totalTax;
 		this.txnHeader.totalDueAmt = totalAmt;
 
+	},
+	renderAllTenderLineItems : function(){
+		
+		$.each(this.tenderLineItems, function(index) {
+			this.updateTenderIndex(index);
+			this.render();
+		});
+		
 	},
 	showTender : function(amount, tenderId) {
 		var tenderLineItem = this.addTenderItem(amount, tenderId);
@@ -355,7 +364,10 @@ $.extend(TxnAction.prototype, {
 		this.saleTxn.shipment = this.shipment;
 		this.saleTxn.orderRequest = this.orderRequest;
 
-		this.saleTxn.saveTxnDetails();
+		if(typeof(this.saleTxn.transactionHeader.txnNo)!=="undefined" && this.saleTxn.transactionHeader.txnNo!=undefined && this.saleTxn.transactionHeader.txnNo!="")
+			this.saleTxn.saveEditedTxnDetails();
+		else
+			this.saleTxn.saveTxnDetails();
 
 	},
 	focusFirstItemQty : function() {
@@ -450,7 +462,20 @@ $.extend(TxnAction.prototype, {
 			}
 
 	}, 
-	updateShipmentDetails(){
+	renderRetrievedShipmentDetails : function(){
+		$('#customerOrderNo').val(this.orderRequest.customerOrderNo);
+		$('#orderDate').val(this.orderRequest.orderDate);
+		
+		
+		$('#shippingCompany').val(this.shipment.shippingCompany);
+		$('#gpPrNo').val(this.shipment.gpPrNo);
+		$('#gpPrDate').val(this.shipment.gpPrDate);
+		
+		//var driverName=$('#driverName').val(this.shipment.driverName);
+		//var driverPhone=$('#driverPhone').val(this.shipment.driverPhone);
+		$('#vehicleNo').val(this.shipment.vehicleNo);
+	}, 
+	updateShipmentDetails : function(){
 		var orderRequestNo=$('#customerOrderNo').val();
 		var orderRequestDate=$('#orderDate').val();
 		

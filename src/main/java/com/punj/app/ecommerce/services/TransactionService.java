@@ -35,6 +35,8 @@ public interface TransactionService {
 	public Transaction searchLocationOpenTxn(Integer locationId, LocalDateTime businessDate);
 
 	public TxnIdDTO saveSaleTransaction(TransactionDTO txnDTO);
+	
+	public TxnIdDTO updateSaleTransaction(TransactionDTO txnDTO);
 
 	public SaleTransactionReceiptDTO generateTransactionReceipt(TransactionId txnId);
 

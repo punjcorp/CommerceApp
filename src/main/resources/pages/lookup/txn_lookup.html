@@ -99,6 +99,7 @@
 									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.created.by}"></span></th>
 									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.tax.amount}"></span></th>
 									<th scope="col"><span th:text="#{commerce.screen.lookup.txn.total.amount}"></span></th>
+									<th scope="col"><span th:text="#{commerce.screen.actions}"></span></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -110,6 +111,9 @@
 									<td><span th:text="${txn.createdBy}"></span></td>
 									<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${txn.totalTaxAmount}"></span></td>
 									<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${txn.totalAmount}"></span></td>
+									<td><a th:href="@{/admin/edit_sale_txn(txnId=${txn.uniqueTxnNo})}" class="btn btn-success btn-sm"><span
+														class="fa-2x mx-1 fa-layers fa-fw"> <i class="fas fa-pencil-alt"></i>
+													</span><span th:text="#{commerce.screen.actions.txn.edit}">Edit Transaction</span></a></td>
 								</tr>
 							</tbody>
 						</table>

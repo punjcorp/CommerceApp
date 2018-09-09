@@ -276,6 +276,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`txn_li_tax` (
   `created_date` DATETIME NULL,
   `tax_group_id` INT NOT NULL,
   `tax_rule_rate_id` INT NOT NULL,
+  `tax_code` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `seq_no`),
   CONSTRAINT `fk_txn_li_tax_txn_line_item_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no` , `seq_no`)

@@ -443,6 +443,84 @@ public class TransactionServiceImpl implements TransactionService {
 
 		return txnIdDTO;
 	}
+	
+	@Override
+	@Transactional
+	public TxnIdDTO updateSaleTransaction(TransactionDTO txnDTO) {
+		TxnIdDTO txnIdDTO = new TxnIdDTO();
+		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
+		Customer customer = txnDTO.getCustomer();
+		List<AccountHead> accountHeads = null;
+		AccountHead accountHead = null;
+		if (customer != null && customer.getCustomerId() == null) {
+			accountHeads = this.accountService.createCustomer(customer);
+			if (accountHeads != null && !accountHeads.isEmpty()) {
+				for (AccountHead tmpAccount : accountHeads) {
+					if (tmpAccount.getLocationId().equals(txnCustomer.getTransactionCustomerId().getLocationId())) {
+						accountHead = tmpAccount;
+						break;
+					}
+				}
+
+				logger.info("The {} customer details has been saved successfully", accountHead.getEntityId());
+				txnDTO.getTxnCustomer().getTransactionCustomerId().setCustomerId(accountHead.getEntityId());
+			} else {
+				logger.info("There was an issue while saving customer details");
+			}
+
+		} else if (txnCustomer != null && txnCustomer.getTransactionCustomerId() != null) {
+
+			accountHead = this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(),
+					txnCustomer.getTransactionCustomerId().getCustomerId(), txnCustomer.getTransactionCustomerId().getLocationId());
+			if (accountHead != null)
+				logger.info("The account head details has been retrieved successfully");
+		}
+
+		TransactionId txnId = null;
+		Transaction txnDetails = txnDTO.getTxn();
+		Transaction txnHeader = this.saveTransaction(txnDetails);
+		if (txnHeader != null) {
+			logger.info("The {} transaction header details has been saved successfully", txnHeader.getTxnType());
+			txnId = txnHeader.getTransactionId();
+			Boolean txnLISaveResult = this.saveTransactionLineItems(txnDTO, txnId);
+			if (!txnLISaveResult) {
+				txnId = null;
+			}
+			txnIdDTO.setTransactionId(txnId);
+			BigInteger invoiceNo = this.txnSeqService.saveTransactionSeqs(txnHeader);
+			if (invoiceNo != null && txnId != null) {
+				txnIdDTO.setInvoiceNo(invoiceNo);
+			}
+
+			if (txnCustomer != null && accountHead != null) {
+				txnCustomer.getTransactionCustomerId().setTransactionSeq(txnId.getTransactionSeq());
+				txnCustomer = this.txnCustomerRepository.save(txnCustomer);
+				if (txnCustomer != null) {
+					logger.info("The {} customer details for the customer has been saved successfully", txnCustomer.getTransactionCustomerId().getCustomerId());
+				}
+			}
+
+			Shipment shipment = txnDTO.getShipment();
+
+			if (shipment != null) {
+				shipment = this.txnShipmentRepository.save(shipment);
+				if (shipment != null) {
+					logger.info("The transaction shipment details has been saved successfully");
+				}
+			}
+
+			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
+			logger.info("The credit tender details has been added to Customer account now");
+
+			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getCreatedBy());
+			this.inventoryService.updateInventory(itemStockDetails);
+			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());
+		} else {
+			logger.info("There is some issue while saving sale transaction header details");
+		}
+
+		return txnIdDTO;
+	}
 
 	private void updateFinanceDetails(AccountHead accountHead, TransactionDTO txnDTO, String username) {
 		List<TenderLineItem> txnTenders = txnDTO.getTenderLineItems();

@@ -205,7 +205,7 @@ $(function() {
 	$('#btnSaveCustomer').click(function() {
 		
 		associateCustomerToTxn();
-		
+		$('#txnCustomerModal').modal('hide');
 	});
 	$('[id^=btnDeleteTLI]').focus(function() {
 		var tliIndex=this.id.replace(/[^0-9]/gi, '');

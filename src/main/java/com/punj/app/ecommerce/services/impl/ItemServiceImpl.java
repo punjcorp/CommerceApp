@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -1021,6 +1022,25 @@ public class ItemServiceImpl implements ItemService {
 		else
 			logger.error("There was some issue while updating the skus");
 		return updatedSKUs;
+	}
+
+
+	@Override
+	public Map<BigInteger, List<ItemImage>> retrieveItems(Set<BigInteger> itemIds) {
+		Map<BigInteger, List<ItemImage>> finalImageMap=new HashMap<>();
+		ItemImage itemImageCriteria=null;
+		Item itemCriteria=null;
+		for(BigInteger itemId:itemIds) {
+			
+			itemImageCriteria=new ItemImage();
+			itemCriteria=new Item();
+			itemCriteria.setItemId(itemId);
+			itemImageCriteria.setItem(itemCriteria);
+			
+			List<ItemImage> itemImages=this.itemImageRepository.findAll(Example.of(itemImageCriteria));
+			finalImageMap.put(itemId, itemImages);
+		}
+		return finalImageMap;
 	}
 
 }

@@ -386,6 +386,11 @@ $(function() {
     Mousetrap.bindGlobal('ctrl+alt+t', function() { txnAction.focusFirstTender(); });
 
 	
+    if(typeof(txn_saleTxnDTO)!=="undefined" && txn_saleTxnDTO!=undefined && txn_saleTxnDTO.transactionHeader!=undefined){
+    	updateSaleTxnDetails(txn_saleTxnDTO);
+    }
+    
+    
 });
 
 /* This section will allow the item listing to be in a specific format */
@@ -476,11 +481,17 @@ function deleteSaleItem(deleteItemId) {
 
 function postTxnSave(data){
 	// Update the txn no after successful save
-	rcpt_txn_id= data.uniqueTxnNo;
-	rcpt_txn_no= data.txnNo;
-	rcpt_pdfBlob=data.pdfbytes;
-	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
-	$('#screenBusyModal').modal('hide');
+	if(typeof(data)!=="undefined" && data!=undefined && data!=""){
+		rcpt_txn_id= data.uniqueTxnNo;
+		rcpt_txn_no= data.txnNo;
+		rcpt_pdfBlob=data.pdfbytes;
+		$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
+		$('#screenBusyModal').modal('hide');
+	}else{
+		$('#screenBusyModal').modal('hide');
+		$('#alertDiv').html('<h5>There was some error during transaction processing, please try again!!</h5>');
+	}
+	
 	
 }
 
@@ -663,6 +674,29 @@ function updateGSTCalculationFlag(){
 	
 }
 
+
+
+function updateSaleTxnDetails(txn_saleTxnDTO){
+	
+	parseRetrievedTxnHeader(txn_saleTxnDTO, txn_saleHeaderBean.gstNo, txn_saleTxnDTO.customer.gstNo);
+	parseRetrievedTxnLineItems(txn_saleTxnDTO);
+	parseRetrievedTxnTenderLineItems(txn_saleTxnDTO);
+	parseRetrievedTxnCustomer(txn_saleTxnDTO);
+	parseRetrievedTxnShipment(txn_saleTxnDTO);
+	
+	txnAction.renderAll();
+	
+	txnAction.renderAllTenderLineItems();
+	txnAction.calculateDue(g_nbr_zero, txnAction.txnHeader.totalDueAmt, 'Cash');
+	txnAction.renderRetrievedShipmentDetails();	
+	
+	
+	$('#div_txn_customer_dtls').removeClass('d-none');
+	$('#div_txn_header_dtls').removeClass('d-none');
+	$('#tenderLineItemContainer').removeClass('d-none');
+	$('#tenderOptionsContainer').removeClass('d-none');
+	
+}
 
 
 

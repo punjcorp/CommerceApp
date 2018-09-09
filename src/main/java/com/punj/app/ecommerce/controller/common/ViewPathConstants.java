@@ -309,6 +309,8 @@ public final class ViewPathConstants {
 	public static final String LAST_TXN_RCPT_URL="/pos/last_txn_rcpt";
 	public static final String LAST_TXN_RCPT_PAGE="/sale/receipt_print";
 	
+	public static final String EDIT_SALE_TXN_URL="/admin/edit_sale_txn";
+	public static final String EDIT_SALE_TXN_PAGE="sale/edit_sale_txn";
 	public static final String POS_URL="/pos/sale";
 	public static final String SALES_URL="/pos/sales";
 	public static final String SALES_PAGE="sale/sales";
@@ -350,6 +352,7 @@ public final class ViewPathConstants {
 	 */
 	public static final String TXN_SAVE_URL="/pos/save_txn";
 	public static final String RETURN_TXN_SAVE_URL="/pos/save_return_txn";
+	public static final String TXN_EDITED_SAVE_URL="/pos/save_edited_txn";
 	public static final String TXN_RCPT_PRINT_URL="/pos/receipt_print";
 	public static final String TXN_RCPT_RETURN_PRINT_URL="/pos/return_receipt_print";
 	public static final String TXN_RCPT_VIEW_URL="/pos/view_last_receipt";

@@ -6,6 +6,7 @@ package com.punj.app.ecommerce.services;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.punj.app.ecommerce.domains.item.Attribute;
 import com.punj.app.ecommerce.domains.item.AttributeDTO;
@@ -13,6 +14,7 @@ import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
+import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
@@ -24,15 +26,15 @@ import com.punj.app.ecommerce.utils.Pager;
 public interface ItemService {
 
 	public BigInteger generateNewStyle();
-	
+
 	public List<Item> updateSKUs(List<Item> skuList);
-	
+
 	public BigInteger generateNewSKU(BigInteger styleNo, BigInteger skuNo);
 
 	public Item saveNewItem(Item item);
 
 	public Item saveNewSKU(Item item, BigInteger skuNo);
-	
+
 	public Item saveItem(Item item);
 
 	public Item approveItem(Item item);
@@ -42,13 +44,12 @@ public interface ItemService {
 	public List<Attribute> retrieveAttributeValues(String attributeCode);
 
 	public Map<String, List<Attribute>> retrieveAttrListValues(List<String> attrCodeList);
-	
+
 	public void deleteSKUs(BigInteger styleNo);
-		
+
 	public List<Item> retrieveItems(Item itemCriteria);
-	
-	
-	
+
+	public Map<BigInteger, List<ItemImage>> retrieveItems(Set<BigInteger> itemIds);
 
 	public Item saveItem(Item item, ItemOptions itemOptions, List<ItemAttribute> itemAttributes);
 

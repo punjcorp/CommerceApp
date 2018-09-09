@@ -5,10 +5,13 @@ package com.punj.app.ecommerce.controller.sale;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -37,6 +41,10 @@ import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
+import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
+import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.Register;
+import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
@@ -46,8 +54,12 @@ import com.punj.app.ecommerce.models.customer.or.CustomerORBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
 import com.punj.app.ecommerce.models.shipment.ShipmentBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
+import com.punj.app.ecommerce.models.transaction.SaleTransaction;
+import com.punj.app.ecommerce.models.transaction.TransactionHeader;
+import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 
 /**
  * @author admin
@@ -59,6 +71,7 @@ public class SaleTransactionController {
 	private static final Logger logger = LogManager.getLogger();
 	private CommonService commonService;
 	private TransactionService transactionService;
+	private ItemService itemService;
 	private CommerceContext commerceContext;
 	private MessageSource messageSource;
 
@@ -69,6 +82,15 @@ public class SaleTransactionController {
 	@Autowired
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @param itemService
+	 *            the itemService to set
+	 */
+	@Autowired
+	public void setItemService(ItemService itemService) {
+		this.itemService = itemService;
 	}
 
 	/**
@@ -209,6 +231,83 @@ public class SaleTransactionController {
 		List<Tender> tenders = this.commonService.retrieveAllTenders(locationId);
 		List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
 		return tenderBeans;
+	}
+
+	@GetMapping(ViewPathConstants.EDIT_SALE_TXN_URL)
+	public String showEditSaleScreen(@RequestParam("txnId") String uniqueTxnNo, Model model, final HttpSession session, final HttpServletRequest req,
+			RedirectAttributes redirectAttrs, Locale locale) {
+		try {
+			if (StringUtils.isNotBlank(uniqueTxnNo)) {
+				TransactionDTO txnDTO = this.transactionService.searchTransactionDetails(uniqueTxnNo);
+				if (txnDTO != null) {
+					Map<BigInteger, List<ItemImage>> itemImagesMap =null;
+					if (txnDTO.getSaleLineItems() != null && !txnDTO.getSaleLineItems().isEmpty()) {
+						Set<BigInteger> itemIds = TransactionTransformer.retrieveItemIds(txnDTO.getSaleLineItems());
+						itemImagesMap = this.itemService.retrieveItems(itemIds);
+					}
+
+					Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnDTO.getTxn().getTransactionId().getLocationId());
+					SaleTransaction saleTxn = TransactionTransformer.transformSaleTxn(txnDTO, tenderMap, itemImagesMap);
+
+					this.updateBeansForModification(model, session, req, redirectAttrs, locale, saleTxn);
+					logger.info("The edit sale screen is ready for display now");
+				} else {
+					model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sale.edit.no.txn.found", null, locale));
+					logger.error("There is an error while retrieving customer for editing");
+				}
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sale.edit.no.txn", null, locale));
+				logger.error("There is an error while retrieving customer for editing");
+			}
+
+		} catch (Exception e) {
+			model.addAttribute(MVCConstants.ALERT, messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There is an error while showing the edit sale screen", e);
+		}
+		return ViewPathConstants.EDIT_SALE_TXN_PAGE;
+	}
+
+	/**
+	 * This method is to set all the bean objects in model needed for the return screen functionalities
+	 * 
+	 */
+	private void updateBeansForModification(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale,
+			SaleTransaction saleTxn) {
+		SearchBean searchBean = new SearchBean();
+		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
+		model.addAttribute(MVCConstants.CUSTOMER_BEAN, saleTxn.getCustomer());
+
+		TransactionHeader txnHeader = saleTxn.getTransactionHeader();
+		Integer locationId = txnHeader.getLocationId();
+		Integer registerId = txnHeader.getRegisterId();
+		SaleHeaderBean saleHeaderBean = new SaleHeaderBean();
+		saleHeaderBean.setLocationId(locationId);
+		saleHeaderBean.setRegisterId(registerId);
+		saleHeaderBean.setBusinessDate(txnHeader.getBusinessDate());
+
+		Location location = this.commonService.retrieveLocationDetails(locationId);
+		saleHeaderBean.setLocationName(location.getName());
+		saleHeaderBean.setGstNo(location.getGstNo());
+		saleHeaderBean.setDefaultTender(location.getDefaultTender());
+
+		List<Register> registers = this.commonService.retrieveRegisters(locationId);
+		if (registers != null && !registers.isEmpty()) {
+			for (Register register : registers) {
+				if (registerId.equals(register.getRegisterId().getRegister())) {
+					saleHeaderBean.setRegisterName(register.getName());
+					break;
+				}
+			}
+		}
+
+		List<TenderBean> tenderBeans = this.retrieveValidTenders(locationId);
+		model.addAttribute(MVCConstants.TENDER_BEANS, tenderBeans);
+		model.addAttribute(MVCConstants.SALE_HEADER_BEAN, saleHeaderBean);
+		model.addAttribute(MVCConstants.TXN_SALE_DTO, saleTxn);
+		model.addAttribute(MVCConstants.SHIPMENT_BEAN, saleTxn.getShipment());
+		model.addAttribute(MVCConstants.CUSTOMER_OR_BEAN, saleTxn.getOrderRequest());
+		logger.info("All the needed beans for sale transaction modification screen has been set in the model");
+
 	}
 
 	@GetMapping(ViewPathConstants.LAST_TXN_RCPT_URL)

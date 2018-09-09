@@ -142,6 +142,34 @@ public class TransactionController {
 		}
 
 	}
+	
+	@PostMapping(value = ViewPathConstants.TXN_EDITED_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	@Transactional
+	public TransactionHeader saveModifiedTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
+		Boolean result=null;
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
+		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
+		SaleTransactionReceipt txnReceipt = null;
+		if (txnIdDTO != null) {
+			TransactionId txnId = txnIdDTO.getTransactionId();
+			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
+			receiptDetails.setInvoiceNo(txnIdDTO.getInvoiceNo());
+			txnReceipt= this.generateReceiptPDFs(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
+
+		}
+
+		if (txnReceipt != null) {
+			logger.info("The txn details has been saved successfully");
+			return txnReceipt.getTransactionHeader();
+		} else {
+			logger.info("There was some error while saving transaction details");
+			return null;
+		}
+
+	}
+	
 
 	@PostMapping(value = ViewPathConstants.RETURN_TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody

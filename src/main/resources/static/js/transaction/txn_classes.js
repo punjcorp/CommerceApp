@@ -14,6 +14,7 @@ var TransactionId = function() {
 	this.registerId;
 	this.businessDate;
 	this.username;
+	this.uniqueTxnNo;
 }
 
 $.extend(TransactionId.prototype, {
@@ -116,6 +117,9 @@ var SaleLineItem = function(
 		suggestedPrice,
 		maxRetailPrice,
 		discount,
+		cgstCode,
+		sgstCode,
+		igstCode,
 		cgstTax,
 		sgstTax,
 		igstTax,
@@ -138,6 +142,9 @@ var SaleLineItem = function(
 		this.cgstTax = cgstTax;
 		this.sgstTax = sgstTax;
 		this.igstTax = igstTax;
+		this.cgstCode=cgstCode,
+		this.sgstCode=sgstCode,
+		this.igstCode=igstCode,
 		this.cgstTaxRate = cgstTaxRate;
 		this.sgstTaxRate = sgstTaxRate;
 		this.igstTaxRate = igstTaxRate;
@@ -154,6 +161,9 @@ var SaleLineItem = function(
 		this.suggestedPrice;
 		this.maxRetailPrice;
 		this.discount;
+		this.cgstCode,
+		this.sgstCode,
+		this.igstCode,
 		this.cgstTax;
 		this.sgstTax;
 		this.igstTax;
@@ -1162,11 +1172,16 @@ $.extend(SaleLineItem.prototype, {
 		else
 			itemImage = '/images/item_image_default_200.png';
 
+		var cgstCode;
+		var sgstCode;
+		var igstCode;
+		
 		var cgstTax;
 		var sgstTax;
+		var igstTax;
+
 		var cgstTaxRate;
 		var sgstTaxRate;
-		var igstTax;
 		var igstTaxRate;
 
 		var igstTaxLineItem;
@@ -1177,21 +1192,97 @@ $.extend(SaleLineItem.prototype, {
 		if (isGSTFlag=='I') {
 			igstTax = data.igstTax.amount;
 			igstTaxRate = data.igstTax.percentage;
+			igstCode = data.igstTax.typeCode;
 
-			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate);
+			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate, igstCode);
 		} else if(isGSTFlag=='S') {
 			cgstTax = data.cgstTax.amount;
 			cgstTaxRate = data.cgstTax.percentage;
+			cgstCode = data.cgstTax.typeCode;
+			
 			sgstTax = data.sgstTax.amount;
 			sgstTaxRate = data.sgstTax.percentage;
+			sgstCode = data.sgstTax.typeCode;
 
-			cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate);
-			sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate);
+			cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate, cgstCode);
+			sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate, sgstCode);
 		}
 
 		// calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
-		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstTax, sgstTax, igstTax,
+		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstCode, sgstCode, igstCode,cgstTax, sgstTax, igstTax,
+				cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
+
+		/**
+		 * Update the tax line items in the sale item
+		 */
+		if (isGSTFlag=='I') {
+			saleLineItem.taxLineItems.push(igstTaxLineItem);
+		} else if(isGSTFlag=='S'){
+			saleLineItem.taxLineItems.push(sgstTaxLineItem);
+			saleLineItem.taxLineItems.push(cgstTaxLineItem);
+		}
+
+		return saleLineItem;
+	},
+	parseRetrievedSaleLineItem : function(data) {
+		var itemId = data.itemId;
+		var hsnNo = data.hsnNo;
+		var itemName = data.itemDesc;
+		var itemDesc = data.itemDesc;
+		var qty = data.qty;
+		var unitPrice = data.unitPrice;
+		var price = data.extendedAmount;
+		var suggestedPrice = data.suggestedPrice;
+		var maxRetailPrice = data.maxRetailPrice;
+		var discount = data.discount;
+
+		var itemImage = '';
+		if (data.imageType && data.imageType.length > 0)
+			itemImage = 'data:' + data.imageType + ';base64,' + data.imageData;
+		else
+			itemImage = '/images/item_image_default_200.png';
+
+		var cgstCode;
+		var sgstCode;
+		var igstCode;
+		
+		var cgstTax;
+		var sgstTax;
+		var igstTax;
+
+		var cgstTaxRate;
+		var sgstTaxRate;
+		var igstTaxRate;
+
+		var igstTaxLineItem;
+		var sgstTaxLineItem;
+		var cgstTaxLineItem;
+
+		// Retrieve tax and check for tax types
+		if (isGSTFlag=='I') {
+			igstTax = data.igstTax;
+			igstTaxRate = data.igstTaxRate;
+			igstCode = data.igstCode;
+
+			igstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.igstRateRuleId, igstTax, igstTaxRate, igstCode);
+		} else if(isGSTFlag=='S') {
+			
+			cgstTax = data.cgstTax;
+			cgstTaxRate = data.cgstTaxRate;
+			cgstCode = data.cgstCode;
+			
+			sgstTax = data.sgstTax;
+			sgstTaxRate = data.sgstTaxRate;
+			sgstCode = data.sgstCode;
+			
+			cgstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.taxRateRuleId, cgstTax, cgstTaxRate, cgstCode);
+			sgstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.taxRateRuleId, sgstTax, sgstTaxRate, sgstCode);
+		}
+
+		// calculate the total for item after taxes and everything for sale item
+		var itemTotal = Math.round(data.grossAmount);
+		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstCode, sgstCode, igstCode,cgstTax, sgstTax, igstTax,
 				cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
 
 		/**
@@ -1214,13 +1305,14 @@ $.extend(SaleLineItem.prototype, {
 /**
  * Class definition for Tax Line Item Starts
  */
-var TaxLineItem = function(itemId, taxGroupId, taxRuleRateId, totalTaxAmt, taxRuleRate) {
+var TaxLineItem = function(itemId, taxGroupId, taxRuleRateId, totalTaxAmt, taxRuleRate, taxCode) {
 	this.txnId = new TransactionId();
 
 	this.seqNo;
 	this.itemId = itemId;
 	this.taxGroupId = taxGroupId;
 	this.taxRuleRateId = taxRuleRateId;
+	this.taxCode = taxCode;
 	this.totalTaxAmt = totalTaxAmt;
 	this.totalTaxableAmt = 0.00;
 	this.totalTaxExemptAmt = 0.00;
@@ -1416,6 +1508,34 @@ $.extend(SaleTransaction.prototype, {
 	},
 	preSaveActions : function() {
 		this.addTxnSeqs();
+	},
+	saveEditedTxnDetails : function() {
+		this.preSaveActions();
+
+		var token = $("meta[name='_csrf']").attr("content");
+		var formdata = JSON.stringify(this);
+		// AJAX call here and refresh the sell item page with receipt printing
+		$.ajax({
+			url : '/pos/save_edited_txn',
+			type : 'POST',
+			cache : false,
+			data : formdata,
+			contentType : "application/json; charset=utf-8",
+			dataType : "json",
+			success : function(data) {
+				postTxnSave(data);
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('X-CSRF-TOKEN', token)
+			}
+		});
+		
+		var finalData=this;
+		var token = $("meta[name='_csrf']").attr("content");
+		var formdata = JSON.stringify(this);
+		
+		
+		
 	},
 	saveTxnDetails : function() {
 		this.preSaveActions();

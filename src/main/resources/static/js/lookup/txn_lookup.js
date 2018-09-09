@@ -43,7 +43,8 @@ $(function() {
 		    { "name": "customerName" },
 		    { "name": "createdBy" },
 		    { "name": "totalTax" },
-		    { "name": "totalAmount" } ]
+		    { "name": "totalAmount" },
+		    { "name": "actions" } ]
     } );
 	
 	txnDataTable.buttons().container().appendTo( $('#tableBtns') );
@@ -164,7 +165,7 @@ function parseTxnItems(txnDetails){
 		itemDetailHtml+=i18next.t('common_currency_sign_inr') + ' ' +saleItem.taxAmount.toFixed(2);
 		itemDetailHtml+='</div>';
 		itemDetailHtml+='<div class="col">';
-		itemDetailHtml+= i18next.t('common_currency_sign_inr') + ' ' +saleItem.itemTotal.toFixed(2);
+		itemDetailHtml+= i18next.t('common_currency_sign_inr') + ' ' +Math.round(saleItem.grossAmount).toFixed(2);
 		itemDetailHtml+='</div>';
 		itemDetailHtml+='</div>';
 	});
