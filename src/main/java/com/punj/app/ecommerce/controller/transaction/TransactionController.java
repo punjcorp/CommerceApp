@@ -145,17 +145,16 @@ public class TransactionController {
 	
 	@PostMapping(value = ViewPathConstants.TXN_EDITED_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	@Transactional
 	public TransactionHeader saveModifiedTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		Boolean result=null;
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
-		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
+		TxnIdDTO txnIdDTO = this.transactionService.updateSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnIdDTO != null) {
 			TransactionId txnId = txnIdDTO.getTransactionId();
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			receiptDetails.setInvoiceNo(txnIdDTO.getInvoiceNo());
+			receiptDetails.setInvoiceNo(saleTxn.getInvoiceNo());
 			txnReceipt= this.generateReceiptPDFs(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
 		}

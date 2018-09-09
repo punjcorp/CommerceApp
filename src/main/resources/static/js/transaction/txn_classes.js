@@ -1276,8 +1276,8 @@ $.extend(SaleLineItem.prototype, {
 			sgstTaxRate = data.sgstTaxRate;
 			sgstCode = data.sgstCode;
 			
-			cgstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.taxRateRuleId, cgstTax, cgstTaxRate, cgstCode);
-			sgstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.taxRateRuleId, sgstTax, sgstTaxRate, sgstCode);
+			cgstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.cgstRateRuleId, cgstTax, cgstTaxRate, cgstCode);
+			sgstTaxLineItem = new TaxLineItem(data.itemId, data.taxGroupId, data.sgstRateRuleId, sgstTax, sgstTaxRate, sgstCode);
 		}
 
 		// calculate the total for item after taxes and everything for sale item
@@ -1472,6 +1472,7 @@ var SaleTransaction = function() {
 	this.customer = new Customer();
 	this.orderRequest=new OrderRequest();
 	this.shipment=new Shipment();
+	this.invoiceNo;
 	
 }
 
@@ -1597,7 +1598,15 @@ function startNewReturnTxn(){
 	window.location.href = newTxnURL;
 }
 
+function editTxn(){
+	var editTxnURL=edit_txn_prefix;
+	window.location.href = editTxnURL;
+}
 
+function showTxnLookup(){
+	var txnLookupURL=txn_lookup_prefix;
+	window.location.href = txnLookupURL;
+}
 
 
 

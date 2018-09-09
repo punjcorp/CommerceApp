@@ -303,6 +303,14 @@ $(function() {
 		startNewReturnTxn();
 	});		
 
+	$('#btnEditTxn').click(function() {
+		editTxn();
+	});
+	
+	$('#btnTxnLookup').click(function() {
+		showTxnLookup();
+	});	
+	
 	$('#btnPrintReceiptAndNewTxn').click(function() {
         printTxnReceipt();
 	});

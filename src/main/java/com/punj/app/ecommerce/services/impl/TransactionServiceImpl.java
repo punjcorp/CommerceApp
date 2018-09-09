@@ -291,6 +291,16 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 		return txnDetails;
 	}
+	
+	@Override
+	public Transaction updateTransaction(Transaction txnDetails) {
+			txnDetails = this.transactionRepository.save(txnDetails);
+			if(txnDetails!=null)
+				logger.info("The transaction has been created based on provided details successfully.");
+			else
+				logger.error("The modified transaction header save has failed!!");
+		return txnDetails;
+	}
 
 	@Override
 	public Transaction createTransactionInstance(TransactionIdDTO txnIdDTO, String username, String txnType) {
@@ -447,6 +457,16 @@ public class TransactionServiceImpl implements TransactionService {
 	@Override
 	@Transactional
 	public TxnIdDTO updateSaleTransaction(TransactionDTO txnDTO) {
+		
+		TransactionId txnIdDetails=txnDTO.getTxn().getTransactionId();
+		if(txnIdDetails!=null) {
+			//Delete all the existing details of the transaction
+			this.deleteAllTxnDetails(txnIdDetails);
+			
+		}
+		
+		
+		
 		TxnIdDTO txnIdDTO = new TxnIdDTO();
 		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
 		Customer customer = txnDTO.getCustomer();
@@ -478,7 +498,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 		TransactionId txnId = null;
 		Transaction txnDetails = txnDTO.getTxn();
-		Transaction txnHeader = this.saveTransaction(txnDetails);
+		Transaction txnHeader = this.updateTransaction(txnDetails);
 		if (txnHeader != null) {
 			logger.info("The {} transaction header details has been saved successfully", txnHeader.getTxnType());
 			txnId = txnHeader.getTransactionId();
@@ -487,10 +507,6 @@ public class TransactionServiceImpl implements TransactionService {
 				txnId = null;
 			}
 			txnIdDTO.setTransactionId(txnId);
-			BigInteger invoiceNo = this.txnSeqService.saveTransactionSeqs(txnHeader);
-			if (invoiceNo != null && txnId != null) {
-				txnIdDTO.setInvoiceNo(invoiceNo);
-			}
 
 			if (txnCustomer != null && accountHead != null) {
 				txnCustomer.getTransactionCustomerId().setTransactionSeq(txnId.getTransactionSeq());
@@ -509,12 +525,12 @@ public class TransactionServiceImpl implements TransactionService {
 				}
 			}
 
-			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
+		/*	this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
 			logger.info("The credit tender details has been added to Customer account now");
 
 			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getCreatedBy());
 			this.inventoryService.updateInventory(itemStockDetails);
-			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());
+			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());*/
 		} else {
 			logger.info("There is some issue while saving sale transaction header details");
 		}
@@ -1017,4 +1033,60 @@ public class TransactionServiceImpl implements TransactionService {
 
 	}
 
+	private void deleteAllTxnDetails(TransactionId txnId) {
+
+		
+		TransactionLineItemId  txnLineItemId=new TransactionLineItemId();
+		txnLineItemId.setBusinessDate(txnId.getBusinessDate());
+		txnLineItemId.setLocationId(txnId.getLocationId());
+		txnLineItemId.setRegister(txnId.getRegister());
+		txnLineItemId.setTransactionSeq(txnId.getTransactionSeq());
+		
+		
+		
+		TaxLineItem taxLineItem=new TaxLineItem();
+		taxLineItem.setTransactionLineItemId(txnLineItemId);
+		List<TaxLineItem> taxLineItems=this.taxLineItemRepository.findAll(Example.of(taxLineItem));
+		if(taxLineItems!=null && !taxLineItems.isEmpty()) {
+			this.taxLineItemRepository.delete(taxLineItems);
+			logger.info("The existing sale line item tax details from the transaction has been deleted successfully");
+		}
+		
+		
+		TenderLineItem tenderLineItem=new TenderLineItem();
+		tenderLineItem.setTransactionLineItemId(txnLineItemId);
+		
+		List<TenderLineItem> tenderLineItems=this.tenderLineItemRepository.findAll(Example.of(tenderLineItem));
+		if(tenderLineItems!=null && !tenderLineItems.isEmpty()) {
+			this.tenderLineItemRepository.delete(tenderLineItems);
+			logger.info("The existing tender details from the transaction has been deleted successfully");
+		}
+		
+
+		SaleLineItem saleLineItem=new SaleLineItem();
+		SaleLineItemId saleLineItemId=new SaleLineItemId();
+		saleLineItemId.setBusinessDate(txnId.getBusinessDate());
+		saleLineItemId.setLocationId(txnId.getLocationId());
+		saleLineItemId.setRegister(txnId.getRegister());
+		saleLineItemId.setTransactionSeq(txnId.getTransactionSeq());
+		saleLineItem.setSaleLineItemId(saleLineItemId);
+		
+		List<SaleLineItem> saleLineItems=this.saleLineItemRepository.findAll(Example.of(saleLineItem));
+		if(saleLineItems!=null && !saleLineItems.isEmpty()) {
+			this.saleLineItemRepository.delete(saleLineItems);
+			logger.info("The existing sale line item details from the transaction has been deleted successfully");
+		}
+		
+		TransactionLineItem txnLineItem=new TransactionLineItem();
+		txnLineItem.setTransactionLineItemId(txnLineItemId);
+		
+		List<TransactionLineItem> txnLineItems=this.transactionLineItemRepository.findAll(Example.of(txnLineItem));
+		if(txnLineItems!=null && !txnLineItems.isEmpty()) {
+			this.transactionLineItemRepository.delete(txnLineItems);
+			logger.info("The existing line item master details from the transaction has been deleted successfully");
+		}
+				
+		
+	}
+	
 }

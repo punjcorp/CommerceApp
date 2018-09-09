@@ -17,6 +17,8 @@ var TxnAction = function() {
 	this.orderRequest=new OrderRequest();
 	this.shipment=new Shipment();
 	
+	this.invoiceNo;
+	
 	this.saleItemList = new Array();
 	this.tenderLineItems = new Array();
 	this.remainingAmount = 0.00;
@@ -363,6 +365,7 @@ $.extend(TxnAction.prototype, {
 		this.saleTxn.customer = this.customer;
 		this.saleTxn.shipment = this.shipment;
 		this.saleTxn.orderRequest = this.orderRequest;
+		this.saleTxn.invoiceNo=this.invoiceNo;
 
 		if(typeof(this.saleTxn.transactionHeader.txnNo)!=="undefined" && this.saleTxn.transactionHeader.txnNo!=undefined && this.saleTxn.transactionHeader.txnNo!="")
 			this.saleTxn.saveEditedTxnDetails();

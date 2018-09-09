@@ -46,16 +46,11 @@ function parseRetrievedTxnHeader(txn_saleTxnDTO, openLocGSTNo, billingLocGSTNo){
 	}else if(openLocState=='' && billingLocState!=''){
 		isGSTFlag='N';
 	}
-	txnAction.txnHeader.applicableTax=isGSTFlag;
-	
-	
-	
-	
-	txnHeader.applicableTax=txn_saleTxnDTO.transactionHeader.applicableTax;
-	
+	txnHeader.applicableTax=isGSTFlag;
 	
 	
 	txnAction.txnHeader = txnHeader;
+	txnAction.invoiceNo = txn_saleTxnDTO.invoiceNo;
 
 }
 

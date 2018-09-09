@@ -25,6 +25,8 @@ import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 public interface TransactionService {
 
 	public Transaction saveTransaction(Transaction txnDetails);
+	
+	public Transaction updateTransaction(Transaction txnDetails);
 
 	public Transaction createTransactionInstance(TransactionIdDTO txnIdDTO, String username, String txnType);
 

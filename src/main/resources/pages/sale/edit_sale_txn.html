@@ -384,6 +384,9 @@
 		var new_txn_prefix= /*[[@{/pos/sale}]]*/;
 		var new_return_txn_prefix= /*[[@{/pos/return_txn}]]*/;
 		
+		var edit_txn_prefix= /*[[@{/admin/edit_sale_txn(txnId=${saleTxnDTO.transactionHeader.uniqueTxnNo})}]]*/;
+		var txn_lookup_prefix= /*[[@{/admin/transaction_lookup}]]*/;
+		
 		var register_close_url= /*[[@{/pos/close_register(registerId)}]]*/;
 		var store_close_url= /*[[@{/pos/close_store(storeId)}]]*/;
 		
@@ -494,13 +497,18 @@
 						<button type="button" class="btn btn-info p-3 m-2" id="btnPrintReceiptAndNewTxn">
 							<i class="fas fa-print fa-5x"></i>
 						</button>
+
+						<button type="button" class="btn btn-info p-3 m-2" id="btnEditTxn">
+							<span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-pencil-alt"></i>
+							</span>
+						</button>
+						<button type="button" class="btn btn-info p-3 m-2" id="btnTxnLookup">
+							<span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-shopping-cart"></i> <i class="fas fa-search"
+								data-fa-transform="shrink-10 right-12 up-4"></i>
+							</span>
+						</button>
 						<button type="button" class="btn btn-info p-3 m-2" id="btnNewSaleTxn">
 							<i class="fas fa-cart-plus fa-5x" data-fa-transform="flip-h"></i>
-						</button>
-						<button type="button" class="btn btn-info p-3 m-2" id="btnNewReturnTxn">
-							<span class="fa-layers fa-fw fa-5x"> <i class="fas fa-shopping-cart" data-fa-transform="flip-H"></i> <i
-								class="fas fa-minus-circle icon-blue-theme" data-fa-transform="shrink-10 right--2 up-2"></i>
-							</span>
 						</button>
 					</div>
 					<div class="col-12 d-none text-center" id="progressDiv">
