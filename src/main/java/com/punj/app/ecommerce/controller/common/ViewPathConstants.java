@@ -332,6 +332,8 @@ public final class ViewPathConstants {
 	public static final String STORE_OPEN_URL="/pos/open_store";
 	public static final String STORE_OPEN_PAGE="dailydeeds/store_open";
 	
+	public static final String CREATE_REGISTER_URL="/pos/create_new_register";
+	
 	public static final String REGISTER_OPEN_URL="/pos/open_register";
 	public static final String REGISTER_OPEN_PAGE="dailydeeds/register_open";
 	

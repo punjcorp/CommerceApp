@@ -84,74 +84,74 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="28" splitType="Stretch">
-			<textField>
-				<reportElement x="429" y="2" width="39" height="24" uuid="690fed5e-afcc-4b9f-82fe-ab2719936e5a"/>
-				<textElement markup="html">
-					<font fontName="Calibri" size="8"/>
+		<band height="37" splitType="Stretch">
+			<textField pattern="Rs #0.00">
+				<reportElement x="388" y="8" width="79" height="28" uuid="e805b39f-0bca-40de-867a-a69c70f9be1d"/>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{applicableTax}!=null && $F{applicableTax}=="I")?$F{igstTaxAmount}+"<br>("+$F{igstTaxRate}+" %)":""]]></textFieldExpression>
+			</textField>
+			<textField pattern="Rs #0.00">
+				<reportElement x="388" y="8" width="49" height="28" uuid="690fed5e-afcc-4b9f-82fe-ab2719936e5a"/>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{applicableTax}!=null && $F{applicableTax}=="S")?$F{sgstTaxAmount}+"<br>("+$F{sgstTaxRate}+" %)":""]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="469" y="2" width="39" height="24" uuid="450d8215-cbc3-4712-a9ac-d29e88d746f9"/>
-				<textElement markup="html">
-					<font fontName="Calibri" size="8"/>
+			<textField pattern="Rs #0.00">
+				<reportElement x="438" y="8" width="49" height="28" uuid="450d8215-cbc3-4712-a9ac-d29e88d746f9"/>
+				<textElement textAlignment="Center" markup="html">
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{applicableTax}!=null && $F{applicableTax}=="S")?$F{cgstTaxAmount}+"<br>("+$F{cgstTaxRate}+" %)":""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="430" y="2" width="79" height="24" uuid="e805b39f-0bca-40de-867a-a69c70f9be1d"/>
-				<textElement textAlignment="Center" markup="html">
-					<font fontName="Calibri" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{applicableTax}!=null && $F{applicableTax}=="I")?$F{igstTaxAmount}+"<br>("+$F{igstTaxRate}+" %)":""]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="2" width="18" height="11" uuid="20937bb1-a56d-43b6-b989-968a05707b70"/>
+				<reportElement x="18" y="8" width="18" height="14" uuid="20937bb1-a56d-43b6-b989-968a05707b70"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{seqNo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="18" y="2" width="164" height="24" uuid="3b89d791-5f1c-4df6-b1d3-43b3bc2bbb48"/>
+				<reportElement stretchType="RelativeToBandHeight" x="36" y="8" width="146" height="28" uuid="3b89d791-5f1c-4df6-b1d3-43b3bc2bbb48"/>
 				<textElement markup="html">
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{itemId}+" - "+$F{itemName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{itemName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="244" y="2" width="65" height="11" uuid="ea8e9dce-3df0-44b8-ade5-eae75aca5933"/>
+				<reportElement x="238" y="8" width="59" height="14" uuid="ea8e9dce-3df0-44b8-ade5-eae75aca5933"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="2" width="49" height="11" uuid="43a56cd2-af92-424b-b0b0-bc655f6de82d"/>
+				<reportElement x="298" y="8" width="29" height="14" uuid="43a56cd2-af92-424b-b0b0-bc655f6de82d"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="360" y="2" width="69" height="11" uuid="938b4aaf-ee47-4b36-a158-886accc34140"/>
+			<textField pattern="#0.00">
+				<reportElement x="328" y="8" width="59" height="14" uuid="938b4aaf-ee47-4b36-a158-886accc34140"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{extendedAmount}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="510" y="2" width="64" height="11" uuid="7a7a4aba-bd12-4f22-a031-4db3bf13a1e6"/>
-				<textElement>
-					<font fontName="Calibri" size="8"/>
+			<textField pattern="#0.00">
+				<reportElement x="488" y="8" width="64" height="14" uuid="7a7a4aba-bd12-4f22-a031-4db3bf13a1e6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{grossAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="184" y="2" width="59" height="11" uuid="07ac6fe7-27df-433f-9613-f843f3f81a90"/>
+				<reportElement x="184" y="8" width="53" height="14" uuid="07ac6fe7-27df-433f-9613-f843f3f81a90"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{hsnNo}]]></textFieldExpression>
 			</textField>

@@ -22,6 +22,7 @@ public class LocationBean {
 	private String address1;
 	private String address2;
 	private String city;
+	private String district;
 	private String state;
 	private String stateCode;
 	private String country;
@@ -370,6 +371,20 @@ public class LocationBean {
 	 */
 	public void setPanNo(String panNo) {
 		this.panNo = panNo;
+	}
+
+	/**
+	 * @return the district
+	 */
+	public String getDistrict() {
+		return district;
+	}
+
+	/**
+	 * @param district the district to set
+	 */
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 }

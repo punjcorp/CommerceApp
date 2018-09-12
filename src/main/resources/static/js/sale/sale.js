@@ -478,6 +478,10 @@ function deleteTender(deleteIndex) {
 
 function reCalculateTenders() {
 	var totalDueAmt = +$('#hc_totalDueAmt').val();
+	if(typeof(totalDueAmt)!=="undefined" && totalDueAmt!=undefined && totalDueAmt!="" && totalDueAmt>0){
+		$('#btnCompleteTxn').addClass('d-none');
+		$('#btnTenderOK').removeClass('d-none');
+	}
 	txnAction.calculateDue(0.00, totalDueAmt, 'Cash');
 }
 
@@ -535,7 +539,7 @@ function printTxnReceipt(){
 		contentType : "application/json; charset=utf-8",
 		dataType : "json",
 		success : function(data) {
-			startNewTxn();
+			startNewSaleTxn();
 		},
 		beforeSend : function(xhr) {
 			xhr.setRequestHeader('X-CSRF-TOKEN', token)
@@ -701,7 +705,7 @@ function updateSaleTxnDetails(txn_saleTxnDTO){
 	
 	$('#div_txn_customer_dtls').removeClass('d-none');
 	$('#div_txn_header_dtls').removeClass('d-none');
-	$('#tenderLineItemContainer').removeClass('d-none');
+	//$('#tenderLineItemContainer').removeClass('d-none');
 	$('#tenderOptionsContainer').removeClass('d-none');
 	
 }

@@ -49,6 +49,7 @@ public class Location implements Serializable {
 	private String address1;
 	private String address2;
 	private String city;
+	private String district;
 	private String state;
 	private String country;
 	private String pincode;
@@ -402,6 +403,20 @@ public class Location implements Serializable {
 	 */
 	public String getGstNo() {
 		return gstNo;
+	}
+
+	/**
+	 * @return the district
+	 */
+	public String getDistrict() {
+		return district;
+	}
+
+	/**
+	 * @param district the district to set
+	 */
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 	/**

@@ -651,4 +651,14 @@ public class CommonServiceImpl implements CommonService {
 		return states;
 	}
 
+	@Override
+	public Register saveRegister(Register register) {
+		register=this.registerRepository.save(register);
+		if(register!=null)
+			logger.info("The register has been saved {} successfully for location{}.",register.getRegisterId().getRegister(), register.getRegisterId().getLocationId());
+		else
+			logger.error("There was some issue while saving provided register !!");
+		return register;
+	}
+
 }

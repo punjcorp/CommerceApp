@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -66,6 +67,11 @@ public class LocationOpeningController {
 	private TransactionService txnService;
 	private RegisterOpenValidator registerOpenValidator;
 
+	
+	@Value("${commerce.default.location}")
+	private Integer defaultLocation;
+
+	
 	/**
 	 * @param registerOpenValidator
 	 *            the registerOpenValidator to set
@@ -140,7 +146,7 @@ public class LocationOpeningController {
 				dailyDeedBean.setReferrerURL(referrerURL);
 
 			// Change this later on and make it an ajax call based on store selected from store open screen
-			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(7997);
+			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(this.defaultLocation);
 			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
 			dailyDeedBean.setTenders(tenderBeans);
 			this.updateBeans(dailyDeedBean, model);

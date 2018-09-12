@@ -16,7 +16,8 @@ $(function() {
 						resources : { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
 							en : {
 								translation : {
-									common_currency_sign_inr : '₹',
+									//common_currency_sign_inr : '₹',
+									common_currency_sign_inr : 'Rs.',
 									tooltip_btn_delete_tender_line_item : 'Delete Tender Line Item',
 									tooltip_btn_delete_sale_line_item : 'Delete Sale Line Item',
 									tooltip_btn_delete_return_line_item : 'Delete Return Line Item',
@@ -41,7 +42,8 @@ $(function() {
 									sale_txn_lbl_igst : 'IGST',
 									sale_txn_lbl_item_total : 'Item Total',
 									sale_txn_lbl_discount_percent : '%',
-									sale_txn_lbl_discount_amount : '₹',
+									//sale_txn_lbl_discount_amount : '₹',
+									sale_txn_lbl_discount_amount : 'Rs',
 									error_simple_alert_header : 'Alert Message',
 									error_confirmation_alert_header : 'Confirmation Message',
 									alert_btn_ok : 'OK',
@@ -105,6 +107,7 @@ $(function() {
 									screeen_lbl_placeholder_address_pincode : 'Enter Pincode',
 									screeen_error_zero_address : 'There is no address existing!',
 									error_confirm_customer_delete : 'The deletion of customer(s) will also destroy the finance account(s)!!<br> Do you want to Approve the Deletion?',
+									error_register_already_closed_today: 'This register has been closed for current business date!!<br><br> Please open another register if you want to perform transactions with current business date',
 								}
 							},
 							hi : {

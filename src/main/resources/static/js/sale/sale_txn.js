@@ -120,6 +120,9 @@ $.extend(TxnAction.prototype, {
 				modifiedSaleItem.calculateAllAmounts(itemId);
 				this.renderHeaderTotals();
 				modifiedSaleItem.updateModifiedItemValues();
+				return true;
+			}else{
+				return false;
 			}
 		}
 

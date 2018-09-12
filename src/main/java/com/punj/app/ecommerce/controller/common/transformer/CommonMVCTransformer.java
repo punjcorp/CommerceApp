@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,16 +146,16 @@ public class CommonMVCTransformer {
 		locationBean.setName(location.getName());
 		locationBean.setDefaultTender(location.getDefaultTender());
 		locationBean.setGstNo(location.getGstNo());
-		if(location.getGstNo()!=null && location.getGstNo().length()==15) {
+		if (location.getGstNo() != null && location.getGstNo().length() == 15) {
 			locationBean.setPanNo(location.getGstNo().substring(2, 12));
 			locationBean.setStateCode(location.getGstNo().substring(0, 2));
 		}
-			
-		
+
 		if (!partial) {
 			locationBean.setAddress1(location.getAddress1());
 			locationBean.setAddress2(location.getAddress2());
 			locationBean.setCity(location.getCity());
+			locationBean.setDistrict(location.getDistrict());
 			locationBean.setState(location.getState());
 			locationBean.setCountry(location.getCountry());
 			locationBean.setPincode(location.getPincode());
@@ -167,15 +168,14 @@ public class CommonMVCTransformer {
 		return locationBean;
 	}
 
-	public static List<RegisterBean> transformRegisterDTO(RegisterDTO registerDTO) {
+	public static List<RegisterBean> transformRegisterDTO(RegisterDTO registerDTO, LocalDateTime businessDate) {
 		RegisterBean registerBean = null;
 		List<RegisterBean> registers = null;
 		Integer regId = null;
 		Transaction txnDetails;
 		DailyTotals regTotals = null;
-		List<TenderCount> regCounts=null;
+		List<TenderCount> regCounts = null;
 		ConcilationBean concilationBean = null;
-		
 
 		Map<Integer, Transaction> lastTxnStatusTxns = registerDTO.getLastTxnStatus();
 		Map<Integer, List<TenderCount>> regTenderCounts = registerDTO.getRegTenderTotals();
@@ -187,22 +187,22 @@ public class CommonMVCTransformer {
 			for (Register register : registerList) {
 				regId = register.getRegisterId().getRegister();
 				registerBean = CommonMVCTransformer.transformRegisterDomain(register);
-				
-				if(lastTxnStatusTxns!=null && !lastTxnStatusTxns.isEmpty()) {
+
+				if (lastTxnStatusTxns != null && !lastTxnStatusTxns.isEmpty()) {
 					txnDetails = lastTxnStatusTxns.get(regId);
-					CommonMVCTransformer.updateRegisterTxnStatus(registerBean, txnDetails);
+					CommonMVCTransformer.updateRegisterTxnStatus(registerBean, txnDetails, businessDate);
 				}
-				if(regDailyTotals!=null) {
-					regCounts=null;
+				if (regDailyTotals != null) {
+					regCounts = null;
 					regTotals = regDailyTotals.get(regId);
-					if(regTenderCounts!=null) 
+					if (regTenderCounts != null)
 						regCounts = regTenderCounts.get(regId);
-					if(regTotals!=null) {
+					if (regTotals != null) {
 						concilationBean = CommonMVCTransformer.transformRegTotal(regTotals, regCounts);
 						registerBean.setConcilationDtls(concilationBean);
 					}
 				}
-				
+
 				registers.add(registerBean);
 			}
 		}
@@ -218,25 +218,25 @@ public class CommonMVCTransformer {
 		concilationBean.setLocationId(regTotals.getLocationId());
 		concilationBean.setRegister(regTotals.getRegisterId());
 
-		if(regTenderCounts!=null && !regTenderCounts.isEmpty()) {
-			List<TenderBean> tenders=CommonMVCTransformer.transformTenderCounts(regTenderCounts);
+		if (regTenderCounts != null && !regTenderCounts.isEmpty()) {
+			List<TenderBean> tenders = CommonMVCTransformer.transformTenderCounts(regTenderCounts);
 			concilationBean.setTenders(tenders);
 		}
-		
+
 		return concilationBean;
 	}
 
 	public static List<TenderBean> transformTenderCounts(List<TenderCount> tenderCounts) {
-		List<TenderBean> tenders=new ArrayList<>(tenderCounts.size());
+		List<TenderBean> tenders = new ArrayList<>(tenderCounts.size());
 		TenderBean tenderBean = null;
-		for(TenderCount tenderCount: tenderCounts) {
-			tenderBean= CommonMVCTransformer.transformTenderCount(tenderCount);
+		for (TenderCount tenderCount : tenderCounts) {
+			tenderBean = CommonMVCTransformer.transformTenderCount(tenderCount);
 			tenders.add(tenderBean);
 		}
 		logger.info("The tender details for all the tender counts has been transformed successfully");
 		return tenders;
-	}	
-	
+	}
+
 	public static TenderBean transformTenderCount(TenderCount tenderCount) {
 		TenderBean tenderBean = new TenderBean();
 		tenderBean.setCalMCount(tenderCount.getMediaCount());
@@ -246,12 +246,12 @@ public class CommonMVCTransformer {
 		tenderBean.setTenderId(tenderCount.getTenderCountId().getTender().getTenderId());
 		tenderBean.setTndrType(tenderCount.getTenderCountId().getTender().getType());
 		List<TenderDenomination> denominations = tenderCount.getDenominations();
-		if(denominations!=null && !denominations.isEmpty()) {
-			List<DenominationBean> denomList =CommonMVCTransformer.transformDenominationList(denominations);
+		if (denominations != null && !denominations.isEmpty()) {
+			List<DenominationBean> denomList = CommonMVCTransformer.transformDenominationList(denominations);
 			tenderBean.setDenominations(denomList);
 		}
 		logger.info("The tender details has been transformed successfully");
-		
+
 		return tenderBean;
 
 	}
@@ -264,7 +264,7 @@ public class CommonMVCTransformer {
 			denomList.add(denomBean);
 		}
 		logger.info("The denomination bean list has the transformed tender denomination domain objects now");
-		
+
 		return denomList;
 	}
 
@@ -292,7 +292,7 @@ public class CommonMVCTransformer {
 		return registerBean;
 	}
 
-	public static void updateRegisterTxnStatus(RegisterBean registerBean, Transaction txnDetails) {
+	public static void updateRegisterTxnStatus(RegisterBean registerBean, Transaction txnDetails, LocalDateTime businessDate) {
 		if (txnDetails != null) {
 			String txnType = txnDetails.getTxnType();
 			registerBean.setLastBusinessDate(txnDetails.getTransactionId().getBusinessDate());
@@ -301,6 +301,9 @@ public class CommonMVCTransformer {
 			if (txnDetails.getTxnType().equals(ServiceConstants.TXN_OPEN_REGISTER)) {
 				registerBean.setEligibleForRegisterOpen(Boolean.FALSE);
 				registerBean.setLastOpenedBy(txnDetails.getCreatedBy());
+			} else if (txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER) && txnDetails.getTransactionId().getBusinessDate().equals(businessDate)) {
+				registerBean.setEligibleForRegisterOpen(Boolean.FALSE);
+				registerBean.setIsClosedToday(Boolean.TRUE);
 			} else {
 				registerBean.setEligibleForRegisterOpen(Boolean.TRUE);
 			}

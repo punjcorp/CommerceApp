@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="net.sf.jasperreports.JR_CONTAINER"/>
 	<classpathentry kind="con" path="com.jaspersoft.server.JRS_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/repos/PI-POS-INDUSTRY/assemble/reports/pi_pos_app.jar"/>
 	<classpathentry kind="lib" path="D:/repos/PI-POS-INDUSTRY/assemble/reports/pi_pos_fonts.jar"/>
+	<classpathentry kind="lib" path="D:/repos/PI-POS-INDUSTRY/assemble/reports/pi_pos_app.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

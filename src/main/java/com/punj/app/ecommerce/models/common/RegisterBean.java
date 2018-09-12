@@ -4,7 +4,10 @@
 package com.punj.app.ecommerce.models.common;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
 
@@ -14,8 +17,11 @@ import com.punj.app.ecommerce.models.dailydeeds.ConcilationBean;
  */
 public class RegisterBean {
 
+	@NotNull
 	private Integer locationId;
+	@NotNull
 	private Integer registerId;
+	@NotEmpty
 	private String name;
 
 	private String createdBy;
@@ -26,6 +32,7 @@ public class RegisterBean {
 	private String lastStatus;
 	private Boolean eligibleForRegisterOpen = Boolean.TRUE;
 	private String lastOpenedBy;
+	private Boolean isClosedToday = Boolean.FALSE;
 
 	private ConcilationBean concilationDtls;
 
@@ -192,6 +199,21 @@ public class RegisterBean {
 	 */
 	public void setConcilationDtls(ConcilationBean concilationDtls) {
 		this.concilationDtls = concilationDtls;
+	}
+
+	/**
+	 * @return the isClosedToday
+	 */
+	public Boolean getIsClosedToday() {
+		return isClosedToday;
+	}
+
+	/**
+	 * @param isClosedToday
+	 *            the isClosedToday to set
+	 */
+	public void setIsClosedToday(Boolean isClosedToday) {
+		this.isClosedToday = isClosedToday;
 	}
 
 }

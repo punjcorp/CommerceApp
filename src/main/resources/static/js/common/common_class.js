@@ -245,3 +245,14 @@ $.extend(Utils.prototype, {
 
 });
 
+
+
+var Register = function() {
+	this.registerId;
+	this.name;
+	this.locationId;
+}
+
+$.extend(Register.prototype, {
+	
+});

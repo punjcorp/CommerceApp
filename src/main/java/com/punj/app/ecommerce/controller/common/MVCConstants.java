@@ -60,7 +60,7 @@ public final class MVCConstants {
 	
 	
 	
-	
+	public static final String RCPT_PRINTER_NAME="PRINTER_NAME";
 	public static final String LAST_PAYMENT_NO="LAST_PAYMENT_NO";
 	public static final String LAST_TXN_NO="LAST_TXN_NO";
 	public static final String TXN_ID_PARAM="txnId";
@@ -188,6 +188,11 @@ public final class MVCConstants {
 	public static final String USER_PASSWORD_BEAN_PARAM= "userDetails";
 	public static final String USER_BEAN_PARAM= "registerUserBean";
 		
+	
+	public static final String REPORT_METHOD_PDF="PDF";
+	public static final String REPORT_METHOD_RTF="RTF";
+	public static final String REPORT_METHOD_JPG="JPG";
+	
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";
 	
@@ -295,6 +300,8 @@ public final class MVCConstants {
 	public static final String TENDER_BEANS= "tenders";
 	public static final String REASON_CODES= "reasonCodes";
 	public static final String REGISTER_BEANS= "registers";
+	public static final String REGISTER_NO_ARRAY= "regNos";
+	public static final String NEW_REGISTER_BEAN= "newReg";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
 	public static final String ORDER_RETURNS_BEAN= "orderReturns";

@@ -4,7 +4,7 @@
 	<comment></comment>
 	<projects>
 	</projects>
-<buildSpec>
+	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
@@ -20,5 +20,16 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sf.jasperreports.nature</nature>
 	</natures>
-
+	<linkedResources>
+		<link>
+			<name>creative_sale_txn.jasper</name>
+			<type>1</type>
+			<location>D:/repos/reports/creative_sale_txn.jasper</location>
+		</link>
+		<link>
+			<name>creative_sale_txn.jrxml</name>
+			<type>1</type>
+			<location>D:/repos/reports/creative_sale_txn.jrxml</location>
+		</link>
+	</linkedResources>
 </projectDescription>

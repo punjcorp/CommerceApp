@@ -86,7 +86,7 @@ function parseRetrievedTxnTenderLineItems(txn_saleTxnDTO){
 		tenderLineItemList.push(tenderLineItem);
 	});
 	
-	txnAction.tenderLineItems = tenderLineItemList;
+	//txnAction.tenderLineItems = tenderLineItemList;
 }
 
 

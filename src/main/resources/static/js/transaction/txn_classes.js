@@ -349,10 +349,25 @@ $.extend(SaleLineItem.prototype, {
 			this.price=this.price * -1;
 		
 		var totalItemPrice = 0;
-		if(txn_type == 'R')
-			totalItemPrice = this.price + this.discount + this.sgstTax + this.cgstTax;
-		else
-			totalItemPrice = this.price - this.discount + this.sgstTax + this.cgstTax;
+		if(txn_type == 'R'){
+			if(isGSTFlag=='S'){
+				totalItemPrice = this.price + this.discount + this.sgstTax + this.cgstTax;
+			}else if(isGSTFlag=='i'){
+				totalItemPrice = this.price + this.discount + this.igstTax;
+			}else{
+				totalItemPrice = this.price + this.discount;
+			}
+		}
+		else{
+			if(isGSTFlag=='S'){
+				totalItemPrice = this.price - this.discount + this.sgstTax + this.cgstTax;
+			}else if(isGSTFlag=='i'){
+				totalItemPrice = this.price - this.discount + this.igstTax;
+			}else{
+				totalItemPrice = this.price - this.discount;
+			}
+		}
+			
 		
 		this.itemTotal=totalItemPrice;
 		

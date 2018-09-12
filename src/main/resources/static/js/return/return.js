@@ -490,7 +490,7 @@ function printTxnReceipt(){
 		contentType : "application/json; charset=utf-8",
 		dataType : "json",
 		success : function(data) {
-			startNewTxn();
+			startNewReturnTxn();
 		},
 		beforeSend : function(xhr) {
 			xhr.setRequestHeader('X-CSRF-TOKEN', token)

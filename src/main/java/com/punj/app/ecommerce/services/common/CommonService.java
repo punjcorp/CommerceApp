@@ -81,5 +81,7 @@ public interface CommonService {
 	public List<Denomination> retrieveAllDenominations();
 
 	public UOM retrieveUOM(String uomCode);
+	
+	public Register saveRegister(Register register);
 
 }

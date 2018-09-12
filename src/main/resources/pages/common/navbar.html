@@ -9,6 +9,9 @@
 	<div th:fragment="navbarMenu">
 		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 			<div class="collapse navbar-collapse global-help" id="navbarSupportedContent">
+				<div class="navbar-brand">
+					<img class="d-inline-block align-top" th:src="@{/images/creative_india_logo.jpg}" alt="logo" height="30"> </img>
+				</div>
 				<ul class="navbar-nav mr-auto global-help" data-step="1" data-th-attr="data-intro=#{commerce.help.navbar.menus}">
 					<li class="nav-item"><div class="valign-center">
 							<a class="nav-link" id="home" th:href="@{/pos/home}"><i class="fas fa-home fa-2x mx-2"></i><span th:text="#{commerce.home.link.home}">Home</span></a>

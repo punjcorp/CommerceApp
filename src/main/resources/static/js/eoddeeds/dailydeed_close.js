@@ -236,12 +236,13 @@ function changedAmount(tndrIndex, denomIndex) {
 	var denomLineItem=denomLineItems[denomIndex];
 	denomLineItem.denominationId=denomVal;
 	denomLineItem.denominationVal=denomText;
-	denomLineItem.denomCount=mediaCountVal;
+	
 	denomLineItem.denomAmount = amountVal;
 	
 	if ((amountVal % denomText) == 0) {
-		
-		$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.mediaCount').val((amountVal / denomText));
+		mediaCountVal=amountVal / denomText;
+		denomLineItem.denomCount=mediaCountVal;
+		$('#tenders' + tndrIndex + '\\.denominations' + denomIndex + '\\.mediaCount').val(mediaCountVal);
 		updateTenderTotal(tndrIndex);
 	} else {
 		amountVal = denomText * mediaCountVal;
