@@ -69,6 +69,8 @@ import com.punj.app.ecommerce.services.FinanceService;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.SupplierService;
+import com.punj.app.ecommerce.services.TransactionAuditService;
+import com.punj.app.ecommerce.services.TransactionFinanceService;
 import com.punj.app.ecommerce.services.TransactionSeqService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -105,6 +107,26 @@ public class TransactionServiceImpl implements TransactionService {
 	private PaymentAccountService paymentAccountService;
 	private TransactionSeqService txnSeqService;
 	private CustomerService customerService;
+	private TransactionAuditService txnAuditService;
+	private TransactionFinanceService txnFinanceService;
+
+	/**
+	 * @param txnFinanceService
+	 *            the txnFinanceService to set
+	 */
+	@Autowired
+	public void setTxnFinanceService(TransactionFinanceService txnFinanceService) {
+		this.txnFinanceService = txnFinanceService;
+	}
+
+	/**
+	 * @param txnAuditService
+	 *            the txnAuditService to set
+	 */
+	@Autowired
+	public void setTxnAuditService(TransactionAuditService txnAuditService) {
+		this.txnAuditService = txnAuditService;
+	}
 
 	/**
 	 * @param txnLookupRepository
@@ -291,14 +313,14 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 		return txnDetails;
 	}
-	
+
 	@Override
 	public Transaction updateTransaction(Transaction txnDetails) {
-			txnDetails = this.transactionRepository.save(txnDetails);
-			if(txnDetails!=null)
-				logger.info("The transaction has been created based on provided details successfully.");
-			else
-				logger.error("The modified transaction header save has failed!!");
+		txnDetails = this.transactionRepository.save(txnDetails);
+		if (txnDetails != null)
+			logger.info("The transaction has been created based on provided details successfully.");
+		else
+			logger.error("The modified transaction header save has failed!!");
 		return txnDetails;
 	}
 
@@ -453,20 +475,67 @@ public class TransactionServiceImpl implements TransactionService {
 
 		return txnIdDTO;
 	}
+
+	private void postTxnReversals(TransactionId txnId, String username) {
+		logger.info("Creating the transction audit version first..");
+		
+		TransactionDTO orgTxnDetails=this.searchTransactionDetails(txnId.toString());
+
+		Boolean result = this.txnAuditService.createTransactionAuditVersion(txnId);
+		if (result) {
+			logger.info("The transaction Audited version has been created before any modifications");
+		} else {
+			logger.error("There was some error while creating audited version of transaction");
+		}
+
+		Boolean dailyTotalStatus = this.txnAuditService.createDailyTotalAuditVersion(txnId.getLocationId(), txnId.getBusinessDate(), txnId.getRegister());
+		if (dailyTotalStatus) {
+			logger.info("The daily totals Audited version has been created before any modifications");
+		} else {
+			logger.error("There was some error while creating audited version of daily totals");
+		}
+		
+		Transaction orgTxn=orgTxnDetails.getTxn();
+		TransactionId orgTxnId=orgTxn.getTransactionId();
+		TransactionCustomer txnCustomer = orgTxnDetails.getTxnCustomer();
+		AccountHead accountHead=null;
+		
+		if (txnCustomer != null && txnCustomer.getTransactionCustomerId() != null) {
+
+			accountHead = this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(),
+					txnCustomer.getTransactionCustomerId().getCustomerId(), txnCustomer.getTransactionCustomerId().getLocationId());
+			if (accountHead != null)
+				logger.info("The account head details has been retrieved successfully");
+		}
+		
+		
+		this.txnFinanceService.postFinancesReversal(accountHead, orgTxnDetails, username);
+		logger.info("The credit tender detail reversal has been added to Customer account now");
+		
+		List<ItemStockJournal> itemStockReversals= this.createStockReversals(orgTxnDetails.getSaleLineItems(), username);
+		this.inventoryService.postInventoryReversals(itemStockReversals);
+		logger.info("The inventory reversal for the {} txn has been posted successfully",orgTxnId.toString());
+		
+		
+	}
 	
 	@Override
 	@Transactional
 	public TxnIdDTO updateSaleTransaction(TransactionDTO txnDTO) {
 		
-		TransactionId txnIdDetails=txnDTO.getTxn().getTransactionId();
-		if(txnIdDetails!=null) {
-			//Delete all the existing details of the transaction
+		logger.info("Creating the transction audit version first..");
+		TransactionId txnIdDetails = txnDTO.getTxn().getTransactionId();
+		
+		this.postTxnReversals(txnIdDetails, txnDTO.getTxn().getCreatedBy());
+		logger.info("All the transaction reversals has been successfully posted !!");
+		
+		
+		if (txnIdDetails != null) {
+			// Delete all the existing details of the transaction
 			this.deleteAllTxnDetails(txnIdDetails);
-			
+
 		}
-		
-		
-		
+
 		TxnIdDTO txnIdDTO = new TxnIdDTO();
 		TransactionCustomer txnCustomer = txnDTO.getTxnCustomer();
 		Customer customer = txnDTO.getCustomer();
@@ -525,17 +594,69 @@ public class TransactionServiceImpl implements TransactionService {
 				}
 			}
 
-		/*	this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
+
+			
+			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
 			logger.info("The credit tender details has been added to Customer account now");
 
-			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getCreatedBy());
+			List<ItemStockJournal> itemStockDetails = this.createStockDetails(txnDTO.getSaleLineItems(), txnHeader.getModifiedBy());
 			this.inventoryService.updateInventory(itemStockDetails);
-			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());*/
+			logger.info("The inventory updates for the {} items has been posted successfully", txnHeader.getTxnType());
 		} else {
 			logger.info("There is some issue while saving sale transaction header details");
 		}
 
 		return txnIdDTO;
+	}
+
+	private void updateEditedFinanceDetails(AccountHead accountHead, TransactionDTO txnDTO, String username) {
+		List<TenderLineItem> txnTenders = txnDTO.getTenderLineItems();
+		List<TenderLineItem> txnCreditTenders = new ArrayList<>();
+
+		Transaction txnDetails = txnDTO.getTxn();
+		TransactionId txnId = txnDTO.getTxn().getTransactionId();
+
+		Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(txnId.getLocationId());
+		Integer tenderId = null;
+		Tender tender = null;
+		BigDecimal totalCreditAmount = BigDecimal.ZERO;
+		if (txnTenders != null && !txnTenders.isEmpty() && tenderMap != null) {
+			for (TenderLineItem tenderLineItem : txnTenders) {
+				tenderId = tenderLineItem.getTenderId();
+				tender = tenderMap.get(tenderId);
+				if (tender.getName().equals(ServiceConstants.TENDER_CREDIT)) {
+					totalCreditAmount = totalCreditAmount.add(tenderLineItem.getAmount());
+					txnCreditTenders.add(tenderLineItem);
+				}
+			}
+
+			if (!txnCreditTenders.isEmpty() && accountHead != null) {
+				AccountJournal accountJournal = TransactionConverter.convertCreditToAJ(accountHead, txnCreditTenders, totalCreditAmount, username, txnDetails.getTxnType());
+				accountJournal = this.paymentAccountService.savePayment(accountJournal, username);
+				if (accountJournal != null)
+					logger.info("The account journal details for credit tender has been saved successfully");
+				else
+					logger.info("There was error while saving credit tender details");
+			}
+
+		}
+
+		LedgerJournal ledgerJournal = TransactionConverter.convertTxnToLedger(txnDTO, username);
+		if (ledgerJournal != null) {
+			ledgerJournal = this.financeService.saveLedgerDetails(ledgerJournal);
+			if (ledgerJournal != null)
+				logger.info("The ledger details for the txn {} has been saved successfully", txnId.toString());
+			else
+				logger.error("The was error saving ledger details for the txn {} ", txnId.toString());
+		}
+
+		DailyTotals dailyTotals = TransactionConverter.createDailyTotals(txnDTO.getTxn());
+		DailyTotals registerTotals = this.financeService.updateDailyTotals(dailyTotals, txnDetails.getTxnType());
+		if (registerTotals != null)
+			logger.info("The register and store totals has been updated for the txn {} successfully", txnId.toString());
+		else
+			logger.error("The was error updating register and store totals for the txn {} ", txnId.toString());
+
 	}
 
 	private void updateFinanceDetails(AccountHead accountHead, TransactionDTO txnDTO, String username) {
@@ -763,6 +884,47 @@ public class TransactionServiceImpl implements TransactionService {
 		logger.info("The transaction receipt details has been saved in the database now");
 		result = Boolean.TRUE;
 		return result;
+	}
+	
+	
+	
+	private List<ItemStockJournal> createStockReversals(List<SaleLineItem> saleLineItems, String username) {
+
+		List<ItemStockJournal> itemStockDetails = new ArrayList<>(saleLineItems.size());
+		ItemStockJournal itemStockJournal = null;
+		Item item = null;
+
+		int itemQty = 0;
+		for (SaleLineItem saleLineItem : saleLineItems) {
+			itemStockJournal = new ItemStockJournal();
+			itemStockJournal.setCreatedBy(username);
+			itemStockJournal.setCreatedDate(LocalDateTime.now());
+
+			itemStockJournal.setLocationId(saleLineItem.getSaleLineItemId().getLocationId());
+
+			item = new Item();
+			item.setItemId(saleLineItem.getSaleLineItemId().getItemId());
+			itemStockJournal.setItemId(item.getItemId());
+
+			itemQty = saleLineItem.getQty().intValue()* -1;
+			StockReason stockReason = new StockReason();
+			if (itemQty < 0) {
+				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
+				itemStockJournal.setFunctionality(ServiceConstants.SALE_TXN_REVERSAL_FUNCTIONALITY);
+			} else {
+				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKOUT);
+				itemStockJournal.setFunctionality(ServiceConstants.RETURN_TXN_REVERSAL_FUNCTIONALITY);
+			}
+
+			itemStockJournal.setReasonCode(stockReason);
+			itemStockJournal.setQty(itemQty);
+
+			itemStockDetails.add(itemStockJournal);
+		}
+
+		logger.info("The stock reversal has been created from Sale Txn Line Item details");
+		return itemStockDetails;
+
 	}
 
 	private List<ItemStockJournal> createStockDetails(List<SaleLineItem> saleLineItems, String username) {
@@ -1012,19 +1174,19 @@ public class TransactionServiceImpl implements TransactionService {
 		TransactionReceipt txnReceipt = null;
 		TransactionId txnId = TransactionConverter.convertUniqueTxnToId(uniqueTxnNo);
 		if (txnId != null) {
-			TransactionReceiptId txnReceiptId= new TransactionReceiptId();
+			TransactionReceiptId txnReceiptId = new TransactionReceiptId();
 			txnReceiptId.setBusinessDate(txnId.getBusinessDate());
 			txnReceiptId.setLocationId(txnId.getLocationId());
-			if(receiptType.equals("ORIGINAL"))
+			if (receiptType.equals("ORIGINAL"))
 				txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
 			else
 				txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_DUPLICATE);
-			
+
 			txnReceiptId.setRegister(txnId.getRegister());
 			txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
-			
+
 			txnReceipt = this.txnReceiptRepository.findOne(txnReceiptId);
-			if(txnReceipt!=null)
+			if (txnReceipt != null)
 				logger.info("The {} report for transaction {} has been successfully retrieved", receiptType, uniqueTxnNo);
 			else
 				logger.info("There is an issue retrieving {} receipt for the transaction {}.", receiptType, uniqueTxnNo);
@@ -1035,58 +1197,52 @@ public class TransactionServiceImpl implements TransactionService {
 
 	private void deleteAllTxnDetails(TransactionId txnId) {
 
-		
-		TransactionLineItemId  txnLineItemId=new TransactionLineItemId();
+		TransactionLineItemId txnLineItemId = new TransactionLineItemId();
 		txnLineItemId.setBusinessDate(txnId.getBusinessDate());
 		txnLineItemId.setLocationId(txnId.getLocationId());
 		txnLineItemId.setRegister(txnId.getRegister());
 		txnLineItemId.setTransactionSeq(txnId.getTransactionSeq());
-		
-		
-		
-		TaxLineItem taxLineItem=new TaxLineItem();
+
+		TaxLineItem taxLineItem = new TaxLineItem();
 		taxLineItem.setTransactionLineItemId(txnLineItemId);
-		List<TaxLineItem> taxLineItems=this.taxLineItemRepository.findAll(Example.of(taxLineItem));
-		if(taxLineItems!=null && !taxLineItems.isEmpty()) {
+		List<TaxLineItem> taxLineItems = this.taxLineItemRepository.findAll(Example.of(taxLineItem));
+		if (taxLineItems != null && !taxLineItems.isEmpty()) {
 			this.taxLineItemRepository.delete(taxLineItems);
 			logger.info("The existing sale line item tax details from the transaction has been deleted successfully");
 		}
-		
-		
-		TenderLineItem tenderLineItem=new TenderLineItem();
+
+		TenderLineItem tenderLineItem = new TenderLineItem();
 		tenderLineItem.setTransactionLineItemId(txnLineItemId);
-		
-		List<TenderLineItem> tenderLineItems=this.tenderLineItemRepository.findAll(Example.of(tenderLineItem));
-		if(tenderLineItems!=null && !tenderLineItems.isEmpty()) {
+
+		List<TenderLineItem> tenderLineItems = this.tenderLineItemRepository.findAll(Example.of(tenderLineItem));
+		if (tenderLineItems != null && !tenderLineItems.isEmpty()) {
 			this.tenderLineItemRepository.delete(tenderLineItems);
 			logger.info("The existing tender details from the transaction has been deleted successfully");
 		}
-		
 
-		SaleLineItem saleLineItem=new SaleLineItem();
-		SaleLineItemId saleLineItemId=new SaleLineItemId();
+		SaleLineItem saleLineItem = new SaleLineItem();
+		SaleLineItemId saleLineItemId = new SaleLineItemId();
 		saleLineItemId.setBusinessDate(txnId.getBusinessDate());
 		saleLineItemId.setLocationId(txnId.getLocationId());
 		saleLineItemId.setRegister(txnId.getRegister());
 		saleLineItemId.setTransactionSeq(txnId.getTransactionSeq());
 		saleLineItem.setSaleLineItemId(saleLineItemId);
-		
-		List<SaleLineItem> saleLineItems=this.saleLineItemRepository.findAll(Example.of(saleLineItem));
-		if(saleLineItems!=null && !saleLineItems.isEmpty()) {
+
+		List<SaleLineItem> saleLineItems = this.saleLineItemRepository.findAll(Example.of(saleLineItem));
+		if (saleLineItems != null && !saleLineItems.isEmpty()) {
 			this.saleLineItemRepository.delete(saleLineItems);
 			logger.info("The existing sale line item details from the transaction has been deleted successfully");
 		}
-		
-		TransactionLineItem txnLineItem=new TransactionLineItem();
+
+		TransactionLineItem txnLineItem = new TransactionLineItem();
 		txnLineItem.setTransactionLineItemId(txnLineItemId);
-		
-		List<TransactionLineItem> txnLineItems=this.transactionLineItemRepository.findAll(Example.of(txnLineItem));
-		if(txnLineItems!=null && !txnLineItems.isEmpty()) {
+
+		List<TransactionLineItem> txnLineItems = this.transactionLineItemRepository.findAll(Example.of(txnLineItem));
+		if (txnLineItems != null && !txnLineItems.isEmpty()) {
 			this.transactionLineItemRepository.delete(txnLineItems);
 			logger.info("The existing line item master details from the transaction has been deleted successfully");
 		}
-				
-		
+
 	}
-	
+
 }

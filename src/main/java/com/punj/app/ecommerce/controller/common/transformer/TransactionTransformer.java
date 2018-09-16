@@ -88,10 +88,10 @@ public class TransactionTransformer {
 		return shipment;
 	}
 
-	public static TransactionDTO transformSaleTransaction(SaleTransaction saleTxn, String username) {
+	public static TransactionDTO transformSaleTransaction(SaleTransaction saleTxn, String username, Boolean isEdited) {
 		TransactionDTO txnDTO = new TransactionDTO();
 
-		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_SALE_PARAM);
+		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_SALE_PARAM, isEdited);
 		txnDTO.setTxn(txn);
 
 		TransactionId txnId = txn.getTransactionId();
@@ -121,7 +121,7 @@ public class TransactionTransformer {
 	public static TransactionDTO transformReturnTransaction(SaleTransaction saleTxn, String username) {
 		TransactionDTO txnDTO = new TransactionDTO();
 
-		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_RETURN_PARAM);
+		Transaction txn = TransactionTransformer.transformTransactionDetails(saleTxn.getTransactionHeader(), MVCConstants.TXN_RETURN_PARAM,Boolean.FALSE);
 		txnDTO.setTxn(txn);
 
 		TransactionId txnId = txn.getTransactionId();
@@ -147,7 +147,7 @@ public class TransactionTransformer {
 		return txnDTO;
 	}
 
-	public static Transaction transformTransactionDetails(TransactionHeader txnHeader, String txnType) {
+	public static Transaction transformTransactionDetails(TransactionHeader txnHeader, String txnType, Boolean isEdited) {
 
 		Transaction txn = new Transaction();
 
@@ -164,8 +164,14 @@ public class TransactionTransformer {
 		txn.setCreatedDate(LocalDateTime.now());
 		txn.setStartTime(txnHeader.getStartTime());
 		txn.setEndTime(txnHeader.getEndTime());
-		txn.setModifiedBy(txnHeader.getModifiedBy());
-		txn.setModifiedDate(txnHeader.getModifiedDate());
+		if(isEdited) {
+			txn.setModifiedBy(txnHeader.getCreatedBy());
+			txn.setModifiedDate(LocalDateTime.now());	
+		}else {
+			txn.setModifiedBy(txnHeader.getModifiedBy());
+			txn.setModifiedDate(txnHeader.getModifiedDate());
+		}
+		
 
 		txn.setOfflineFlag(txnHeader.getOfflineFlag());
 		txn.setPostVoidFlag(txnHeader.getPostVoidFlag());

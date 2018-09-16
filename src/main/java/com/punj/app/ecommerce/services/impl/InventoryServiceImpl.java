@@ -235,6 +235,16 @@ public class InventoryServiceImpl implements InventoryService {
 		logger.info("The inventory has been updated for the items successfully.");
 
 	}
+	
+	
+	@Override
+	@Transactional
+	public void postInventoryReversals(List<ItemStockJournal> itemStockDetails) {
+		this.updateInventory(itemStockDetails);
+		
+		logger.info("The inventory reversal has been posted for the items successfully.");
+
+	}
 
 	private void updateItemStockAndBuckets(ItemStockJournal itemStockJournal) {
 

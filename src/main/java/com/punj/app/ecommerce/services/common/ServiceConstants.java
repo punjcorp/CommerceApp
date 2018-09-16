@@ -39,6 +39,8 @@ public final class ServiceConstants {
 	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER = "4";
 	public static final String LEDGER_ACTION_SALE_TXN = "5";
 	public static final String LEDGER_ACTION_RETURN_TXN = "6";
+	public static final String LEDGER_ACTION_SALE_TXN_REVERSAL = "7";
+	public static final String LEDGER_ACTION_RETURN_TXN_REVERSAL = "8";
 
 	public static final Integer STYLE_LEVEL = 1;
 	public static final Integer ITEM_LEVEL = 2;
@@ -89,6 +91,8 @@ public final class ServiceConstants {
 	public static final String SKU_CREATION_FUNCTIONALITY = "SKU_CREATION";
 	public static final String SALE_TXN_FUNCTIONALITY = "SALE_TXN";
 	public static final String RETURN_TXN_FUNCTIONALITY = "RETURN_TXN";
+	public static final String SALE_TXN_REVERSAL_FUNCTIONALITY = "SALE_TXN_REVERSAL";
+	public static final String RETURN_TXN_REVERSAL_FUNCTIONALITY = "RETURN_TXN_REVERSAL";
 	public static final String RECEIVE_ORDER_FUNCTIONALITY = "RECEIVE_ORDER";
 	public static final String SUPPLIER_ORDER_RETURN_FUNCTIONALITY = "SUPPLIER_ORDER_RETURN";
 	public static final String STOCK_ADJUSTMENT_FUNCTIONALITY = "STOCK_ADJUSTMENT";
@@ -112,6 +116,8 @@ public final class ServiceConstants {
 	
 	public static final String JOURNAL_CREDIT = "credit";
 	public static final String JOURNAL_CREDIT_RETURN = "credit_return";
+	public static final String JOURNAL_CREDIT_REVERSAL = "credit_reversal";
+	public static final String JOURNAL_CREDIT_RETURN_REVERSAL = "credit_return_reversal";
 
 	public static final String ACCOUNT_TYPE_SUPPLIER = "SUPPLIER";
 	public static final String ACCOUNT_TYPE_CUSTOMER = "CUSTOMER";

@@ -142,7 +142,7 @@ public class TransactionController {
 	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		Boolean result = null;
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
+		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername(), Boolean.FALSE);
 		TxnIdDTO txnIdDTO = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnIdDTO != null) {
@@ -168,7 +168,7 @@ public class TransactionController {
 	public TransactionHeader saveModifiedTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		Boolean result = null;
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
+		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername(), Boolean.TRUE);
 		TxnIdDTO txnIdDTO = this.transactionService.updateSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnIdDTO != null) {

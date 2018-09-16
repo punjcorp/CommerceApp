@@ -89,6 +89,20 @@ public class Utils {
 		}
 
 	}
+	
+	public static String showLedgerReversalAction(String txnType) {
+
+		switch (txnType) {
+		case ServiceConstants.TXN_SALE:
+			return ServiceConstants.LEDGER_ACTION_SALE_TXN_REVERSAL;
+		case ServiceConstants.TXN_RETURN:
+			return ServiceConstants.LEDGER_ACTION_RETURN_TXN_REVERSAL;
+
+		default:
+			return "";
+		}
+
+	}
 
 	public static LocalDateTime parseDate(String date) {
 		if(date.length()==9) {

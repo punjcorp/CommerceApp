@@ -97,7 +97,62 @@ public class TransactionConverter {
 		return accountJournal;
 
 	}
+	
+	public static AccountJournal convertCreditToAJReversal(AccountHead accountHead, List<TenderLineItem> txnCreditTenders, BigDecimal totalCreditAmt, String username, String txnType) {
+		AccountJournal accountJournal = new AccountJournal();
 
+		if (ServiceConstants.TXN_SALE.equals(txnType))
+			accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT_REVERSAL);
+		else if (ServiceConstants.TXN_RETURN.equals(txnType))
+			accountJournal.setJournalType(ServiceConstants.JOURNAL_CREDIT_RETURN_REVERSAL);
+
+		accountJournal.setAccountId(accountHead.getAccountId());
+		accountJournal.setAmount(totalCreditAmt);
+		accountJournal.setComments("Transaction " + txnCreditTenders.get(0).getTransactionLineItemId().toString() + "Credit related entries");
+		accountJournal.setCreatedBy(username);
+		accountJournal.setCreatedDate(LocalDateTime.now());
+
+		JournalTender journalTender = new JournalTender();
+		JournalTenderId journalTenderId = new JournalTenderId();
+
+		journalTenderId.setTenderId(txnCreditTenders.get(0).getTenderId());
+		journalTenderId.setAccountJournal(accountJournal);
+
+		journalTender.setJournalTenderId(journalTenderId);
+		journalTender.setAmount(totalCreditAmt);
+		journalTender.setDescription("The Credit tender amounts has been summed up");
+		journalTender.setCreatedBy(username);
+		journalTender.setCreatedDate(LocalDateTime.now());
+
+		List<JournalTender> journalTenders = new ArrayList<>();
+		journalTenders.add(journalTender);
+
+		accountJournal.setJournalTenders(journalTenders);
+
+		logger.info("The journal details for tender Credit has been created successfully");
+		return accountJournal;
+
+	}
+
+	public static LedgerJournal convertTxnToLedgerReversal(TransactionDTO txnDTO, String username) {
+
+		Transaction txn = txnDTO.getTxn();
+		TransactionId txnId = txn.getTransactionId();
+
+		LedgerJournal ledgerJournal = new LedgerJournal();
+		ledgerJournal.setActionType(Utils.showLedgerReversalAction(txn.getTxnType()));
+		ledgerJournal.setAmount(txn.getTotalAmt());
+		ledgerJournal.setBusinessDate(txnId.getBusinessDate());
+		ledgerJournal.setCreatedBy(username);
+		ledgerJournal.setCreatedDate(LocalDateTime.now());
+		ledgerJournal.setLocationId(txnId.getLocationId());
+		ledgerJournal.setTxnNo(txnId.toString());
+		ledgerJournal.setTxnType(txn.getTxnType());
+
+		logger.info("The ledger reversal has the txn details saved successfully");
+		return ledgerJournal;
+	}
+	
 	public static LedgerJournal convertTxnToLedger(TransactionDTO txnDTO, String username) {
 
 		Transaction txn = txnDTO.getTxn();
@@ -130,18 +185,51 @@ public class TransactionConverter {
 		logger.info("The daily totals has been created for posting related to the transaction successfully");
 		return dailyTotals;
 	}
+	
+	public static DailyTotals createDailyTotalsReversal(Transaction txnDetails) {
+		DailyTotals dailyTotals = new DailyTotals();
+
+		dailyTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
+		dailyTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
+		dailyTotals.setRegisterId(txnDetails.getTransactionId().getRegister());
+
+		dailyTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
+		dailyTotals.setTotalTxnCount(BigDecimal.ONE.intValue());
+
+		logger.info("The daily totals reversal has been created for posting related to the transaction successfully");
+		return dailyTotals;
+	}
 
 	public static TransactionId convertUniqueTxnToId(String uniqueTxnNo) {
 		TransactionId txnId = null;
 
 		if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 17) {
+			
 			txnId = new TransactionId();
 			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
 			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
 			txnId.setTransactionSeq(new Integer(uniqueTxnNo.substring(7, 11)));
-			String bDate = uniqueTxnNo.substring(11, 17);
+			String bDate = null;
+
+			bDate = uniqueTxnNo.substring(11, 17);
+			
 			bDate=bDate+" 00:00";
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy HH:mm");
+			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
+
+			txnId.setBusinessDate(bDateTime);
+
+			logger.info("The unique transction number has been successfully transformed to txn Id");
+		}else if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 20) {
+			
+			txnId = new TransactionId();
+			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
+			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
+			txnId.setTransactionSeq(new Integer(uniqueTxnNo.substring(7, 12)));
+			String bDate = uniqueTxnNo.substring(12, 20);
+
+			bDate=bDate+" 00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy HH:mm");
 			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
 
 			txnId.setBusinessDate(bDateTime);

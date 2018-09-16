@@ -138,12 +138,18 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		journalDetails = this.accountJournalRepository.save(journalDetails);
 		if (journalDetails != null) {
 			logger.info("The payment journal details has been successfully saved.");
-			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)) {
+			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE)) {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
-			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)
+					|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN_REVERSAL)) {
+				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)
+					|| journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_REVERSAL)) {
+				accountHead.setDueAmount(accountHead.getDueAmount().add(journalDetails.getAmount()));
 			}
 
 			accountHead.setModifiedBy(username);

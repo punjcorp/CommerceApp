@@ -22,6 +22,8 @@ import com.punj.app.ecommerce.utils.Pager;
 public interface InventoryService {
 
 	public void updateInventory(List<ItemStockJournal> itemStockDetails);
+	
+	public void postInventoryReversals(List<ItemStockJournal> itemStockDetails);
 
 	public void rangeSKUs(List<Item> items);
 

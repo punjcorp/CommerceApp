@@ -25,6 +25,12 @@ public interface FinanceService {
 
 	public DailyTotals updateDailyTotals(DailyTotals storeTotals, String action);
 	
+	public DailyTotals postDailyTotalReversal(DailyTotals storeTotals, String action);
+	
+	public DailyTotals updateStoreTotalsReversal(DailyTotals storeTotals, String action);
+
+	public DailyTotals updateRegisterTotalsReversal(DailyTotals registerTotals, String action);
+	
 	public DailyTotals updateStoreTotals(DailyTotals storeTotals, String action);
 
 	public DailyTotals updateRegisterTotals(DailyTotals registerTotals, String action);
