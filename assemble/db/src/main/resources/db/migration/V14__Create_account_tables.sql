@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`ledger_journal` (
   PRIMARY KEY (`ledger_journal_id`))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `business_date_UNIQUE` ON `pi_pos_industry`.`ledger_journal` (`business_date` ASC, `txn_no` ASC, `txn_type` ASC, `location_id` ASC, `action_code` ASC);
+CREATE UNIQUE INDEX `business_date_UNIQUE` ON `pi_pos_industry`.`ledger_journal` (`business_date` ASC, `txn_no` ASC, `txn_type` ASC, `location_id` ASC, `action_code` ASC, `created_date` ASC);
 
 
 -- -----------------------------------------------------

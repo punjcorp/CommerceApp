@@ -52,6 +52,8 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
 import com.punj.app.ecommerce.domains.transaction.ids.TxnIdDTO;
 import com.punj.app.ecommerce.domains.transaction.seqs.SaleInvoice;
 import com.punj.app.ecommerce.domains.transaction.shipment.Shipment;
+import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
+import com.punj.app.ecommerce.domains.transaction.tender.ids.TenderCountId;
 import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.repositories.transaction.ReceiptItemTaxRepository;
 import com.punj.app.ecommerce.repositories.transaction.SaleLineItemRepository;
@@ -63,6 +65,7 @@ import com.punj.app.ecommerce.repositories.transaction.TransactionLookupReposito
 import com.punj.app.ecommerce.repositories.transaction.TransactionReceiptRepository;
 import com.punj.app.ecommerce.repositories.transaction.TransactionRepository;
 import com.punj.app.ecommerce.repositories.transaction.shipment.ShipmentRepository;
+import com.punj.app.ecommerce.repositories.transaction.tender.TenderCountRepository;
 import com.punj.app.ecommerce.services.AccountService;
 import com.punj.app.ecommerce.services.CustomerService;
 import com.punj.app.ecommerce.services.FinanceService;
@@ -109,6 +112,16 @@ public class TransactionServiceImpl implements TransactionService {
 	private CustomerService customerService;
 	private TransactionAuditService txnAuditService;
 	private TransactionFinanceService txnFinanceService;
+	private TenderCountRepository tenderCountRepository;
+
+	/**
+	 * @param tenderCountRepository
+	 *            the tenderCountRepository to set
+	 */
+	@Autowired
+	public void setTenderCountRepository(TenderCountRepository tenderCountRepository) {
+		this.tenderCountRepository = tenderCountRepository;
+	}
 
 	/**
 	 * @param txnFinanceService
@@ -478,8 +491,8 @@ public class TransactionServiceImpl implements TransactionService {
 
 	private void postTxnReversals(TransactionId txnId, String username) {
 		logger.info("Creating the transction audit version first..");
-		
-		TransactionDTO orgTxnDetails=this.searchTransactionDetails(txnId.toString());
+
+		TransactionDTO orgTxnDetails = this.searchTransactionDetails(txnId.toString());
 
 		Boolean result = this.txnAuditService.createTransactionAuditVersion(txnId);
 		if (result) {
@@ -494,12 +507,12 @@ public class TransactionServiceImpl implements TransactionService {
 		} else {
 			logger.error("There was some error while creating audited version of daily totals");
 		}
-		
-		Transaction orgTxn=orgTxnDetails.getTxn();
-		TransactionId orgTxnId=orgTxn.getTransactionId();
+
+		Transaction orgTxn = orgTxnDetails.getTxn();
+		TransactionId orgTxnId = orgTxn.getTransactionId();
 		TransactionCustomer txnCustomer = orgTxnDetails.getTxnCustomer();
-		AccountHead accountHead=null;
-		
+		AccountHead accountHead = null;
+
 		if (txnCustomer != null && txnCustomer.getTransactionCustomerId() != null) {
 
 			accountHead = this.paymentAccountService.retrievePaymentAccount(txnCustomer.getTransactionCustomerId().getCustomerType(),
@@ -507,29 +520,26 @@ public class TransactionServiceImpl implements TransactionService {
 			if (accountHead != null)
 				logger.info("The account head details has been retrieved successfully");
 		}
-		
-		
+
 		this.txnFinanceService.postFinancesReversal(accountHead, orgTxnDetails, username);
 		logger.info("The credit tender detail reversal has been added to Customer account now");
-		
-		List<ItemStockJournal> itemStockReversals= this.createStockReversals(orgTxnDetails.getSaleLineItems(), username);
+
+		List<ItemStockJournal> itemStockReversals = this.createStockReversals(orgTxnDetails.getSaleLineItems(), username);
 		this.inventoryService.postInventoryReversals(itemStockReversals);
-		logger.info("The inventory reversal for the {} txn has been posted successfully",orgTxnId.toString());
-		
-		
+		logger.info("The inventory reversal for the {} txn has been posted successfully", orgTxnId.toString());
+
 	}
-	
+
 	@Override
 	@Transactional
 	public TxnIdDTO updateSaleTransaction(TransactionDTO txnDTO) {
-		
+
 		logger.info("Creating the transction audit version first..");
 		TransactionId txnIdDetails = txnDTO.getTxn().getTransactionId();
-		
+
 		this.postTxnReversals(txnIdDetails, txnDTO.getTxn().getCreatedBy());
 		logger.info("All the transaction reversals has been successfully posted !!");
-		
-		
+
 		if (txnIdDetails != null) {
 			// Delete all the existing details of the transaction
 			this.deleteAllTxnDetails(txnIdDetails);
@@ -594,8 +604,6 @@ public class TransactionServiceImpl implements TransactionService {
 				}
 			}
 
-
-			
 			this.updateFinanceDetails(accountHead, txnDTO, txnHeader.getCreatedBy());
 			logger.info("The credit tender details has been added to Customer account now");
 
@@ -885,9 +893,7 @@ public class TransactionServiceImpl implements TransactionService {
 		result = Boolean.TRUE;
 		return result;
 	}
-	
-	
-	
+
 	private List<ItemStockJournal> createStockReversals(List<SaleLineItem> saleLineItems, String username) {
 
 		List<ItemStockJournal> itemStockDetails = new ArrayList<>(saleLineItems.size());
@@ -906,9 +912,9 @@ public class TransactionServiceImpl implements TransactionService {
 			item.setItemId(saleLineItem.getSaleLineItemId().getItemId());
 			itemStockJournal.setItemId(item.getItemId());
 
-			itemQty = saleLineItem.getQty().intValue()* -1;
+			itemQty = saleLineItem.getQty().intValue();
 			StockReason stockReason = new StockReason();
-			if (itemQty < 0) {
+			if (itemQty > 0) {
 				stockReason.setReasonCode(ServiceConstants.INV_REASON_STKIN);
 				itemStockJournal.setFunctionality(ServiceConstants.SALE_TXN_REVERSAL_FUNCTIONALITY);
 			} else {
@@ -1243,6 +1249,229 @@ public class TransactionServiceImpl implements TransactionService {
 			logger.info("The existing line item master details from the transaction has been deleted successfully");
 		}
 
+	}
+
+	@Override
+	public Transaction searchStoreCloseTxn(Integer locationId, LocalDateTime businessDate) {
+		Transaction txnDetails = this.transactionRepository.getStoreCloseTxn(locationId, businessDate.toString());
+		if (txnDetails != null)
+			logger.info("The store close transaction {} details retrieved successfully", txnDetails.getTransactionId());
+		else
+			logger.info("There was no store close transaction found for the business date");
+		return txnDetails;
+	}
+
+	@Override
+	public Transaction searchLastRegCloseTxn(Integer locationId, LocalDateTime businessDate) {
+		Transaction txnDetails = this.transactionRepository.getLastRegisterCloseTxn(locationId, businessDate.toString());
+		if (txnDetails != null)
+			logger.info("The store close transaction {} details retrieved successfully", txnDetails.getTransactionId());
+		else
+			logger.info("There was no store close transaction found for the business date");
+		return txnDetails;
+	}
+	
+	@Override
+	public List<Transaction> searchAllFutureTxns(Integer locationId, LocalDateTime businessDate) {
+		List<Transaction> txnDetails = this.transactionRepository.getFutureTxns(locationId, businessDate.toString());
+		if (txnDetails != null && !txnDetails.isEmpty())
+			logger.info("The future transaction details has been retrieved successfully");
+		else
+			logger.info("There were no transactions found after the business date");
+		return txnDetails;
+	}
+	
+	@Override
+	public void deleteAllFutureTxns(Integer locationId, LocalDateTime businessDate) {
+		List<Transaction> txnDetails = this.searchAllFutureTxns(locationId, businessDate);
+		if (txnDetails != null && !txnDetails.isEmpty()) {
+			
+			for(Transaction txn:txnDetails) {
+				this.deleteTransaction(txn);;
+			}
+			
+			logger.info("All the future transactions has been deleted succesfully");
+			
+		}else {
+			logger.info("There were no transactions found after the business date");
+		}
+	}
+	
+	private void deleteTransaction(Transaction txn) {
+		String txnType=txn.getTxnType();
+		TransactionId txnId=txn.getTransactionId();
+				
+		switch(txnType) {
+		
+		case ServiceConstants.TXN_CLOSE_STORE:
+			this.deleteStoreCloseTxn(txnId);
+			break;
+		
+		case ServiceConstants.TXN_CLOSE_REGISTER:
+			this.deleteRegCloseTxn(txnId);
+			break;
+			
+		case ServiceConstants.TXN_OPEN_REGISTER:
+			this.deleteRegOpenTxn(txnId);
+			break;
+			
+		case ServiceConstants.TXN_OPEN_STORE:
+			this.deleteStoreOpenTxn(txnId);
+			break;
+		}
+		
+		
+	}
+
+	private void deleteRegOpenTxn(TransactionId txnId) {
+		this.tenderMovementRepository.delete(txnId);
+		logger.info("The register open txn {} tender movement details has been deleted successfully", txnId.toString());
+
+		TenderCount tenderCountCriteria=new TenderCount();
+		TenderCountId tenderCountId = new TenderCountId();
+		tenderCountId.setBusinessDate(txnId.getBusinessDate());
+		tenderCountId.setLocationId(txnId.getLocationId());
+		tenderCountId.setRegister(txnId.getRegister());
+		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
+		tenderCountCriteria.setTenderCountId(tenderCountId);
+		
+		List<TenderCount> tenderCounts=this.tenderCountRepository.findAll(Example.of(tenderCountCriteria));
+		if(tenderCounts!=null && !tenderCounts.isEmpty()) {
+			this.tenderCountRepository.delete(tenderCounts);
+			logger.info("The register open txn {} tender count details has been deleted successfully", txnId.toString());
+		}
+		
+		TransactionReceiptId txnReceiptId=new TransactionReceiptId();
+		txnReceiptId.setBusinessDate(txnId.getBusinessDate());
+		txnReceiptId.setLocationId(txnId.getLocationId());
+		txnReceiptId.setRegister(txnId.getRegister());
+		txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
+		txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
+		
+		//this.txnReceiptRepository.delete(txnReceiptId);
+		logger.info("The register open txn {} receipt details has been deleted successfully", txnId.toString());
+		
+		this.transactionRepository.delete(txnId);
+		logger.info("The register open txn {} header details has been deleted successfully", txnId.toString());
+		
+		DailyTotals dailyTotalCriteria=new DailyTotals();
+		dailyTotalCriteria.setBusinessDate(txnId.getBusinessDate());
+		dailyTotalCriteria.setLocationId(txnId.getLocationId());
+		dailyTotalCriteria.setRegisterId(txnId.getRegister());
+		
+		this.financeService.deleteRegDailyTotals(dailyTotalCriteria);
+		logger.info("The register daily totals has been deleted now");
+
+	}
+	
+	
+	@Override
+	public void deleteRegCloseTxn(TransactionId txnId) {
+
+		this.tenderMovementRepository.delete(txnId);
+		logger.info("The register close txn {} tender movement details has been deleted successfully", txnId.toString());
+
+		TenderCount tenderCountCriteria=new TenderCount();
+		TenderCountId tenderCountId = new TenderCountId();
+		tenderCountId.setBusinessDate(txnId.getBusinessDate());
+		tenderCountId.setLocationId(txnId.getLocationId());
+		tenderCountId.setRegister(txnId.getRegister());
+		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
+		tenderCountCriteria.setTenderCountId(tenderCountId);
+		
+		List<TenderCount> tenderCounts=this.tenderCountRepository.findAll(Example.of(tenderCountCriteria));
+		if(tenderCounts!=null && !tenderCounts.isEmpty()) {
+			this.tenderCountRepository.delete(tenderCounts);
+			logger.info("The register close txn {} tender count details has been deleted successfully", txnId.toString());
+		}
+		
+		TransactionReceiptId txnReceiptId=new TransactionReceiptId();
+		txnReceiptId.setBusinessDate(txnId.getBusinessDate());
+		txnReceiptId.setLocationId(txnId.getLocationId());
+		txnReceiptId.setRegister(txnId.getRegister());
+		txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
+		txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
+		
+		this.txnReceiptRepository.delete(txnReceiptId);
+		logger.info("The register close txn {} receipt details has been deleted successfully", txnId.toString());
+		
+		this.transactionRepository.delete(txnId);
+		logger.info("The register close txn {} header details has been deleted successfully", txnId.toString());
+		
+		DailyTotals dailyTotalCriteria=new DailyTotals();
+		dailyTotalCriteria.setBusinessDate(txnId.getBusinessDate());
+		dailyTotalCriteria.setLocationId(txnId.getLocationId());
+		dailyTotalCriteria.setRegisterId(txnId.getRegister());
+		
+		this.financeService.resetRegDailyTotals(dailyTotalCriteria);
+		logger.info("The register and store EOD totals has been reset now");
+
+	}
+	
+	private void deleteStoreOpenTxn(TransactionId txnId) {
+		TenderCount tenderCountCriteria=new TenderCount();
+		TenderCountId tenderCountId = new TenderCountId();
+		tenderCountId.setBusinessDate(txnId.getBusinessDate());
+		tenderCountId.setLocationId(txnId.getLocationId());
+		tenderCountId.setRegister(txnId.getRegister());
+		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
+		tenderCountCriteria.setTenderCountId(tenderCountId);
+		
+		List<TenderCount> tenderCounts=this.tenderCountRepository.findAll(Example.of(tenderCountCriteria));
+		if(tenderCounts!=null && !tenderCounts.isEmpty()) {
+			this.tenderCountRepository.delete(tenderCounts);
+			logger.info("The store open txn {} tender count details has been deleted successfully", txnId.toString());
+		}
+		
+		TransactionReceiptId txnReceiptId=new TransactionReceiptId();
+		txnReceiptId.setBusinessDate(txnId.getBusinessDate());
+		txnReceiptId.setLocationId(txnId.getLocationId());
+		txnReceiptId.setRegister(txnId.getRegister());
+		txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
+		txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
+		
+		//this.txnReceiptRepository.delete(txnReceiptId);
+		logger.info("The store open txn {} receipt details has been deleted successfully", txnId.toString());
+		
+		this.transactionRepository.delete(txnId);
+		logger.info("The store open txn {} header details has been deleted successfully", txnId.toString());
+		
+		DailyTotals dailyTotalCriteria=new DailyTotals();
+		dailyTotalCriteria.setBusinessDate(txnId.getBusinessDate());
+		dailyTotalCriteria.setLocationId(txnId.getLocationId());
+		
+		this.financeService.deleteStoreDailyTotals(dailyTotalCriteria);
+		logger.info("The store daily totals has been deleted now");
+	}
+
+	@Override
+	public void deleteStoreCloseTxn(TransactionId txnId) {
+		TenderCount tenderCountCriteria=new TenderCount();
+		TenderCountId tenderCountId = new TenderCountId();
+		tenderCountId.setBusinessDate(txnId.getBusinessDate());
+		tenderCountId.setLocationId(txnId.getLocationId());
+		tenderCountId.setRegister(txnId.getRegister());
+		tenderCountId.setTransactionSeq(txnId.getTransactionSeq());
+		tenderCountCriteria.setTenderCountId(tenderCountId);
+		
+		List<TenderCount> tenderCounts=this.tenderCountRepository.findAll(Example.of(tenderCountCriteria));
+		if(tenderCounts!=null && !tenderCounts.isEmpty()) {
+			this.tenderCountRepository.delete(tenderCounts);
+			logger.info("The store close txn {} tender count details has been deleted successfully", txnId.toString());
+		}
+		
+		TransactionReceiptId txnReceiptId=new TransactionReceiptId();
+		txnReceiptId.setBusinessDate(txnId.getBusinessDate());
+		txnReceiptId.setLocationId(txnId.getLocationId());
+		txnReceiptId.setRegister(txnId.getRegister());
+		txnReceiptId.setTransactionSeq(txnId.getTransactionSeq());
+		txnReceiptId.setReceiptType(ServiceConstants.RCPT_SALE_STORE);
+		
+		this.txnReceiptRepository.delete(txnReceiptId);
+		logger.info("The store close txn {} receipt details has been deleted successfully", txnId.toString());
+		
+		this.transactionRepository.delete(txnId);
+		logger.info("The store close txn {} header details has been deleted successfully", txnId.toString());
 	}
 
 }

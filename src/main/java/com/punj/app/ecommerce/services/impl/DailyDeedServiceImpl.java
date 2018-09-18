@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,10 @@ import com.punj.app.ecommerce.domains.finance.LocationSafe;
 import com.punj.app.ecommerce.domains.finance.TenderMovement;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+import com.punj.app.ecommerce.domains.transaction.storeopen.LocationStatus;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.domains.transaction.tender.ids.TenderCountId;
+import com.punj.app.ecommerce.repositories.transaction.storeopen.LocationStatusRepository;
 import com.punj.app.ecommerce.repositories.transaction.tender.TenderCountRepository;
 import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.FinanceService;
@@ -37,6 +38,8 @@ import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
 import com.punj.app.ecommerce.services.converter.TenderCountDTOConverter;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.LocStatusDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 
 /**
@@ -51,6 +54,16 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	private CommonService commonService;
 	private TenderCountRepository tenderCountRepository;
 	private FinanceService financeService;
+	private LocationStatusRepository locationStatusRepository;
+
+	/**
+	 * @param locationStatusRepository
+	 *            the locationStatusRepository to set
+	 */
+	@Autowired
+	public void setLocationStatusRepository(LocationStatusRepository locationStatusRepository) {
+		this.locationStatusRepository = locationStatusRepository;
+	}
 
 	/**
 	 * @param financeService
@@ -102,8 +115,8 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		logger.info("The store open transaction basic details has been saved successfully.");
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(storeOpenDetails.getTenders(), txnDetails.getTransactionId(),
-					username, ServiceConstants.TXN_OPEN_STORE);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(storeOpenDetails.getTenders(), txnDetails.getTransactionId(), username,
+					ServiceConstants.TXN_OPEN_STORE);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			logger.info("The store open tender details has been saved successfully.");
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
@@ -180,12 +193,12 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		storeTotals.setBusinessDate(txnDetails.getTransactionId().getBusinessDate());
 		storeTotals.setLocationId(txnDetails.getTransactionId().getLocationId());
 		storeTotals.setStartOfDayAmount(txnDetails.getTotalAmt());
-		if(ServiceConstants.TXN_CLOSE_STORE.equals(txnType))
+		if (ServiceConstants.TXN_CLOSE_STORE.equals(txnType))
 			storeTotals.setEndOfDayAmount(txnDetails.getTotalAmt());
 		storeTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
 		storeTotals.setTotalTxnCount(BigInteger.ONE.intValue());
 
-		storeTotals=this.financeService.upsertStoreTotals(storeTotals, txnType);
+		storeTotals = this.financeService.upsertStoreTotals(storeTotals, txnType);
 		logger.info("The store total details has been updated successfully");
 
 		return storeTotals;
@@ -212,14 +225,13 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	public DailyDeedDTO saveRegisterOpenTxn(DailyTransaction registerOpenDetails, String username) {
 		TransactionIdDTO txnIdDTO = registerOpenDetails.getTransactionId();
 		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_REGISTER);
-		DailyTotals registerDailyTotals =this.saveTransactionTenderDetails(txnDetails, registerOpenDetails, username, ServiceConstants.TXN_OPEN_REGISTER);
-		if(registerDailyTotals!=null){
-			DailyDeedDTO dailyDeedDTO=new DailyDeedDTO();
+		DailyTotals registerDailyTotals = this.saveTransactionTenderDetails(txnDetails, registerOpenDetails, username, ServiceConstants.TXN_OPEN_REGISTER);
+		if (registerDailyTotals != null) {
+			DailyDeedDTO dailyDeedDTO = new DailyDeedDTO();
 			dailyDeedDTO.setDailyTotals(registerDailyTotals);
 			dailyDeedDTO.setTxnId(txnDetails.getTransactionId());
 			return dailyDeedDTO;
-		}
-		else
+		} else
 			return null;
 	}
 
@@ -229,14 +241,13 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		TransactionIdDTO txnIdDTO = registerCloseDetails.getTransactionId();
 		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_CLOSE_REGISTER);
 		DailyTotals registerDailyTotals = this.saveTransactionTenderDetails(txnDetails, registerCloseDetails, username, ServiceConstants.TXN_CLOSE_REGISTER);
-		if(registerDailyTotals!=null){
-			DailyDeedDTO dailyDeedDTO=new DailyDeedDTO();
+		if (registerDailyTotals != null) {
+			DailyDeedDTO dailyDeedDTO = new DailyDeedDTO();
 			dailyDeedDTO.setDailyTotals(registerDailyTotals);
 			dailyDeedDTO.setTxnId(txnDetails.getTransactionId());
 			dailyDeedDTO.setUniqueTxnNo(txnDetails.getTransactionId().toString());
 			return dailyDeedDTO;
-		}
-		else
+		} else
 			return null;
 	}
 
@@ -246,13 +257,12 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		TransactionIdDTO txnIdDTO = storeCloseDetails.getTransactionId();
 		Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_CLOSE_STORE);
 		DailyTotals storeDailyTotals = this.saveTransactionTenderDetails(txnDetails, storeCloseDetails, username, ServiceConstants.TXN_CLOSE_STORE);
-		if(storeDailyTotals!=null){
-			DailyDeedDTO dailyDeedDTO=new DailyDeedDTO();
+		if (storeDailyTotals != null) {
+			DailyDeedDTO dailyDeedDTO = new DailyDeedDTO();
 			dailyDeedDTO.setDailyTotals(storeDailyTotals);
 			dailyDeedDTO.setTxnId(txnDetails.getTransactionId());
 			return dailyDeedDTO;
-		}
-		else
+		} else
 			return null;
 	}
 
@@ -260,8 +270,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		DailyTotals resultDailyTotals = null;
 		txnDetails = this.transactionService.saveTransaction(txnDetails);
 		if (txnDetails != null) {
-			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(txnRawDetails.getTenders(), txnDetails.getTransactionId(), username,
-					txnType);
+			List<TenderCount> tenderCountList = TenderCountDTOConverter.transformTenderList(txnRawDetails.getTenders(), txnDetails.getTransactionId(), username, txnType);
 			tenderCountList = this.tenderCountRepository.save(tenderCountList);
 			if (tenderCountList != null && !tenderCountList.isEmpty()) {
 
@@ -281,7 +290,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 				LocationSafe locationSafe = this.retrieveStoreSafe(txnDetails.getTransactionId().getLocationId(), tenderId);
 				if (!txnType.equals(ServiceConstants.TXN_CLOSE_STORE)) {
 					this.postTenderMovementTxn(txnDetails, locationSafe, username);
-					resultDailyTotals=this.updateRegisterTotals(txnDetails);
+					resultDailyTotals = this.updateRegisterTotals(txnDetails);
 				} else {
 					resultDailyTotals = this.updateStoreTotals(txnDetails);
 				}
@@ -352,7 +361,7 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 		registerTotals.setTotalTxnAmount(txnDetails.getTotalAmt());
 		registerTotals.setTotalTxnCount(BigInteger.ONE.intValue());
 
-		registerTotals=this.financeService.upsertRegisterTotals(registerTotals, txnType);
+		registerTotals = this.financeService.upsertRegisterTotals(registerTotals, txnType);
 		this.financeService.upsertStoreTotals(registerTotals, txnType);
 		logger.info("The register total details has been updated successfully");
 
@@ -411,15 +420,15 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	public Map<Integer, List<TenderCount>> retrieveTenderCounts(Integer locationId, LocalDateTime businessDate, String txnType) {
 
 		Map<Integer, List<TenderCount>> tenderCountMap = new HashMap<>();
-		List<TenderCount> tmpCountList=null;
+		List<TenderCount> tmpCountList = null;
 
 		List<TenderCount> tenderCounts = this.searchTxnTenderCounts(locationId, null, businessDate, txnType);
 		if (tenderCounts != null && !tenderCounts.isEmpty()) {
 			logger.info("The tender count details has been retrieved successfully");
 			for (TenderCount tenderCount : tenderCounts) {
-				tmpCountList=tenderCountMap.get(tenderCount.getTenderCountId().getRegister());
-				if(tmpCountList==null) {
-					tmpCountList=new ArrayList<>();
+				tmpCountList = tenderCountMap.get(tenderCount.getTenderCountId().getRegister());
+				if (tmpCountList == null) {
+					tmpCountList = new ArrayList<>();
 				}
 				tmpCountList.add(tenderCount);
 				tenderCountMap.put(tenderCount.getTenderCountId().getRegister(), tmpCountList);
@@ -436,17 +445,97 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate, String txnType) {
 		RegisterDTO registerDTO = this.commonService.retrieveRegisterConcilationDtls(locationId, businessDate);
 		if (registerDTO != null) {
-			
+
 			Map<Integer, List<TenderCount>> tenderCountMap = this.retrieveTenderCounts(locationId, businessDate, txnType);
 			registerDTO.setRegTenderTotals(tenderCountMap);
-			
+
 			logger.info("The register concilation details for location {} has been retrieved successfully", locationId);
 
 		} else {
 			logger.info("There were no details found for any of the registers for location {}.", locationId);
 		}
-		
+
 		return registerDTO;
 	}
 
+	@Override
+	public LocStatusDTO isLocationOpenAllowed(Integer locationId, LocalDateTime businessDate) {
+		LocStatusDTO locStatusDTO=new LocStatusDTO();
+		
+		locStatusDTO.setBusinessDate(businessDate);
+		locStatusDTO.setLocationId(locationId);
+		
+		LocalDateTime bDate=null;
+		
+		List<LocationStatus> locStatusList=this.getLocationStausForOpening(locationId, businessDate);
+		
+		if(locStatusList!=null && !locStatusList.isEmpty()) {
+			for(LocationStatus locStatus:locStatusList) {
+				bDate=locStatus.getLocationStatusId().getBusinessDate();
+						
+				if(bDate!=null && bDate.equals(businessDate)) {
+					locStatusDTO.setHasOpen(locStatus.getStoreOpenExists());
+					locStatusDTO.setHasClosed(locStatus.getStoreCloseExists());
+					locStatusDTO.setHasSales(locStatus.getSaleExists());
+					
+				}else {
+					if(!locStatusDTO.getHasOpenedInFuture()) {
+						locStatusDTO.setHasOpenedInFuture(locStatus.getStoreOpenExists());
+					}
+					if(!locStatusDTO.getHasClosedInFuture()) {
+						locStatusDTO.setHasClosedInFuture(locStatus.getStoreCloseExists());
+					}
+					if(!locStatusDTO.getHasSalesInFuture()) {
+						locStatusDTO.setHasSalesInFuture(locStatus.getSaleExists());
+					}
+				}
+				
+					
+			}
+		}
+
+		logger.info("The location status has been validated successfully as per database records");
+		return locStatusDTO;
+	}
+
+	private List<LocationStatus> getLocationStausForOpening(Integer locationId, LocalDateTime businessDate) {
+		List<LocationStatus> locStatusList = this.locationStatusRepository.getLocationStatusSinceDate(locationId, businessDate.toString());
+		if (locStatusList != null && !locStatusList.isEmpty()) {
+			logger.info("The records has been successfully retrieved for the provided business date");
+		} else {
+			logger.info("There are no records existing since the provided business date");
+		}
+		return locStatusList;
+	}
+
+	@Override
+	@Transactional
+	public void resetLocationForBusiness(Integer locationId, LocalDateTime businessDate) {
+
+		//Delete all the future date daily deed txns, the sales are not part of it 
+		this.resetFutureTxns(locationId, businessDate);
+				
+		// Delete existing store close and last register close transactions
+		Transaction storeCloseTxn=this.transactionService.searchStoreCloseTxn(locationId, businessDate);
+		Transaction regCloseTxn=this.transactionService.searchLastRegCloseTxn(locationId, businessDate);
+		logger.info("The last register close and store close transactions has been retrieved for {} business date", businessDate);
+		if(storeCloseTxn!=null && regCloseTxn!=null) {
+			
+			//Delete register close
+			//Delete store close
+			this.transactionService.deleteStoreCloseTxn(storeCloseTxn.getTransactionId());
+			this.transactionService.deleteRegCloseTxn(regCloseTxn.getTransactionId());
+			logger.info("The last register close and store close transactions for {} business date has been delete successfully ", businessDate);
+			
+		}else{
+			logger.error("There were no store close transaction found for the business date");
+		}
+		
+	}
+	
+	private void resetFutureTxns(Integer locationId, LocalDateTime businessDate) {
+		this.transactionService.deleteAllFutureTxns(locationId, businessDate);
+		logger.info("All the exisitng transactions with future dates has been deleted successfully ");
+	}
+	
 }

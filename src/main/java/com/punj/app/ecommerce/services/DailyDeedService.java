@@ -13,6 +13,7 @@ import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.LocStatusDTO;
 
 /**
  * @author admin
@@ -35,5 +36,9 @@ public interface DailyDeedService {
 	public Map<Integer, List<TenderCount>> retrieveTenderCounts(Integer locationId, LocalDateTime businessDate, String txnType);
 
 	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate, String txnType);
+	
+	public LocStatusDTO isLocationOpenAllowed(Integer locationId, LocalDateTime businessDate);
+	
+	public void resetLocationForBusiness(Integer locationId, LocalDateTime businessDate);
 
 }

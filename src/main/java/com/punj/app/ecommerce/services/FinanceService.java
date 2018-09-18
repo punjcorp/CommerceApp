@@ -45,5 +45,10 @@ public interface FinanceService {
 
 	public List<DailyTotals> retrieveDailyTotals(DailyTotals dailyTotalCriteria);
 	
+	public void resetRegDailyTotals(DailyTotals dailyTotalCriteria);
+	
+	public void deleteRegDailyTotals(DailyTotals dailyTotalCriteria);
+	
+	public void deleteStoreDailyTotals(DailyTotals dailyTotalCriteria);
 	
 }

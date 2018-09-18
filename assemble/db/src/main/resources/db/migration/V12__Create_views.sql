@@ -344,6 +344,38 @@ CREATE VIEW `pi_pos_industry`.`v_location_sales_data` AS
             AND t3.location_id = t4.location_id
             AND t3.business_date = t4.business_date;                
             
+-- -----------------------------------------------------
+-- View `pi_pos_industry`.`v_loc_status`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `pi_pos_industry`.`v_loc_status` ;
+DROP TABLE IF EXISTS `pi_pos_industry`.`v_loc_status`;
+USE `pi_pos_industry`;
+
+create or replace view pi_pos_industry.v_loc_status as 
+SELECT 
+    a2.*,ifnull(a1.sale_exists,0) sale_exists, ifnull(a3.store_close_exists,0) store_close_exists from 
+(SELECT 
+    location_id, business_date, if(business_date,1,0) as store_open_exists
+FROM
+    pi_pos_industry.txn_master
+WHERE
+    txn_Type IN ('OPEN_STORE')
+GROUP BY business_date, location_id) a2 left join (
+
+SELECT 
+    location_id, business_date, if(business_date,1,0) as sale_exists
+FROM
+    pi_pos_industry.txn_master
+WHERE
+    txn_Type IN ('SALE')
+GROUP BY business_date, location_id) a1 on a1.business_date=a2.business_date and a1.location_id=a2.location_id
+left join (SELECT 
+    location_id, business_date, if(business_date,1,0) as store_close_exists
+FROM
+    pi_pos_industry.txn_master
+WHERE
+    txn_Type IN ('CLOSE_STORE')
+GROUP BY business_date, location_id) a3 on a3.business_date=a2.business_date and a3.location_id=a2.location_id;            
             
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

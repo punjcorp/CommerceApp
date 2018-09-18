@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.dailydeeds;
  * 
  */
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -37,8 +41,8 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.common.Denomination;
-import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.models.common.AJAXResponseBean;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
@@ -51,6 +55,7 @@ import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.LocStatusDTO;
 
 /**
  * @author admin
@@ -67,11 +72,9 @@ public class LocationOpeningController {
 	private TransactionService txnService;
 	private RegisterOpenValidator registerOpenValidator;
 
-	
 	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
 
-	
 	/**
 	 * @param registerOpenValidator
 	 *            the registerOpenValidator to set
@@ -141,7 +144,7 @@ public class LocationOpeningController {
 						referrerURL = (String) referrerObj;
 				}
 			}
-			
+
 			if (StringUtils.isNotBlank(referrerURL))
 				dailyDeedBean.setReferrerURL(referrerURL);
 
@@ -218,9 +221,8 @@ public class LocationOpeningController {
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
-	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean,
-			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs,
-			HttpServletRequest request, HttpSession session) {
+	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult,
+			Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request, HttpSession session) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
@@ -256,8 +258,7 @@ public class LocationOpeningController {
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.ADD_DENOMINATION_PARAM })
-	public String addTenderDenomination(@ModelAttribute DailyDeedBean dailyDeedBean, Model model, Locale locale, Authentication authentication,
-			final HttpServletRequest req) {
+	public String addTenderDenomination(@ModelAttribute DailyDeedBean dailyDeedBean, Model model, Locale locale, Authentication authentication, final HttpServletRequest req) {
 		logger.info("The add tender denomination has been called");
 		try {
 			final Integer tenderId = dailyDeedBean.getSelectedTenderId();
@@ -313,5 +314,36 @@ public class LocationOpeningController {
 		return ViewPathConstants.STORE_OPEN_PAGE;
 
 	}
+	
+	@GetMapping(value = ViewPathConstants.RESET_STORE_STATUS_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public AJAXResponseBean resetLocationForOpening(@RequestParam("locationId") Integer locationId, @RequestParam("businessDate") LocalDateTime businessDate) {
+		AJAXResponseBean response = new AJAXResponseBean();
+		response.setStatus(MVCConstants.AJAX_STATUS_FAILURE);
+		
+		this.dailyDeedService.resetLocationForBusiness(locationId, businessDate);
+		response.setStatus(MVCConstants.AJAX_STATUS_SUCCESS);
+		logger.info("The location transactions has been reset successfully for {} business date ", businessDate);
+		
+		return response;
+	}
+	
 
+	@GetMapping(value = ViewPathConstants.STORE_STATUS_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public AJAXResponseBean lookupLocationStatus(@RequestParam("locationId") Integer locationId, @RequestParam("businessDate") LocalDateTime businessDate) {
+		AJAXResponseBean response = new AJAXResponseBean();
+
+		LocStatusDTO locStatusDTO = this.dailyDeedService.isLocationOpenAllowed(locationId, businessDate);
+		if(locStatusDTO!=null) {
+			response.setStatus(MVCConstants.AJAX_STATUS_SUCCESS);
+			response.setResultObj(locStatusDTO);
+			logger.info("The location status has been retrieved successfully");
+		}
+		else {
+			response.setStatus(MVCConstants.AJAX_STATUS_FAILURE);
+			logger.info("The location status retrieval has failed!!");
+		}
+		return response;
+	}
 }

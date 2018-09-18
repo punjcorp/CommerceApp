@@ -10,6 +10,11 @@ USE `pi_pos_industry` ;
 ALTER TABLE `pi_pos_industry`.`location` 
 ADD COLUMN `district` VARCHAR(50) NULL;
 
+ALTER TABLE `pi_pos_industry`.`ledger_journal` 
+DROP INDEX `business_date_UNIQUE` ,
+ADD UNIQUE INDEX `business_date_UNIQUE` (`business_date` ASC, `txn_no` ASC, `txn_type` ASC, `location_id` ASC, `action_code` ASC, `created_date` ASC);
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

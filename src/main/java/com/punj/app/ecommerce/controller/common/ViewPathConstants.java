@@ -329,6 +329,9 @@ public final class ViewPathConstants {
 	/**
 	 * The daily deed section starts
 	 */
+	public static final String STORE_STATUS_URL="/pos/store_status";
+	public static final String RESET_STORE_STATUS_URL="/pos/reset_store_status";
+	
 	public static final String STORE_OPEN_URL="/pos/open_store";
 	public static final String STORE_OPEN_PAGE="dailydeeds/store_open";
 	

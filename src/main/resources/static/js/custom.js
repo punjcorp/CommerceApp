@@ -108,6 +108,11 @@ $(function() {
 									screeen_error_zero_address : 'There is no address existing!',
 									error_confirm_customer_delete : 'The deletion of customer(s) will also destroy the finance account(s)!!<br> Do you want to Approve the Deletion?',
 									error_register_already_closed_today: 'This register has been closed for current business date!!<br><br> Please open another register if you want to perform transactions with current business date',
+									error_past_date_edit_future_sale_exists: 'The location open is not allowed as there are sale invoices existing with future date',
+									error_store_open_reset_eod_txn_failed: 'The reset operation for the past business date has failed!!<br><br> Please contact administrator!',
+									error_store_status_retrieval_failed: 'The location status retrieval has failed!!<br><br> Please contact administrator!',
+									warn_functionality_in_progress :'Development in progress..',
+									warn_txn_eod_reset_confirmation :'This action will reset the Store Status in OPEN and delete any future transactions excluding sales!!<br><br> Please provide your approval for the action.',
 								}
 							},
 							hi : {
@@ -321,6 +326,9 @@ function globalAction(cntl) {
 		$('#alertModal').modal('hide');
 	} else if (cntl.id.indexOf('Logout') > 0) {
 		window.location.href = logout_url;
+	} else if (cntl.id.indexOf('ResetTxns')>0){
+		hideAlert();
+		resetLocationStatus();
 	}
 }
 

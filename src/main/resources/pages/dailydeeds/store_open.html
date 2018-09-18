@@ -29,9 +29,9 @@
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 					<form id="openStoreForm" action="#" th:action="@{/pos/open_store}" th:object="${dailyDeedBean}" method="post">
-						<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.store.open.choose}">Select Location
-									choice to proceed</span></small></label> <small th:if="${#fields.hasErrors('locationId')}" th:errors="${dailyDeedBean.locationId}" class="text-danger align-top">Location
-							Error </small>
+						<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.store.open.choose}">Select Location choice to
+									proceed</span></small></label> <small th:if="${#fields.hasErrors('locationId')}" th:errors="${dailyDeedBean.locationId}" class="text-danger align-top">Location Error
+						</small>
 						<div class="box-radio-parent">
 							<th:block th:each="location,itrStat:${locations}">
 								<label> <input type="radio" name="locationRadio" id="locationRadio" th:field="*{locationId}" th:value="${location.locationId}"></input>
@@ -47,12 +47,9 @@
 												</div>
 												<div>
 													<h3>
-														<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> 
-														<input type="hidden" th:id="${location.locationId+'_gst_no'}" th:value="${location.gstNo}"></input>
-														<input type="hidden"
-															th:id="${location.locationId+'_loc_default_tender'}" th:value="${location.defaultTender}"></input> 
-															
-															<span th:text="${location.name}"></span>
+														<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> <input type="hidden"
+															th:id="${location.locationId+'_gst_no'}" th:value="${location.gstNo}"></input> <input type="hidden"
+															th:id="${location.locationId+'_loc_default_tender'}" th:value="${location.defaultTender}"></input> <span th:text="${location.name}"></span>
 													</h3>
 												</div>
 												<div>
@@ -88,18 +85,15 @@
 								</label>
 							</th:block>
 						</div>
-						<div th:class="${dailyDeedBean.locationId!=null}?'row':'row d-none'" id="businessDateContainer">
+						<div th:class="row" id="businessDateContainer">
 							<div class="col-6">
 								<div class="form-group">
-									<label for="businessDate"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.date.business}">Business
-												Date</span></small></label>
+									<label for="businessDate"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.date.business}">Business Date</span></small></label>
 									<div class="input-group text-left">
 										<input type="text" th:field="*{businessDate}" class="form-control input-sm" data-input="data-input"
-											th:placeholder="#{commerce.screen.common.date.select}"></input> <input type="hidden" th:field="*{referrerURL}"></input>
-											<input type="hidden" th:field="*{locationName}"></input>
-											<input type="hidden" th:field="*{gstNo}"></input>
-											<input type="hidden" th:field="*{defaultTender}"></input>
-											
+											th:placeholder="#{commerce.screen.common.date.select}"></input> <input type="hidden" th:field="*{referrerURL}"></input> <input type="hidden"
+											th:field="*{locationName}"></input> <input type="hidden" th:field="*{gstNo}"></input> <input type="hidden" th:field="*{defaultTender}"></input>
+
 										<div class="input-group-append">
 											<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check"></i></a>
 										</div>
@@ -119,8 +113,8 @@
 													<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].tenderId}"></input> <input type="hidden"
 														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <input type="hidden"
 														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <input type="hidden"
-														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input> <label><span
-														th:text="#{commerce.screen.common.tender.type}">Tender Type</span></label>
+														th:field="${dailyDeedBean.tenders[__${itrStat.index}__].name}"></input> <label><span th:text="#{commerce.screen.common.tender.type}">Tender
+															Type</span></label>
 												</div>
 											</div>
 											<div class="col-4">
@@ -165,8 +159,8 @@
 																th:placeholder="#{commerce.screen.store.open.tender.count}" class="form-control input-sm" data-input="data-input"></input>
 														</div>
 														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount')}"
-															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}"
-															class="text-danger align-top">Media Count Error </small>
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].mediaCount}" class="text-danger align-top">Media
+															Count Error </small>
 													</div>
 												</div>
 												<div class="col-3">
@@ -182,8 +176,8 @@
 																th:placeholder="#{commerce.screen.store.open.tender.amount}" class="form-control input-sm pos-amount" data-input="data-input"></input>
 														</div>
 														<small th:if="${#fields.hasErrors('tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount')}"
-															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}"
-															class="text-danger align-top">Amount Error </small>
+															th:errors="${dailyDeedBean.tenders[__${itrStat.index}__].denominations[__${itrDenomination.index}__].amount}" class="text-danger align-top">Amount
+															Error </small>
 													</div>
 												</div>
 												<div class="col">
@@ -213,8 +207,8 @@
 												<span th:text="#{commerce.screen.common.tender.count.total}"></span>
 											</h5>
 											<h5>
-												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <span
-													th:id="${itrStat.index+'lblMediaCount'}" th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
+												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}"></input> <span th:id="${itrStat.index+'lblMediaCount'}"
+													th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calMCount}">0</span>
 											</h5>
 										</div>
 										<div class="col-3 text-right">
@@ -222,8 +216,8 @@
 												<span th:text="#{commerce.screen.common.amount.total}"></span>
 											</h5>
 											<h5>
-												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <span
-													th:id="${itrStat.index+'lbltenderAmount'}" th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR 0.00</span>
+												<input type="hidden" th:field="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}"></input> <span th:id="${itrStat.index+'lbltenderAmount'}"
+													th:text="${dailyDeedBean.tenders[__${itrStat.index}__].calTAmount}">INR 0.00</span>
 											</h5>
 										</div>
 									</div>
@@ -233,7 +227,8 @@
 						<div class="row">
 							<div class="col-12 text-right">
 								<div class="form-group">
-									<button type="button" id="btnOpenStore" name="openStore" th:onclick="'submitForm(\'openStoreForm\',\'openStore\')'" th:class="${dailyDeedBean.locationId!=null?'btn btn-primary btn-sm':'btn btn-primary btn-sm d-none'}">
+									<button type="button" id="btnOpenStore" name="openStore" th:onclick="'submitForm(\'openStoreForm\',\'openStore\')'"
+										th:class="${dailyDeedBean.locationId!=null?'btn btn-primary btn-sm':'btn btn-primary btn-sm d-none'}">
 										<i class="fas fa-long-arrow-alt-right fa-6x"></i>
 									</button>
 								</div>
@@ -248,19 +243,24 @@
 	<!-- /#wrapper -->
 	<script th:inline="javascript">
 		var bDateCntl;
+		var url= /*[[@{/pos/open_register(locationId)}]]*/;
+		var store_open_url= /*[[@{/pos/open_store}]]*/;
+		
 		$(function() {
 			
 			
 			bDateCntl=$('#businessDate').flatpickr({
 				dateFormat : 'd-M-y',
-				minDate: "today"
+				//minDate: "today"
 			});
-			var url= /*[[@{/pos/open_register(locationId)}]]*/;
+			
 			
 			$('input:radio[name=locationId]').change(function(){
-				var locValue=$(this).val();
-				updateBusinessDate(this);
-				processLocationRequest(locValue, url);
+				locValChanged(this);
+			   });
+			
+			$('#businessDate').change(function(){
+				bDateValChanged(this);
 			   });
 			
 		});

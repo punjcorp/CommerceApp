@@ -1,6 +1,8 @@
 var totalAmountVal = 0;
 var totalCountVal = 0;
 var alertUtil = new Utils();
+var locStatus="";
+var token = $("meta[name='_csrf']").attr("content");
 
 function actionDenomination(tenderId, denominationId, actionParam, formName) {
 
@@ -316,4 +318,163 @@ function processRegCreationFailure() {
 	$('#btnRegOpenProceed').addClass('d-none');
 	$('#btnCloseModal').removeClass('d-none');
 	$('#commonNewRegError').html('<h5>There was some issue while saving Register Details, please contact system administrator!!</h5>');						
+}
+
+
+function locValChanged(cntl){
+	var locValue=$(cntl).val();
+	var bDateVal=$('#businessDate').val();
+	if(typeof(bDateVal)!=="undefined" && bDateVal!=undefined && bDateVal!="" && typeof(locValue)!=="undefined" && locValue!=undefined && locValue!=""){
+		//updateBusinessDate(cntl);
+		//processLocationRequest(locValue, url);
+		checkLocationStatus(locValue,bDateVal);
+	}
+	
+	
+}
+
+function bDateValChanged(cntl){
+	var bDateVal=$('#businessDate').val();
+	var locId=$('input:radio[name=locationId]:checked').val();
+	if(typeof(bDateVal)!=="undefined" && bDateVal!=undefined && bDateVal!="" && typeof(locId)!=="undefined" && locId!=undefined && locId!=""){
+		checkLocationStatus(locId,bDateVal);
+		//processLocationRequest(locValue, url);
+	}
+	
+	
+}
+
+function checkLocationStatus(locationId, businessDate){
+	//$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+	
+	$.ajax({
+		url : '/pos/store_status',
+		type : 'GET',
+		cache : false,
+		async : false,
+		data : {locationId : locationId,
+			businessDate : businessDate},
+		contentType : "application/json; charset=utf-8",
+		dataType : "json",
+		success : function(data) {
+			
+			$('#screenBusyModal').modal('hide');
+			if(typeof(data)!=="undefined" && data!=undefined && data!=""){
+				if(typeof(data.status)!=="undefined" && data.status!=undefined && data.status=="S"){
+					locStatus=data.resultObj;
+					
+					if(locStatus!=""){
+						processLocationOpen(locationId, businessDate);
+					}
+					else{
+						btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+						alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_store_status_retrieval_failed'), btnLabels);
+					}
+				}else{
+					locStatus="";
+					btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+					alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_store_status_retrieval_failed'), btnLabels);
+				}
+				
+			}else{
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_store_status_retrieval_failed'), btnLabels);
+			}
+		},				
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader('X-CSRF-TOKEN', token)
+		}
+	});	
+	
+	
+}
+
+function processLocationOpen(locationId, businessDate){
+	$('#screenBusyModal').modal('hide');
+	if(isFutureStatusAllClear()){
+		
+		//hasSales
+		
+		if (!locStatus.hasOpen){
+			//Go for normal route to show denominations
+			processLocationRequest(locationId, url);
+			
+		} else if(locStatus.hasOpen && locStatus.hasClosed){
+			// then reset EOD daily totals
+			// reset the store and register status
+			// delete last register close and store close txns
+			
+			var btnLabels = [ i18next.t('alert_btn_approve'), i18next.t('alert_btn_cancel') ];
+			var btnActions = [ 'btnResetTxns', 'btnCancel' ];
+			commonUtil.renderAlert('GLOBAL', i18next.t('error_confirmation_alert_header'), i18next.t('warn_txn_eod_reset_confirmation'), btnLabels, btnActions, 'globalAction');
+			
+			
+		} else if (locStatus.hasOpen && !locStatus.hasClosed){
+			//set url for rerouting
+			processLocationRequest(locationId, url);
+		}
+		
+		
+	}else {
+		if(locStatus.hasOpenedInFuture && !locStatus.hasSalesInFuture && !locStatus.hasClosedInFuture){
+			// then reset EOD daily totals for selected business date
+			// reset the store and register status for selected business date
+			// delete last register close and store close txn for selected business date
+			// delete all future transactions for the store which are after selected business date
+			
+			var btnLabels = [ i18next.t('alert_btn_approve'), i18next.t('alert_btn_cancel') ];
+			var btnActions = [ 'btnResetTxns', 'btnCancel' ];
+			commonUtil.renderAlert('GLOBAL', i18next.t('error_confirmation_alert_header'), i18next.t('warn_txn_eod_reset_confirmation'), btnLabels, btnActions, 'globalAction');
+			
+		}else if (locStatus.hasOpenedInFuture && locStatus.hasSalesInFuture){
+			//show error
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_past_date_edit_future_sale_exists'), btnLabels);
+		}else if (locStatus.hasOpenedInFuture && !locStatus.hasSalesInFuture && locStatus.hasClosedInFuture){
+			// delete all future transactions starting from selected business date close txns onwards
+			var btnLabels = [ i18next.t('alert_btn_approve'), i18next.t('alert_btn_cancel') ];
+			var btnActions = [ 'btnResetTxns', 'btnCancel' ];
+			commonUtil.renderAlert('GLOBAL', i18next.t('error_confirmation_alert_header'), i18next.t('warn_txn_eod_reset_confirmation'), btnLabels, btnActions, 'globalAction');
+		}
+	}
+}
+
+function isFutureStatusAllClear(){
+	if(!locStatus.hasOpenedInFuture && !locStatus.hasClosedInFuture && !locStatus.hasSalesInFuture)
+		return true;
+	else
+		return false;
+		
+		
+}
+
+
+function resetLocationStatus(){
+	var businessDate=$('#businessDate').val();
+	var locationId=$('input:radio[name=locationId]:checked').val();
+	$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+	
+	$.get("/pos/reset_store_status", {
+		locationId : locationId,
+		businessDate : businessDate
+	}, function(data, status) {
+		$('#screenBusyModal').modal('hide');
+		if(typeof(data)!=="undefined" && data!=undefined && data!=""){
+			if(typeof(data.status)!=="undefined" && data.status!=undefined && data.status=="S"){
+				//Reroute to the store open url
+				window.location.href=store_open_url;
+			}else{
+				//Show error that reset has failed
+				btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+				alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_store_open_reset_eod_txn_failed'), btnLabels);
+			}
+			
+		}else{
+			//Show error that reset has failed
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_store_open_reset_eod_txn_failed'), btnLabels);
+		}
+		
+	});
+
 }

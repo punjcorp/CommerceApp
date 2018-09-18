@@ -56,4 +56,15 @@ public interface TransactionService {
 	
 	public TransactionReceipt searchTransactionReceipt(String uniqueTxnNo, String receiptType);
 
+	public List<Transaction> searchAllFutureTxns(Integer locationId, LocalDateTime businessDate);
+	
+	public void deleteAllFutureTxns(Integer locationId, LocalDateTime businessDate);
+	
+	public Transaction searchStoreCloseTxn(Integer locationId, LocalDateTime businessDate);
+	
+	public Transaction searchLastRegCloseTxn(Integer locationId, LocalDateTime businessDate);
+	
+	public void deleteRegCloseTxn(TransactionId txnId);
+	
+	public void deleteStoreCloseTxn(TransactionId txnId);
 }
