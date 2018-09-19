@@ -286,7 +286,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="Arial" size="10" isBold="true" isUnderline="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{transactionHeader}.getTxnType()!=null && $F{transactionHeader}.getTxnType()=="SALE"?"TAX INVOICE":($F{transactionHeader}.getTxnType()!=null && $F{transactionHeader}.getTxnType()=="RETURN"?"DEBIT VOUCHER":"VOUCHER"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{transactionHeader}.getTxnType()!=null && $F{transactionHeader}.getTxnType()=="SALE"?"TAX INVOICE":($F{transactionHeader}.getTxnType()!=null && $F{transactionHeader}.getTxnType()=="RETURN"?"DEBIT VOUCHER":"TAX INVOICE"))]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="160" y="58" width="240" height="34" uuid="43b26d5c-240a-45f2-a0ca-5a000015b47d"/>

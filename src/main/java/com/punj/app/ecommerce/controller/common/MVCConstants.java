@@ -344,6 +344,8 @@ public final class MVCConstants {
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	public static final String ACCOUNT_DTO="accountDTO";
 	
+	public static final String UTILS_RECEIPT_BEAN= "receiptBean";
+	
 	public static final String TXN_LOOKUP_BEAN_LIST= "txns";
 	
 	

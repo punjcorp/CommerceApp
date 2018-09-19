@@ -48,6 +48,7 @@ $(function() {
 									error_confirmation_alert_header : 'Confirmation Message',
 									alert_btn_ok : 'OK',
 									alert_btn_approve : 'Approve',
+									alert_btn_delete : 'Delete Transaction',
 									alert_btn_cancel : 'Cancel',
 									last_txn_title : 'Last Successful Transaction',
 									alert_btn_logout : 'Logout',
@@ -113,6 +114,7 @@ $(function() {
 									error_store_status_retrieval_failed: 'The location status retrieval has failed!!<br><br> Please contact administrator!',
 									warn_functionality_in_progress :'Development in progress..',
 									warn_txn_eod_reset_confirmation :'This action will reset the Store Status in OPEN and delete any future transactions excluding sales!!<br><br> Please provide your approval for the action.',
+									screen_confirm_txn_deletion :'The transaction deletion will wipe the transaction data and receipts from system and will not be recovered at later point!!<br><br> Do you want to proceed with transaction delete?',
 								}
 							},
 							hi : {
@@ -329,6 +331,9 @@ function globalAction(cntl) {
 	} else if (cntl.id.indexOf('ResetTxns')>0){
 		hideAlert();
 		resetLocationStatus();
+	}else if (cntl.id.indexOf('DeleteTxn')>0){
+		hideAlert();
+		deleteTxnConfirmed();
 	}
 }
 

@@ -105,8 +105,12 @@ public class TransactionLookupController {
 
 	@PostMapping(value = ViewPathConstants.TXN_LOOKUP_URL)
 	public String lookupTransactions(@ModelAttribute @Valid TxnSearchBean txnSearchBean, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors() && !model.containsAttribute(MVCConstants.SUCCESS)) {
+			this.setTxnSearchModelBeans(txnSearchBean, model);
+			return ViewPathConstants.TXN_LOOKUP_PAGE;
+		}
+		
 		List<TxnBean> txnBeanList = null;
-
 		List<TransactionLookup> txnList = this.txnService.searchTxnJournals(txnSearchBean.getTxnType(), txnSearchBean.getStartDateTime(), txnSearchBean.getEndDateTime());
 		if (txnList != null && !txnList.isEmpty()) {
 			txnBeanList = TransactionTransformer.transformTxnLookupList(txnList);
@@ -114,6 +118,14 @@ public class TransactionLookupController {
 			logger.info("There was no txn found for the provided search");
 		}
 
+		
+		this.setTxnSearchModelBeans(txnSearchBean, model);
+		model.addAttribute(MVCConstants.TXN_LOOKUP_BEAN_LIST, txnBeanList);
+
+		return ViewPathConstants.TXN_LOOKUP_PAGE;
+	}
+	
+	private void setTxnSearchModelBeans(TxnSearchBean txnSearchBean, Model model) {
 		Map<String, String> txnTypes = new HashMap<>();
 		txnTypes.put(MVCConstants.TXN_SALE_PARAM, "Tax Invoice");
 		txnTypes.put(MVCConstants.TXN_RETURN_PARAM, "Debit Voucher");
@@ -122,10 +134,6 @@ public class TransactionLookupController {
 		model.addAttribute(MVCConstants.TXN_TYPES_BEAN, txnTypes);
 
 		model.addAttribute(MVCConstants.TXN_SEARCH_BEAN, txnSearchBean);
-
-		model.addAttribute(MVCConstants.TXN_LOOKUP_BEAN_LIST, txnBeanList);
-
-		return ViewPathConstants.TXN_LOOKUP_PAGE;
 	}
 
 	@GetMapping(value = ViewPathConstants.TXN_DETAILS_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -154,13 +162,6 @@ public class TransactionLookupController {
 		return saleTxn;
 	}
 
-	/*
-	 * @PostMapping(value = ViewPathConstants.TXN_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
-	 * 
-	 * @ResponseBody public DataTableResponse lookupTransactions(@ModelAttribute @Valid TxnSearchBean txnSearchBean, BindingResult bindingResult, Model model) {
-	 * DataTableResponse dtResponse = null;
-	 * 
-	 * return dtResponse; }
-	 */
+	
 
 }

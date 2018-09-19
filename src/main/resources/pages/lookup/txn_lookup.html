@@ -87,6 +87,8 @@
 							</div>
 						</form>
 					</div>
+					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 					<div class="card-text" th:if="${txns!=null and #lists.size(txns)>0}">
 						<div id="response"></div>
 						<table id="txnDataTable" class="table table-striped table-hover table-bordered">
@@ -111,9 +113,17 @@
 									<td><span th:text="${txn.createdBy}"></span></td>
 									<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${txn.totalTaxAmount}"></span></td>
 									<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${txn.totalAmount}"></span></td>
-									<td><a th:href="@{/admin/edit_sale_txn(txnId=${txn.uniqueTxnNo})}" class="btn btn-success btn-sm"><span
+									<td>
+									
+										<a th:href="@{/admin/edit_sale_txn(txnId=${txn.uniqueTxnNo})}" class="btn btn-success btn-sm"><span
 														class="fa-2x mx-1 fa-layers fa-fw"> <i class="fas fa-pencil-alt"></i>
-													</span><span th:text="#{commerce.screen.actions.txn.edit}">Edit Transaction</span></a></td>
+													</span><span th:text="#{commerce.screen.actions.txn.edit}">Edit Transaction</span></a>
+										
+										<a href="#" th:onclick="'confirmTransactionDeletion(\''+${txn.uniqueTxnNo}+'\')'" class="btn btn-danger btn-sm"><span
+														class="fa-2x mx-1 fa-layers fa-fw"> <i class="fas fa-times"></i>
+													</span><span th:text="#{commerce.screen.actions.txn.delete}">Delete Transaction</span></a>			
+													
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -189,6 +199,8 @@
 
 		var view_rcpt_viewer_url= /*[[@{/pdfviewer/web/viewer.html}]]*/;
 		var view_rcpt_url= /*[[@{/pos/view_txn_receipt(txnId)}]]*/;
+		
+		var delete_txn_url= /*[[@{/admin/delete_sale_txn(txnId=)}]]*/;
 		
 		/*]]>*/
 	</script>

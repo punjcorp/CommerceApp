@@ -15,10 +15,25 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
+	public static final String TABLE_SALES_INVOICE="sale_txn_invoices";
+	 
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_TRANSPORT="Sale Transport Copy";
 	public static final String RCPT_SALE_DUPLICATE="Sale Duplicate Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
+	
+	public static final String RCPT_DISPLAY_FIRST="ORIGINAL COPY";
+	public static final String RCPT_DISPLAY_SECOND="TRANSPORT COPY";
+	public static final String RCPT_DISPLAY_THIRD="DUPLICATE COPY";
+	
+	public static final String[] RCPT_DISPLAY_ARRAY= {ServiceConstants.RCPT_DISPLAY_FIRST, ServiceConstants.RCPT_DISPLAY_THIRD, ServiceConstants.RCPT_DISPLAY_SECOND};
+	
+	public static final String[] RCPT_ARRAY= {ServiceConstants.RCPT_SALE_STORE, ServiceConstants.RCPT_SALE_DUPLICATE, ServiceConstants.RCPT_SALE_TRANSPORT, ServiceConstants.RCPT_SALE_CUSTOMER};
 
+	public static final String CREATIVE_TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_txn.jasper";
+	public static final String CREATIVE_TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/creative_sale_receipt_items.jasper";
+	
+	
 	public static final String ACTION_EXPENSE = "Expense";
 
 	public static final String CUSTOMER_TYPE_CLIENT = "CUSTOMER";

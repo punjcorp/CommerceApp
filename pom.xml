@@ -7,6 +7,16 @@
 	<version>1.0</version>
 	<name>PI-POS-APP</name>
 	<url>http://consultforit.com</url>
+	<!-- <distributionManagement>
+		<snapshotRepository>
+			<id>snapshot</id>
+			<url>gs://pi_pos_industry_artifacts/snapshot</url>
+		</snapshotRepository>
+		<repository>
+			<id>release</id>
+			<url>gs://pi_pos_industry_artifacts/release</url>
+		</repository>
+	</distributionManagement> -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -81,7 +91,7 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-java8time</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search-orm</artifactId>
@@ -158,7 +168,7 @@
 			<artifactId>pdfbox</artifactId>
 			<version>2.0.4</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.punj.app.ecommerce</groupId>
 			<artifactId>pi_pos_fonts</artifactId>
@@ -198,6 +208,12 @@
 
 
 		</plugins>
-
+		<!-- <extensions>
+			<extension>
+				<groupId>com.gkatzioura.maven.cloud</groupId>
+				<artifactId>google-storage-wagon</artifactId>
+				<version>1.0</version>
+			</extension>
+		</extensions> -->
 	</build>
 </project>

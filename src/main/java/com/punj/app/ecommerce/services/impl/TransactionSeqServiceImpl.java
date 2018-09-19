@@ -4,6 +4,8 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,12 +14,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.seqs.ExpenseVoucher;
 import com.punj.app.ecommerce.domains.transaction.seqs.ReturnVoucher;
 import com.punj.app.ecommerce.domains.transaction.seqs.SaleInvoice;
 import com.punj.app.ecommerce.repositories.transaction.seqs.ExpenseVoucherRepository;
 import com.punj.app.ecommerce.repositories.transaction.seqs.ReturnVoucherRepository;
 import com.punj.app.ecommerce.repositories.transaction.seqs.SaleInvoiceRepository;
+import com.punj.app.ecommerce.repositories.transaction.seqs.TransactionSeqRepository;
 import com.punj.app.ecommerce.services.TransactionSeqService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 
@@ -32,6 +36,7 @@ public class TransactionSeqServiceImpl implements TransactionSeqService {
 	private SaleInvoiceRepository saleInvoiceRepository;
 	private ReturnVoucherRepository returnVoucherRepository;
 	private ExpenseVoucherRepository expenseVoucherRepository;
+	private TransactionSeqRepository txnSeqRepository;
 
 	/**
 	 * @param saleInvoiceRepository
@@ -60,23 +65,32 @@ public class TransactionSeqServiceImpl implements TransactionSeqService {
 		this.expenseVoucherRepository = expenseVoucherRepository;
 	}
 
+	/**
+	 * @param txnSeqRepository
+	 *            the txnSeqRepository to set
+	 */
+	@Autowired
+	public void setTransactionSeqRepository(TransactionSeqRepository txnSeqRepository) {
+		this.txnSeqRepository = txnSeqRepository;
+	}
+
 	@Override
 	public BigInteger saveTransactionSeqs(Transaction txnHeader) {
 		BigInteger txnInvoiceNo = null;
 		switch (txnHeader.getTxnType()) {
 		case ServiceConstants.TXN_SALE:
-			txnInvoiceNo=this.generateSaleInvoice(txnHeader);
+			txnInvoiceNo = this.generateSaleInvoice(txnHeader);
 			break;
 		case ServiceConstants.TXN_RETURN:
-			txnInvoiceNo=this.generateReturnVoucher(txnHeader);
+			txnInvoiceNo = this.generateReturnVoucher(txnHeader);
 			break;
 		case ServiceConstants.TXN_NOSALE:
-			txnInvoiceNo=this.generateExpenseVoucher(txnHeader);
+			txnInvoiceNo = this.generateExpenseVoucher(txnHeader);
 			break;
 		}
 		return txnInvoiceNo;
 	}
-	
+
 	private BigInteger generateSaleInvoice(Transaction txnHeader) {
 		BigInteger txnInvoiceNo = null;
 		SaleInvoice saleInvoice = new SaleInvoice();
@@ -93,7 +107,7 @@ public class TransactionSeqServiceImpl implements TransactionSeqService {
 		}
 		return txnInvoiceNo;
 	}
-	
+
 	private BigInteger generateReturnVoucher(Transaction txnHeader) {
 		BigInteger txnVoucherNo = null;
 		ReturnVoucher returnVoucher = new ReturnVoucher();
@@ -110,7 +124,7 @@ public class TransactionSeqServiceImpl implements TransactionSeqService {
 		}
 		return txnVoucherNo;
 	}
-	
+
 	private BigInteger generateExpenseVoucher(Transaction txnHeader) {
 		BigInteger txnVoucherNo = null;
 		ExpenseVoucher expenseVoucher = new ExpenseVoucher();
@@ -127,17 +141,84 @@ public class TransactionSeqServiceImpl implements TransactionSeqService {
 		}
 		return txnVoucherNo;
 	}
-	
+
 	public BigInteger retrieveSaleInvoiceNo(SaleInvoice saleInvoice) {
-		BigInteger invoiceNo=null;
-		saleInvoice=this.saleInvoiceRepository.findOne(Example.of(saleInvoice));
-		if(saleInvoice!=null) {
-			invoiceNo=saleInvoice.getInvoiceNo();
+		BigInteger invoiceNo = null;
+		saleInvoice = this.saleInvoiceRepository.findOne(Example.of(saleInvoice));
+		if (saleInvoice != null) {
+			invoiceNo = saleInvoice.getInvoiceNo();
 			logger.info("The sale invoice number has been successfully retrieved");
-		}else {
+		} else {
 			logger.error("The sale invoice number was not retrieved for the transaction");
 		}
 		return invoiceNo;
+	}
+
+	@Override
+	public List<SaleInvoice> retrieveSaleInvoices(BigInteger startingInvoiceNo, BigInteger endingInvoiceNo) {
+		List<SaleInvoice> saleInvoices = null;
+		if (endingInvoiceNo != null) {
+			saleInvoices = this.saleInvoiceRepository.getInvoiceFromRange(startingInvoiceNo, endingInvoiceNo);
+		} else {
+			SaleInvoice saleInvoice = this.saleInvoiceRepository.findOne(startingInvoiceNo);
+			if (saleInvoice != null) {
+				saleInvoices = new ArrayList<>();
+				saleInvoices.add(saleInvoice);
+			}
+		}
+
+		if (saleInvoices != null && !saleInvoices.isEmpty())
+			logger.info("The invoice details has been retrieved successfully");
+		else
+			logger.info("There are no invoices found for the provided invoice no");
+
+		return saleInvoices;
+	}
+
+	@Override
+	public BigInteger deleteSaleInvoice(TransactionId txnId) {
+		BigInteger startingInvoiceNo = null;
+		SaleInvoice saleInvoiceCriteria = new SaleInvoice();
+		saleInvoiceCriteria.setBusinessDate(txnId.getBusinessDate());
+		saleInvoiceCriteria.setLocationId(txnId.getLocationId());
+		saleInvoiceCriteria.setRegister(txnId.getRegister());
+		saleInvoiceCriteria.setTransactionSeq(txnId.getTransactionSeq());
+
+		SaleInvoice saleInvoice = this.saleInvoiceRepository.findOne(Example.of(saleInvoiceCriteria));
+		if (saleInvoice != null) {
+			startingInvoiceNo = saleInvoice.getInvoiceNo();
+			this.saleInvoiceRepository.delete(saleInvoice);
+			logger.info("The invoice details has been deleted successfully");
+		} else {
+			logger.info("There were no invoice details found for the {} transaction", txnId.toString());
+		}
+		return startingInvoiceNo;
+
+	}
+
+	@Override
+	public Boolean decrementSaleInvoiceNos(BigInteger invoiceNo) {
+		Boolean result = this.txnSeqRepository.decrementInvoiceNos(invoiceNo);
+		if (result)
+			logger.info("The invoice sequences has been decremented successfully for the transactions");
+		else {
+			throw new RuntimeException("An unknown error has occured while decrementing invoice nos");
+		}
+		return result;
+	}
+
+	@Override
+	public BigInteger retrieveMaxSaleInvoiceSeq() {
+		BigInteger maxInvoiceNo = this.saleInvoiceRepository.getMaxInvoiceNo();
+		logger.info("The max invoice has been successfully retrieved");
+		return maxInvoiceNo;
+	}
+	
+	@Override
+	public Boolean alterSaleInvoiceSeq() {
+		Boolean result = this.txnSeqRepository.alterInvoiceNoSequencer();
+		logger.info("The requested table auto increment has been altered successfully");
+		return result;
 	}
 
 }

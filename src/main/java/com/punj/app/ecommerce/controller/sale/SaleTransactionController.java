@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,10 +58,12 @@ import com.punj.app.ecommerce.models.shipment.ShipmentBean;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.models.transaction.SaleTransaction;
 import com.punj.app.ecommerce.models.transaction.TransactionHeader;
+import com.punj.app.ecommerce.models.transaction.TxnSearchBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -240,7 +244,7 @@ public class SaleTransactionController {
 			if (StringUtils.isNotBlank(uniqueTxnNo)) {
 				TransactionDTO txnDTO = this.transactionService.searchTransactionDetails(uniqueTxnNo);
 				if (txnDTO != null) {
-					Map<BigInteger, List<ItemImage>> itemImagesMap =null;
+					Map<BigInteger, List<ItemImage>> itemImagesMap = null;
 					if (txnDTO.getSaleLineItems() != null && !txnDTO.getSaleLineItems().isEmpty()) {
 						Set<BigInteger> itemIds = TransactionTransformer.retrieveItemIds(txnDTO.getSaleLineItems());
 						itemImagesMap = this.itemService.retrieveItems(itemIds);
@@ -379,6 +383,32 @@ public class SaleTransactionController {
 		} catch (IOException e) {
 			logger.error("There is an error while generating receipt for last txn", e);
 		}
+	}
+
+	@GetMapping(ViewPathConstants.DELETE_SALE_TXN_URL)
+	public String deleteSaleTransaction(@RequestParam("txnId") String uniqueTxnNo, Model model, final HttpSession session, final HttpServletRequest req,
+			RedirectAttributes redirectAttrs, Locale locale, Authentication authentication) {
+		
+		try {
+			if (StringUtils.isNotBlank(uniqueTxnNo)) {
+				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+				TransactionId txnId = Utils.convertUniqueTxnToId(uniqueTxnNo);
+				this.transactionService.deleteSalesTxn(txnId, userDetails.getUsername(), locale);
+
+				redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.sale.delete.success", null, locale));
+
+			} else {
+				redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.sale.delete.no.txn", null, locale));
+				logger.error("The tranasction no is not provided which is needed for deletion");
+			}
+
+		} catch (Exception e) {
+			redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There is an error while deleting the provided invoice", e);
+		}
+		req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+		redirectAttrs.addFlashAttribute(MVCConstants.TXN_SEARCH_BEAN, new TxnSearchBean());
+		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.TXN_LOOKUP_URL;
 	}
 
 }

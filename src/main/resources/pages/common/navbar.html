@@ -204,6 +204,40 @@
 							</div>
 						</div></li>
 					<!-- Admin Menu ends -->
+					
+					
+					
+					
+					<!-- Utility Menu starts -->
+					<li class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="posDropdown" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false"><i class="fas fa-wrench fa-2x mx-2"></i> <span
+							th:text="#{commerce.home.menu.utilities}">Utilities</span> </a>
+						<div class="dropdown-menu megamenu-container" aria-labelledby="navbarDropdown">
+							<div class="row">
+								<div class="col">
+									<div class="megamenu-item-card my-2">
+										<div class="megamenu-item-header">
+											<span class="mx-3" th:text="#{commerce.home.menu.transactions}"></span>
+										</div>
+										<div class="megamenu-item-body">
+											<a class="dropdown-item megamenu-item" th:href="@{/admin/pi_pos_utils}"><i class="fas fa-receipt fa-3x mx-2"></i><span
+												th:text="#{commerce.home.menu.utilities.receipt.generator}">Receipt Generator</span></a>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+								</div>
+							</div>
+						</div></li>
+					<!-- Utility Menu ends -->
+					
+					
+					
+					
+					
+					
+					
+					
 				</ul>
 				<form class="form-inline my-2 my-lg-0 navbar-nav">
 					<input class="form-control input-sm ml-2 global-help" data-step="4" data-th-attr="data-intro=#{commerce.help.navbar.search}" type="search"

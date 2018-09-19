@@ -6,7 +6,7 @@ var txnDataTable;
 var startDateTime;
 var endDateTime;
 var token = $("meta[name='_csrf']").attr("content");
-
+var alertUtil = new Utils();
 var uniqueTxnNo='';
 
 $(function() {
@@ -412,5 +412,17 @@ function parseTxnHeader(txnDetails){
 }
 
 
+function confirmTransactionDeletion(txnNo){
+	uniqueTxnNo=txnNo;
 
+	var btnLabels = [ i18next.t('alert_btn_delete'), i18next.t('alert_btn_cancel') ];
+	var btnActions = [ 'btnDeleteTxn', 'btnCancel' ];
+	commonUtil.renderAlert('GLOBAL', i18next.t('error_confirmation_alert_header'), i18next.t('screen_confirm_txn_deletion'), btnLabels, btnActions, 'globalAction');
+	
+}
+
+function deleteTxnConfirmed(){
+	window.location.href=delete_txn_url+"="+uniqueTxnNo;
+	$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+}
 

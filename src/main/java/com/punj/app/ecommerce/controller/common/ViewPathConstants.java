@@ -309,6 +309,8 @@ public final class ViewPathConstants {
 	public static final String LAST_TXN_RCPT_URL="/pos/last_txn_rcpt";
 	public static final String LAST_TXN_RCPT_PAGE="/sale/receipt_print";
 	
+	public static final String DELETE_SALE_TXN_URL="/admin/delete_sale_txn";
+	
 	public static final String EDIT_SALE_TXN_URL="/admin/edit_sale_txn";
 	public static final String EDIT_SALE_TXN_PAGE="sale/edit_sale_txn";
 	public static final String POS_URL="/pos/sale";
@@ -382,6 +384,15 @@ public final class ViewPathConstants {
 	public static final String SAVE_PAYMENT_DTLS_URL="admin/save_payment";
 	public static final String PAYMENT_ACCOUNT_VIEW_RECEIPT_URL="/admin/view_payment_receipt";
 	public static final String PAYMENT_ACCOUNT_PRINT_RECEIPT_URL="/admin/print_payment_receipt";
-	
+
+	/**
+	 * The utility pages section starts
+	 */
+	public static final String PI_POS_UTILS_URL = "/admin/pi_pos_utils";
+	public static final String PI_POS_UTILS_PAGE = "utils/receipt_generator";
+
+	/**
+	 * The utility pages section ends
+	 */
 }
 

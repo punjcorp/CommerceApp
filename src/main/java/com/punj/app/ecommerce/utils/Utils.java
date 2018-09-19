@@ -13,6 +13,9 @@ import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javamoney.moneta.Money;
@@ -159,4 +162,44 @@ public class Utils {
 
 	}
 
+	public static TransactionId convertUniqueTxnToId(String uniqueTxnNo) {
+		TransactionId txnId = null;
+
+		if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 17) {
+			
+			txnId = new TransactionId();
+			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
+			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
+			txnId.setTransactionSeq(new Integer(uniqueTxnNo.substring(7, 11)));
+			String bDate = null;
+
+			bDate = uniqueTxnNo.substring(11, 17);
+			
+			bDate=bDate+" 00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy HH:mm");
+			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
+
+			txnId.setBusinessDate(bDateTime);
+
+			logger.info("The unique transction number has been successfully transformed to txn Id");
+		}else if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 20) {
+			
+			txnId = new TransactionId();
+			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
+			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
+			txnId.setTransactionSeq(new Integer(uniqueTxnNo.substring(7, 12)));
+			String bDate = uniqueTxnNo.substring(12, 20);
+
+			bDate=bDate+" 00:00";
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy HH:mm");
+			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
+
+			txnId.setBusinessDate(bDateTime);
+
+			logger.info("The unique transction number has been successfully transformed to txn Id");
+		}
+
+		return txnId;
+	}
+	
 }

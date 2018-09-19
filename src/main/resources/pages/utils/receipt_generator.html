@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.util.title}">PI-POS Utility Screen</title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+</head>
+<body>
+	<div id="wrapper">
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper-no-menu">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+
+			<div class="card content-container">
+				<div class="card-header">
+					<h3 th:text="#{commerce.screen.util.header}">PI-POS Utilities</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<form class="form" id="searchTxnForm" action="#" th:action="@{/admin/pi_pos_utils}" th:object="${receiptBean}" method="post">
+							<div class="row">
+								<div class="col-4">
+									<div class="form-group text-left">
+
+										<label for="startingInvoiceNo"><small><span class="pos-mandatory" th:text="#{commerce.screen.util.receipt.generator.starting.txn.no}">Starting
+													Invoice No</span></small></label>
+										<div class="input-group">
+											<input type="number" step="1" min="1" th:field="*{startingInvoiceNo}" class="form-control input-sm"
+												th:placeholder="#{commerce.screen.util.receipt.generator.starting.txn.no.placeholder}"></input>
+
+										</div>
+										<div th:if="${#fields.hasErrors('startingInvoiceNo')}" th:errors="*{startingInvoiceNo}" class="text-danger">Starting Invoice No Error</div>
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="form-group text-left">
+
+										<label for="noOfCopies"><small><span class="pos-mandatory" th:text="#{commerce.screen.util.receipt.generator.receipts.no}">No
+													of Receipts</span></small></label>
+										<div class="input-group">
+											<input type="number" step="1" min="1" th:field="*{noOfCopies}" class="form-control input-sm"
+												th:placeholder="#{commerce.screen.util.receipt.generator.receipts.no.placeholder}"></input>
+
+										</div>
+										<div th:if="${#fields.hasErrors('noOfCopies')}" th:errors="*{noOfCopies}" class="text-danger">No of Receipts Error</div>
+									</div>
+								</div>
+
+							</div>
+							<div class="row">
+								<div class="col-4">
+									<div class="form-group text-left">
+
+										<label for="endingInvoiceNo"><small><span th:text="#{commerce.screen.util.receipt.generator.ending.txn.no}">Ending Invoice No</span></small></label>
+										<div class="input-group">
+											<input type="number" step="1" min="1" th:field="*{endingInvoiceNo}" class="form-control input-sm"
+												th:placeholder="#{commerce.screen.util.receipt.generator.ending.txn.no.placeholder}"></input>
+
+										</div>
+										<div th:if="${#fields.hasErrors('endingInvoiceNo')}" th:errors="*{endingInvoiceNo}" class="text-danger">Ending Invoice No Error</div>
+									</div>
+								</div>
+
+							</div>
+							<div class="row">
+								<div class="col-4 mt-4">
+									<div class="form-group text-left">
+										<label><small></small></label>
+										<div class="input-group">
+											<button type="submit" id="searchBtn" value="Search" class="btn btn-info">
+												<i class="fas fa-receipt fa-2x mx-2"></i> <span th:text="#{commerce.screen.util.btn.receipt.generator}"></span>
+											</button>
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+
+						</form>
+					</div>
+
+				</div>
+			</div>
+
+
+
+
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+</body>
+</html>

@@ -256,7 +256,7 @@ public class TransactionController {
 					isOriginal = Boolean.FALSE;
 
 				// This section will save the receipt in database
-				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, isOriginal);
+				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, isOriginal, Boolean.FALSE);
 				finalTxnReceipts.addAll(txnReceipts);
 				count++;
 			}
@@ -380,7 +380,7 @@ public class TransactionController {
 				txnHeader.setPdfbytes(pdfBytes);
 
 				// This section will save the receipt in database
-				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReturnReceipts(pdfBytes, txnId, username);
+				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReturnReceipts(pdfBytes, txnId, username, Boolean.FALSE);
 				Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 				if (result) {
 					logger.info("The transaction receipts has been saved in DB successfully");
