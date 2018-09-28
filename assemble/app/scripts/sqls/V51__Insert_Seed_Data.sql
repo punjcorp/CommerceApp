@@ -43,6 +43,54 @@ INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type
 INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Dozen', 'DZ', 'This is UOM for measuring 12 item qty', 'Qty', '0', 'admin', now());
 INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Grams', 'gms', 'This is UOM for measuring item weigth', 'Weight', '1', 'admin', now());
 INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Kilogram', 'kgs', 'This is UOM for measuring 1000 gm item weight', 'Weight', '0', 'admin', now());
+
+-- GST UOMs
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BAGS','BAG','BAGS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BALE','BAL','BALE','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNDLES','BDL','BUNDLES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUCKLES','BKL','BUCKLES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BILLION OF UNITS','BOU','BILLION OF UNITS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOX','BOX','BOX','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOTTLES','BTL','BOTTLES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNCHES','BUN','BUNCHES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CANS','CAN','CANS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC METERS','CBM','CUBIC METERS','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC CENTIMETERS','CCM','CUBIC CENTIMETERS','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CENTIMETERS','CMS','CENTIMETERS','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CARTONS','CTN','CARTONS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DOZENS','DOZ','DOZENS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DRUMS','DRM','DRUMS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GREAT GROSS','GGK','GREAT GROSS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GRAMMES','GMS','GRAMMES','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS','GRS','GROSS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS YARDS','GYD','GROSS YARDS','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOGRAMS','KGS','KILOGRAMS','WEIGHT','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOLITRE','KLR','KILOLITRE','VOLUME','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOMETRE','KME','KILOMETRE','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('MILILITRE','MLT','MILILITRE','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METERS','MTR','METERS','LENGTH','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METRIC TON','MTS','METRIC TON','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('NUMBERS','NOS','NUMBERS','QTY','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PACKS','PAC','PACKS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PIECES','PCS','PIECES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PAIRS','PRS','PAIRS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('QUINTAL','QTL','QUINTAL','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('ROLLS','ROL','ROLLS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SETS','SET','SETS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE FEET','SQF','SQUARE FEET','AREA','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE METERS','SQM','SQUARE METERS','AREA','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE YARDS','SQY','SQUARE YARDS','AREA','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TABLETS','TBS','TABLETS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TEN GROSS','TGM','TEN GROSS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('THOUSANDS','THD','THOUSANDS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TONNES','TON','TONNES','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TUBES','TUB','TUBES','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('US GALLONS','UGS','US GALLONS','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('UNITS','UNT','UNITS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('YARDS','YDS','YARDS','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('OTHERS','OTH','OTHERS','OTHERS','0','admin',now());
+
+
 commit;
 
 -- -----------------------------------------------------

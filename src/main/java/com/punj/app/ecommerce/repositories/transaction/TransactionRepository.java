@@ -53,5 +53,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Transa
 	@Query(value = "select result_data.* from pi_pos_industry.txn_master result_data where result_data.location_id=?1 and result_data.business_date>?2 order by created_date desc", nativeQuery = true)
 	public List<Transaction> getFutureTxns(Integer locationId, String businessDate);
 	
+	@Query(value = "select * from pi_pos_industry.txn_master where location_id=?1 and business_date between ?2 and ?3 order by location_id asc, business_date asc, register asc,txn_no asc, created_date asc", nativeQuery = true)
+	public List<Transaction> getSaleTxnsByMonth(Integer locationId, String startDate, String endDate);
 
 }

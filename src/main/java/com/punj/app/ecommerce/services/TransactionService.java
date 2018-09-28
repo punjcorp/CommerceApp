@@ -56,6 +56,8 @@ public interface TransactionService {
 	public List<TransactionLookup> searchTxnJournals(String txnType, LocalDateTime startDate, LocalDateTime endDate);
 
 	public TransactionDTO searchTransactionDetails(String uniqueTxnNo);
+	
+	public List<TransactionDTO> searchTransactionDetailsByMonth(Integer locationId, String finMonth);
 
 	public TransactionReceipt searchTransactionReceipt(String uniqueTxnNo, String receiptType);
 

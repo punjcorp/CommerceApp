@@ -48,6 +48,7 @@ import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.RegisterDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 import com.punj.app.ecommerce.services.dtos.dailydeeds.DailyDeedDTO;
@@ -190,8 +191,12 @@ public class RegisterOpeningController {
 							}
 						}
 
-						if (StringUtils.isNotBlank(referrerURL))
+						if (StringUtils.isNotBlank(referrerURL)) {
+							if (referrerURL.equals("/pos"))
+								referrerURL = ViewPathConstants.SALES_URL;
 							dailyDeedBean.setReferrerURL(referrerURL);
+						}
+
 					}
 
 					this.updateCommerceContext(dailyDeedBean);
@@ -201,10 +206,10 @@ public class RegisterOpeningController {
 						return ViewPathConstants.REGISTER_OPEN_PAGE;
 
 					if (dailyDeedBean.getRegister() != null) {
-						if (referrerURL != null)
+						if (StringUtils.isNotBlank(referrerURL))
 							return ViewPathConstants.REDIRECT_URL + referrerURL;
 						else
-							return ViewPathConstants.SALES_URL;
+							return ViewPathConstants.REDIRECT_URL + ViewPathConstants.SALES_URL;
 					}
 
 				} else {
@@ -243,8 +248,6 @@ public class RegisterOpeningController {
 			}
 		}
 
-		
-
 		RegisterDTO registerDTO = this.dailyDeedService.retrieveRegisterConcilationDtls(dailyDeedBean.getLocationId(), dailyDeedBean.getBusinessDate(),
 				MVCConstants.TXN_OPEN_REGISTER);
 		if (registerDTO != null) {
@@ -252,8 +255,12 @@ public class RegisterOpeningController {
 
 			for (RegisterBean registerBean : registers) {
 
-				if ((registerBean.getLastStatus() != null && !registerBean.getLastStatus().equals(MVCConstants.TXN_OPEN_REGISTER))
-						|| (StringUtils.isBlank(registerBean.getLastStatus()))) {
+				if ((registerBean.getLastStatus() != null
+						&& !(registerBean.getLastStatus().equals(MVCConstants.TXN_OPEN_REGISTER) && registerBean.getLastBusinessDate().equals(dailyDeedBean.getBusinessDate())))
+
+						|| (StringUtils.isBlank(registerBean.getLastStatus()))
+
+				) {
 					dailyDeedBean.setAllRegOpenedFlag(Boolean.FALSE);
 					break;
 				} else {
@@ -282,12 +289,11 @@ public class RegisterOpeningController {
 
 			List<Integer> regArray = new ArrayList<>(registers.size());
 			List<Register> allRegisterList = this.commonService.retrieveRegisters(dailyDeedBean.getLocationId());
-			if(allRegisterList!=null && !allRegisterList.isEmpty()) {
-				for(Register register:allRegisterList) {
+			if (allRegisterList != null && !allRegisterList.isEmpty()) {
+				for (Register register : allRegisterList) {
 					regArray.add(register.getRegisterId().getRegister());
 				}
 			}
-			
 
 			model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
 			model.addAttribute(MVCConstants.REGISTER_BEANS, registers);

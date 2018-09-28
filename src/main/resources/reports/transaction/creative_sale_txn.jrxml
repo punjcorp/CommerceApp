@@ -178,21 +178,21 @@
 				<textFieldExpression><![CDATA[$F{locationDetails}.getAddress1()+", "+($F{locationDetails}.getAddress2()!=null?$F{locationDetails}.getAddress2()+", ":"")+($F{locationDetails}.getNeighborhood()!=null?$F{locationDetails}.getNeighborhood()+", ":"")+$F{locationDetails}.getCity()+", "+($F{locationDetails}.getDistrict()!=null?"Distt."+$F{locationDetails}.getDistrict()+", ":"")+$F{locationDetails}.getState()+" - "+$F{locationDetails}.getPincode()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="49" y="55" width="88" height="14" uuid="1bb0a823-b0de-4611-bd0e-7de05225e0bb"/>
+				<reportElement x="49" y="55" width="100" height="14" uuid="1bb0a823-b0de-4611-bd0e-7de05225e0bb"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{locationDetails}.getGstNo()!=null?$F{locationDetails}.getPanNo():""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="49" y="69" width="88" height="14" uuid="67c4dc81-fe1c-4ee9-a755-ded851591b37"/>
+				<reportElement x="49" y="69" width="100" height="14" uuid="67c4dc81-fe1c-4ee9-a755-ded851591b37"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{locationDetails}.getGstNo()!=null?$F{locationDetails}.getStateCode():""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="49" y="41" width="88" height="14" uuid="d6e05956-0bfb-44a1-9a2f-a48f45927aac"/>
+				<reportElement x="49" y="41" width="100" height="14" uuid="d6e05956-0bfb-44a1-9a2f-a48f45927aac"/>
 				<textElement>
 					<font fontName="Arial" size="10"/>
 				</textElement>

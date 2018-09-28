@@ -378,12 +378,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`sale_txn_invoices_audit` (
   `register` INT(3) NOT NULL,
   `txn_no` INT(5) NOT NULL,
   PRIMARY KEY (`invoice_no`, `audit_version`),
-  UNIQUE INDEX `uq_sale_txn_invoices_txn_master1_idx` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC, `audit_version` ASC),
-  CONSTRAINT `fk_sale_txn_invoices_txn_master_audit1`
-    FOREIGN KEY (`invoice_no`)
-    REFERENCES `pi_pos_industry`.`sale_txn_invoices` (`invoice_no`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  UNIQUE INDEX `uq_sale_txn_invoices_txn_master1_idx` (`location_id` ASC, `business_date` ASC, `register` ASC, `txn_no` ASC, `audit_version` ASC))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------

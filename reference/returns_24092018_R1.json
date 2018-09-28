@@ -1,0 +1,84 @@
+{
+"gstin":"03AAEFC0339G1Z2",
+"b2b":[
+		{
+			"ctin":"03AAACW1911H1ZU",
+			"inv":[
+					{
+						"inum":"1",
+						"idt":"2018-09-21T00:00",
+						"val":14160.0,
+						"pos":"03",
+						"rchrg":"N",
+						"itms":[
+								{
+									"num":181,
+									"itm_det":{
+												"txval":12000.0,
+												"rt":18,
+												"camt":1080.0,
+												"samt":1080.0,
+												"iamt":0.0
+												}
+								}
+								],
+						"inv_typ":"R",
+						"diff_percent":0.65
+					},
+					{
+						"inum":"2",
+						"idt":"2018-09-22T00:00",
+						"val":14160.0,
+						"pos":"03",
+						"rchrg":"N",
+						"itms":[
+								{
+									"num":181,
+									"itm_det":{
+												"txval":12000.0,
+												"rt":18,
+												"camt":1080.0,
+												"samt":1080.0,
+												"iamt":0.0
+											}
+								}
+								],
+						"inv_typ":"R",
+						"diff_percent":0.65
+					}
+				]
+	}
+],
+"b2cl":[],
+"b2cs":[],
+"hsn":{
+		"data":[
+				{
+					"num":1,
+					"hsn_sc":"234",
+					"desc":"housing",
+					"uqc":"NOS",
+					"qty":1,
+					"val":14160.0,
+					"txval":12000.0,
+					"iamt":0.0,
+					"camt":1080.0,
+					"samt":1080.0,
+					"csamt":0.0
+				},
+				{
+					"num":2,
+					"hsn_sc":"234",
+					"desc":"housing",
+					"uqc":"NOS",
+					"qty":1,
+					"val":14160.0,
+					"txval":12000.0,
+					"iamt":0.0,
+					"camt":1080.0,
+					"samt":1080.0,
+					"csamt":0.0
+				}
+			   ]
+	}
+}

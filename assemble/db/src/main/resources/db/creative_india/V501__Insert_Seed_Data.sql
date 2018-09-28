@@ -15,10 +15,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Seed data for location
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`location`;
-INSERT INTO `pi_pos_industry`.`location` (`location_id`,`location_type`,`name`,`description`,`status`,`address1`,`address2`,`city`,`state`,`country`,`pincode`,`neighborhood`,`locale`,`currency`,`telephone1`,`telephone2`,`store_manager`,`email_address`,`created_date`,`created_by`,`modified_date`,`modified_by`) VALUES (7997,'S','commerce site','This is the descripton for only location in commerce site as of now','A','Kharar',NULL,'Kharar','Panjab','India','140301','Arya Collage road','en_US','INR','8847523677',NULL,'Amit','eramitpunj@gmail.com','2017-12-11 12:56:07','Admin',NULL,NULL);
-INSERT INTO `pi_pos_industry`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (2, 'W', 'Warehouse 1', 'this is sample warehouse 1', 'A', 'Mohali', 'Mohali', 'Punjab', 'India', '140301', '7 Phase', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin');
-INSERT INTO `pi_pos_industry`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (3, 'S', 'Store 2', 'this is sample store 2', 'A', 'Mohali', 'Mohali', 'Punjab', 'India', '140301', '7 Phase', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin');
-INSERT INTO `pi_pos_industry`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (27, 'S', 'Store 3', 'this is sample store 3', 'A', 'Chandigarh', 'Chandigarh', 'Punjab', 'India', '140301', 'Sector 34', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin'); 
+INSERT INTO `pi_pos_industry`.`location` (`location_id`,`location_type`,`name`,`description`,`status`,`address1`,`address2`,`city`,`district`,`state`,`country`,`pincode`,`neighborhood`,`locale`,`currency`,`telephone1`,`telephone2`,`store_manager`,`email_address`,`created_date`,`created_by`,`modified_date`,`modified_by`,`gst_no`) VALUES (${PI_POS_T_STORE_NO},'S','${PI_POS_T_STORE_NAME}','${PI_POS_T_STORE_DESC}','A','${PI_POS_T_STORE_ADDRESS_1}','${PI_POS_T_STORE_ADDRESS_2}','${PI_POS_T_STORE_CITY}','${PI_POS_T_STORE_DISTRICT}','${PI_POS_T_STORE_STATE}','${PI_POS_T_STORE_COUNTRY}','${PI_POS_T_STORE_PINCODE}','${PI_POS_T_STORE_NEIGHBORHOOD}','en_US','INR','${PI_POS_T_STORE_PHONE2}','${PI_POS_T_STORE_PHONE2}','${PI_POS_T_STORE_MANAGER}','${PI_POS_T_STORE_EMAIL}',now(),'admin',NULL,NULL,'${PI_POS_T_STORE_GST_NO}');
 commit;
 
 -- -----------------------------------------------------
@@ -35,14 +32,11 @@ INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `descriptio
 INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
 INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
 INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Damaged', 'POR', 'This is for damaged item returns', 'admin', '2018-07-26 12:20:17');
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Over Shipped', 'POR', 'This is for over shipment item returns', 'admin', '2018-07-26 12:20:17');
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Bad Quality', 'POR', 'This is for item returns due to bad quality', 'admin', '2018-07-26 12:20:17');
 
 commit;
 
 -- -----------------------------------------------------
--- Seed data for reason_codes
+-- Seed data for gst_state_codes
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`gst_state_codes`;
 insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('01'),trim('Jammu and Kashmir'),trim('JK'));
@@ -86,15 +80,55 @@ insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_nam
 commit;
 
 
-
 -- -----------------------------------------------------
 -- Seed data for uom_master
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`uom_master`;
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Each', 'EA', 'This is UOM for measuring a single item qty', 'Qty', '1', 'admin', now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Dozen', 'DZ', 'This is UOM for measuring 12 item qty', 'Qty', '0', 'admin', now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Grams', 'gms', 'This is UOM for measuring item weigth', 'Weight', '1', 'admin', now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`) VALUES ('Kilogram', 'kgs', 'This is UOM for measuring 1000 gm item weight', 'Weight', '0', 'admin', now());
+-- GST UOMs
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BAGS','BAG','BAGS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BALE','BAL','BALE','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNDLES','BDL','BUNDLES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUCKLES','BKL','BUCKLES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BILLION OF UNITS','BOU','BILLION OF UNITS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOX','BOX','BOX','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOTTLES','BTL','BOTTLES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNCHES','BUN','BUNCHES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CANS','CAN','CANS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC METERS','CBM','CUBIC METERS','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC CENTIMETERS','CCM','CUBIC CENTIMETERS','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CENTIMETERS','CMS','CENTIMETERS','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CARTONS','CTN','CARTONS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DOZENS','DOZ','DOZENS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DRUMS','DRM','DRUMS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GREAT GROSS','GGK','GREAT GROSS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GRAMMES','GMS','GRAMMES','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS','GRS','GROSS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS YARDS','GYD','GROSS YARDS','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOGRAMS','KGS','KILOGRAMS','WEIGHT','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOLITRE','KLR','KILOLITRE','VOLUME','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOMETRE','KME','KILOMETRE','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('MILILITRE','MLT','MILILITRE','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METERS','MTR','METERS','LENGTH','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METRIC TON','MTS','METRIC TON','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('NUMBERS','NOS','NUMBERS','QTY','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PACKS','PAC','PACKS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PIECES','PCS','PIECES','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PAIRS','PRS','PAIRS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('QUINTAL','QTL','QUINTAL','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('ROLLS','ROL','ROLLS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SETS','SET','SETS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE FEET','SQF','SQUARE FEET','AREA','1','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE METERS','SQM','SQUARE METERS','AREA','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE YARDS','SQY','SQUARE YARDS','AREA','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TABLETS','TBS','TABLETS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TEN GROSS','TGM','TEN GROSS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('THOUSANDS','THD','THOUSANDS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TONNES','TON','TONNES','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TUBES','TUB','TUBES','WEIGHT','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('US GALLONS','UGS','US GALLONS','VOLUME','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('UNITS','UNT','UNITS','QTY','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('YARDS','YDS','YARDS','LENGTH','0','admin',now());
+INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('OTHERS','OTH','OTHERS','OTHERS','0','admin',now());
 commit;
 
 -- -----------------------------------------------------
@@ -120,10 +154,6 @@ commit;
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`tender_master`;
 INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cash', 'CASH', 'This is the cash tender description', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit Card', 'CC', 'This is credit card tender', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paypal', 'PAYPAL', 'This is paypal online payment', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paytm', 'PAYTM', 'This is PAYTM online payment', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cheque', 'CHEQUE', 'This is bank account cheque', 'admin', now());
 INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Change', 'CHANGE', 'This is change for cash tender', 'admin', now());
 INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit', 'CREDIT', 'This is for Credit tender to give udhar', 'admin', '2018-07-06 19:46:21');
 
@@ -137,28 +167,11 @@ truncate `pi_pos_industry`.`repository_master`;
 INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (1, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (2, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (3, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (4, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (5, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (6, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES ('7', 'Main Safe', 'This is main safe for credit in the store', '2018-07-06 19:46:22', '2018-07-06 19:46:22', 'A', 'admin', '2018-07-06 19:46:22');
 
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 5, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 7, 0, 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 7, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 7, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 7, 0, 'admin', now());
+INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, ${PI_POS_T_STORE_NO}, 1, 1, 'admin', now());
+INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, ${PI_POS_T_STORE_NO}, 2, 0, 'admin', now());
+INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, ${PI_POS_T_STORE_NO}, 3, 0, 'admin', now());
 
 commit;
 
@@ -167,14 +180,7 @@ commit;
 -- Seed data for register_master table
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`register_master`;
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (7997, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (2, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (3, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (27, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('2', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '3', 'Third Register', 'admin', '2018-07-06 19:46:22');
-
+INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (${PI_POS_T_STORE_NO}, 1, 'Register One', 'admin', now());
 commit;
 
 -- -----------------------------------------------------
@@ -188,14 +194,6 @@ truncate `pi_pos_industry`.`tax_location`;
 truncate `pi_pos_industry`.`tax_authority`;
 truncate `pi_pos_industry`.`tax_location_mapping`;
 
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 2);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 2);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 2);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 2);
 
 INSERT INTO `pi_pos_industry`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
 INSERT INTO `pi_pos_industry`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('State Govt of India', 'N', '2', 'admin', now());
@@ -203,6 +201,9 @@ INSERT INTO `pi_pos_industry`.`tax_authority` (`name`, `rounding_code`, `roundin
 
 INSERT INTO `pi_pos_industry`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Within State', 'I', 'This tax location is for all sales within state', 'admin', now());
 INSERT INTO `pi_pos_industry`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Outside State', 'O','This tax location is for all sales outside state', 'admin', now());
+
+INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (${PI_POS_T_STORE_NO}, 1);
+INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (${PI_POS_T_STORE_NO}, 2);
 
 INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable', 'admin', now());
 INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST', 'admin', now());
@@ -331,15 +332,6 @@ values('STKOUT', 'commerce.reason.code.inventory.stockout', '1', NULL, 'SUBTRACT
 -- -----------------------------------------------------
 truncate `pi_pos_industry`.`item_hierarchy`;
 INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`, `sort_order`, `hidden_flag`, `created_by`, `created_date`) VALUES ('dept', 'Default', 'This is default department for any item', '1', 'N', 'admin', now());
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('dept','Mens','Mens',1,'N','2017-12-07 17:55:32','admin',NULL);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Clothes','Clothes',1,'N','2017-12-07 17:56:25','admin',1);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Shirts','Shirts',1,'N','2017-12-07 18:01:00','admin',2);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal','Formal',1,'N','2017-12-07 18:01:00','admin',3);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Shoes','Shoes',1,'N','2017-12-07 18:01:00','admin',1);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Personal Care','Personal Care',1,'N','2017-12-07 18:01:00','admin',1);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Pants','Pants',1,'N','2017-12-07 18:01:00','admin',2);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal','Formal',1,'N','2017-12-07 18:01:00','admin',3);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Casual','Casual',1,'N','2017-12-07 18:01:00','admin',3);
 
 commit;
 
@@ -364,26 +356,8 @@ INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `att
 INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '1', '1 Kg', 'This is the Weight of 1 Kg', '5');
 INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '2', '2 Kgs', 'This is the Weight of 2 Kgs', '6');
 INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '5', '5 Kgs', 'This is the Weight of 5  Kgs', '7');
+INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('NA', 'None', 'This is for items with no attributes and have only one SKU ', 'P', 'Plain', 'This is plain version for SKU related to item', '1');
 
-
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('NA', 'None', 'This is for items with no attributes', 'P', 'Plain', 'This attribute is selected for items with no differentiator for SKUs', '1');
-
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '100', '100 ml', 'This is the Volume of 100 ml', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '200', '200 ml', 'This is the Weight of 200 ml', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '250', '250 ml', 'This is the Weight of 250 ml', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '300', '300 ml', 'This is the Weight of 350 ml', '4');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '400', '400 ml', 'This is the Weight of 400 ml', '5');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '500', '500 ml', 'This is the Weight of 500 ml', '6');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '1', '1 ltr', 'This is the Weight of 1 ltr', '7');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '2', '2 ltr', 'This is the Weight of 2 ltr', '8');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '5', '5 ltr', 'This is the Weight of 5 ltr', '9');
-
-
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'CH', 'Chocolate', 'Chocolate Flavor Item', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'VA', 'Vanilla', 'Vanilla Flavor Item', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'ST', 'Strawberry', 'Strawberry Flavor Item', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'PA', 'Pineapple', 'Pineapple Flavor Item', '4');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'BF', 'Black Forest', 'Black Forest Flavor Item', '5');
 commit;
 
 
@@ -396,10 +370,10 @@ INSERT INTO `pi_pos_industry`.`role` (`role_name`, `description`, `created_by`, 
 -- -----------------------------------------------------
 -- Seed data for user
 -- -----------------------------------------------------
+insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location,`status`, created_by, created_date)
+values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', ${PI_POS_T_STORE_NO},'A', 'admin', '2018-01-16 20:19:09');
 insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
-values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 7997, 'A', 'admin', '2018-01-16 20:19:09');
-insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
-values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 27, 'A', 'admin', '2018-01-16 20:19:09');
+values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', ${PI_POS_T_STORE_NO},'A', 'admin', '2018-01-16 20:19:09');
 
 
 -- -----------------------------------------------------
@@ -413,16 +387,16 @@ values('cashier', '$2a$10$iHH8hs7bMG.7ud5.DdCMteuxwXZRNikGUYuySm4r5drTBkTsVC7B2'
 -- -----------------------------------------------------
 -- Seed data for user role
 -- -----------------------------------------------------
-INSERT INTO `pi_pos_industry`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', '7997', 'admin', now(), now(), now());
-INSERT INTO `pi_pos_industry`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', '7997', 'admin', now(), now(), now());
+INSERT INTO `pi_pos_industry`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', ${PI_POS_T_STORE_NO}, 'admin', now(), now(), now());
+INSERT INTO `pi_pos_industry`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', ${PI_POS_T_STORE_NO}, 'admin', now(), now(), now());
 
 -- -----------------------------------------------------
 -- Seed data for user addresses
 -- -----------------------------------------------------
 insert into pi_pos_industry.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
-values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
+values('Y', 'Work', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
 insert into pi_pos_industry.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
-values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
+values('Y', 'Work', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
 
 insert into pi_pos_industry.user_address ( username, address_id)
 values('admin', '1');

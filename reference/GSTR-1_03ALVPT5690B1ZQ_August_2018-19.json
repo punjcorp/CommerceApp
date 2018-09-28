@@ -1,0 +1,411 @@
+{
+    "gstin": "03ALVPT5690B1ZQ",
+    "fp": "082018",
+    "gt": 0.0,
+    "cur_gt": 0.0,
+    "b2b": [{
+            "ctin": "03AAPCS3536B1ZM",
+            "inv": [{
+                    "inum": "GST/135",
+                    "idt": "03-08-2018",
+                    "val": 30995.0,
+                    "pos": "03",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 26267.0,
+                            "rt": 18,
+                            "camt": 2364.03,
+                            "samt": 2364.03,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                },
+                {
+                    "inum": "GST/137",
+                    "idt": "04-08-2018",
+                    "val": 35387.0,
+                    "pos": "03",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 29988.82,
+                            "rt": 18,
+                            "camt": 2698.99,
+                            "samt": 2698.99,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                },
+                {
+                    "inum": "GST/146",
+                    "idt": "11-08-2018",
+                    "val": 147683.0,
+                    "pos": "03",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 125155.25,
+                            "rt": 18,
+                            "camt": 11263.97,
+                            "samt": 11263.97,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                }
+            ]
+        },
+        {
+            "ctin": "03AAFCP0787K1Z9",
+            "inv": [{
+                    "inum": "GST/136",
+                    "idt": "03-08-2018",
+                    "val": 79652.0,
+                    "pos": "03",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 67501.9,
+                            "rt": 18,
+                            "camt": 6075.17,
+                            "samt": 6075.17,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                },
+                {
+                    "inum": "GST/150",
+                    "idt": "23-08-2018",
+                    "val": 45050.0,
+                    "pos": "03",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 38177.97,
+                            "rt": 18,
+                            "camt": 3436.02,
+                            "samt": 3436.02,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                }
+            ]
+        },
+        {
+            "ctin": "01AAWCS6914Q1ZK",
+            "inv": [{
+                "inum": "GST/140",
+                "idt": "07-08-2018",
+                "val": 195375.0,
+                "pos": "01",
+                "rchrg": "N",
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "txval": 165571.76,
+                        "rt": 18,
+                        "iamt": 29802.92,
+                        "csamt": 0.0
+                    }
+                }],
+                "inv_typ": "R"
+            }]
+        },
+        {
+            "ctin": "02AAECI4005L1ZY",
+            "inv": [{
+                "inum": "GST/141",
+                "idt": "07-08-2018",
+                "val": 81044.0,
+                "pos": "02",
+                "rchrg": "N",
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "txval": 68681.35,
+                        "rt": 18,
+                        "iamt": 12362.64,
+                        "csamt": 0.0
+                    }
+                }],
+                "inv_typ": "R"
+            }]
+        },
+        {
+            "ctin": "04AAACI7833E1ZV",
+            "inv": [{
+                    "inum": "GST/142",
+                    "idt": "09-08-2018",
+                    "val": 224926.0,
+                    "pos": "04",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 190615.25,
+                            "rt": 18,
+                            "iamt": 34310.75,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                },
+                {
+                    "inum": "GST/154",
+                    "idt": "30-08-2018",
+                    "val": 53605.0,
+                    "pos": "04",
+                    "rchrg": "N",
+                    "itms": [{
+                        "num": 1,
+                        "itm_det": {
+                            "txval": 45428.0,
+                            "rt": 18,
+                            "iamt": 8177.04,
+                            "csamt": 0.0
+                        }
+                    }],
+                    "inv_typ": "R"
+                }
+            ]
+        },
+        {
+            "ctin": "02AACCB9760F1ZW",
+            "inv": [{
+                "inum": "GST/145",
+                "idt": "10-08-2018",
+                "val": 80000.0,
+                "pos": "02",
+                "rchrg": "N",
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "txval": 67797.0,
+                        "rt": 18,
+                        "iamt": 12203.46,
+                        "csamt": 0.0
+                    }
+                }],
+                "inv_typ": "R"
+            }]
+        },
+        {
+            "ctin": "02ACBPC5424D1ZK",
+            "inv": [{
+                "inum": "GST/149",
+                "idt": "22-08-2018",
+                "val": 44640.0,
+                "pos": "02",
+                "rchrg": "N",
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "txval": 37830.51,
+                        "rt": 18,
+                        "iamt": 6809.49,
+                        "csamt": 0.0
+                    }
+                }],
+                "inv_typ": "R"
+            }]
+        },
+        {
+            "ctin": "02APYPS9025G1ZF",
+            "inv": [{
+                "inum": "GST/151",
+                "idt": "27-08-2018",
+                "val": 550000.0,
+                "pos": "02",
+                "rchrg": "N",
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "txval": 466101.69,
+                        "rt": 18,
+                        "iamt": 83898.3,
+                        "csamt": 0.0
+                    }
+                }],
+                "inv_typ": "R"
+            }]
+        },
+        {
+            "ctin": "04AAYPT2070K1Z5",
+            "inv": [{
+                "inum": "GST/155",
+                "idt": "30-08-2018",
+                "val": 300000.0,
+                "pos": "04",
+                "rchrg": "N",
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "txval": 254237.0,
+                        "rt": 18,
+                        "iamt": 45762.66,
+                        "csamt": 0.0
+                    }
+                }],
+                "inv_typ": "R"
+            }]
+        }
+    ],
+    "b2cl": [{
+            "pos": "04",
+            "inv": [{
+                "inum": "GST/153",
+                "idt": "29-08-2018",
+                "val": 332000.0,
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "rt": 18,
+                        "txval": 281356.0,
+                        "iamt": 50644.08,
+                        "csamt": 0.0
+                    }
+                }]
+            }]
+        },
+        {
+            "pos": "02",
+            "inv": [{
+                "inum": "GST/159",
+                "idt": "31-08-2018",
+                "val": 652000.0,
+                "itms": [{
+                    "num": 1,
+                    "itm_det": {
+                        "rt": 18,
+                        "txval": 552542.37,
+                        "iamt": 99457.63,
+                        "csamt": 0.0
+                    }
+                }]
+            }]
+        }
+    ],
+    "b2cs": [{
+            "rt": 18,
+            "sply_ty": "INTER",
+            "pos": "04",
+            "typ": "OE",
+            "txval": 209746.0,
+            "iamt": 37754.28,
+            "csamt": 0.0
+        },
+        {
+            "rt": 18,
+            "sply_ty": "INTER",
+            "pos": "06",
+            "typ": "OE",
+            "txval": 29661.0,
+            "iamt": 5338.98,
+            "csamt": 0.0
+        },
+        {
+            "rt": 18,
+            "sply_ty": "INTER",
+            "pos": "02",
+            "typ": "OE",
+            "txval": 46610.0,
+            "iamt": 8389.8,
+            "csamt": 0.0
+        },
+        {
+            "rt": 5,
+            "sply_ty": "INTRA",
+            "pos": "03",
+            "typ": "OE",
+            "txval": 250.0,
+            "camt": 6.25,
+            "samt": 6.25,
+            "csamt": 0.0
+        },
+        {
+            "rt": 18,
+            "sply_ty": "INTRA",
+            "pos": "03",
+            "typ": "OE",
+            "txval": 30254.23,
+            "camt": 2722.88,
+            "samt": 2722.88,
+            "csamt": 0.0
+        }
+    ],
+    "hsn": {
+        "data": [{
+                "num": 1,
+                "hsn_sc": "39252000",
+                "desc": "U PVC WINDOW  DOOR",
+                "uqc": "SQM",
+                "qty": 762.27,
+                "val": 3225557.25,
+                "txval": 2733523.1,
+                "iamt": 434912.03,
+                "camt": 28561.06,
+                "samt": 28561.06,
+                "csamt": 0.0
+            },
+            {
+                "num": 2,
+                "hsn_sc": "3915",
+                "desc": "UPVC SCRAP CHIPS",
+                "uqc": "KGS",
+                "qty": 25,
+                "val": 262.5,
+                "txval": 250.0,
+                "iamt": 0.0,
+                "camt": 6.25,
+                "samt": 6.25,
+                "csamt": 0.0
+            }
+        ]
+    },
+    "doc_issue": {
+        "doc_det": [{
+                "doc_num": 1,
+                "doc_typ": "Invoices for outward supply",
+                "docs": [{
+                    "num": 1,
+                    "from": "GST/135",
+                    "to": "GST/159",
+                    "totnum": 25,
+                    "cancel": 0,
+                    "net_issue": 25
+                }]
+            },
+            {
+                "doc_num": 2,
+                "doc_typ": "Invoices for inward supply from unregistered person",
+                "docs": [{
+                        "num": 1,
+                        "from": "339",
+                        "to": "397",
+                        "totnum": 13,
+                        "cancel": 0,
+                        "net_issue": 13
+                    },
+                    {
+                        "num": 2,
+                        "from": "776",
+                        "to": "904",
+                        "totnum": 2,
+                        "cancel": 0,
+                        "net_issue": 2
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -36,7 +36,7 @@ public class CustomerBean {
 	private String name;
 
 	@NotNull
-	@Size(min = 7, max = 10, message = "{commerce.error.int.size}")
+	@Size(min = 7, max = 15, message = "{commerce.error.int.size}")
 	private String phone;
 
 	private String phone2;

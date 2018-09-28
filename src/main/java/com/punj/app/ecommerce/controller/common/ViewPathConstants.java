@@ -314,7 +314,7 @@ public final class ViewPathConstants {
 	public static final String EDIT_SALE_TXN_URL="/admin/edit_sale_txn";
 	public static final String EDIT_SALE_TXN_PAGE="sale/edit_sale_txn";
 	public static final String POS_URL="/pos/sale";
-	public static final String SALES_URL="/pos/sales";
+	public static final String SALES_URL="/pos/sale";
 	public static final String SALES_PAGE="sale/sales";
 	public static final String AUTO_ITEM_PAGE="sale/sale_txn";
 	
@@ -394,5 +394,17 @@ public final class ViewPathConstants {
 	/**
 	 * The utility pages section ends
 	 */
+	
+	/**
+	 * The GSTR pages section starts
+	 */
+	public static final String GSTR1_GENERATION_URL = "/admin/generate_gstr1";
+	public static final String GSTR1_JSON_GENERATION_URL = "/admin/get_gstr1_json";
+	public static final String GSTR1_GENERATION_PAGE = "gstr/gstr1";
+
+	/**
+	 * The GSTR pages section ends
+	 */
+	
 }
 

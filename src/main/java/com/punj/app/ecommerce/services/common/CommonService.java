@@ -44,7 +44,7 @@ public interface CommonService {
 
 	public List<Register> retrieveRegisters(Integer locationId);
 
-	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId);
+	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId, LocalDateTime businessDate);
 
 	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate);
 

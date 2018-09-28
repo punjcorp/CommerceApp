@@ -328,7 +328,7 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId) {
+	public RegisterDTO retrieveRegisterWithDailyStatus(Integer locationId, LocalDateTime businessDate) {
 		logger.info("The method to retrieve all the locations with last txn Status has been called");
 		Integer regKey = null;
 		Transaction txnDetails = null;
@@ -348,7 +348,8 @@ public class CommonServiceImpl implements CommonService {
 			for (Register register : registers) {
 				regKey = register.getRegisterId().getRegister();
 				txnDetails = registerLastTxnMap.get(regKey);
-				if (txnDetails != null && !txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
+				if (txnDetails != null && (!txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER)
+						|| (txnDetails.getTxnType().equals(ServiceConstants.TXN_CLOSE_REGISTER) && !txnDetails.getTransactionId().getBusinessDate().equals(businessDate)))) {
 					registerDTO.setAllRegisterClosed(Boolean.FALSE);
 					break;
 				} else {
@@ -367,7 +368,7 @@ public class CommonServiceImpl implements CommonService {
 	public RegisterDTO retrieveRegisterConcilationDtls(Integer locationId, LocalDateTime businessDate) {
 		RegisterDTO registerDTO = null;
 
-		registerDTO = this.retrieveRegisterWithDailyStatus(locationId);
+		registerDTO = this.retrieveRegisterWithDailyStatus(locationId, businessDate);
 
 		if (registerDTO != null) {
 			DailyTotals dailyTotalCriteria = new DailyTotals();
@@ -614,7 +615,7 @@ public class CommonServiceImpl implements CommonService {
 		List<State> states = this.retrieveAllStates();
 		if (states != null && !states.isEmpty()) {
 			gstCodeMap = new HashMap<>(states.size());
-			for(State state: states) {
+			for (State state : states) {
 				gstCodeMap.put(state.getStateCode(), state);
 			}
 			logger.info("All the GST states has been converted to a Map with GST codes (03, 01 etc) as keys successfully");
@@ -630,7 +631,7 @@ public class CommonServiceImpl implements CommonService {
 		List<State> states = this.retrieveAllStates();
 		if (states != null && !states.isEmpty()) {
 			stateCodeMap = new HashMap<>(states.size());
-			for(State state: states) {
+			for (State state : states) {
 				stateCodeMap.put(state.getStateCode(), state);
 			}
 			logger.info("All the GST states has been converted to a Map with state codes (PB, JK etc) as keys successfully");
@@ -653,9 +654,9 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public Register saveRegister(Register register) {
-		register=this.registerRepository.save(register);
-		if(register!=null)
-			logger.info("The register has been saved {} successfully for location{}.",register.getRegisterId().getRegister(), register.getRegisterId().getLocationId());
+		register = this.registerRepository.save(register);
+		if (register != null)
+			logger.info("The register has been saved {} successfully for location{}.", register.getRegisterId().getRegister(), register.getRegisterId().getLocationId());
 		else
 			logger.error("There was some issue while saving provided register !!");
 		return register;

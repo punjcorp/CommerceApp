@@ -207,8 +207,10 @@ $(function() {
 	
 	$('#btnChangeCustomer').click(function() {
 		txnAction.deleteAllSaleItems();
-		$('#collapseTwo').removeClass('show');
-		$('#div_txn_header_dtls').addClass('d-none');
+		$('#collapseOne').addClass('show');
+		$('#collapseTwo').addClass('show');
+		$('#div_txn_total_dtls').addClass('d-none');
+		
 		$('#txnCustomerLookupDiv').removeClass('d-none');
 		$('#txnItemLookupDiv').addClass('d-none');
 	});	

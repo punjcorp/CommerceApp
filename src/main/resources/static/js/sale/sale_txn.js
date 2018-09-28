@@ -65,13 +65,13 @@ $.extend(TxnAction.prototype, {
 
 			if (this.saleItemList.length > 0){
 				$('#tenderOptionsContainer').removeClass('d-none');
-				$('#div_txn_header_dtls').removeClass('d-none');
+				$('#div_txn_total_dtls').removeClass('d-none');
 				$('#collapseTwo').addClass('show');
 				$('#collapseOne').removeClass('show');
 			}
 			else{
 				$('#tenderOptionsContainer').addClass('d-none');
-				$('#div_txn_header_dtls').addClass('d-none');
+				$('#div_txn_total_dtls').addClass('d-none');
 				$('#collapseTwo').removeClass('show');
 				$('#collapseOne').addClass('show');
 			}
@@ -89,8 +89,11 @@ $.extend(TxnAction.prototype, {
 		this.renderHeaderTotals();
 		if (this.saleItemList.length > 0)
 			$('#tenderOptionsContainer').removeClass('d-none');
-		else
+		else{
+			$('#div_txn_total_dtls').addClass('d-none');
 			$('#tenderOptionsContainer').addClass('d-none');
+		}
+			
 
 	},
 	deleteAllSaleItems: function() {

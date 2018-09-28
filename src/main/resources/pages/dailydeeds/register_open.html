@@ -64,7 +64,9 @@
 												<div class="row box-footer">
 													<div class="col">
 														<div th:if="${register.lastStatus}">
-															<input type="hidden" th:id="${register.registerId+'_reg_is_closed'}" th:value="${register.isClosedToday}"></input> <input type="hidden"
+															<input type="hidden" th:id="${register.registerId+'_reg_last_business_date'}" th:value="${#temporals.format(register.lastBusinessDate, 'dd-MMM-yy HH:mm:ss')}"></input>
+															<input type="hidden" th:id="${register.registerId+'_reg_is_closed'}" th:value="${register.isClosedToday}"></input> 
+															<input type="hidden"
 																th:id="${register.registerId+'_reg_status'}" th:value="${register.lastStatus}"></input> <small><span
 																th:text="#{commerce.screen.store.open.status.last}"></span></small> : <span th:text="${register.lastStatus}"></span>
 														</div>

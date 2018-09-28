@@ -27,19 +27,15 @@
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
-				<version>4.2.0</version>
+				<version>5.1.4</version>
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<!-- <url>jdbc:mysql://pos.crjn48listps.us-east-2.rds.amazonaws.com:3306/commercedb?autoreconnect=true</url> -->
-					<url>jdbc:mysql://localhost:3306/pi_pos_industry?autoreconnect=true</url> 
-					<user>admin</user>
-					<password>admin</password>
-					<!-- <user>mysqlroot</user>
-					<password>rootmysql</password> -->
-  					<!-- <user>root</user>
-					<password>G00gl3r$</password> --> 
+					<url>${flyway.url}</url>
+					 
+					<user>${database.user}</user>
+					<password>${database.password}</password>
 					<schemas>
-						<schema>pi_pos_industry</schema>
+						<schema>${flyway.schemas}</schema>
 					</schemas>
 				</configuration>
 				<dependencies>

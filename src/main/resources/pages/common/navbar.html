@@ -32,8 +32,8 @@
 												th:text="#{commerce.home.menu.sale}">Sale Transaction</span></a> <a class="dropdown-item megamenu-item" th:href="@{/pos/return_txn}"> <span
 												class="fa-layers fa-fw fa-3x mx-2"> <i class="fas fa-shopping-cart" data-fa-transform="flip-H"></i> <i
 													class="fas fa-minus-circle icon-blue-theme" data-fa-transform="shrink-10 right--2 up-2"></i>
-											</span> <span th:text="#{commerce.home.menu.return}">Return Transaction</span></a> 
-											
+											</span> <span th:text="#{commerce.home.menu.return}">Return Transaction</span></a>
+
 											<!-- <a class="dropdown-item megamenu-item" th:href="@{/pos/expenses}"> <span
 												class="fa-layers fa-fw fa-3x mx-2"> <i class="fas fa-hand-holding" data-fa-transform="rotate-180"></i> <i class="fas fa-money-bill-alt"
 													data-fa-transform="shrink-6 left-6 down-5 rotate-90"></i> <i class="fas fa-money-bill-alt" data-fa-transform="shrink-6 down-5 rotate-45"></i>
@@ -47,7 +47,7 @@
 											</span><span th:text="#{commerce.home.menu.payment.customer}">Customer Payment</span></a> -->
 										</div>
 									</div>
-									
+
 									<div class="megamenu-item-card my-2">
 										<div class="megamenu-item-header">
 											<span class="mx-3" th:text="#{commerce.home.menu.lookup}"></span>
@@ -55,22 +55,22 @@
 										<div class="megamenu-item-body">
 											<a class="dropdown-item megamenu-item" th:href="@{/item_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="far fa-file-alt"></i>
 													<i class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
-											</span><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a> 
-										<!-- <a class="dropdown-item megamenu-item" th:href="@{/admin/account_lookup}"><span
+											</span><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a>
+											<!-- <a class="dropdown-item megamenu-item" th:href="@{/admin/account_lookup}"><span
 												class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.lookup.supplier.account}">Supplier Account Lookup</span></a> 
 										<a class="dropdown-item megamenu-item"
 												th:href="@{/admin/customer_account_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-male"></i> <i
 													class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.lookup.customer.account}">Customer Account Lookup</span></a> -->
-										<a class="dropdown-item megamenu-item"
-												th:href="@{/admin/transaction_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-shopping-cart"></i> <i
-													class="fas fa-search" data-fa-transform="shrink-10 right-12 up-4"></i>
-											</span><span th:text="#{commerce.home.menu.lookup.transaction}">Transaction Lookup</span></a>
+											<a class="dropdown-item megamenu-item" th:href="@{/admin/transaction_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i
+													class="fas fa-shopping-cart"></i> <i class="fas fa-search" data-fa-transform="shrink-10 right-12 up-4"></i>
+											</span><span th:text="#{commerce.home.menu.lookup.transaction}">Transaction Lookup</span></a> <a class="dropdown-item megamenu-item"
+												th:href="@{/admin/generate_gstr1}"><i class="fas fa-cogs fa-2x mx-3"></i><span th:text="#{commerce.home.menu.gstr1}">Generate GSTR1</span></a>
 
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="col">
 									<div class="megamenu-item-card my-2">
@@ -83,14 +83,16 @@
 											</span><span th:text="#{commerce.home.menu.open.store}">Open Store</span></a> <a class="dropdown-item megamenu-item" th:href="@{/pos/close_store}"><span
 												class="fa-layers fa-fw fa-3x  ml-2 mr-3"> <i class="fas fa-home"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.close.store}">Close Store</span></a> <a class="dropdown-item megamenu-item" th:href="@{/pos/open_register}"><span
-												class="fa-layers fa-fw fa-3x  ml-2 mr-3"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-play" data-fa-transform="shrink-10 right-11 up-4"></i>
+												class="fa-layers fa-fw fa-3x  ml-2 mr-3"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-play"
+													data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.open.register}">Open Register</span></a> <a class="dropdown-item megamenu-item" th:href="@{/pos/close_register}"><span
-												class="fa-layers fa-fw fa-3x  ml-2 mr-3"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-times" data-fa-transform="shrink-10 right-11 up-4"></i>
+												class="fa-layers fa-fw fa-3x  ml-2 mr-3"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-times"
+													data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.close.register}">Close Register</span></a>
 										</div>
 									</div>
 								</div>
-								
+
 							</div>
 						</div></li>
 					<!-- Point of Sales Menu ends -->
@@ -137,9 +139,10 @@
 										<div class="megamenu-item-body">
 											<a class="dropdown-item megamenu-item" th:href="@{/admin/manage_customer}"><span class="fa-3x mr-3 fa-layers fa-fw"> <i
 													class="fas fa-male"></i> <i class="fas fa-cog" data-fa-transform="shrink-10 right-8 up-4"></i>
-											</span><span th:text="#{commerce.home.menu.manage.customer}">Manage Customer</span></a> <a class="dropdown-item megamenu-item" th:href="@{/admin/add_customer
-											}"><span
-												class="fa-3x mr-3 fa-layers fa-fw"> <i class="fas fa-male"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-8 up-4"></i>
+											</span><span th:text="#{commerce.home.menu.manage.customer}">Manage Customer</span></a> <a class="dropdown-item megamenu-item"
+												th:href="@{/admin/add_customer
+											}"><span class="fa-3x mr-3 fa-layers fa-fw"> <i class="fas fa-male"></i> <i
+													class="fas fa-plus" data-fa-transform="shrink-10 right-8 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.add.customer}">Add New Customer</span></a>
 										</div>
 									</div>
@@ -175,11 +178,11 @@
 											<span class="mx-3" th:text="#{commerce.home.menu.price}"></span>
 										</div>
 										<div class="megamenu-item-body">
-											<a class="dropdown-item megamenu-item" th:href="@{/admin/manage_price}"><span class="fa-3x mx-2 fa-layers fa-fw"> <i class="far fa-file"
+											<a class="dropdown-item megamenu-item" th:href="@{/admin/manage_price}"><span class="fa-2x mx-2 fa-layers fa-fw"> <i class="far fa-file"
 													data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i><i class="fas fa-cog"
 													data-fa-transform="shrink-10 right-10 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.search.price}">Search Price Events</span></a> <a class="dropdown-item megamenu-item" th:href="@{/admin/add_price}"><span
-												class="fa-3x mx-2 fa-layers fa-fw"> <i class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign"
+												class="fa-2x mx-2 fa-layers fa-fw"> <i class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign"
 													data-fa-transform="shrink-10 up-2"></i><i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.add.price}">New Price Event</span></a>
 										</div>
@@ -200,16 +203,16 @@
 										</div>
 									</div> -->
 								</div>
-								
+
 							</div>
 						</div></li>
 					<!-- Admin Menu ends -->
-					
-					
-					
-					
+
+
+
+
 					<!-- Utility Menu starts -->
-					<li class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="posDropdown" role="button" data-toggle="dropdown"
+					<!-- <li class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="posDropdown" role="button" data-toggle="dropdown"
 						aria-haspopup="true" aria-expanded="false"><i class="fas fa-wrench fa-2x mx-2"></i> <span
 							th:text="#{commerce.home.menu.utilities}">Utilities</span> </a>
 						<div class="dropdown-menu megamenu-container" aria-labelledby="navbarDropdown">
@@ -228,16 +231,16 @@
 								<div class="col">
 								</div>
 							</div>
-						</div></li>
+						</div></li> -->
 					<!-- Utility Menu ends -->
-					
-					
-					
-					
-					
-					
-					
-					
+
+
+
+
+
+
+
+
 				</ul>
 				<form class="form-inline my-2 my-lg-0 navbar-nav">
 					<input class="form-control input-sm ml-2 global-help" data-step="4" data-th-attr="data-intro=#{commerce.help.navbar.search}" type="search"

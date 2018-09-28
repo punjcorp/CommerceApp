@@ -2,7 +2,9 @@ package com.punj.app.ecommerce.utils;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,6 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
 
-import com.punj.app.ecommerce.controller.common.MVCConstants;
-import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +21,8 @@ import org.javamoney.moneta.Money;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 public class Utils {
@@ -39,6 +40,24 @@ public class Utils {
 
 	public static BCryptPasswordEncoder getPassEncoder() {
 		return ENCODER;
+	}
+
+	public static LocalDateTime convertMonthToStartDate(Integer month) {
+		LocalDate dateValue=LocalDate.now().withMonth(month);
+		LocalTime timeValue=LocalTime.of(0, 0, 0);
+		
+		LocalDateTime startDate = LocalDateTime.of(dateValue,timeValue).withMonth(month).withDayOfMonth(1);
+		logger.info("The month has been converted to start of the month date");
+		return startDate;
+	}
+
+	public static LocalDateTime convertMonthToEndDate(Integer month) {
+		LocalDate dateValue=LocalDate.now().withMonth(month);
+		LocalTime timeValue=LocalTime.of(0, 0, 0);
+		
+		LocalDateTime endDate = LocalDateTime.of(dateValue,timeValue).withMonth(month + 1).withDayOfMonth(1).minusDays(1);
+		logger.info("The month has been converted to end of the month date");
+		return endDate;
 	}
 
 	public static String showStatus(String status) {
@@ -78,7 +97,7 @@ public class Utils {
 		}
 
 	}
-	
+
 	public static String showLedgerAction(String txnType) {
 
 		switch (txnType) {
@@ -92,7 +111,7 @@ public class Utils {
 		}
 
 	}
-	
+
 	public static String showLedgerReversalAction(String txnType) {
 
 		switch (txnType) {
@@ -108,13 +127,13 @@ public class Utils {
 	}
 
 	public static LocalDateTime parseDate(String date) {
-		if(date.length()==9) {
-			date=date+"T00:00";
+		if (date.length() == 9) {
+			date = date + "T00:00";
 			return LocalDateTime.parse(date, dateFormatterShort);
-		}else {
+		} else {
 			return LocalDateTime.parse(date, dateFormatter);
 		}
-		
+
 	}
 
 	public static String formatDate(LocalDateTime date) {
@@ -166,7 +185,7 @@ public class Utils {
 		TransactionId txnId = null;
 
 		if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 17) {
-			
+
 			txnId = new TransactionId();
 			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
 			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
@@ -174,23 +193,23 @@ public class Utils {
 			String bDate = null;
 
 			bDate = uniqueTxnNo.substring(11, 17);
-			
-			bDate=bDate+" 00:00";
+
+			bDate = bDate + " 00:00";
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy HH:mm");
 			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
 
 			txnId.setBusinessDate(bDateTime);
 
 			logger.info("The unique transction number has been successfully transformed to txn Id");
-		}else if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 20) {
-			
+		} else if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() == 20) {
+
 			txnId = new TransactionId();
 			txnId.setLocationId(new Integer(uniqueTxnNo.substring(0, 4)));
 			txnId.setRegister(new Integer(uniqueTxnNo.substring(4, 7)));
 			txnId.setTransactionSeq(new Integer(uniqueTxnNo.substring(7, 12)));
 			String bDate = uniqueTxnNo.substring(12, 20);
 
-			bDate=bDate+" 00:00";
+			bDate = bDate + " 00:00";
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy HH:mm");
 			LocalDateTime bDateTime = LocalDateTime.parse(bDate, formatter);
 
@@ -201,5 +220,5 @@ public class Utils {
 
 		return txnId;
 	}
-	
+
 }

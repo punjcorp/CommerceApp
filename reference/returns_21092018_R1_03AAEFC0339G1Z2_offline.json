@@ -1,0 +1,55 @@
+{
+    "gstin": "03AAEFC0339G1Z2",
+    "fp": "072018",
+    "version": "GST2.2.6",
+    "hash": "hash",
+    "b2b": [{
+        "ctin": "03AAACW1911H1ZU",
+        "inv": [{
+            "inum": "324",
+            "idt": "11-07-2018",
+            "val": 170.5,
+            "pos": "03",
+            "rchrg": "N",
+            "diff_percent": 0.65,
+            "inv_typ": "R",
+            "itms": [{
+                "num": 501,
+                "itm_det": {
+                    "txval": 50,
+                    "rt": 5,
+                    "camt": 1.2,
+                    "samt": 1.2,
+                    "csamt": 0
+                }
+            }, {
+                "num": 1801,
+                "itm_det": {
+                    "txval": 100,
+                    "rt": 18,
+                    "camt": 9,
+                    "samt": 9,
+                    "csamt": 0
+                }
+            }]
+        }, {
+            "inum": "325",
+            "idt": "11-07-2018",
+            "val": 50,
+            "pos": "03",
+            "rchrg": "N",
+            "diff_percent": 0.65,
+            "inv_typ": "R",
+            "itms": [{
+                "num": 1,
+                "itm_det": {
+                    "txval": 50,
+                    "rt": 0,
+                    "camt": 0,
+                    "samt": 0,
+                    "csamt": 0
+                }
+            }]
+        }]
+    }]
+}

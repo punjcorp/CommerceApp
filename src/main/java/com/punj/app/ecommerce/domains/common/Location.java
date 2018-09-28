@@ -28,7 +28,6 @@ public class Location implements Serializable {
 
 	@Id
 	@DocumentId
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "location_id", updatable = false, nullable = false)
 	private Integer locationId;
 

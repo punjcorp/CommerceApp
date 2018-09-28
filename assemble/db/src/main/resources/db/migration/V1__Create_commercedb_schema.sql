@@ -7,12 +7,12 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema commerce
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `pi_pos_industry` ;
+-- DROP SCHEMA IF EXISTS `pi_pos_industry` ;
 
 -- -----------------------------------------------------
 -- Schema commerce
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `pi_pos_industry` DEFAULT CHARACTER SET utf8 ;
+-- CREATE SCHEMA IF NOT EXISTS `pi_pos_industry` DEFAULT CHARACTER SET utf8 ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

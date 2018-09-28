@@ -54,7 +54,7 @@
 											<label for="phone"><small><span class="pos-mandatory" th:text="#{commerce.screen.customer.phone1}">Customer Phone 1</span></small></label>
 											<div class="input-group text-left">
 												<input type="number" th:field="*{phone}" class="form-control input-sm pos-mandatory" th:placeholder="#{commerce.screen.customer.phone1.placeholder}"
-													maxlength="10"></input>
+													maxlength="15"></input>
 											</div>
 											<small th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger">Phone 1 Error</small>
 										</div>
@@ -64,7 +64,7 @@
 											<label for="phone2"><small><span th:text="#{commerce.screen.customer.phone2}">Customer Phone 2</span></small></label>
 											<div class="input-group text-left">
 												<input type="number" th:field="*{phone2}" class="form-control input-sm" th:placeholder="#{commerce.screen.customer.phone2.placeholder}"
-													maxlength="10"></input>
+													maxlength="15"></input>
 											</div>
 											<small th:if="${#fields.hasErrors('phone2')}" th:errors="*{phone2}" class="text-danger">Phone 2 Error</small>
 										</div>

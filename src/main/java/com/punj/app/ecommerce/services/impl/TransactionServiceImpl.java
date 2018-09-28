@@ -85,6 +85,7 @@ import com.punj.app.ecommerce.services.dtos.transaction.SaleTransactionReceiptDT
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 import com.punj.app.ecommerce.services.dtos.transaction.TransactionIdDTO;
 import com.punj.app.ecommerce.services.transaction.receipts.ReceiptService;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -118,10 +119,9 @@ public class TransactionServiceImpl implements TransactionService {
 	private TenderCountRepository tenderCountRepository;
 	private ReceiptService txnReceiptService;
 
-	
 	@Value("${commerce.txn.receipt.copies}")
 	private Integer receiptCopies;
-	
+
 	/**
 	 * @param txnReceiptService
 	 *            the txnReceiptService to set
@@ -1523,25 +1523,24 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	@Override
-	
+
 	public void deleteSalesTxn(TransactionId txnId, String username, Locale locale) {
-		BigInteger startingInvoiceNo=this.postReversalAndDeleteTxn(txnId, username, locale);
-		if(startingInvoiceNo!=null) {
+		BigInteger startingInvoiceNo = this.postReversalAndDeleteTxn(txnId, username, locale);
+		if (startingInvoiceNo != null) {
 			this.alterInvoiceSeq();
 			BigInteger maxInvoiceNo = this.txnSeqService.retrieveMaxSaleInvoiceSeq();
 
 			if (maxInvoiceNo != null) {
 				this.txnReceiptService.regenerateReceipts(startingInvoiceNo, maxInvoiceNo, this.receiptCopies, locale, username);
 				logger.info("All the receipts has been regenerated after the seq changes");
-			}	
-		}else {
+			}
+		} else {
 			logger.error("The invoice decrement has failed due to some issues!!");
 		}
-		
-		
+
 		logger.info("The deletion process of {} transaction is a success after all the changes!!", txnId.toString());
 	}
-		
+
 	@Transactional
 	private BigInteger postReversalAndDeleteTxn(TransactionId txnId, String username, Locale locale) {
 
@@ -1556,7 +1555,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 		this.deleteTxnCustomerDetails(txnId);
 		this.deleteTransactionReceipts(txnId);
-		BigInteger startingInvoiceNo=this.deleteInvoiceDetails(txnId);
+		BigInteger startingInvoiceNo = this.deleteInvoiceDetails(txnId);
 		this.deleteShipmentDetails(txnId);
 		this.deleteTenderDetails(txnId, txnLineItemId);
 		this.deleteTaxDetails(txnId, txnLineItemId);
@@ -1565,19 +1564,18 @@ public class TransactionServiceImpl implements TransactionService {
 		this.transactionRepository.delete(txnId);
 		logger.info("All the {} provided transaction details has been deleted", txnId.toString());
 
-		Boolean result=this.txnSeqService.decrementSaleInvoiceNos(startingInvoiceNo);
-		if(!result) {
+		Boolean result = this.txnSeqService.decrementSaleInvoiceNos(startingInvoiceNo);
+		if (!result) {
 			logger.error("The invoice decrement has failed due to some issues!!");
-			startingInvoiceNo=null;
+			startingInvoiceNo = null;
 		}
 		return startingInvoiceNo;
 	}
-	
+
 	private void alterInvoiceSeq() {
 		this.txnSeqService.alterSaleInvoiceSeq();
 		logger.info("The invoice sequencer has been altered successfully");
 	}
-
 
 	private void deleteTxnCustomerDetails(TransactionId txnId) {
 		TransactionCustomer txnCustomerCriteria = new TransactionCustomer();
@@ -1597,7 +1595,7 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	private BigInteger deleteInvoiceDetails(TransactionId txnId) {
-		BigInteger invoiceNo=this.txnSeqService.deleteSaleInvoice(txnId);
+		BigInteger invoiceNo = this.txnSeqService.deleteSaleInvoice(txnId);
 		logger.info("The sales txn {} invoice details has been deleted successfully", txnId.toString());
 		return invoiceNo;
 	}
@@ -1681,6 +1679,27 @@ public class TransactionServiceImpl implements TransactionService {
 			this.txnReceiptRepository.delete(txnReceipts);
 			logger.info("The sales txn {} receipt details has been deleted successfully", txnId.toString());
 		}
+	}
+
+	@Override
+	public List<TransactionDTO> searchTransactionDetailsByMonth(Integer locationId, String finMonth) {
+		LocalDateTime firstDate = Utils.convertMonthToStartDate(new Integer(finMonth));
+		LocalDateTime lastDate = Utils.convertMonthToEndDate(new Integer(finMonth));
+
+		List<TransactionDTO> saleTxns = null;
+		TransactionDTO saleTxn = null;
+
+		List<Transaction> txns = this.transactionRepository.getSaleTxnsByMonth(locationId, firstDate.toString(), lastDate.toString());
+		if (txns != null && !txns.isEmpty()) {
+			saleTxns = new ArrayList<>(txns.size());
+			for(Transaction txn:txns) {
+				saleTxn=this.searchTransactionDetails(txn.getTransactionId().toString());
+				saleTxns.add(saleTxn);
+			}
+			logger.info("The transactions has been retrieved successfully for the month");
+		}
+
+		return saleTxns;
 	}
 
 }

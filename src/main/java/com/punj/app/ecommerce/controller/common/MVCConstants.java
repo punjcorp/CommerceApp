@@ -187,6 +187,7 @@ public final class MVCConstants {
 	public static final String PASSWORD_BEAN_PARAM= "passwordBean";
 	public static final String USER_PASSWORD_BEAN_PARAM= "userDetails";
 	public static final String USER_BEAN_PARAM= "registerUserBean";
+	public static final String GSTR1_JSON_PARAM= "gstr1JSON";
 		
 	
 	public static final String REPORT_METHOD_PDF="PDF";
@@ -343,6 +344,9 @@ public final class MVCConstants {
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	public static final String ACCOUNT_DTO="accountDTO";
+	public static final String GSTR_FIN_YEARS_LIST= "financialYears";
+	public static final String GSTR_FIN_MONTHS_LIST= "financialMonths";
+	public static final String GSTR_SEARCH_BEAN= "gstrSearchBean";
 	
 	public static final String UTILS_RECEIPT_BEAN= "receiptBean";
 	
