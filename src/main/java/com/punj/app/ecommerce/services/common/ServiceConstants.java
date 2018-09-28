@@ -38,6 +38,11 @@ public final class ServiceConstants {
 	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER = "4";
 	public static final String LEDGER_ACTION_SALE_TXN = "5";
 	public static final String LEDGER_ACTION_RETURN_TXN = "6";
+	public static final String LEDGER_ACTION_PAYMENT_SUPPLIER = "11";
+	public static final String LEDGER_ACTION_SUPPLIER_PO_RECEIVED = "12";
+	public static final String LEDGER_ACTION_SUPPLIER_PO_RETURN = "13";
+	
+	public static final String LEDGER_ACTION_PAYMENT_CUSTOMER= "16";
 
 	public static final Integer STYLE_LEVEL = 1;
 	public static final Integer ITEM_LEVEL = 2;
@@ -64,6 +69,11 @@ public final class ServiceConstants {
 	public static final String TXN_NOSALE = "NOSALE";
 	public static final String TXN_SALE = "SALE";
 	public static final String TXN_RETURN= "RETURN";
+	public static final String TXN_SUPPLIER_PAYMENT= "SUPPLIER_PAYMENT";
+	public static final String TXN_PURCHASE_ORDER_RECEIVED= "SUPPLIER_PO_RECEIVED";
+	public static final String TXN_ORDER_RETURN= "SUPPLIER_ORDER_RETURN";
+	
+	public static final String TXN_CUSTOMER_PAYMENT= "CUSTOMER_PAYMENT";
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";

@@ -26,6 +26,7 @@ import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
 import com.punj.app.ecommerce.models.item.AttributeBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
@@ -51,7 +52,7 @@ public class ItemTransformer {
 		List<ItemLookupBean> itemLookupBeans = new ArrayList<>(items.size());
 		ItemLookupBean itemLookupBean = null;
 		for (Item item : items) {
-			itemLookupBean = ItemTransformer.transformItemForLookup(item);
+			itemLookupBean = ItemTransformer.transformItemForLookup(item, null);
 			itemLookupBeans.add(itemLookupBean);
 		}
 
@@ -59,7 +60,7 @@ public class ItemTransformer {
 		return itemLookupBeans;
 	}
 
-	public static ItemLookupBean transformItemForLookup(Item item) {
+	public static ItemLookupBean transformItemForLookup(Item item, List<TaxGroup> taxGroups) {
 		ItemLookupBean itemLookupBean = new ItemLookupBean();
 
 		itemLookupBean.setItemId(item.getItemId());
@@ -74,7 +75,7 @@ public class ItemTransformer {
 		logger.info("The item base data has been transformed to bean successfully.");
 
 		if (item.getItemOptions() != null) {
-			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions());
+			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions(),taxGroups);
 			itemLookupBean.setItemOptions(itemOptionsBean);
 			logger.info("The item options details has been transformed in item details lookup item options bean successfully.");
 		}
@@ -140,7 +141,7 @@ public class ItemTransformer {
 		logger.info("The item base data has been transformed to bean successfully.");
 
 		if (item.getItemOptions() != null) {
-			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions());
+			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions(),null);
 			itemBean.setItemOptions(itemOptionsBean);
 			logger.info("The item options details has been transformed in item options bean successfully.");
 		}
@@ -253,7 +254,7 @@ public class ItemTransformer {
 		logger.info("The action specific fields has been updated successfully");
 	}
 
-	public static ItemOptionsBean transformItemOptions(ItemOptions itemOptions) {
+	public static ItemOptionsBean transformItemOptions(ItemOptions itemOptions, List<TaxGroup> taxGroups) {
 		ItemOptionsBean itemOptionsBean = new ItemOptionsBean();
 
 		itemOptionsBean.setItemId(itemOptions.getItemId());
@@ -262,6 +263,15 @@ public class ItemTransformer {
 		itemOptionsBean.setRestockingFee(itemOptions.getRestockingFee());
 
 		itemOptionsBean.setTaxGroupId(itemOptions.getTaxGroupId());
+		if(taxGroups!=null && !taxGroups.isEmpty()) {
+			for(TaxGroup taxGroup:taxGroups) {
+				if(taxGroup.getTaxGroupId().equals(itemOptions.getTaxGroupId())) {
+					itemOptionsBean.setTaxGroupName(taxGroup.getName());
+					break;
+				}
+			}
+		}
+		
 		itemOptionsBean.setUom(itemOptions.getUom());
 
 		itemOptionsBean.setCompareAtPrice(itemOptions.getCompareAtPrice());
@@ -553,7 +563,7 @@ public class ItemTransformer {
 		return itemAttribute;
 	}
 
-	public static List<Item> updateSKUs(List<Item> existingSKUs, ItemBeanDTO itemDTO, String username) throws IOException {
+	public static List<Item> updateSKUs(List<Item> existingSKUs, ItemBeanDTO itemDTO, String username, Boolean isApproved) throws IOException {
 		Map<BigInteger, Item> existingSKUMap = new HashMap<>(existingSKUs.size());
 		List<Item> updatedSKUs = new ArrayList<>(existingSKUs.size());
 		for (Item sku : existingSKUs) {
@@ -568,6 +578,8 @@ public class ItemTransformer {
 				itemImages = ItemTransformer.transformItemImageBeans(skuBean.getItemImages(), username, sku);
 				sku.setImages(itemImages);
 			}
+			if (isApproved)
+				sku.setStatus(MVCConstants.STATUS_APPROVED);
 			sku.setModifiedBy(username);
 			sku.setModifiedDate(LocalDateTime.now());
 			updatedSKUs.add(sku);

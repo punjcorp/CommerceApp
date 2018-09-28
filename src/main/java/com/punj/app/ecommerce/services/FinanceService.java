@@ -40,4 +40,7 @@ public interface FinanceService {
 	public List<DailyTotals> retrieveDailyTotals(DailyTotals dailyTotalCriteria);
 	
 	
+	public List<LedgerJournal> processTxnLedgers();
+	
+	
 }

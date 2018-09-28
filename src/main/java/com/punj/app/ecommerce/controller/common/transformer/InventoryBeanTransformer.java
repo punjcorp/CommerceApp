@@ -206,10 +206,23 @@ public class InventoryBeanTransformer {
 		return invAdjustItemInventory;
 	}
 
+	public static List<ItemInventory> transformItemStocks(List<ItemStock> itemStocks) {
+		List<ItemInventory> itemInventoryList=new ArrayList<>(itemStocks.size());
+		ItemInventory itemInventory=null;
+		for(ItemStock itemStock:itemStocks) {
+			itemInventory=InventoryBeanTransformer.transformItemStock(itemStock);
+			itemInventoryList.add(itemInventory);
+		}
+		logger.info("All the item inventory details has been transformed successfully");
+		return itemInventoryList;
+	}
+	
 	public static ItemInventory transformItemStock(ItemStock itemStock) {
 		ItemInventory itemInventory = new ItemInventory();
 		itemInventory.setItemId(itemStock.getItemStockId().getItem().getItemId());
+		itemInventory.setItemDesc(itemStock.getItemStockId().getItem().getName());
 		itemInventory.setLocationId(itemStock.getItemStockId().getLocationId());
+		//itemInventory.setLocationName(itemStock.getItemStockId().getItem());
 		itemInventory.setNonSellableQty(itemStock.getNonSellableQty());
 		itemInventory.setReservedQty(itemStock.getReservedQty());
 		itemInventory.setTotalQty(itemStock.getTotalQty());

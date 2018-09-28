@@ -16,11 +16,13 @@ $(function() {
 						resources : { // evtl. load via xhr https://github.com/i18next/i18next-xhr-backend
 							en : {
 								translation : {
-									common_currency_sign_inr : '₹',
+									//common_currency_sign_inr : '₹',
+									common_currency_sign_inr : 'Rs.',
 									tooltip_btn_delete_tender_line_item : 'Delete Tender Line Item',
 									tooltip_btn_delete_sale_line_item : 'Delete Sale Line Item',
 									tooltip_btn_delete_return_line_item : 'Delete Return Line Item',
 									sale_txn_validate_item : "The selected item already exists in the transaction, please increase the quantity if needed",
+									sale_txn_validate_item_name : 'The description should be of minimum 5 characters.',
 									sale_txn_validate_qty : 'The quantity should be a positive value always.Please correct the quantity.',
 									sale_txn_validate_range_discount : 'The discount amount should be between ₹ 0.00 and item price amount.Please correct the amount.',
 									sale_txn_validate_range_discount_pct : 'The discount percentage should be between 0 and 100 of item price amount.',
@@ -40,11 +42,13 @@ $(function() {
 									sale_txn_lbl_igst : 'IGST',
 									sale_txn_lbl_item_total : 'Item Total',
 									sale_txn_lbl_discount_percent : '%',
-									sale_txn_lbl_discount_amount : '₹',
+									//sale_txn_lbl_discount_amount : '₹',
+									sale_txn_lbl_discount_amount : 'Rs',
 									error_simple_alert_header : 'Alert Message',
 									error_confirmation_alert_header : 'Confirmation Message',
 									alert_btn_ok : 'OK',
 									alert_btn_approve : 'Approve',
+									alert_btn_delete : 'Delete Transaction',
 									alert_btn_cancel : 'Cancel',
 									last_txn_title : 'Last Successful Transaction',
 									alert_btn_logout : 'Logout',
@@ -79,6 +83,38 @@ $(function() {
 									screeen_order_return_validate_qty : 'The quantity should be a greater than zero and less than or equal to original order\'s received quantity.Please correct the quantity.',
 									screeen_lbl_order_return_reason_code_select : 'Select Return Reason Code',
 									screeen_lbl_order_return_reason_code : 'Reason Code',
+									screeen_lbl_btn_add_address : 'Add Address',
+									screeen_lbl_btn_delete_address : 'Delete Address',
+									screeen_lbl_address_line_1 : 'Address Line 1',
+									screeen_lbl_address_line_2 : 'Address Line 2',
+									screeen_lbl_address_landmark : 'Nearby Landmark',
+									screeen_lbl_address_city : 'City',
+									screeen_lbl_address_district : 'District',
+									screeen_lbl_address_state : 'State',
+									screeen_lbl_address_country : 'Country',
+									screeen_lbl_address_pincode : 'Pincode',
+									screeen_lbl_address_primary : 'Primary Address',
+									screeen_lbl_address_type_selection : 'Select Address Type',
+									screeen_lbl_address_type_work : 'Work',
+									screeen_lbl_address_type_warehouse : 'Warehouse',
+									screeen_lbl_address_type_home : 'Home',
+									screeen_lbl_placeholder_address_line_1 : 'Enter Address Line 1',
+									screeen_lbl_placeholder_address_line_2 : 'Enter Address Line 2',
+									screeen_lbl_placeholder_address_landmark : 'Enter any nearby landmark',
+									screeen_lbl_placeholder_address_city : 'Enter City',
+									screeen_lbl_placeholder_address_district : 'Enter District',
+									screeen_lbl_placeholder_address_state : 'Select State',
+									screeen_lbl_placeholder_address_country : 'Country',
+									screeen_lbl_placeholder_address_pincode : 'Enter Pincode',
+									screeen_error_zero_address : 'There is no address existing!',
+									error_confirm_customer_delete : 'The deletion of customer(s) will also destroy the finance account(s)!!<br> Do you want to Approve the Deletion?',
+									error_register_already_closed_today: 'This register has been closed for current business date!!<br><br> Please open another register if you want to perform transactions with current business date',
+									error_past_date_edit_future_sale_exists: 'The location open is not allowed as there are sale invoices existing with future date',
+									error_store_open_reset_eod_txn_failed: 'The reset operation for the past business date has failed!!<br><br> Please contact administrator!',
+									error_store_status_retrieval_failed: 'The location status retrieval has failed!!<br><br> Please contact administrator!',
+									warn_functionality_in_progress :'Development in progress..',
+									warn_txn_eod_reset_confirmation :'This action will reset the Store Status in OPEN and delete any future transactions excluding sales!!<br><br> Please provide your approval for the action.',
+									screen_confirm_txn_deletion :'The transaction deletion will wipe the transaction data and receipts from system and will not be recovered at later point!!<br><br> Do you want to proceed with transaction delete?',
 								}
 							},
 							hi : {
@@ -292,6 +328,12 @@ function globalAction(cntl) {
 		$('#alertModal').modal('hide');
 	} else if (cntl.id.indexOf('Logout') > 0) {
 		window.location.href = logout_url;
+	} else if (cntl.id.indexOf('ResetTxns')>0){
+		hideAlert();
+		resetLocationStatus();
+	}else if (cntl.id.indexOf('DeleteTxn')>0){
+		hideAlert();
+		deleteTxnConfirmed();
 	}
 }
 

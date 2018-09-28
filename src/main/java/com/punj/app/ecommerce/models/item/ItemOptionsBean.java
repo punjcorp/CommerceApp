@@ -22,7 +22,7 @@ import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 public class ItemOptionsBean implements Serializable {
 
 	private static final long serialVersionUID = -8050456441958425916L;
-	
+
 	private BigInteger itemId;
 	@NotBlank(message = "{commerce.error.string.empty}")
 	@Size(min = 2, max = 15, message = "{commerce.error.string.size}")
@@ -49,8 +49,8 @@ public class ItemOptionsBean implements Serializable {
 	@NotNull(message = "{commerce.error.amount.not.null}")
 	private BigDecimal compareAtPrice;
 
-	@NotNull(message = "{commerce.error.amount.empty}", groups = {ValidationGroup.ValidationGroupStyle.class,ValidationGroup.ValidationGroupSKU.class})
-	@DecimalMin(value = "0.00", message = "{commerce.error.amount.empty}", groups = {ValidationGroup.ValidationGroupStyle.class,ValidationGroup.ValidationGroupSKU.class})
+	@NotNull(message = "{commerce.error.amount.empty}", groups = { ValidationGroup.ValidationGroupStyle.class, ValidationGroup.ValidationGroupSKU.class })
+	@DecimalMin(value = "0.00", message = "{commerce.error.amount.empty}", groups = { ValidationGroup.ValidationGroupStyle.class, ValidationGroup.ValidationGroupSKU.class })
 	private BigDecimal currentPrice;
 
 	@NotNull(message = "{commerce.error.amount.not.null}")
@@ -66,9 +66,10 @@ public class ItemOptionsBean implements Serializable {
 
 	@NotNull(message = "{commerce.error.option.empty}")
 	private Integer taxGroupId;
+	private String taxGroupName;
 
 	private String nextLevelCreated;
-	
+
 	/**
 	 * @return the itemId
 	 */
@@ -437,7 +438,8 @@ public class ItemOptionsBean implements Serializable {
 	}
 
 	/**
-	 * @param nextLevelCreated the nextLevelCreated to set
+	 * @param nextLevelCreated
+	 *            the nextLevelCreated to set
 	 */
 	public void setNextLevelCreated(String nextLevelCreated) {
 		this.nextLevelCreated = nextLevelCreated;
@@ -451,10 +453,26 @@ public class ItemOptionsBean implements Serializable {
 	}
 
 	/**
-	 * @param taxInclusive the taxInclusive to set
+	 * @param taxInclusive
+	 *            the taxInclusive to set
 	 */
 	public void setTaxInclusive(String taxInclusive) {
 		this.taxInclusive = taxInclusive;
+	}
+
+	/**
+	 * @return the taxGroupName
+	 */
+	public String getTaxGroupName() {
+		return taxGroupName;
+	}
+
+	/**
+	 * @param taxGroupName
+	 *            the taxGroupName to set
+	 */
+	public void setTaxGroupName(String taxGroupName) {
+		this.taxGroupName = taxGroupName;
 	}
 
 }

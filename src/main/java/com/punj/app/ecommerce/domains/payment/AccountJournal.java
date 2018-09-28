@@ -33,10 +33,14 @@ public class AccountJournal implements Serializable {
 
 	@Column(name = "account_id")
 	private Integer accountId;
+	
 	@Column(name = "journal_type")
 	private String journalType;
 
 	private BigDecimal amount;
+	
+	@Column(name = "ledger_generated")
+	private String ledgerGenerated;
 
 	@Column(name = "created_by")
 	private String createdBy;
@@ -220,6 +224,20 @@ public class AccountJournal implements Serializable {
 	 */
 	public void setJournalReceipt(AJReceipt journalReceipt) {
 		this.journalReceipt = journalReceipt;
+	}
+
+	/**
+	 * @return the ledgerGenerated
+	 */
+	public String getLedgerGenerated() {
+		return ledgerGenerated;
+	}
+
+	/**
+	 * @param ledgerGenerated the ledgerGenerated to set
+	 */
+	public void setLedgerGenerated(String ledgerGenerated) {
+		this.ledgerGenerated = ledgerGenerated;
 	}
 
 }

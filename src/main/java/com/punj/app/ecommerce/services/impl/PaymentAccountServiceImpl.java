@@ -282,4 +282,34 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 		return accountJournalId;
 	}
 
+	@Override
+	public List<AccountJournal> retrieveSupplierPaymentsForProcessing() {
+		List<AccountJournal> accountJournals = null;
+
+		accountJournals = this.accountJournalRepository.retrieveAccountJournals(ServiceConstants.ACCOUNT_TYPE_SUPPLIER);
+
+		if(accountJournals!=null && !accountJournals.isEmpty()) {
+			logger.info("The {} unprocessed payment records for all the suppliers has been retrieved successfully", accountJournals.size());
+		}else {
+			logger.info("There were no records found for processing related to supplier payments");
+		}
+		
+		return accountJournals;
+	}
+
+	@Override
+	public List<AccountJournal> retrieveCustomerPaymentsForProcessing() {
+		List<AccountJournal> accountJournals = null;
+
+		accountJournals = this.accountJournalRepository.retrieveAccountJournals(ServiceConstants.ACCOUNT_TYPE_CUSTOMER);
+
+		if(accountJournals!=null && !accountJournals.isEmpty()) {
+			logger.info("The {} unprocessed payment records for all the customers has been retrieved successfully", accountJournals.size());
+		}else {
+			logger.info("There were no records found for processing related to customer payments");
+		}
+		
+		return accountJournals;
+	}
+
 }

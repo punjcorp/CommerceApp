@@ -108,7 +108,6 @@ public class ItemServiceImpl implements ItemService {
 		this.locationTaxRepository = locationTaxRepository;
 	}
 
-
 	/**
 	 * @param itemImageRepository
 	 *            the itemImageRepository to set
@@ -756,27 +755,26 @@ public class ItemServiceImpl implements ItemService {
 
 		List<LocationTax> taxList = null;
 		List<ItemPrice> itemPriceList = null;
-		if(locations!=null && !locations.isEmpty()) {
+		if (locations != null && !locations.isEmpty()) {
 			taxList = this.retrieveTax(locations.get(0).getLocationId(), item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_OTHER_STATE);
-			
-			if(taxList!=null && !taxList.isEmpty()) {
-				
-				LocationTax taxItem=taxList.get(0);
-				
+
+			if (taxList != null && !taxList.isEmpty()) {
+
+				LocationTax taxItem = taxList.get(0);
+
 				itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations, taxItem.getPercentage());
 				itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
 				if (itemPriceList != null && !itemPriceList.isEmpty())
 					logger.info("The item price records were created successfully");
 				else
 					logger.info("There was some issue while creating the item prices");
-				
+
 			}
 		}
-		
-		
+
 		return itemPriceList;
 	}
-	
+
 	/**
 	 * This method retrieves all the taxes for a tax group
 	 * 
@@ -801,7 +799,6 @@ public class ItemServiceImpl implements ItemService {
 
 		return taxList;
 	}
-
 
 	@Override
 	@Transactional
@@ -894,6 +891,44 @@ public class ItemServiceImpl implements ItemService {
 				logger.error("There was some issue while creating the skus");
 			}
 
+		}
+
+		return finalSKUs;
+	}
+
+	@Transactional
+	public List<Item> saveSKUs(List<Item> skuList, String username, Boolean isSKUExisting) {
+		List<Item> finalSKUs = null;
+		if (skuList != null && !skuList.isEmpty()) {
+
+			finalSKUs = new ArrayList<>(skuList.size());
+
+			BigInteger styleNo = skuList.get(0).getParentItemId();
+
+			if (isSKUExisting) {
+				this.deleteSKUs(styleNo);
+			}
+
+			Item style = this.getStyle(styleNo);
+			style.setModifiedBy(username);
+			style.setModifiedDate(LocalDateTime.now());
+			if (skuList.get(0).getStatus().equals(ServiceConstants.STATUS_APPROVED))
+				style.getItemOptions().setNextLevelCreated(ServiceConstants.NEXT_LEVEL_APPROVED);
+			else if (skuList.get(0).getStatus().equals(ServiceConstants.STATUS_CREATED))
+				style.getItemOptions().setNextLevelCreated(ServiceConstants.NEXT_LEVEL_CREATED);
+			this.saveItem(style);
+			logger.info("The Style has been updated with SKU creation indicator successfully");
+
+			BigInteger skuCounter = BigInteger.ZERO;
+			BigInteger skuNo = null;
+			for (Item sku : skuList) {
+				skuCounter = skuCounter.add(BigInteger.ONE);
+				skuNo = new BigInteger(skuCounter.toString());
+
+				sku = this.saveNewSKU(sku, skuNo);
+				finalSKUs.add(sku);
+			}
+			logger.info("The SKU details has been saved successfully");
 		}
 
 		return finalSKUs;
@@ -1011,11 +1046,15 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public List<Item> updateSKUs(List<Item> skuList) {
+	public List<Item> updateSKUs(List<Item> skuList, String username, Boolean isSKUExisting) {
+		List<Item> updatedSKUs = null;
+		if (isSKUExisting) {
+			updatedSKUs = this.createSKUs(skuList, username, isSKUExisting);
+		} else {
+			this.deleteSKUImages(skuList);
+			updatedSKUs = this.itemRepository.save(skuList);
+		}
 
-		this.deleteSKUImages(skuList);
-
-		List<Item> updatedSKUs = this.itemRepository.save(skuList);
 		if (updatedSKUs != null && !updatedSKUs.isEmpty())
 			logger.info("The skus were updated successfully");
 		else

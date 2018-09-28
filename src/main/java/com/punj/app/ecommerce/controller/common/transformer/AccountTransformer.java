@@ -90,6 +90,7 @@ public class AccountTransformer {
 		if (user.getUsername() != null)
 			accountBean.setOrgUsername(user.getUsername());
 		accountBean.setCreatedBy(user.getCreatedBy());
+		accountBean.setDefaultLocationId(user.getDefaultLocationId());
 		accountBean.setCreatedDate(user.getCreatedDate());
 		accountBean.setLoginCount(user.getLoginCount());
 		accountBean.setEmail(user.getEmail());
@@ -151,6 +152,7 @@ public class AccountTransformer {
 		user.setEmail(accountBean.getEmail());
 		user.setFirstname(accountBean.getFirstName());
 		user.setLastname(accountBean.getLastName());
+		user.setDefaultLocationId(accountBean.getDefaultLocationId());
 
 		user.setPhone1(accountBean.getPhone());
 

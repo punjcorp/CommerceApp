@@ -13,8 +13,8 @@
 </head>
 <body>
 	<div id="wrapper">
-		
-		
+
+
 		<!-- Page Content -->
 		<div id="page-content-wrapper-no-menu">
 			<!-- This thymeleaf fragment include the top navigation bar-->
@@ -37,11 +37,11 @@
 									<div class="form-group">
 										<label><small><span th:text="#{commerce.screen.item.name}">Item Name</span></small></label>
 										<div class="input-group">
-											<span th:text="${itemBean.style.name}"></span> <input type="hidden" th:field="*{style.name}"></input> <input type="hidden"
-												th:field="*{style.itemId}"></input> <input type="hidden" th:field="*{style.itemOptions.nextLevelCreated}"></input> <input type="hidden"
-												th:field="*{style.status}"></input> <input type="hidden" th:field="*{style.parentItemId}"></input> <input type="hidden"
-												th:field="*{style.itemLevel}"></input> <input type="hidden" th:field="*{style.createdBy}"></input> <input type="hidden"
-												th:field="*{style.createdDate}"></input> <input type="hidden" th:field="*{style.itemOptions.itemId}"></input>
+											<span th:text="${itemBean.style.name}"></span> <input type="hidden" th:field="*{style.name}"></input> <input type="hidden" th:field="*{style.itemId}"></input>
+											<input type="hidden" th:field="*{style.itemOptions.nextLevelCreated}"></input> <input type="hidden" th:field="*{style.status}"></input> <input
+												type="hidden" th:field="*{style.parentItemId}"></input> <input type="hidden" th:field="*{style.itemLevel}"></input> <input type="hidden"
+												th:field="*{style.createdBy}"></input> <input type="hidden" th:field="*{style.createdDate}"></input> <input type="hidden"
+												th:field="*{style.itemOptions.itemId}"></input>
 										</div>
 										<div th:if="${#fields.hasErrors('style.name')}" th:errors="*{style.name}" class="text-danger">Name Error</div>
 									</div>
@@ -75,8 +75,8 @@
 											</th:block>
 											<input type="hidden" th:field="*{style.itemOptions.taxGroupId}"></input>
 										</div>
-										<div th:if="${#fields.hasErrors('style.itemOptions.taxGroupId')}" th:errors="*{style.itemOptions.taxGroupId}" class="text-danger">Tax
-											Group Error</div>
+										<div th:if="${#fields.hasErrors('style.itemOptions.taxGroupId')}" th:errors="*{style.itemOptions.taxGroupId}" class="text-danger">Tax Group
+											Error</div>
 									</div>
 								</div>
 							</div>
@@ -97,6 +97,14 @@
 										<div id="itemAttributes" class="collapse show">
 											<div class="card-body">
 												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6" th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
+														<div class="form-group">
+															<label><small><span class="pos-mandatory" th:text="#{commerce.screen.item.attribute}">Select Item Attribute</span></small></label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:field="*{style.attrName}" th:placeholder="#{commerce.screen.item.attribute.placeholder}"></input>
+															</div>
+														</div>
+													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="col-12 d-none text-center" id="progressDiv">
 															<i class="fas fa-cog fa-spin fa-5x"></i>
@@ -115,12 +123,18 @@
 																				<div class="row" th:each="sku,itrStat:${itemBean.style.selectedAttributes}">
 																					<div class="col">
 																						<a class="list-group-item list-group-item-action" th:id="'attrItem'+${itrStat.index}"
-																							th:onClick="'selectAttr(this, '+${itrStat.index}+')'">
+																							th:onclick="'selectAttr(this, '+${itrStat.index}+')'">
 																							<div class="form-check float-left">
 																								<input type="hidden" th:field="${itemBean.style.selectedAttributes[__${itrStat.index}__].attributeId}"></input>
 																							</div> <span class="mx-4" th:text="${itemBean.style.selectedAttributes[__${itrStat.index}__].name}"></span>
 																						</a>
 																					</div>
+																					<div class="col-1" th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
+																						<button type="button" id="btnDeleteAttr"  th:onClick="'deleteAttr(\''+${itemBean.style.selectedAttributes[__${itrStat.index}__].code}+'\')'" class="btn btn-danger btn-sm mx-1">
+																							<i class="far fa-trash-alt fa-2x"></i>
+																						</button>
+																					</div>
+
 																				</div>
 																			</div>
 																		</div>
@@ -167,20 +181,21 @@
 																<div class="form-group text-center">
 																	<a href="#"
 																		th:class="${itemBean.skus[__${itrStat.index}__].itemImages!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL!=''?'btn btn-danger btn-sm':'btn btn-danger btn-sm d-none'}"
-																		th:id="'btnDeleteImage'+${itrStat.index}"><i class="far fa-times-circle mx-2"></i> <span
-																		th:text="#{commerce.screen.btn.submit.delete}"></span></a>
+																		th:id="'btnDeleteImage'+${itrStat.index}"><i class="far fa-times-circle mx-2"></i> <span th:text="#{commerce.screen.btn.submit.delete}"></span></a>
 																	<div class="input-group">
 																		<input type="file" class="form-control input-sm" th:placeholder="#{commerce.screen.item.image.placeholder}"
-																			th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageData}" accept="image/*" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}" 
+																			th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageData}" accept="image/*"
+																			th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"
 																			th:class="${(itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL==null or itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL=='')?'form-control input-sm':'form-control input-sm d-none'}" />
 																	</div>
 																	<label><small><span th:id="'lblImageName'+${itrStat.index}" th:text="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}"
 																			th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=null and itemBean.skus[__${itrStat.index}__].itemImages[0].name!=''}"></span></small></label>
 																</div>
-																<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].isImageUpdated}"></input>
-																<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL}"></input> <input type="hidden"
-																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input> <input type="hidden"
-																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input> <input type="hidden"
+																<input type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].isImageUpdated}"></input> <input type="hidden"
+																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageURL}"></input> <input type="hidden"
+																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].name}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input> <input
+																	type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].baseEncodedImage}"
+																	th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input> <input type="hidden"
 																	th:field="${itemBean.skus[__${itrStat.index}__].itemImages[0].imageType}" th:if="${itemBean.skus[__${itrStat.index}__].itemImages!=null}"></input>
 															</div>
 															<div class="col">
@@ -216,15 +231,14 @@
 																	th:if="${itemBean.skus[__${itrStat.index}__].selectedAttributes!=null and #lists.size(itemBean.skus[__${itrStat.index}__].selectedAttributes)>0}"
 																	th:each="attribute,itrAttr:${itemBean.skus[__${itrStat.index}__].selectedAttributes}">
 																	<div class="col">
-																		<b><span th:text="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].name}"></span><span
-																			th:text="'  :  '"></span></b>
+																		<b><span th:text="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].name}"></span><span th:text="'  :  '"></span></b>
 																	</div>
 																	<div class="col">
 																		<span th:text="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valName}"></span> <input type="hidden"
-																			th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].attributeId}"></input> <input
-																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valCode}"></input> <input
-																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].name}"></input> <input
-																			type="hidden" th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valName}"></input>
+																			th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].attributeId}"></input> <input type="hidden"
+																			th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valCode}"></input> <input type="hidden"
+																			th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].name}"></input> <input type="hidden"
+																			th:field="${itemBean.skus[__${itrStat.index}__].selectedAttributes[__${itrAttr.index}__].valName}"></input>
 																	</div>
 																</div>
 															</div>
@@ -241,6 +255,10 @@
 									<div class="form-group">
 										<label></label>
 										<div class="input-group text-left">
+											<button type="submit" name="saveSKU" value="saveSKU" class="btn btn-info mx-2"
+												th:if="${itemBean.style.itemOptions.nextLevelCreated==null or itemBean.style.itemOptions.nextLevelCreated!='A'}">
+												<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
+											</button>
 											<button type="submit" name="saveApproveSKU" value="saveApproveSKU" class="btn btn-info  mx-2">
 												<i class="far fa-save fa-2x mx-1"></i><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
 														data-fa-transform="rotate-180"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
@@ -268,5 +286,47 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
+	
+	<script type="text/javascript" th:inline="javascript" th:if="${itemBean!=null}">
+		/*<![CDATA[*/
+
+		var style_price = /*[[${itemBean.style.itemOptions.currentPrice}]]*/;
+		var style_name = /*[[${itemBean.style.name}]]*/;
+		var style_tax_inclusive = /*[[${itemBean.style.itemOptions.taxInclusive}]]*/;
+		
+		/*]]>*/
+	</script>
+	<script type="text/javascript" th:inline="javascript"
+		th:if="${itemBean!=null and itemBean.style!=null and itemBean.style.itemImages!=null and itemBean.style.itemImages[0].name!=null and itemBean.style.itemImages[0].name!=''}">		
+		/*<![CDATA[*/
+
+			var style_image_name = /*[[${itemBean.style.itemImages[0].name}]]*/;
+			var style_image_url = /*[['data:'+${itemBean.style.itemImages[0].imageType}+';base64,'+${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
+			
+			var style_image_url_actual = /*[[${itemBean.style.itemImages[0].imageURL}]]*/;
+			var style_image_type = /*[[${itemBean.style.itemImages[0].imageType}]]*/;
+			var style_encoded_image = /*[[${itemBean.style.itemImages[0].baseEncodedImage}]]*/;
+		
+		/*]]>*/
+	</script>
+	<script type="text/javascript" th:inline="javascript"
+		th:if="${itemBean!=null and itemBean.style!=null and itemBean.style.itemImages!=null and (itemBean.style.itemImages[0].name==null or itemBean.style.itemImages[0].name=='')}">
+		/*<![CDATA[*/
+			
+			var style_image_name = 'Default Image';
+			var style_image_url = /*[[@{/images/item_image_default_200.png}]]*/;		
+		
+		/*]]>*/
+	</script>
+	<script type="text/javascript" th:inline="javascript"
+		th:if="${itemBean!=null and itemBean.skus!=null and (itemBean.skus[0].status=='C' or itemBean.skus[0].status=='A')}">
+		/*<![CDATA[*/
+
+		var item_bean_dto = /*[[${itemBean}]]*/;
+		initializeSKUsAfterCreation();
+		
+		/*]]>*/
+	</script>
+	
 </body>
 </html>

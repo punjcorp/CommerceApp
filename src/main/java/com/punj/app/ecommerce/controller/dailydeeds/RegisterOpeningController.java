@@ -135,18 +135,20 @@ public class RegisterOpeningController {
 		try {
 			Integer locationId = null;
 			String locationName = null;
+			String gstNo = null;
 			String defaultTender = null;
 			LocalDateTime businessDate = null;
 			String referrerURL = null;
-			DailyDeedBean dailyDeedBean=null;
-			if(dailyDeedOptionalBean.isPresent())
-				dailyDeedBean=dailyDeedOptionalBean.get();
-			if(dailyDeedBean!=null) {
-				locationId=dailyDeedBean.getLocationId();
-				if(locationId!=null) {
-					locationName=dailyDeedBean.getLocationName();
-					defaultTender=dailyDeedBean.getDefaultTender();
-					businessDate=dailyDeedBean.getBusinessDate();
+			DailyDeedBean dailyDeedBean = null;
+			if (dailyDeedOptionalBean.isPresent())
+				dailyDeedBean = dailyDeedOptionalBean.get();
+			if (dailyDeedBean != null) {
+				locationId = dailyDeedBean.getLocationId();
+				if (locationId != null) {
+					locationName = dailyDeedBean.getLocationName();
+					gstNo = dailyDeedBean.getGstNo();
+					defaultTender = dailyDeedBean.getDefaultTender();
+					businessDate = dailyDeedBean.getBusinessDate();
 				}
 			}
 			
@@ -156,11 +158,13 @@ public class RegisterOpeningController {
 				if (locStr != null) {
 					locationId = new Integer(locStr);
 					locationName = req.getParameter(MVCConstants.LOC_NAME_PARAM);
+					gstNo = req.getParameter(MVCConstants.LOC_GST_PARAM);
 					defaultTender = req.getParameter(MVCConstants.DEFAULT_TENDER_PARAM);
 					businessDate = Utils.parseDate((String) req.getParameter(MVCConstants.B_DATE_PARAM));
 				} else {
 					locationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 					locationName = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME);
+					gstNo = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_GST_NO);
 					businessDate = (LocalDateTime) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 					defaultTender = (String) commerceContext.getStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
 				}
@@ -173,6 +177,7 @@ public class RegisterOpeningController {
 						dailyDeedBean = new DailyDeedBean();
 						dailyDeedBean.setLocationId(locationId);
 						dailyDeedBean.setLocationName(locationName);
+						dailyDeedBean.setGstNo(gstNo);
 						dailyDeedBean.setBusinessDate(businessDate);
 						dailyDeedBean.setDefaultTender(defaultTender);
 
@@ -300,6 +305,7 @@ public class RegisterOpeningController {
 		Integer locationId = dailyDeedBean.getLocationId();
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
+		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_GST_NO, dailyDeedBean.getGstNo());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
 		// Get this from selected location later on
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER, dailyDeedBean.getDefaultTender()); // MVCConstants.TNDR_CASH

@@ -54,6 +54,8 @@ public interface InventoryService {
 	public StockDTO searchStockAdjustments(String text, Pager pager);
 
 	public ItemStock searchItemStock(BigInteger itemId, Integer locationId);
+	
+	public List<ItemStock> searchItemStockBasedOnLocations(BigInteger itemId, Integer locationId);
 
 	public StockReason searchReasonCode(Integer reasonCodeId);
 

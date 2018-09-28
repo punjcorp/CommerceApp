@@ -76,6 +76,24 @@ public class Utils {
 
 	}
 	
+	public static String showSupplierTxn(String txnType) {
+
+		
+		switch (txnType) {
+		case ServiceConstants.PAYMENT_FULL:
+		case ServiceConstants.PAYMENT_PART:
+		case ServiceConstants.PAYMENT_ADVANCE:
+			return ServiceConstants.TXN_SUPPLIER_PAYMENT;
+		case ServiceConstants.PAYMENT_DUE:
+			return ServiceConstants.TXN_PURCHASE_ORDER_RECEIVED;
+		case ServiceConstants.PAYMENT_CREDIT:
+			return ServiceConstants.TXN_ORDER_RETURN;
+		default:
+			return "";
+		}
+
+	}
+	
 	public static String showLedgerAction(String txnType) {
 
 		switch (txnType) {
@@ -83,7 +101,16 @@ public class Utils {
 			return ServiceConstants.LEDGER_ACTION_SALE_TXN;
 		case ServiceConstants.TXN_RETURN:
 			return ServiceConstants.LEDGER_ACTION_RETURN_TXN;
-
+		
+		case ServiceConstants.TXN_SUPPLIER_PAYMENT:
+			return ServiceConstants.LEDGER_ACTION_PAYMENT_SUPPLIER;
+		case ServiceConstants.TXN_PURCHASE_ORDER_RECEIVED:
+			return ServiceConstants.LEDGER_ACTION_SUPPLIER_PO_RECEIVED;
+		case ServiceConstants.TXN_ORDER_RETURN:
+			return ServiceConstants.LEDGER_ACTION_SUPPLIER_PO_RETURN;
+			
+		case ServiceConstants.TXN_CUSTOMER_PAYMENT:
+			return ServiceConstants.LEDGER_ACTION_PAYMENT_CUSTOMER;
 		default:
 			return "";
 		}

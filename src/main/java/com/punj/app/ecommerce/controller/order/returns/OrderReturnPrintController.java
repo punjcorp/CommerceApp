@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.order.returns;
  * 
  */
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Locale;
@@ -14,6 +15,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
@@ -107,22 +113,20 @@ public class OrderReturnPrintController {
 					logger.info("The PDF order return report has been generated successfully");
 					response.getOutputStream().flush();
 				} else {
-					response.setContentType(MediaType.APPLICATION_PDF_VALUE);
-					response.getWriter().write("There was an error generating Order return Report");
-					response.getWriter().flush();
+					this.orderReturnPrintUtil.showEmptyReport(response);
 					logger.info("The PDF order return report was not generated due to some issue");
 				}
 			} else {
 
-				response.setContentType(MediaType.APPLICATION_PDF_VALUE);
-				response.getWriter().write("There was an error generating Order return Report");
-				response.getWriter().flush();
-				logger.info("There was no order return number provided for retrieving order report!!");
+				this.orderReturnPrintUtil.showEmptyReport(response);
+				logger.info("The PDF order return report was not generated due to some issue");
 			}
 		} catch (IOException e) {
 			logger.error("There is an error while generating report for last order return report", e);
 		}
 	}
+	
+	
 
 	@GetMapping(value = ViewPathConstants.PRINT_ORDER_RETURN_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody

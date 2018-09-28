@@ -248,9 +248,9 @@ function deleteAttr(attrCode) {
 
 function initializeSKUsAfterCreation() {
 	selectedAttributes = item_bean_dto.style.selectedAttributes;
-	if (selectedAttributes && selectedAttributes.length > 0) {
+	/*if (selectedAttributes && selectedAttributes.length > 0) {
 		var finalSKUCombinationList = attrAction.generateSKUCombinations(selectedAttributes);
 		attrAction.renderSKUs(selectedAttributes, finalSKUCombinationList);
-	}
+	}*/
 
 }

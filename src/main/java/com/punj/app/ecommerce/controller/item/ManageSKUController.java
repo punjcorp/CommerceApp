@@ -112,8 +112,7 @@ public class ManageSKUController {
 				item = this.itemService.getItem(item.getItemId());
 				itemBean = ItemTransformer.transformItem(item);
 
-				if (item.getItemOptions().getNextLevelCreated() != null
-						&& item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_CREATED)) {
+				if (item.getItemOptions().getNextLevelCreated() != null && item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_CREATED)) {
 					Item itemCriteria = new Item();
 					itemCriteria.setParentItemId(styleNumber);
 					List<Item> skuItemList = this.itemService.retrieveItems(itemCriteria);
@@ -243,8 +242,8 @@ public class ManageSKUController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_SKU_URL, params = { MVCConstants.SAVE_SKU_PARAM })
-	public String addSKUs(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult, Model model,
-			HttpSession session, Authentication authentication, Locale locale) {
+	public String addSKUs(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult, Model model, HttpSession session,
+			Authentication authentication, Locale locale) {
 
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -255,11 +254,10 @@ public class ManageSKUController {
 				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW);
 
 				Boolean nextLevelCreated = Boolean.FALSE;
-				if (style.getItemOptions().getNextLevelCreated() != null
-						&& (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
-								|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
+				if (style.getItemOptions().getNextLevelCreated() != null && (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
+						|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
 					nextLevelCreated = Boolean.TRUE;
-				skuList = this.itemService.createSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
+				skuList = this.itemService.saveSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
 				if (skuList != null && !skuList.isEmpty()) {
 
 					List<ItemBean> skuBeanList = ItemTransformer.transformItems(skuList);
@@ -287,8 +285,8 @@ public class ManageSKUController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_SKU_URL, params = { MVCConstants.SAVE_APPROVE_SKU_PARAM })
-	public String approveSKUs(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult,
-			Model model, HttpSession session, Authentication authentication, Locale locale) {
+	public String approveSKUs(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult, Model model,
+			HttpSession session, Authentication authentication, Locale locale) {
 
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -299,9 +297,8 @@ public class ManageSKUController {
 				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW_APPROVE);
 
 				Boolean nextLevelCreated = Boolean.FALSE;
-				if (style.getItemOptions().getNextLevelCreated() != null
-						&& (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
-								|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
+				if (style.getItemOptions().getNextLevelCreated() != null && (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
+						|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
 					nextLevelCreated = Boolean.TRUE;
 				skuList = this.itemService.createSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
 				if (skuList != null && !skuList.isEmpty()) {
@@ -348,8 +345,8 @@ public class ManageSKUController {
 
 				itemBean = ItemTransformer.transformItem(item);
 
-				if (item.getItemOptions().getNextLevelCreated() != null
-						&& item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_APPROVED)) {
+				if (item.getItemOptions().getNextLevelCreated() != null && (item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_CREATED)
+						|| item.getItemOptions().getNextLevelCreated().equals(MVCConstants.NEXT_LEVEL_APPROVED))) {
 					Item itemCriteria = new Item();
 					itemCriteria.setParentItemId(styleNumber);
 					List<Item> skuItemList = this.itemService.retrieveItems(itemCriteria);
@@ -400,11 +397,10 @@ public class ManageSKUController {
 		}
 		return ViewPathConstants.EDIT_SKU_PAGE;
 	}
-	
-	
+
 	private ItemBeanDTO updateSKUDetailsForEditScreen(List<Item> skuItemList, ItemBean itemBean) throws IOException {
 		List<AttributeBean> attributeBeans = null;
-		ItemBeanDTO itemDTO=null;
+		ItemBeanDTO itemDTO = null;
 		List<ItemBean> skuList = null;
 		if (skuItemList != null && !skuItemList.isEmpty()) {
 			List<ItemAttribute> itemAttributes = skuItemList.get(0).getItemAttributes();
@@ -437,12 +433,53 @@ public class ManageSKUController {
 		}
 		return itemDTO;
 	}
-	
-	
+
+	@PostMapping(value = ViewPathConstants.EDIT_SKU_URL, params = { MVCConstants.SAVE_SKU_PARAM })
+	public String saveEditedSKUs(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult, Model model,
+			HttpSession session, Authentication authentication, Locale locale) {
+
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+			Item style = this.itemService.getStyle(itemBean.getStyle().getItemId());
+			if (style != null && itemBean.getSkus() != null && !itemBean.getSkus().isEmpty()) {
+
+				List<Item> skuList = ItemTransformer.createSKUs(style, itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW);
+
+				Boolean nextLevelCreated = Boolean.FALSE;
+				if (style.getItemOptions().getNextLevelCreated() != null && (MVCConstants.NEXT_LEVEL_CREATED.equals(style.getItemOptions().getNextLevelCreated())
+						|| MVCConstants.NEXT_LEVEL_APPROVED.equals(style.getItemOptions().getNextLevelCreated())))
+					nextLevelCreated = Boolean.TRUE;
+				skuList = this.itemService.saveSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
+				if (skuList != null && !skuList.isEmpty()) {
+
+					List<ItemBean> skuBeanList = ItemTransformer.transformItems(skuList);
+					itemBean.setSkus(skuBeanList);
+
+					model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.sku.add.success", null, locale));
+
+					logger.info("The new skus has been created successfully");
+				} else {
+					model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sku.add.failure", null, locale));
+					logger.info("The new skus creation has failed due to some issues");
+				}
+				this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+			} else {
+				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.sku.add.failure", null, locale));
+				logger.info("The new skus creation has failed due to some issues");
+			}
+		} catch (Exception e) {
+			this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage(MVCConstants.ERROR_MSG, null, locale));
+			logger.error("There was some error while handling the sku creation related tasks", e);
+		}
+
+		return ViewPathConstants.EDIT_SKU_PAGE;
+	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_SKU_URL, params = { MVCConstants.SAVE_APPROVE_SKU_PARAM })
-	public String approveSKUsAfterEditing(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean,
-			BindingResult bindingResult, Model model, HttpSession session, Authentication authentication, Locale locale) {
+	public String approveSKUsAfterEditing(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSKU.class) ItemBeanDTO itemBean, BindingResult bindingResult, Model model,
+			HttpSession session, Authentication authentication, Locale locale) {
 
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -451,19 +488,24 @@ public class ManageSKUController {
 			skuRetrievalCriteria.setParentItemId(itemBean.getStyle().getItemId());
 			List<Item> skuList = this.itemService.retrieveItems(skuRetrievalCriteria);
 			if (skuList != null && !skuList.isEmpty()) {
-				List<Item> updatedSKUs = ItemTransformer.updateSKUs(skuList, itemBean, userDetails.getUsername());
-				updatedSKUs = this.itemService.updateSKUs(updatedSKUs);
+				List<Item> updatedSKUs = ItemTransformer.updateSKUs(skuList, itemBean, userDetails.getUsername(), Boolean.TRUE);
+				if (itemBean.getStyle().getItemOptions().getNextLevelCreated() != null
+						&& itemBean.getStyle().getItemOptions().getNextLevelCreated().equals(MVCConstants.STATUS_CREATED)) {
+					updatedSKUs = this.itemService.updateSKUs(updatedSKUs, userDetails.getUsername(), Boolean.TRUE);
+				} else if (itemBean.getStyle().getItemOptions().getNextLevelCreated() != null
+						&& itemBean.getStyle().getItemOptions().getNextLevelCreated().equals(MVCConstants.STATUS_APPROVED)) {
+					updatedSKUs = this.itemService.updateSKUs(updatedSKUs, userDetails.getUsername(), Boolean.FALSE);
+				}
 
 				List<ItemBean> skuBeanList = ItemTransformer.transformItems(updatedSKUs);
 				itemBean.setSkus(skuBeanList);
-				
-				
-				Item style=this.itemService.getItem(itemBean.getStyle().getItemId());
-				ItemBean styleDetails=ItemTransformer.transformItem(style);
-				
-				itemBean=this.updateSKUDetailsForEditScreen(updatedSKUs, styleDetails);
+
+				Item style = this.itemService.getItem(itemBean.getStyle().getItemId());
+				ItemBean styleDetails = ItemTransformer.transformItem(style);
+
+				itemBean = this.updateSKUDetailsForEditScreen(updatedSKUs, styleDetails);
 				this.updateModelWithEssentialScreenData(itemBean, model, locale, Boolean.TRUE);
-				
+
 				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.sku.approve.success", null, locale));
 
 				logger.info("All the SKUs has been updated successfully");

@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.impl;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,12 +19,14 @@ import com.punj.app.ecommerce.domains.finance.DailyTotals;
 import com.punj.app.ecommerce.domains.finance.LedgerJournal;
 import com.punj.app.ecommerce.domains.finance.LocationSafe;
 import com.punj.app.ecommerce.domains.finance.TenderMovement;
+import com.punj.app.ecommerce.domains.payment.AccountJournal;
 import com.punj.app.ecommerce.repositories.finance.DailySafeRepository;
 import com.punj.app.ecommerce.repositories.finance.DailyTotalsRepository;
 import com.punj.app.ecommerce.repositories.finance.LedgerJournalRepository;
 import com.punj.app.ecommerce.repositories.finance.LocationSafeRepository;
 import com.punj.app.ecommerce.repositories.finance.TenderMovementRepository;
 import com.punj.app.ecommerce.services.FinanceService;
+import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 /**
@@ -39,6 +42,17 @@ public class FinanceServiceImpl implements FinanceService {
 	private TenderMovementRepository tenderMovementRepository;
 	private DailySafeRepository dailySafeRepository;
 	private LocationSafeRepository locationSafeRepository;
+
+	private PaymentAccountService paymentAccountService;
+
+	/**
+	 * @param paymentAccountService
+	 *            the paymentAccountService to set
+	 */
+	@Autowired
+	public void setPaymentAccountService(PaymentAccountService paymentAccountService) {
+		this.paymentAccountService = paymentAccountService;
+	}
 
 	/**
 	 * @param locationSafeRepository
@@ -130,7 +144,7 @@ public class FinanceServiceImpl implements FinanceService {
 
 	private DailyTotals updateStoreTotalsDetails(DailyTotals storeTotalsResult, DailyTotals storeTotals, String txnType) {
 
-		switch(txnType){
+		switch (txnType) {
 		case ServiceConstants.TXN_CLOSE_REGISTER:
 			if (storeTotalsResult != null) {
 				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount() + BigInteger.ONE.intValue());
@@ -139,28 +153,27 @@ public class FinanceServiceImpl implements FinanceService {
 			}
 			break;
 		case ServiceConstants.TXN_OPEN_REGISTER:
-			if(storeTotalsResult != null) {
-				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount()+1);
+			if (storeTotalsResult != null) {
+				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount() + 1);
 				return storeTotalsResult;
-			}else {
+			} else {
 				storeTotals.setEndOfDayAmount(null);
 				return storeTotals;
 			}
 		case ServiceConstants.TXN_CLOSE_STORE:
-			if(storeTotalsResult != null) {
-				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount()+1);
+			if (storeTotalsResult != null) {
+				storeTotalsResult.setTotalTxnCount(storeTotalsResult.getTotalTxnCount() + 1);
 				storeTotalsResult.setEndOfDayAmount(storeTotals.getEndOfDayAmount());
 				return storeTotalsResult;
-			}else {
+			} else {
 				return storeTotals;
 			}
 		}
-		
+
 		if (txnType.equals(ServiceConstants.TXN_CLOSE_REGISTER)) {
-			
+
 		} else if (txnType.equals(ServiceConstants.TXN_OPEN_REGISTER)) {
-			
-			
+
 		}
 		return storeTotals;
 	}
@@ -446,6 +459,29 @@ public class FinanceServiceImpl implements FinanceService {
 			logger.error("There was no record found for the daily totals based on provided criteria");
 		}
 		return dailyTotalsList;
+	}
+
+	@Override
+	public List<LedgerJournal> processTxnLedgers() {
+
+		return null;
+	}
+
+	private List<LedgerJournal> processSupplierPayments() {
+
+		List<AccountJournal> supplierJournals = this.paymentAccountService.retrieveSupplierPaymentsForProcessing();
+
+		return null;
+	}
+
+	private List<LedgerJournal> createSupplierPaymentLedgers(List<AccountJournal> supplierJournals) {
+		List<LedgerJournal> ledgers = new ArrayList<>();
+
+		
+		
+		logger.info("The ledger journals has been created successfully for supplier payments");
+
+		return ledgers;
 	}
 
 }

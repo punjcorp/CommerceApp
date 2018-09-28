@@ -25,7 +25,7 @@ public interface ItemService {
 
 	public BigInteger generateNewStyle();
 	
-	public List<Item> updateSKUs(List<Item> skuList);
+	public List<Item> updateSKUs(List<Item> skuList, String username, Boolean isSKUExisting);
 	
 	public BigInteger generateNewSKU(BigInteger styleNo, BigInteger skuNo);
 
@@ -38,6 +38,8 @@ public interface ItemService {
 	public Item approveItem(Item item);
 
 	public List<Item> createSKUs(List<Item> skuList, String username, Boolean isSKUExisting);
+	
+	public List<Item> saveSKUs(List<Item> skuList, String username, Boolean isSKUExisting);
 
 	public List<Attribute> retrieveAttributeValues(String attributeCode);
 

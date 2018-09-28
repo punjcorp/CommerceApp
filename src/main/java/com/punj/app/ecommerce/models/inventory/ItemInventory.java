@@ -15,7 +15,9 @@ public class ItemInventory implements Serializable {
 	private static final long serialVersionUID = 4775903741736028657L;
 	
 	private BigInteger itemId;
+	private String itemDesc;
 	private Integer locationId;
+	private String locationName;
 	private Integer totalQty;
 	private Integer nonSellableQty;
 	private Integer reservedQty;
@@ -109,6 +111,34 @@ public class ItemInventory implements Serializable {
 	 */
 	public void setSohQty(Integer sohQty) {
 		this.sohQty = sohQty;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
+	}
+
+	/**
+	 * @return the locationName
+	 */
+	public String getLocationName() {
+		return locationName;
+	}
+
+	/**
+	 * @param locationName the locationName to set
+	 */
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
 	}
 
 }

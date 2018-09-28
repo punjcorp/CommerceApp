@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`account_journal` (
   `account_id` INT NOT NULL,
   `journal_type` VARCHAR(50) NOT NULL,
   `amount` DECIMAL(12,2) NOT NULL,
+  `ledger_generated` VARCHAR(1) NULL DEFAULT 'N',
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,

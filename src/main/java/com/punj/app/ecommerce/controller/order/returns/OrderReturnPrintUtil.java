@@ -3,6 +3,8 @@ package com.punj.app.ecommerce.controller.order.returns;
  * 
  */
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,10 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -21,12 +29,9 @@ import org.springframework.stereotype.Component;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.OrderReturnTransformer;
-import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
-import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.returns.OrderReturn;
 import com.punj.app.ecommerce.models.common.LocationBean;
-import com.punj.app.ecommerce.models.order.OrderReportBean;
 import com.punj.app.ecommerce.models.order.returns.OrderReturnBean;
 import com.punj.app.ecommerce.models.order.returns.OrderReturnReportBean;
 import com.punj.app.ecommerce.services.OrderReturnService;
@@ -98,7 +103,7 @@ public class OrderReturnPrintUtil {
 		// Print if found
 		Object sessionResult = this.retrieveOrderReturnReportInSession(orderReturnId, session, requestType);
 
-		if (sessionResult == null && orderReturn!=null) {
+		if (sessionResult == null && orderReturn != null) {
 			// Step 2 - Create Report Object if step 1 fails
 			// Check if data is available for order otherwise retrieve from database
 			List<OrderReturnReportBean> orderReturnReportBeans = this.generateOrderReturnReportBean(orderReturnBean, username);
@@ -117,22 +122,22 @@ public class OrderReturnPrintUtil {
 			// Step 5 - update the report in session if it is useful, we can check if cache is better option
 			this.updateReturnReportInSession(orderReturnId, pdfBytes, session, orderReturnReport);
 			logger.info("The order return {} report details has been updated in session for later use ", orderReturnId);
-			
-			if(orderReturn!=null && pdfBytes!=null) {
+
+			if (orderReturn != null && pdfBytes != null) {
 				orderReturn.setOrderReturnReport(pdfBytes);
 				// Step 6 - save this report in order return
-				orderReturn=this.saveOrderReturnReport(orderReturn, username);
+				orderReturn = this.saveOrderReturnReport(orderReturn, username);
 				logger.info("The order {} report details has been saved in order table", orderReturnId);
 
 			}
 
-		} else if (sessionResult == null && orderReturn==null) {
-			orderReturn=this.orderReturnService.searchOrderReturn(orderReturnBean.getOrderReturnId());
-			if(orderReturn!=null) {
-				pdfBytes=orderReturn.getOrderReturnReport();
+		} else if (sessionResult == null && orderReturn == null) {
+			orderReturn = this.orderReturnService.searchOrderReturn(orderReturnBean.getOrderReturnId());
+			if (orderReturn != null) {
+				pdfBytes = orderReturn.getOrderReturnReport();
 			}
-			 
-		}else {
+
+		} else {
 			if (requestType.equals(MVCConstants.REPORT_PRINT)) {
 				orderReturnReport = (JasperPrint) sessionResult;
 			} else if (requestType.equals(MVCConstants.REPORT_VIEW)) {
@@ -152,8 +157,8 @@ public class OrderReturnPrintUtil {
 
 	public List<OrderReturnReportBean> generateOrderReturnReportBean(OrderReturnBean orderReturnBean, String username) {
 
-		List<OrderReturnReportBean> returnList=new ArrayList<>();
-		
+		List<OrderReturnReportBean> returnList = new ArrayList<>();
+
 		OrderReturnReportBean orderReturnReportBean = null;
 		if (orderReturnBean == null || orderReturnBean.getOrderReturnId() == null) {
 			logger.info("The order report cannot be generated as order return is not retrieved");
@@ -170,7 +175,7 @@ public class OrderReturnPrintUtil {
 		Location location = this.commonService.retrieveLocationDetails(orderReturnBean.getOrder().getLocationId());
 		LocationBean locationBean = CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
 		orderReturnReportBean = OrderReturnTransformer.prepareORRB(orderReturnBean, locationBean, username);
-		if(orderReturnReportBean!=null)
+		if (orderReturnReportBean != null)
 			returnList.add(orderReturnReportBean);
 		logger.info("The order return report bean object has been generated successfully");
 
@@ -266,5 +271,32 @@ public class OrderReturnPrintUtil {
 		orderReturn = this.orderReturnService.createOrderReturn(orderReturn, username);
 		logger.info("The order return report data has been saved successfully");
 		return orderReturn;
+	}
+
+	public void showEmptyReport(HttpServletResponse response) throws IOException {
+		String outputError = "There was an error generating Order return Report!!";
+		try (PDDocument doc = new PDDocument()) {
+			PDPage page = new PDPage();
+			doc.addPage(page);
+
+			PDFont font = PDType1Font.HELVETICA_BOLD;
+
+			try (PDPageContentStream contents = new PDPageContentStream(doc, page)) {
+				contents.beginText();
+				contents.setFont(font, 12);
+				contents.newLineAtOffset(100, 700);
+				contents.showText(outputError);
+				contents.endText();
+			}
+
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			doc.save(byteArrayOutputStream);
+			doc.close();
+			response.setContentType("application/pdf");
+			response.setHeader("Content-disposition", "attachment; filename=order_return_report.pdf");
+			response.getOutputStream().write(byteArrayOutputStream.toByteArray());
+			logger.info("The order return report was not generated!!");
+			response.getOutputStream().flush();
+		}
 	}
 }

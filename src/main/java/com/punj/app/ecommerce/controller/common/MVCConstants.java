@@ -60,7 +60,7 @@ public final class MVCConstants {
 	
 	
 	
-	
+	public static final String RCPT_PRINTER_NAME="PRINTER_NAME";
 	public static final String LAST_PAYMENT_NO="LAST_PAYMENT_NO";
 	public static final String LAST_TXN_NO="LAST_TXN_NO";
 	public static final String TXN_ID_PARAM="txnId";
@@ -69,6 +69,7 @@ public final class MVCConstants {
 	public static final String PAYMENT_JASPER_PARAM="PAYMENT_JASPER";
 	public static final String RCPT_JASPER_PARAM="_JASPER";
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_DUPLICATE="Sale Duplicate Copy";
 	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
 	public static final String RCPT_SALE_GIFT="Gift Receipt";
 	public static final String RCPT_NO_SALE="No Sale Receipt";
@@ -76,8 +77,11 @@ public final class MVCConstants {
 	
 	public static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	
+	public static final String ALL_LITERAL="all";
+	public static final String TXN_ALL="ALL";
 	public static final String TXN_SALE_PARAM="SALE";
 	public static final String TXN_RETURN_PARAM="RETURN";
+	public static final String TXN_NOSALE_PARAM="NOSALE";
 
 	public static final Integer STYLE_LEVEL=1;
 	public static final Integer ITEM_LEVEL=2;
@@ -106,6 +110,7 @@ public final class MVCConstants {
 	public static final String LOCATION_ID_PARAM="locationId";
 	
 	public static final String LOC_NAME_PARAM="locName";
+	public static final String LOC_GST_PARAM="gstNo";
 	public static final String REGISTER_ID_PARAM="registerId";
 	public static final String REG_NAME_PARAM="regName";	
 	public static final String B_DATE_PARAM="businessDate";
@@ -183,7 +188,13 @@ public final class MVCConstants {
 	public static final String PASSWORD_BEAN_PARAM= "passwordBean";
 	public static final String USER_PASSWORD_BEAN_PARAM= "userDetails";
 	public static final String USER_BEAN_PARAM= "registerUserBean";
+	public static final String GSTR1_JSON_PARAM= "gstr1JSON";
 		
+	
+	public static final String REPORT_METHOD_PDF="PDF";
+	public static final String REPORT_METHOD_RTF="RTF";
+	public static final String REPORT_METHOD_JPG="JPG";
+	
 	public static final String ORDERS_REPORT="/reports/order/orders.jrxml";
 	public static final String ORDERS_ITEMS_REPORT="/reports/order/order_items.jrxml";
 	
@@ -216,6 +227,8 @@ public final class MVCConstants {
 	
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
+	public static final String CREATIVE_TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_txn.jasper";
+	public static final String CREATIVE_TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/creative_sale_receipt_items.jasper";
 	public static final String TXN_ITEM_REPORT_PARAM="TXN_ITEM_REPORT";
 
 
@@ -278,13 +291,20 @@ public final class MVCConstants {
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String DAILY_TOTALS_BEAN= "dailyTotalsBean";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
+	public static final String CUSTOMER_OR_BEAN= "customerORBean";
+	public static final String SHIPMENT_BEAN= "shipmentBean";
 	public static final String CUSTOMER_BEAN= "customerBean";
+	public static final String STATES_LIST= "states";
+	public static final String TXN_SALE_DTO= "saleTxnDTO";
 	public static final String TXN_HEADER_BEAN= "txnHeaderBean";
 	public static final String LOCATION_BEANS= "locations";
+	public static final String LOCATION_MAP_BEANS= "locationsMap";
 	public static final String ROLE_BEANS= "roles";
 	public static final String TENDER_BEANS= "tenders";
 	public static final String REASON_CODES= "reasonCodes";
 	public static final String REGISTER_BEANS= "registers";
+	public static final String REGISTER_NO_ARRAY= "regNos";
+	public static final String NEW_REGISTER_BEAN= "newReg";
 	public static final String ITEMS_BEAN= "items";
 	public static final String ORDERS_BEAN= "orders";
 	public static final String ORDER_RETURNS_BEAN= "orderReturns";
@@ -317,6 +337,8 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTS_BEAN= "invAdjusts";
 	public static final String SUPPLIERS_BEAN= "suppliers";
 	public static final String SEARCH_BEAN= "searchBean";
+	public static final String TXN_SEARCH_BEAN= "txnSearchBean";
+	public static final String TXN_TYPES_BEAN= "txnTypes";
 	public static final String COLOR_LIST_BEAN="colorList";
 	public static final String SIZE_LIST_BEAN="sizeList";
 	public static final String TAX_GROUP_LIST_BEAN="taxGroups";
@@ -324,6 +346,20 @@ public final class MVCConstants {
 	public static final String PRICE_BEAN="priceBean";
 	public static final String PRICE_BEAN_DTO="priceBeanDTO";
 	public static final String ACCOUNT_DTO="accountDTO";
+	public static final String GSTR_FIN_YEARS_LIST= "financialYears";
+	public static final String GSTR_FIN_MONTHS_LIST= "financialMonths";
+	public static final String GSTR_SEARCH_BEAN= "gstrSearchBean";
+	
+	public static final String UTILS_RECEIPT_BEAN= "receiptBean";
+	
+	public static final String TXN_LOOKUP_BEAN_LIST= "txns";
+	
+	
+	public static final String SAVE_CUSTOMER_PARAM= "saveCustomer";
+	public static final String CUSTOMER_ID_PARAM="customerId";
+	public static final String SAVE_CUSTOMERS_PARAM= "saveCustomers";
+	public static final String DELETE_CUSTOMERS_PARAM="deleteCustomers";
+	public static final String CUSTOMERS_BEAN= "customers";
 	
 	public static final String ADD_SUPPLIER_ADDRESS_PARAM= "addSupplierAddress";
 	public static final String REMOVE_SUPPLIER_ADDRESS_PARAM= "removeSupplierAddress";
@@ -336,6 +372,8 @@ public final class MVCConstants {
 	public static final String APPROVE_PARAM= "approve";
 	public static final String SAVE_PARAM= "save";
 	public static final String DELETE_PARAM= "delete";
+	public static final String ITEM_INV_BEAN= "inventoryBean";
+	public static final String ITEM_INV_BEANS= "invBeans";
 	public static final String ADD_INV_ADJUST_ITEM_PARAM= "addInvAdjustItem";
 	public static final String REMOVE_INV_ADJUST_ITEM_PARAM= "removeInvAdjustItem";
 	public static final String SAVE_INV_ADJUST_PARAM= "saveInvAdjust";

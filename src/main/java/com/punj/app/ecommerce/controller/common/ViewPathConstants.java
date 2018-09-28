@@ -96,7 +96,11 @@ public final class ViewPathConstants {
 	
 	public static final String ORDER_ITEM_LOOKUP_URL = "/order_item_lookup";
 	public static final String CUSTOMER_LOOKUP_URL = "/customer_account_lookup";
+	public static final String CUSTOMER_ADDRESS_LOOKUP_URL = "/customer_address_lookup";
 	public static final String CUSTOMER_LOOKUP_ADMIN_URL = "/admin/customer_account_lookup";
+	public static final String TXN_DETAILS_LOOKUP_URL = "/pos/txn_details_lookup";
+	public static final String TXN_LOOKUP_URL = "/admin/transaction_lookup";
+	public static final String TXN_LOOKUP_PAGE = "lookup/txn_lookup";
 	
 	public static final String BULK_ORDER_RETURN_URL = "/admin/bulk_order_return_action";
 	
@@ -162,6 +166,20 @@ public final class ViewPathConstants {
 	/**
 	 * The customer pages section starts
 	 */
+	
+	public static final String SEARCH_CUSTOMER_URL = "/admin/search_customer";
+	public static final String MANAGE_CUSTOMER_URL = "/admin/manage_customer";
+	public static final String MANAGE_CUSTOMER_PAGE = "customer/manage_customer";
+	
+	public static final String EDIT_CUSTOMER_URL ="/admin/edit_customer";
+	public static final String EDIT_CUSTOMER_PAGE ="customer/edit_customer";
+	
+	public static final String ADD_CUSTOMER_URL ="/admin/add_customer";
+	public static final String ADD_CUSTOMER_PAGE ="customer/add_customer";	
+	
+	public static final String DELETE_CUSTOMER_URL ="/admin/delete_customer";
+	public static final String BULK_CUSTOMER_URL ="/admin/bulk_customer_action";
+	
 	public static final String CUSTOMER_PAYMENT_URL ="/admin/customer/payment";
 	public static final String CUSTOMER_PAYMENT_PAGE ="customer/customer_payments";
 	
@@ -215,8 +233,11 @@ public final class ViewPathConstants {
 	/**
 	 * The lookup pages section starts
 	 */
+	public static final String INV_LOOKUP_URL = "/inventory_lookup";
+	public static final String INV_LOOKUP_PAGE= "lookup/item/inventory_lookup";
+	
 	public static final String LOOKUP_ITEM_URL = "/item_lookup";
-	public static final String LOOKUP_ITEM_PAGE= "lookup/item_lookup";
+	public static final String LOOKUP_ITEM_PAGE= "lookup/item/item_lookup";
 	public static final String LOOKUP_ITEM_DETAILS_URL= "/item_details_lookup";
 	public static final String LOOKUP_ITEM_DETAILS_PAGE= "item/item_details_lookup";
 	
@@ -291,8 +312,12 @@ public final class ViewPathConstants {
 	public static final String LAST_TXN_RCPT_URL="/pos/last_txn_rcpt";
 	public static final String LAST_TXN_RCPT_PAGE="/sale/receipt_print";
 	
+	public static final String DELETE_SALE_TXN_URL="/admin/delete_sale_txn";
+	
+	public static final String EDIT_SALE_TXN_URL="/admin/edit_sale_txn";
+	public static final String EDIT_SALE_TXN_PAGE="sale/edit_sale_txn";
 	public static final String POS_URL="/pos/sale";
-	public static final String SALES_URL="/pos/sales";
+	public static final String SALES_URL="/pos/sale";
 	public static final String SALES_PAGE="sale/sales";
 	public static final String AUTO_ITEM_PAGE="sale/sale_txn";
 	
@@ -309,8 +334,13 @@ public final class ViewPathConstants {
 	/**
 	 * The daily deed section starts
 	 */
+	public static final String STORE_STATUS_URL="/pos/store_status";
+	public static final String RESET_STORE_STATUS_URL="/pos/reset_store_status";
+	
 	public static final String STORE_OPEN_URL="/pos/open_store";
 	public static final String STORE_OPEN_PAGE="dailydeeds/store_open";
+	
+	public static final String CREATE_REGISTER_URL="/pos/create_new_register";
 	
 	public static final String REGISTER_OPEN_URL="/pos/open_register";
 	public static final String REGISTER_OPEN_PAGE="dailydeeds/register_open";
@@ -332,8 +362,11 @@ public final class ViewPathConstants {
 	 */
 	public static final String TXN_SAVE_URL="/pos/save_txn";
 	public static final String RETURN_TXN_SAVE_URL="/pos/save_return_txn";
+	public static final String TXN_EDITED_SAVE_URL="/pos/save_edited_txn";
 	public static final String TXN_RCPT_PRINT_URL="/pos/receipt_print";
+	public static final String TXN_RCPT_RETURN_PRINT_URL="/pos/return_receipt_print";
 	public static final String TXN_RCPT_VIEW_URL="/pos/view_last_receipt";
+	public static final String VIEW_RCPT_TXN_NO_URL="/pos/view_txn_receipt";
 	public static final String TXN_POST_VOID_URL="/pos/post_void_txn";
 	public static final String TXN_PROCESS_EXPENSE_URL="/pos/process_expense";
 	public static final String TXN_EXPENSE_URL="/pos/expenses";
@@ -354,6 +387,27 @@ public final class ViewPathConstants {
 	public static final String SAVE_PAYMENT_DTLS_URL="admin/save_payment";
 	public static final String PAYMENT_ACCOUNT_VIEW_RECEIPT_URL="/admin/view_payment_receipt";
 	public static final String PAYMENT_ACCOUNT_PRINT_RECEIPT_URL="/admin/print_payment_receipt";
+
+	/**
+	 * The utility pages section starts
+	 */
+	public static final String PI_POS_UTILS_URL = "/admin/pi_pos_utils";
+	public static final String PI_POS_UTILS_PAGE = "utils/receipt_generator";
+
+	/**
+	 * The utility pages section ends
+	 */
+	
+	/**
+	 * The GSTR pages section starts
+	 */
+	public static final String GSTR1_GENERATION_URL = "/admin/generate_gstr1";
+	public static final String GSTR1_JSON_GENERATION_URL = "/admin/get_gstr1_json";
+	public static final String GSTR1_GENERATION_PAGE = "gstr/gstr1";
+
+	/**
+	 * The GSTR pages section ends
+	 */
 	
 }
 

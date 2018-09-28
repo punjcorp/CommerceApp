@@ -68,7 +68,11 @@
 										<div class="megamenu-item-body">
 											<a class="dropdown-item megamenu-item" th:href="@{/item_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="far fa-file-alt"></i>
 													<i class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
-											</span><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a> <a class="dropdown-item megamenu-item" th:href="@{/admin/account_lookup}"><span
+											</span><span th:text="#{commerce.home.menu.lookup.item}">Lookup Item</span></a>
+											<a class="dropdown-item megamenu-item" th:href="@{/inventory_lookup}"><span
+												class="fa-2x mx-3 fa-layers fa-fw"> <i class="far fa-clipboard"></i> <i class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
+											</span><span th:text="#{commerce.home.menu.lookup.item.inventory}">Item Inventory Lookup</span></a>
+											 <a class="dropdown-item megamenu-item" th:href="@{/admin/account_lookup}"><span
 												class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-users"></i> <i class="fas fa-search" data-fa-transform="shrink-10 right-11 up-4"></i>
 											</span><span th:text="#{commerce.home.menu.lookup.supplier.account}">Supplier Account Lookup</span></a> <a class="dropdown-item megamenu-item"
 												th:href="@{/admin/customer_account_lookup}"><span class="fa-2x mx-3 fa-layers fa-fw"> <i class="fas fa-male"></i> <i
@@ -179,6 +183,27 @@
 							</div>
 						</div></li>
 					<!-- Admin Menu ends -->
+					<!-- Reports Menu starts -->
+					<!-- <li class="nav-item megamenu dropdown"><a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false"><i class="fas fa-receipt fa-2x mx-2" data-fa-transform="flip-h"></i> <span
+							th:text="#{commerce.home.menu.reports}">Reports</span> </a>
+						<div class="dropdown-menu megamenu-container" aria-labelledby="navbarDropdown">
+							<div class="row">
+								<div class="col">
+									<div class="megamenu-item-card my-2">
+										<div class="megamenu-item-header">
+											<span class="mx-3" th:text="#{commerce.home.menu.reports.finance}"></span>
+										</div>
+										<div class="megamenu-item-body">
+											<a class="dropdown-item megamenu-item" th:href="@{/reports/admin/ledger}"><i class="fas fa-file-invoice-dollar fa-3x mx-3"></i><span
+												th:text="#{commerce.home.menu.reports.ledger}">Ledger Report</span></a> 
+																						
+										</div>
+									</div>
+								</div>
+							</div>
+						</div></li> -->
+					<!-- Reports Menu ends -->
 				</ul>
 				<form class="form-inline my-2 my-lg-0 navbar-nav">
 					<input class="form-control input-sm ml-2 global-help" data-step="4" data-th-attr="data-intro=#{commerce.help.navbar.search}" type="search"

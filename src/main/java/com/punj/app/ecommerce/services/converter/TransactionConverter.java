@@ -96,24 +96,7 @@ public class TransactionConverter {
 
 	}
 
-	public static LedgerJournal convertTxnToLedger(TransactionDTO txnDTO, String username) {
-
-		Transaction txn = txnDTO.getTxn();
-		TransactionId txnId = txn.getTransactionId();
-
-		LedgerJournal ledgerJournal = new LedgerJournal();
-		ledgerJournal.setActionType(Utils.showLedgerAction(txn.getTxnType()));
-		ledgerJournal.setAmount(txn.getTotalAmt());
-		ledgerJournal.setBusinessDate(txnId.getBusinessDate());
-		ledgerJournal.setCreatedBy(username);
-		ledgerJournal.setCreatedDate(LocalDateTime.now());
-		ledgerJournal.setLocationId(txnId.getLocationId());
-		ledgerJournal.setTxnNo(txnId.toString());
-		ledgerJournal.setTxnType(txn.getTxnType());
-
-		logger.info("The ledger has the txn details saved successfully");
-		return ledgerJournal;
-	}
+	
 	
 	public static DailyTotals createDailyTotals(Transaction txnDetails) {
 		DailyTotals dailyTotals = new DailyTotals();

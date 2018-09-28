@@ -39,4 +39,8 @@ public interface PaymentAccountService {
 	public AccountHead updateAccountDue(AccountHead accountHead, String username);
 
 	public AccountHead recordOrderAmount(AccountJournal journalDetails, BigInteger supplierId, Integer locationId, String username);
+	
+	public List<AccountJournal> retrieveSupplierPaymentsForProcessing();
+	public List<AccountJournal> retrieveCustomerPaymentsForProcessing();
+	
 }

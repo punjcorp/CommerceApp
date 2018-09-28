@@ -48,6 +48,7 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.inventory.ItemInventory;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
@@ -60,6 +61,7 @@ import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.SaleItemService;
 import com.punj.app.ecommerce.services.SupplierService;
+import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 import com.punj.app.ecommerce.utils.Utils;
@@ -73,12 +75,22 @@ import com.punj.app.ecommerce.utils.Utils;
 public class ItemLookupController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
+	private CommonService commonService;
 	private InventoryService inventoryService;
 	private SaleItemService saleItemService;
 	private PriceService priceService;
 	private SupplierService supplierService;
 	private MessageSource messageSource;
 	private CommerceContext commerceContext;
+
+	/**
+	 * @param commonService
+	 *            the commonService to set
+	 */
+	@Autowired
+	public void setCommonService(CommonService commonService) {
+		this.commonService = commonService;
+	}
 
 	/**
 	 * @param priceService
@@ -152,39 +164,40 @@ public class ItemLookupController {
 
 				Item item = this.itemService.getItem(itemId);
 				if (item != null) {
-					ItemLookupBean itemLookupBean = ItemTransformer.transformItemForLookup(item);
+					List<TaxGroup> taxGroups = this.commonService.retrieveAllTaxGroups();
+					ItemLookupBean itemLookupBean = null;
+					if (taxGroups != null && !taxGroups.isEmpty()) {
+						itemLookupBean = ItemTransformer.transformItemForLookup(item, taxGroups);
+						ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
+						if (itemStock != null) {
+							ItemInventory itemInventory = InventoryBeanTransformer.transformItemStock(itemStock);
+							itemLookupBean.setItemInventory(itemInventory);
+						}
 
-					ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
-					if(itemStock!=null) {
-						ItemInventory itemInventory = InventoryBeanTransformer.transformItemStock(itemStock);
-						itemLookupBean.setItemInventory(itemInventory);
+						List<ItemPrice> itemPriceList = this.priceService.getFutureItemPrices(itemId, locationId, LocalDateTime.now());
+						if (itemPriceList != null && !itemPriceList.isEmpty()) {
+							List<PriceBean> priceBeanList = PriceTransformer.transformItemPriceList(itemPriceList);
+							itemLookupBean.setItemFuturePrices(priceBeanList);
+						}
+
+						ItemPrice itemPrice = this.priceService.getCurrentItemPrice(itemId, locationId, LocalDateTime.now());
+						if (itemPrice != null) {
+							itemLookupBean.getItemOptions().setCurrentPrice(itemPrice.getItemPriceAmt());
+							itemLookupBean.setCurrentPriceStartDate(itemPrice.getStartDate());
+							itemLookupBean.setCurrentPriceEndDate(itemPrice.getEndDate());
+							itemLookupBean.setCurrentPriceType(Utils.showPriceType(itemPrice.getType()));
+						}
+
+						model.addAttribute(MVCConstants.ITEM_BEAN, itemLookupBean);
+						model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.lookup.item.details.success", new Object[] { itemId }, locale));
 					}
 
-					List<ItemPrice> itemPriceList = this.priceService.getFutureItemPrices(itemId, locationId, LocalDateTime.now());
-					if(itemPriceList!=null && !itemPriceList.isEmpty()) {
-						List<PriceBean> priceBeanList = PriceTransformer.transformItemPriceList(itemPriceList);
-						itemLookupBean.setItemFuturePrices(priceBeanList);
-					}
-					
-
-					ItemPrice itemPrice = this.priceService.getCurrentItemPrice(itemId, locationId, LocalDateTime.now());
-					if(itemPrice!=null) {
-						itemLookupBean.getItemOptions().setCurrentPrice(itemPrice.getItemPriceAmt());
-						itemLookupBean.setCurrentPriceStartDate(itemPrice.getStartDate());
-						itemLookupBean.setCurrentPriceEndDate(itemPrice.getEndDate());
-						itemLookupBean.setCurrentPriceType(Utils.showPriceType(itemPrice.getType()));
-					}
-
-					model.addAttribute(MVCConstants.ITEM_BEAN, itemLookupBean);
-					model.addAttribute(MVCConstants.SUCCESS,
-							this.messageSource.getMessage("commerce.screen.lookup.item.details.success", new Object[] { itemId }, locale));
 				} else {
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.lookup.item.details.failure", null, locale));
 				}
 			} else {
 				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM,
-						ViewPathConstants.LOOKUP_ITEM_DETAILS_URL + "?" + MVCConstants.ITEM_ID_PARAM + "=" + itemId);
+				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.LOOKUP_ITEM_DETAILS_URL + "?" + MVCConstants.ITEM_ID_PARAM + "=" + itemId);
 				logger.info("There is no open store existing as per application context, routing to store open screen");
 				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 			}
@@ -205,8 +218,8 @@ public class ItemLookupController {
 
 	@PostMapping(value = ViewPathConstants.LOOKUP_ITEM_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public ItemBeanDTO lookupItem(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
-			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
+	public ItemBeanDTO lookupItem(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page,
+			Model model, HttpSession session) {
 		ItemBeanDTO items = new ItemBeanDTO();
 		if (bindingResult.hasErrors())
 			return items;
@@ -224,8 +237,7 @@ public class ItemLookupController {
 
 			this.setItemList(itemsList, items);
 			Pager tmpPager = itemList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
-					ViewPathConstants.LOOKUP_ITEM_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(), ViewPathConstants.LOOKUP_ITEM_URL);
 			items.setPager(pager);
 
 		} catch (Exception e) {
@@ -327,8 +339,7 @@ public class ItemLookupController {
 
 	@GetMapping(value = ViewPathConstants.SEARCH_ORDER_ITEM_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public SaleItem lookupOrderItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId,
-			@RequestParam("supplierId") Integer supplierId) {
+	public SaleItem lookupOrderItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId, @RequestParam("supplierId") Integer supplierId) {
 		SaleItem saleItem = this.itemService.retrieveItemDetails(locationId, supplierId, itemId, Boolean.FALSE);
 		logger.info("The order line item has been retrieved successfully");
 		return saleItem;

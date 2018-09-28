@@ -43,6 +43,9 @@ public class AccountBean implements Serializable {
 
 	@NotEmpty(message = "{commerce.error.option.empty}")
 	private Integer[] selectedLocationIds;
+	
+	@NotNull(message = "{commerce.error.option.empty}")
+	private Integer defaultLocationId;
 
 	private Boolean isUserExisting;
 
@@ -443,4 +446,17 @@ public class AccountBean implements Serializable {
 		this.orgUsername = orgUsername;
 	}
 
+	/**
+	 * @return the defaultLocationId
+	 */
+	public Integer getDefaultLocationId() {
+		return defaultLocationId;
+	}
+
+	/**
+	 * @param defaultLocationId the defaultLocationId to set
+	 */
+	public void setDefaultLocationId(Integer defaultLocationId) {
+		this.defaultLocationId = defaultLocationId;
+	}
 }

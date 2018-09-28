@@ -14,6 +14,7 @@ USE `commercedb` ;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `commercedb`.`po_return` ;
 
+
 CREATE TABLE IF NOT EXISTS `commercedb`.`po_return` (
   `order_return_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
@@ -24,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`po_return` (
   `total_amount` DECIMAL(12,2) NULL DEFAULT 0.00,
   `received_refund_amount` DECIMAL(12,2) NULL DEFAULT 0.00,
   `status` VARCHAR(1) NOT NULL,
+  `invoice` MEDIUMBLOB NULL,
   `comments` VARCHAR(200) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,

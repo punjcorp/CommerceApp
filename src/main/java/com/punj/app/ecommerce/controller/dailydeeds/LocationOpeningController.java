@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,6 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.common.Denomination;
-import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
@@ -65,6 +65,9 @@ public class LocationOpeningController {
 	private CommerceContext commerceContext;
 	private TransactionService txnService;
 	private RegisterOpenValidator registerOpenValidator;
+
+	@Value("${commerce.default.location}")
+	private Integer defaultLocation;
 
 	/**
 	 * @param registerOpenValidator
@@ -135,12 +138,12 @@ public class LocationOpeningController {
 						referrerURL = (String) referrerObj;
 				}
 			}
-			
+
 			if (StringUtils.isNotBlank(referrerURL))
 				dailyDeedBean.setReferrerURL(referrerURL);
 
 			// Change this later on and make it an ajax call based on store selected from store open screen
-			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(7997);
+			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(this.defaultLocation);
 			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
 			dailyDeedBean.setTenders(tenderBeans);
 			this.updateBeans(dailyDeedBean, model);
@@ -169,6 +172,7 @@ public class LocationOpeningController {
 				for (LocationBean location : locations) {
 					if (location.getLocationId().equals(locationId)) {
 						dailyDeedBean.setLocationName(location.getName());
+						dailyDeedBean.setGstNo(location.getGstNo());
 						dailyDeedBean.setDefaultTender(location.getDefaultTender());
 						break;
 					}
@@ -201,6 +205,7 @@ public class LocationOpeningController {
 		Integer locationId = dailyDeedBean.getLocationId();
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
+		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_GST_NO, dailyDeedBean.getGstNo());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());
 		// Get this from selected location later on
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.LOC_DEFAULT_TENDER, dailyDeedBean.getDefaultTender()); // MVCConstants.TNDR_CASH
@@ -210,9 +215,8 @@ public class LocationOpeningController {
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
-	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean,
-			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs,
-			HttpServletRequest request, HttpSession session) {
+	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult,
+			Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request, HttpSession session) {
 		logger.info("The show store open screen method has been called");
 		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
@@ -248,8 +252,7 @@ public class LocationOpeningController {
 	}
 
 	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.ADD_DENOMINATION_PARAM })
-	public String addTenderDenomination(@ModelAttribute DailyDeedBean dailyDeedBean, Model model, Locale locale, Authentication authentication,
-			final HttpServletRequest req) {
+	public String addTenderDenomination(@ModelAttribute DailyDeedBean dailyDeedBean, Model model, Locale locale, Authentication authentication, final HttpServletRequest req) {
 		logger.info("The add tender denomination has been called");
 		try {
 			final Integer tenderId = dailyDeedBean.getSelectedTenderId();
