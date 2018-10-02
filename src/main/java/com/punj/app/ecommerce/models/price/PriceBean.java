@@ -55,6 +55,8 @@ public class PriceBean {
 	 * 
 	 * @DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}")
 	 */ private BigDecimal itemPriceAmt;
+	 
+	private String taxType;
 
 	private String status;
 
@@ -341,6 +343,20 @@ public class PriceBean {
 	 */
 	public void setPriceTypeDesc(String priceTypeDesc) {
 		this.priceTypeDesc = priceTypeDesc;
+	}
+
+	/**
+	 * @return the taxType
+	 */
+	public String getTaxType() {
+		return taxType;
+	}
+
+	/**
+	 * @param taxType the taxType to set
+	 */
+	public void setTaxType(String taxType) {
+		this.taxType = taxType;
 	}
 
 }

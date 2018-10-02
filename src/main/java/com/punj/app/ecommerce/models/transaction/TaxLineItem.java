@@ -40,6 +40,7 @@ public class TaxLineItem {
 
 	private BigDecimal orgTaxableAmt;
 	private Integer orgTaxGroupId;
+	private String taxCode;
 
 	private String createdBy;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -373,6 +374,20 @@ public class TaxLineItem {
 	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	/**
+	 * @return the taxCode
+	 */
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	/**
+	 * @param taxCode the taxCode to set
+	 */
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
 	}
 
 }

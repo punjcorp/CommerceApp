@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.domains.tax;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -20,15 +21,18 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tax_group")
 public class TaxGroup implements Serializable {
-	
+
 	private static final long serialVersionUID = -3696212519525485092L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "tax_group_id", updatable = false, nullable = false)
 	private Integer taxGroupId;
 	private String name;
 	private String description;
+
+	@Column(name = "aggregated_rate")
+	private BigDecimal aggregatedRate;
 
 	@Column(name = "created_by")
 	private String createdBy;
@@ -143,6 +147,21 @@ public class TaxGroup implements Serializable {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the aggregatedRate
+	 */
+	public BigDecimal getAggregatedRate() {
+		return aggregatedRate;
+	}
+
+	/**
+	 * @param aggregatedRate
+	 *            the aggregatedRate to set
+	 */
+	public void setAggregatedRate(BigDecimal aggregatedRate) {
+		this.aggregatedRate = aggregatedRate;
 	}
 
 	/*

@@ -31,6 +31,9 @@ public class ItemPrice implements Serializable {
 
 	@Column(name = "price_change_type")
 	private String type;
+	
+	@Column(name = "tax_inclusive")
+	private Boolean taxInclusive;
 
 	@Column(name = "start_date")
 	private LocalDateTime startDate;
@@ -267,6 +270,20 @@ public class ItemPrice implements Serializable {
 	 */
 	public void setClearanceResetId(BigInteger clearanceResetId) {
 		this.clearanceResetId = clearanceResetId;
+	}
+
+	/**
+	 * @return the taxInclusive
+	 */
+	public Boolean getTaxInclusive() {
+		return taxInclusive;
+	}
+
+	/**
+	 * @param taxInclusive the taxInclusive to set
+	 */
+	public void setTaxInclusive(Boolean taxInclusive) {
+		this.taxInclusive = taxInclusive;
 	}
 
 	/*

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
@@ -49,8 +51,9 @@ public class SaleLineItem {
 	// this is temp due to JS
 	private BigDecimal price;
 
-	private BigDecimal returnedQty;
+	private Integer returnedQty;
 	private String upcNo;
+	private String hsnNo;
 	private String txnType;
 	private String invAction;
 
@@ -86,12 +89,24 @@ public class SaleLineItem {
 	 */
 	private BigDecimal discount;
 	private BigDecimal discountPct;
+	private Integer taxGroupId;
+
+	private Integer sgstRateRuleId;
+	private Integer cgstRateRuleId;
+	private Integer igstRateRuleId;
+
+	private String sgstCode;
+	private String cgstCode;
+	private String igstCode;
 	private BigDecimal sgstTax;
 	private BigDecimal cgstTax;
 	private BigDecimal igstTax;
 	private BigDecimal sgstTaxRate;
 	private BigDecimal cgstTaxRate;
 	private BigDecimal igstTaxRate;
+
+	private String imageType;
+	private String imageData;
 
 	/**
 	 * @return the locationId
@@ -381,7 +396,7 @@ public class SaleLineItem {
 	/**
 	 * @return the returnedQty
 	 */
-	public BigDecimal getReturnedQty() {
+	public Integer getReturnedQty() {
 		return returnedQty;
 	}
 
@@ -389,7 +404,7 @@ public class SaleLineItem {
 	 * @param returnedQty
 	 *            the returnedQty to set
 	 */
-	public void setReturnedQty(BigDecimal returnedQty) {
+	public void setReturnedQty(Integer returnedQty) {
 		this.returnedQty = returnedQty;
 	}
 
@@ -851,10 +866,161 @@ public class SaleLineItem {
 	}
 
 	/**
-	 * @param discountPct the discountPct to set
+	 * @param discountPct
+	 *            the discountPct to set
 	 */
 	public void setDiscountPct(BigDecimal discountPct) {
 		this.discountPct = discountPct;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
+	}
+
+	/**
+	 * @return the sgstCode
+	 */
+	public String getSgstCode() {
+		return sgstCode;
+	}
+
+	/**
+	 * @param sgstCode
+	 *            the sgstCode to set
+	 */
+	public void setSgstCode(String sgstCode) {
+		this.sgstCode = sgstCode;
+	}
+
+	/**
+	 * @return the cgstCode
+	 */
+	public String getCgstCode() {
+		return cgstCode;
+	}
+
+	/**
+	 * @param cgstCode
+	 *            the cgstCode to set
+	 */
+	public void setCgstCode(String cgstCode) {
+		this.cgstCode = cgstCode;
+	}
+
+	/**
+	 * @return the igstCode
+	 */
+	public String getIgstCode() {
+		return igstCode;
+	}
+
+	/**
+	 * @param igstCode
+	 *            the igstCode to set
+	 */
+	public void setIgstCode(String igstCode) {
+		this.igstCode = igstCode;
+	}
+
+	/**
+	 * @return the taxGroupId
+	 */
+	public Integer getTaxGroupId() {
+		return taxGroupId;
+	}
+
+	/**
+	 * @param taxGroupId
+	 *            the taxGroupId to set
+	 */
+	public void setTaxGroupId(Integer taxGroupId) {
+		this.taxGroupId = taxGroupId;
+	}
+
+	/**
+	 * @return the sgstRateRuleId
+	 */
+	public Integer getSgstRateRuleId() {
+		return sgstRateRuleId;
+	}
+
+	/**
+	 * @param sgstRateRuleId
+	 *            the sgstRateRuleId to set
+	 */
+	public void setSgstRateRuleId(Integer sgstRateRuleId) {
+		this.sgstRateRuleId = sgstRateRuleId;
+	}
+
+	/**
+	 * @return the cgstRateRuleId
+	 */
+	public Integer getCgstRateRuleId() {
+		return cgstRateRuleId;
+	}
+
+	/**
+	 * @param cgstRateRuleId
+	 *            the cgstRateRuleId to set
+	 */
+	public void setCgstRateRuleId(Integer cgstRateRuleId) {
+		this.cgstRateRuleId = cgstRateRuleId;
+	}
+
+	/**
+	 * @return the igstRateRuleId
+	 */
+	public Integer getIgstRateRuleId() {
+		return igstRateRuleId;
+	}
+
+	/**
+	 * @param igstRateRuleId
+	 *            the igstRateRuleId to set
+	 */
+	public void setIgstRateRuleId(Integer igstRateRuleId) {
+		this.igstRateRuleId = igstRateRuleId;
+	}
+
+	/**
+	 * @return the imageType
+	 */
+	public String getImageType() {
+		return imageType;
+	}
+
+	/**
+	 * @param imageType
+	 *            the imageType to set
+	 */
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
+	}
+
+	/**
+	 * @return the imageData
+	 */
+	public String getImageData() {
+		return imageData;
+	}
+
+	/**
+	 * @param imageData
+	 *            the imageData to set
+	 */
+	public void setImageData(String imageData) {
+		this.imageData = imageData;
 	}
 
 }

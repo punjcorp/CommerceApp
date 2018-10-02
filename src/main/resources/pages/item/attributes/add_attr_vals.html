@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.attr.val.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<link href="../../static/css/utils/chosen.min.css" th:href="@{/css/utils/chosen.min.css}" rel="stylesheet" />
+<script src="../../js/utils/chosen-1.8.7/chosen.min.js" th:src="@{/js/utils/chosen-1.8.7/chosen.min.js}"></script>
+<script src="../../js/item/attributes/attr_classes.js" th:src="@{/js/item/attributes/attr_classes.js}"></script>
+<script src="../../js/item/attributes/attribute.js" th:src="@{/js/item/attributes/attribute.js}"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper-no-menu">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="container">
+				<div class="card">
+					<div class="card-header">
+						<h3 th:text="#{commerce.screen.attr.val.header}">Provide Attribute and Values</h3>
+					</div>
+					<div class="card-body">
+						<div class="card-text">
+							<div th:class="${success!=null?'alert alert-success':'alert alert-success d-none'}" th:text="${success}" id="successText" role="alert"></div>
+							<div th:class="${ alert!=null?'alert alert-danger':'alert alert-danger d-none'}" th:text="${alert}" id="alertText" role="alert"></div>
+							<form class="form" id="attrValForm" action="#" th:action="@{/admin/attr_val_action}" th:object="${attrBean}" method="post">
+
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group text-left">
+											<label for="existingAttr"><small><span th:text="#{commerce.screen.attr.val.existing}">Existing Attributes</span></small></label>
+											<div class="input-group text-left">
+												<select class="custom-select" th:field="*{existingAttr}" th:data-placeholder="#{commerce.screen.attr.val.existing.placeholder}">
+													<option value="" th:text="#{commerce.screen.attr.val.existing.placeholder}"></option>
+													<option th:each="attribute: ${attrs}" th:value="${attribute.code}" th:text="${attribute.name}"></option>
+												</select>
+												<div class="input-group-append">
+													<button type="button" id="btnAddAttr" class="btn btn-success btn-sm">
+														<i class="fas fa-plus mx-2"></i>
+													</button>
+												</div>
+
+											</div>
+											<small th:if="${#fields.hasErrors('existingAttr')}" th:errors="*{existingAttr}" class="text-danger">Existing Attributes Error</small>
+										</div>
+
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6 d-none" id="existingAttrValueContainer">
+										<div class="form-group text-left">
+											<label for="existingAttrVal"><small><span th:text="#{commerce.screen.attr.val.existing.val}">Existing Attribute Values</span></small></label>
+											<div class="input-group text-left">
+												<div id="attrValListContainer"></div>
+											</div>
+											<button type="button" id="btnSaveOrderAttrVal" class="btn btn-info mr-3 d-none">
+												<i class="far fa-save mx-2"></i> <span th:text="#{commerce.screen.attr.val.btn.save.order}"></span>
+											</button>
+
+											<button type="button" id="btnAddAttrVal" class="btn btn-success">
+												<i class="fas fa-plus mx-2"></i> <span th:text="#{commerce.screen.attr.val.btn.add.val}"></span>
+											</button>
+
+										</div>
+
+
+									</div>
+								</div>
+
+
+
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- Transaction Completion Modal -->
+	<div class="modal fade " id="attrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<form class="form" id="attrValForm" action="#" th:action="@{/admin/attr_val_action}" th:object="${attrBean}" method="post">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">
+							<span th:text="#{commerce.screen.attr.val.details}">Provide Attribute Value Details</span>
+						</h5>
+					</div>
+					<div class="modal-body text-center">
+						<!-- attribute add -->
+						<div class="address">
+							<div class="my-3">
+								<h5>
+									<span id="saveActionMsg"></span>
+								</h5>
+							</div>
+							<div id="newAttrContainer" class="d-none">
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="form-group text-left">
+											<label for="name"><small><span class="pos-mandatory" th:text="#{commerce.screen.attr.val.attr.name}">Attribute Name</span></small></label>
+											<div class="input-group text-left">
+												<input type="hidden" th:field="*{attributeId}"></input> <input type="hidden" th:field="*{code}"></input> <input type="text" th:field="*{name}"
+													class="form-control input-sm " th:placeholder="#{commerce.screen.attr.val.attr.name.placeholder}" maxlength="80"></input>
+											</div>
+											<small th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</small> <small id="nameMsg"></small>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="form-group  text-left">
+											<label for="description"><small><span th:text="#{commerce.screen.attr.val.attr.desc}">Attribute Description</span></small></label>
+											<div class="input-group text-left">
+												<textarea th:field="*{description}" class="form-control input-sm" th:placeholder="#{commerce.screen.attr.val.attr.desc.placeholder}" rows="3"
+													maxlength="150"></textarea>
+											</div>
+											<small th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger">Attribute Description Error</small>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div id="newAttrValContainer" class="d-none">
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="form-group text-left">
+											<label for="valName"><small><span class="pos-mandatory" th:text="#{commerce.screen.attr.val.name}">Attribute Value</span></small></label>
+											<div class="input-group text-left">
+												<input type="text" th:field="*{valName}" class="form-control input-sm " th:placeholder="#{commerce.screen.attr.val.name.placeholder}" maxlength="80"></input>
+											</div>
+											<small th:if="${#fields.hasErrors('valName')}" th:errors="*{valName}" class="text-danger">Attribute Value Error</small> <small id="valNameMsg"></small>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12">
+										<div class="form-group  text-left">
+											<label for="valDesc"><small><span th:text="#{commerce.screen.attr.val.desc}">Attribute Value Description</span></small></label>
+											<div class="input-group text-left">
+												<textarea th:field="*{valDescription}" class="form-control input-sm" th:placeholder="#{commerce.screen.attr.val.desc.placeholder}" rows="3"
+													maxlength="150"></textarea>
+											</div>
+											<small th:if="${#fields.hasErrors('valDescription')}" th:errors="*{valDescription}" class="text-danger">Attribute Value Description Error</small>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+
+							<input type="hidden" id="addActionType" value=""></input> <input type="hidden" id="saveActionStatus" value=""></input>
+							<input type="hidden" id="maxAttrValSeq" value=""></input>
+
+						</div>
+
+						<div class="col-12 d-none text-center" id="progressDiv">
+							<i class="fas fa-cog fa-spin fa-9x"></i>
+							<div>
+								<span th:text="#{commerce.screen.attr.val.save.progress}"></span>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-secondary" id="btnCancelSaveAttribute">
+							<i class="fas fa-times mx-2"></i> <span th:text="#{commerce.btn.close}"></span>
+						</button>
+						<button type="button" class="btn btn-info mr-3" id="btnSaveAttribute">
+							<i class="far fa-save mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -63,6 +63,8 @@ public interface CommonService {
 
 	public List<TaxGroup> retrieveAllTaxGroups();
 
+	public TaxGroup retrieveTaxGroup(Integer taxGroupId);
+
 	public Hierarchy retrieveHierarchy(Integer hierarchyId);
 
 	public Hierarchy retrieveHierarchy(String hierarchyName);

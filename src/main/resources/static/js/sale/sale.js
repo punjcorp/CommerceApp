@@ -37,6 +37,7 @@ $(function() {
 	
 	$("#searchText").autocomplete({
 		minLength : 3,
+		delay : 2000,
 		source : function(request, response) {
 			$('#itemErrorMsg').hide();
 			$('#itemSearchBusy').removeClass('d-none');
@@ -94,6 +95,7 @@ $(function() {
 	
 	$("#customerSearchText").autocomplete({
 		minLength : 3,
+		delay : 2000,
 		appendTo : $('#txnCustomerModal'),
 		source : function(request, response) {
 			$('#customerErrorMsg').hide();
@@ -426,11 +428,17 @@ function deleteSaleItem(deleteItemId) {
 
 function postTxnSave(data){
 	// Update the txn no after successful save
-	rcpt_txn_id= data.uniqueTxnNo;
-	rcpt_txn_no= data.txnNo;
-	rcpt_pdfBlob=data.pdfbytes;
-	$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
-	$('#screenBusyModal').modal('hide');
+	if(typeof(data)!=="undefined" && data!=undefined && data!=""){
+		rcpt_txn_id= data.uniqueTxnNo;
+		rcpt_txn_no= data.txnNo;
+		rcpt_pdfBlob=data.pdfbytes;
+		$('#txnReceiptModal').modal({backdrop: 'static', keyboard: false});
+		$('#screenBusyModal').modal('hide');
+	}else{
+		$('#screenBusyModal').modal('hide');
+		$('#alertDiv').html('<h5>There was some error during transaction processing, please try again!!</h5>');
+	}
+	
 	
 }
 

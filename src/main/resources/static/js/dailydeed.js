@@ -1,5 +1,8 @@
 var totalAmountVal = 0;
 var totalCountVal = 0;
+var alertUtil = new Utils();
+var locStatus = "";
+var token = $("meta[name='_csrf']").attr("content");
 
 function actionDenomination(tenderId, denominationId, actionParam, formName) {
 
@@ -171,27 +174,160 @@ function processLocationRequest(locValue, url){
 	
 }
 
-
-function processRegisterRequest(regValue, url){
-	var cntl_check=$('#'+regValue+'_reg_status');
-	if(cntl_check){
-		var locStatus=cntl_check.val();
-		var regName=$('#'+regValue+'_reg_name').val();
-		var referrerURL=$('#referrerURL').val();
-		if(referrerURL=='' ||  referrerURL=='null' || referrerURL=='undefined')
-			referrerURL=url+"="+regValue+"&regName="+regName;
+function processRegisterRequest(regValue, url) {
+	var cntl_check = $('#' + regValue + '_reg_status');
+	if (cntl_check) {
+		var locChkStatus = cntl_check.val();
+		var isClosedToday = $('#' + regValue + '_reg_is_closed').val();
+		var lastBusinessDate= $('#' + regValue + '_reg_last_business_date').val();
+		var businessDate= $('#businessDate').val();
+		var regName = $('#' + regValue + '_reg_name').val();
+		var referrerURL = $('#referrerURL').val();
+		if (referrerURL == '' || referrerURL == 'null' || referrerURL == 'undefined' || referrerURL=='/pos')
+			referrerURL = url + "=" + regValue + "&regName=" + regName;
 		else
-			referrerURL=referrerURL+"?registerId="+regValue+"&regName="+regName;
-		
-		if(locStatus=='OPEN_REGISTER'){
-			window.location.href=referrerURL;
-		}else{
+			referrerURL = referrerURL + "?registerId=" + regValue + "&regName=" + regName;
+
+		if (locChkStatus == 'OPEN_REGISTER' && lastBusinessDate==businessDate) {
+			window.location.href = referrerURL;
+		} else if (typeof (isClosedToday) !== "undefined" && isClosedToday != undefined && isClosedToday == 'true') {
+			btnLabels = [ i18next.t('alert_btn_ok'), '' ];
+			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('error_register_already_closed_today'), btnLabels);
+		} else {
 			$('#btnOpenRegister').removeClass("d-none");
 			$('#tenderListContainer').removeClass("d-none");						
 		}
 	}else{
 		$('#tenderListContainer').removeClass("d-none");
 	}
-	
+
 }
 
+function saveRegister() {
+
+	if (validateNewRegisterDetails()) {
+		var locationId = $('#locationId').val();
+		var newRegNo = $('#newReg_registerId').val();
+		var newRegName = $('#newReg_name').val();
+		var token = $("meta[name='_csrf']").attr("content");
+
+		$('#regSaveProgressDiv').removeClass('d-none');
+		$('#btnCloseModal').addClass('d-none');
+
+		var newRegister = new Register();
+		newRegister.registerId = newRegNo;
+		newRegister.name = newRegName;
+		newRegister.locationId = locationId;
+
+		var formdata = JSON.stringify(newRegister);
+		// AJAX call here and refresh the Expense Screen after the save
+		$.ajax({
+			url : '/pos/create_new_register',
+			type : 'POST',
+			cache : false,
+			data : formdata,
+			contentType : "application/json; charset=utf-8",
+			dataType : "json",
+			success : function(data) {
+
+				$('#regSaveProgressDiv').addClass('d-none');
+				if (typeof (data) !== "undefined" && data != undefined && data.length < 1) {
+					processRegCreationFailure();
+				} else {
+					processSuccessfulRegCreation(data);
+				}
+			},
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader('X-CSRF-TOKEN', token)
+			}
+		});
+
+	}
+
+}
+
+function validateNewRegisterDetails() {
+	var result = true;
+	var newRegNo = $('#newReg_registerId').val();
+	var newRegName = $('#newReg_name').val();
+
+	if (typeof (newRegNo) !== "undefined" && newRegNo != undefined && newRegNo != "") {
+		if (isNaN(newRegNo)) {
+			$('#newRegNoError').html('<small>The Register No should be between 1 and 999 !!</small>');
+			result = false;
+		} else {
+			newRegNo = +newRegNo;
+			if (newRegNo < 1 || newRegNo > 999) {
+				$('#newRegNoError').html('<small>The Register No should be between 1 and 999 !!</small>');
+				result = false;
+			}
+			if (typeof (existing_reg_nos) !== "undefined" && existing_reg_nos != undefined && existing_reg_nos.length > 0) {
+				if ($.inArray(newRegNo, existing_reg_nos) !== -1) {
+					$('#newRegNoError').html('<small>The Register No already exists, please change Register No!!</small>');
+					result = false;
+				}
+			}
+		}
+
+	} else {
+		$('#newRegNoError').html('<small>The Register No cannot be empty!!</small>');
+		result = false;
+	}
+
+	if (result)
+		$('#newRegNoError').html('');
+
+	if (typeof (newRegName) == "undefined" || newRegName == undefined || newRegName == "") {
+		$('#newRegNameError').html('<small>The Register Name cannot be empty!!</small>');
+		result = false;
+	} else {
+		$('#newRegNameError').html('');
+	}
+
+	return result;
+}
+
+function processSuccessfulRegCreation(data) {
+
+	if (typeof (data.status) !== "undefined" && data.status != undefined && data.status == 'S') {
+		$('#commonNewRegError').addClass("text-success");
+		$('#commonNewRegError').removeClass("text-danger");
+		$('#commonNewRegError').html('<h5>' + data.statusMsg + '</h5>');
+
+		$('#btnSaveRegister').addClass('d-none');
+		$('#btnRegOpenProceed').removeClass('d-none');
+		$('#btnCloseModal').addClass('d-none');
+
+	} else if (typeof (data.status) !== "undefined" && data.status != undefined && data.status == 'F') {
+		$('#commonNewRegError').removeClass("text-success");
+		$('#commonNewRegError').addClass("text-danger");
+
+		$('#btnSaveRegister').removeClass('d-none');
+		$('#btnRegOpenProceed').addClass('d-none');
+		$('#btnCloseModal').removeClass('d-none');
+		$('#commonNewRegError').html('<h5>' + data.statusMsg + '!!</h5>');
+	}
+
+}
+
+function processRegCreationFailure() {
+	$('#commonNewRegError').removeClass("text-success");
+	$('#commonNewRegError').addClass("text-danger");
+
+	$('#btnSaveRegister').removeClass('d-none');
+	$('#btnRegOpenProceed').addClass('d-none');
+	$('#btnCloseModal').removeClass('d-none');
+	$('#commonNewRegError').html('<h5>There was some issue while saving Register Details, please contact system administrator!!</h5>');
+}
+
+function locValChanged(cntl) {
+	var locValue = $(cntl).val();
+	var bDateVal = $('#businessDate').val();
+	if (typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" && typeof (locValue) !== "undefined" && locValue != undefined
+			&& locValue != "") {
+		// updateBusinessDate(cntl);
+		// processLocationRequest(locValue, url);
+		checkLocationStatus(locValue, bDateVal);
+	}
+
+}

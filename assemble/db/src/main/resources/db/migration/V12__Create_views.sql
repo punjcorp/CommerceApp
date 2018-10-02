@@ -342,8 +342,45 @@ CREATE VIEW `commercedb`.`v_location_sales_data` AS
             AND t3.location_id = t2.location_id
             AND t3.business_date = t2.business_date
             AND t3.location_id = t4.location_id
-            AND t3.business_date = t4.business_date;                
+            AND t3.business_date = t4.business_date;    
             
+            
+-- -----------------------------------------------------
+-- View `commercedb`.`v_txn_lookup`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `commercedb`.`v_txn_lookup` ;
+DROP TABLE IF EXISTS `commercedb`.`v_txn_lookup`;
+USE `commercedb`;
+            
+CREATE 
+VIEW `commercedb`.`v_txn_lookup` AS
+    SELECT 
+		
+        CONCAT(CONVERT( LPAD(`txn_ma`.`location_id`, 4, '0') USING UTF8),
+                CONVERT( LPAD(`txn_ma`.`register`, 3, '0') USING UTF8),
+                CONVERT( LPAD(`txn_ma`.`txn_no`, 5, '0') USING UTF8),
+                DATE_FORMAT(`txn_ma`.`business_date`, '%d%m%y')) AS `unique_txn`,
+		`txn_ma`.location_id,
+        `txn_ma`.txn_no,
+        `txn_ma`.register,
+        `txn_ma`.`business_date` AS `business_date`,
+        `txn_ma`.`txn_type` AS `txn_type`,
+        `cust`.`name` AS `customer_name`,
+        `txn_ma`.`business_date` AS `created_date`,
+        `txn_ma`.`created_by` AS `created_by`,
+        `txn_ma`.`tax_total` AS `tax_total`,
+        `txn_ma`.`total` AS `total_amount`
+    FROM
+        `commercedb`.`txn_master` `txn_ma` left join
+        `commercedb`.`txn_customer` `txn_cust` on
+        `txn_ma`.`location_id` = `txn_cust`.`location_id`
+            AND (`txn_ma`.`business_date` = `txn_cust`.`business_date`)
+            AND (`txn_ma`.`register` = `txn_cust`.`register`)
+            AND (`txn_ma`.`txn_no` = `txn_cust`.`txn_no`)
+		left join `commercedb`.`customer` `cust` on
+            (`txn_cust`.`customer_id` = `cust`.`customer_id`)
+            AND (`txn_cust`.`customer_type` = 'CUSTOMER')
+            where `txn_ma`.txn_Type in ('SALE','RETURN');            
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

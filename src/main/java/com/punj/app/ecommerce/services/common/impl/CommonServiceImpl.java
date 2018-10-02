@@ -596,4 +596,15 @@ public class CommonServiceImpl implements CommonService {
 		return reasonCodes;
 	}
 
+	@Override
+	public TaxGroup retrieveTaxGroup(Integer taxGroupId) {
+		TaxGroup taxGroup=this.taxGroupRepository.findOne(taxGroupId);
+
+		if (taxGroup != null)
+			logger.info("The tax group details were retrieved successfully");
+		else
+			logger.info("There were no tax group found for the provided number");
+		return taxGroup;
+	}
+
 }

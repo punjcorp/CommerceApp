@@ -213,7 +213,7 @@ public class RegisterClosureController {
 		}
 		
 		RegisterDTO registerDTO = this.dailyDeedService.retrieveRegisterConcilationDtls(locationId, businessDate, txnType);
-		List<RegisterBean> registers = CommonMVCTransformer.transformRegisterDTO(registerDTO);
+		List<RegisterBean> registers = CommonMVCTransformer.transformRegisterDTO(registerDTO, businessDate);
 
 		if(registerDTO!=null) {
 			if(registerDTO.getAllRegisterClosed()) {

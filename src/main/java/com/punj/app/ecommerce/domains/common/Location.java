@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.search.annotations.DocumentId;
@@ -28,7 +26,6 @@ public class Location implements Serializable {
 
 	@Id
 	@DocumentId
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "location_id", updatable = false, nullable = false)
 	private Integer locationId;
 
@@ -49,6 +46,7 @@ public class Location implements Serializable {
 	private String address1;
 	private String address2;
 	private String city;
+	private String district;
 	private String state;
 	private String country;
 	private String pincode;
@@ -402,6 +400,21 @@ public class Location implements Serializable {
 	 */
 	public String getGstNo() {
 		return gstNo;
+	}
+
+	/**
+	 * @return the district
+	 */
+	public String getDistrict() {
+		return district;
+	}
+
+	/**
+	 * @param district
+	 *            the district to set
+	 */
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 	/**

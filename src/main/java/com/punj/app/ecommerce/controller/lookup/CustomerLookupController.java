@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -64,7 +65,9 @@ public class CustomerLookupController {
 	private PaymentAccountService paymentAccountService;
 	private CommonService commonService;
 	private CommerceContext commerceContext;
-
+	
+	@Value("${commerce.default.location}")
+	private Integer defaultLocation;
 	/**
 	 * @param accountService
 	 *            the accountService to set
@@ -214,8 +217,10 @@ public class CustomerLookupController {
 						}
 						List<AccountJournal> accountJournals = this.paymentAccountService.retrievePaymentAccountJournals(accountIds);
 						if (accountJournals != null && !accountJournals.isEmpty()) {
-							Integer openLocationId = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
-							Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(openLocationId);
+							if(this.defaultLocation==null) {
+								this.defaultLocation = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+							}
+							Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(this.defaultLocation);
 							List<AccountJournalBean> ajBeans = SupplierTransformer.transformAccountJournals(accountJournals, tenderMap, customerAccounts,
 									accountDTO.getCustomer().getName());
 							accountDTO.setJournals(ajBeans);

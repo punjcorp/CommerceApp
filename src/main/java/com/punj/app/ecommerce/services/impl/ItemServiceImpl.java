@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -45,7 +46,6 @@ import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.item.ids.SKUCounterId;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.domains.tax.LocationTax;
-import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.domains.tax.ids.LocationTaxId;
 import com.punj.app.ecommerce.repositories.item.AttributeRepository;
 import com.punj.app.ecommerce.repositories.item.AttributeSearchRepository;
@@ -61,7 +61,6 @@ import com.punj.app.ecommerce.repositories.tax.LocationTaxRepository;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
-import com.punj.app.ecommerce.services.TaxService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.converter.AttributeConverter;
@@ -1060,6 +1059,134 @@ public class ItemServiceImpl implements ItemService {
 		else
 			logger.error("There was some issue while updating the skus");
 		return updatedSKUs;
+	}
+
+	@Override
+	public Map<BigInteger, List<ItemImage>> retrieveItems(Set<BigInteger> itemIds) {
+		Map<BigInteger, List<ItemImage>> finalImageMap = new HashMap<>();
+		ItemImage itemImageCriteria = null;
+		Item itemCriteria = null;
+		for (BigInteger itemId : itemIds) {
+
+			itemImageCriteria = new ItemImage();
+			itemCriteria = new Item();
+			itemCriteria.setItemId(itemId);
+			itemImageCriteria.setItem(itemCriteria);
+
+			List<ItemImage> itemImages = this.itemImageRepository.findAll(Example.of(itemImageCriteria));
+			finalImageMap.put(itemId, itemImages);
+		}
+		return finalImageMap;
+	}
+
+	@Override
+	public Item retrieveItem(BigInteger itemId) {
+		Item item = this.itemRepository.findOne(itemId);
+		if (item != null)
+			logger.info("The item has been retrieved successfully");
+		else
+			logger.error("There was some issue while retrieving item details");
+		return item;
+	}
+
+	@Override
+	public Map<String, Attribute> getAllAttributes() {
+		Map<String, Attribute> uniqueAttributes = null;
+		List<Attribute> attributes = this.attributeRepository.findAll();
+		if (attributes != null && !attributes.isEmpty()) {
+			uniqueAttributes = new HashMap<>();
+			for (Attribute attribute : attributes) {
+				uniqueAttributes.put(attribute.getCode(), attribute);
+			}
+			logger.info("All the existing attributes has been retrieved successfully");
+		}
+
+		return uniqueAttributes;
+	}
+
+	@Override
+	@Transactional
+	public List<Attribute> updateAttributeOrder(List<Attribute> attrOrderList) {
+		List<Attribute> updatedList = new ArrayList<>(attrOrderList.size());
+		Attribute retrievedAttr = null;
+		for (Attribute attr : attrOrderList) {
+			retrievedAttr = this.attributeRepository.findOne(attr.getAttributeId());
+			if (retrievedAttr != null) {
+				retrievedAttr.setValSeqNo(attr.getValSeqNo());
+			}
+			retrievedAttr = this.attributeRepository.save(retrievedAttr);
+			updatedList.add(retrievedAttr);
+		}
+		logger.info("All the attribute values has been saved successfully");
+		return updatedList;
+	}
+
+	@Override
+	public Attribute saveAttribute(Attribute attribute) {
+
+		attribute = this.attributeRepository.save(attribute);
+		logger.info("The attribute details has been saved successfully");
+		return attribute;
+	}
+
+	@Override
+	public Set<String> findUniqueAttrCodes() {
+		Set<String> attrCodes = this.attributeRepository.getUniqueAttrCodes();
+		return attrCodes;
+	}
+
+	@Override
+	public Set<String> findUniqueAttrValCodes() {
+		Set<String> attrValCodes = this.attributeRepository.getUniqueAttrValCodes();
+		return attrValCodes;
+	}
+
+	@Override
+	public Attribute saveAttributeValue(Attribute attribute) {
+		if (attribute.getAttributeId() == null && StringUtils.isNotBlank(attribute.getCode())) {
+			Attribute retrievedAttrCriteria = new Attribute();
+			retrievedAttrCriteria.setCode(attribute.getCode());
+
+			List<Attribute> retrievedAttrList = this.attributeRepository.findAll(Example.of(retrievedAttrCriteria));
+			if (retrievedAttrList != null && !retrievedAttrList.isEmpty()) {
+				Attribute retrievedAttr = retrievedAttrList.get(0);
+				Attribute updatedAttr = new Attribute();
+				updatedAttr.setName(retrievedAttr.getName());
+				updatedAttr.setCode(retrievedAttr.getCode());
+				updatedAttr.setDescription(retrievedAttr.getDescription());
+
+				updatedAttr.setValCode(attribute.getValCode());
+				updatedAttr.setValDesc(attribute.getValDesc());
+				updatedAttr.setValName(attribute.getValName());
+				updatedAttr.setValSeqNo(attribute.getValSeqNo());
+				attribute = this.attributeRepository.save(updatedAttr);
+
+			}
+			logger.info("The attribute value details has been saved successfully");
+		} else {
+			attribute = null;
+			logger.error("The provided attribute value details were not as expected, hence the attribute value was not saved!!");
+		}
+		return attribute;
+	}
+
+	@Override
+	public Boolean isAttrValueAssignedToItem(Attribute attr) {
+
+		List<ItemAttribute> itemAttrs= this.itemAttributeRepository.getItemAttrsByAttrId(attr.getAttributeId());
+		if(itemAttrs!=null && !itemAttrs.isEmpty()) {
+			logger.info("The attribute value has already been used in some item records");
+			return Boolean.TRUE;
+		}else {
+			logger.info("The attribute value is not used in any item so far and can be deleted");
+			return Boolean.FALSE;
+		}
+	}
+
+	@Override
+	public void deleteAttributeValue(BigInteger attrId) {
+		this.attributeRepository.delete(attrId);
+		logger.info("The attribute value has been deleted successfully");
 	}
 
 }

@@ -4,17 +4,18 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javamoney.moneta.Money;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.price.PriceBean;
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -36,21 +37,33 @@ public class PriceTransformer {
 	 * @param priceBean
 	 * @return The domain object for entity
 	 */
-	public static ItemPrice transformPriceBean(PriceBean priceBean) {
+	public static ItemPrice transformPriceBean(PriceBean priceBean, TaxGroup taxGroup) {
 		ItemPrice itemPrice = new ItemPrice();
 
 		itemPrice.setItemPriceId(priceBean.getItemPriceId());
 		itemPrice.setLocationId(priceBean.getLocationId());
 		itemPrice.setStatus(priceBean.getStatus());
 		itemPrice.setType(priceBean.getPriceType());
+		if(priceBean.getTaxType().equals(MVCConstants.TAX_INCLUSIVE_PARAM))
+			itemPrice.setTaxInclusive(Boolean.TRUE);
+		else
+			itemPrice.setTaxInclusive(Boolean.FALSE);
 
-		itemPrice.setItemPrice(priceBean.getItemPriceAmt());
+		if(priceBean.getTaxType().equals(MVCConstants.TAX_INCLUSIVE_PARAM) && taxGroup!=null) {
+				BigDecimal itemPriceAmt = priceBean.getItemPriceAmt();
+				BigDecimal taxDivident = (taxGroup.getAggregatedRate().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP)).add(BigDecimal.ONE);
+				itemPriceAmt = itemPriceAmt.divide(taxDivident, 2, RoundingMode.HALF_UP);
+				itemPrice.setItemPrice(itemPriceAmt);
+		}else {
+			itemPrice.setItemPrice(priceBean.getItemPriceAmt());
+		}
+		
+		
 
 		Item item = new Item();
 		item.setItemId(priceBean.getItemId());
 		itemPrice.setItem(item);
 
-		
 		itemPrice.setClearanceResetId(priceBean.getClearanceResetId());
 		itemPrice.setStartDate(priceBean.getStartDate());
 		itemPrice.setEndDate(priceBean.getEndDate());
@@ -70,7 +83,7 @@ public class PriceTransformer {
 	 * @param itemPrice
 	 * @return
 	 */
-	public static PriceBean transformItemPriceDomain(ItemPrice itemPrice) {
+	public static PriceBean transformItemPriceDomain(ItemPrice itemPrice, Boolean convertIncPrice, TaxGroup taxGroup) {
 		PriceBean priceBean = new PriceBean();
 
 		priceBean.setItemPriceId(itemPrice.getItemPriceId());
@@ -78,8 +91,24 @@ public class PriceTransformer {
 		priceBean.setStatus(itemPrice.getStatus());
 		priceBean.setPriceType(itemPrice.getType());
 		priceBean.setPriceTypeDesc(Utils.showPriceType(itemPrice.getType()));
-
+		
 		priceBean.setItemPriceAmt(itemPrice.getItemPrice());
+		
+		if(itemPrice.getTaxInclusive()!=null && itemPrice.getTaxInclusive()) {
+			priceBean.setTaxType(MVCConstants.TAX_INCLUSIVE_PARAM);
+			if(convertIncPrice && taxGroup!=null) {
+				BigDecimal itemPriceAmt = itemPrice.getItemPriceAmt();
+				BigDecimal taxMultiplier = (taxGroup.getAggregatedRate().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP)).add(BigDecimal.ONE);
+				itemPriceAmt = itemPriceAmt.multiply(taxMultiplier);
+				priceBean.setItemPriceAmt(itemPriceAmt.setScale(2,BigDecimal.ROUND_HALF_UP));
+				
+			}
+		}
+		else {
+			priceBean.setTaxType(MVCConstants.TAX_EXCLUSIVE_PARAM);
+		}
+		
+		
 		priceBean.setClearanceResetId(itemPrice.getClearanceResetId());
 
 		priceBean.setItemId(itemPrice.getItem().getItemId());
@@ -117,7 +146,7 @@ public class PriceTransformer {
 		List<PriceBean> priceBeanList = new ArrayList<>(itemPriceList.size());
 		PriceBean priceBean;
 		for (ItemPrice itemPrice : itemPriceList) {
-			priceBean = PriceTransformer.transformItemPriceDomain(itemPrice);
+			priceBean = PriceTransformer.transformItemPriceDomain(itemPrice, Boolean.FALSE,null);
 			priceBeanList.add(priceBean);
 		}
 		logger.info("The item price list has been transformed into price bean successfully");
@@ -128,7 +157,7 @@ public class PriceTransformer {
 		List<ItemPrice> itemPriceList = new ArrayList<>(priceBeanList.size());
 		ItemPrice itemPrice;
 		for (PriceBean priceBean : priceBeanList) {
-			itemPrice = PriceTransformer.transformPriceBean(priceBean);
+			itemPrice = PriceTransformer.transformPriceBean(priceBean,null);
 			itemPriceList.add(itemPrice);
 		}
 		logger.info("The price bean list has been transformed into item price bean successfully");

@@ -26,6 +26,7 @@ import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 import com.punj.app.ecommerce.models.financials.AccountJournalBean;
 import com.punj.app.ecommerce.models.financials.JournalTenderBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
+import com.punj.app.ecommerce.utils.Utils;
 
 /**
  * @author admin
@@ -147,15 +148,16 @@ public class SupplierTransformer {
 		return accountDTO;
 	}
 
-	public static List<AccountJournalBean> transformAccountJournals(List<AccountJournal> accountJournals, Map<Integer, Tender> tenderMap, List<AccountHead> entityAccounts, String entityName) {
+	public static List<AccountJournalBean> transformAccountJournals(List<AccountJournal> accountJournals, Map<Integer, Tender> tenderMap, List<AccountHead> entityAccounts,
+			String entityName) {
 
 		List<AccountJournalBean> accountJournalBeans = new ArrayList<>(accountJournals.size());
 		AccountJournalBean accountJournalBean = null;
-		
-		Map<Integer, AccountHeadBean> accountHeadBeanMap=SupplierTransformer.transformAccountsInMap(entityAccounts, entityName);
-		AccountHeadBean customerAccount=null;		
+
+		Map<Integer, AccountHeadBean> accountHeadBeanMap = SupplierTransformer.transformAccountsInMap(entityAccounts, entityName);
+		AccountHeadBean customerAccount = null;
 		for (AccountJournal accountJournal : accountJournals) {
-			customerAccount=accountHeadBeanMap.get(accountJournal.getAccountId());
+			customerAccount = accountHeadBeanMap.get(accountJournal.getAccountId());
 			accountJournalBean = SupplierTransformer.transformAccountJournalBean(accountJournal, null, tenderMap);
 			accountJournalBean.setAccountHeadBean(customerAccount);
 			accountJournalBeans.add(accountJournalBean);
@@ -165,16 +167,16 @@ public class SupplierTransformer {
 
 	}
 
-	public static Map<Integer, AccountHeadBean> transformAccountsInMap(List<AccountHead> customerAccounts, String customerName){
-		Map<Integer, AccountHeadBean> accountHeadBeanMap=new HashMap<>(customerAccounts.size());
-		AccountHeadBean customerAccountBean=null;
-		
-		for(AccountHead accountHead:customerAccounts) {
-			customerAccountBean=SupplierTransformer.transformAccountHead(accountHead, customerName);
+	public static Map<Integer, AccountHeadBean> transformAccountsInMap(List<AccountHead> customerAccounts, String customerName) {
+		Map<Integer, AccountHeadBean> accountHeadBeanMap = new HashMap<>(customerAccounts.size());
+		AccountHeadBean customerAccountBean = null;
+
+		for (AccountHead accountHead : customerAccounts) {
+			customerAccountBean = SupplierTransformer.transformAccountHead(accountHead, customerName);
 			accountHeadBeanMap.put(customerAccountBean.getAccountId(), customerAccountBean);
 		}
 		logger.info("The customer account map has been transformed successfully");
-		
+
 		return accountHeadBeanMap;
 	}
 
@@ -188,6 +190,7 @@ public class SupplierTransformer {
 		journalBean.setCreatedDate(accountJournal.getCreatedDate());
 		journalBean.setJournalId(accountJournal.getJournalId());
 		journalBean.setJournalType(accountJournal.getJournalType());
+		journalBean.setJournalTypeDisplay(Utils.getCustomerJournalDisplay(accountJournal.getJournalType()));
 
 		List<JournalTenderBean> journalTenders = SupplierTransformer.transformJournalTender(accountJournal.getJournalTenders(), tenderMap);
 		journalBean.setPaymentTenders(journalTenders);

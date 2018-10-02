@@ -59,7 +59,7 @@
 													Text Error</small>
 												<div id="supplierMsg"></div>
 											</div>
-											
+
 										</div>
 										<div class="col-4">
 											<div class="form-group text-left">
@@ -77,10 +77,11 @@
 
 
 										<div class="col-3">
-										<div class="form-group text-left">
+											<div class="form-group text-left">
 												<label for="searchBtn"><small></small></label>
 												<div class="input-group">
-													<button type="submit" id="searchBtn" value="Search" th:class="${accountDTO.supplier==null?'btn btn-info d-none':'btn btn-info'}" onClick="showFormSubmit()">
+													<button type="submit" id="searchBtn" value="Search" th:class="${accountDTO.supplier==null?'btn btn-info d-none':'btn btn-info'}"
+														onClick="showFormSubmit()">
 														<i class="fas fa-search fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.account.search}"></span>
 													</button>
 												</div>
@@ -90,13 +91,14 @@
 									</div>
 									<div class="row" th:if="${accountDTO.journals!=null}">
 										<div class="col-12">
-											
+
 											<table id="paymentDetails" class="table table-hover">
 												<thead>
 													<tr>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.serial}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.date.created}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.location}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.txn.type}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.comments}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.credit}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.debit}"></span></th>
@@ -105,11 +107,13 @@
 												<tbody>
 													<tr th:each="journal,itrStat:${accountDTO.journals}">
 														<td scope="row"><span th:text="${itrStat.index+1}"></span></td>
-														<td><span th:text="${#temporals.format(journal.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+														<td><span th:text="${#temporals.format(journal.createdDate, 'dd-MMM-yyyy HH:mm:ss')}"></span></td>
 														<td><span th:text="${journal.accountHeadBean.locationId}"></span></td>
+														<td><span th:text="${journal.journalTypeDisplay}"></span></td>
 														<td><span th:text="${journal.remarks}"></span></td>
-														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='full' or journal.journalType=='advance' or journal.journalType=='part'}"></span></td>
-														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='payment_due'}"></span></td>
+														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='payment_due' or journal.journalType=='payment_credit'}"></span></td>
+														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}"
+															th:if="${journal.journalType=='full' or journal.journalType=='advance' or journal.journalType=='part'}"></span></td>
 													</tr>
 												</tbody>
 											</table>
@@ -263,14 +267,14 @@
 		<!-- /#page-content-wrapper -->
 	</div>
 	<!-- /#wrapper -->
-	
+
 	<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
 
 		var supplier_data = /*[[${accountDTO.supplier}]]*/;
 		
 		/*]]>*/
-	</script>	
-		
+	</script>
+
 </body>
 </html>

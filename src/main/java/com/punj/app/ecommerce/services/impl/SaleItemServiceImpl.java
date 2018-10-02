@@ -136,6 +136,7 @@ public class SaleItemServiceImpl implements SaleItemService {
 		SaleItem saleItem = new SaleItem();
 
 		saleItem.setItemId(item.getItemId());
+		saleItem.setHsnNo(item.getItemOptions().getHsnNo());
 		saleItem.setName(item.getName());
 		saleItem.setLongDesc(item.getDescription());
 		if(item.getImages()!=null && !item.getImages().isEmpty())

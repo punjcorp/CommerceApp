@@ -34,12 +34,15 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.PriceTransformer;
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
+import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.price.PriceBean;
 import com.punj.app.ecommerce.models.price.PriceBeanDTO;
 import com.punj.app.ecommerce.models.price.validator.PriceBeanValidator;
+import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
 import com.punj.app.ecommerce.services.SaleItemService;
 import com.punj.app.ecommerce.services.common.CommonService;
@@ -55,6 +58,7 @@ public class PriceController {
 	private static final Logger logger = LogManager.getLogger();
 	private PriceService priceService;
 	private SaleItemService saleItemService;
+	private ItemService itemService;
 	private CommonService commonService;
 	private MessageSource messageSource;
 	private PriceBeanValidator priceValidator;
@@ -75,6 +79,15 @@ public class PriceController {
 	@Autowired
 	public void setPriceService(PriceService priceService) {
 		this.priceService = priceService;
+	}
+
+	/**
+	 * @param itemService
+	 *            the itemService to set
+	 */
+	@Autowired
+	public void setItemService(ItemService itemService) {
+		this.itemService = itemService;
 	}
 
 	/**
@@ -122,14 +135,12 @@ public class PriceController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_PRICE_URL, params = { MVCConstants.SAVE_PRICE_PARAM })
-	public String savePriceDetails(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication) {
+	public String savePriceDetails(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale, Authentication authentication) {
 		return this.actionProcessing(priceBean, bindingResult, model, locale, authentication, MVCConstants.ACTION_NEW_SAVE);
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_PRICE_URL, params = { MVCConstants.APPROVE_PRICE_PARAM })
-	public String saveAndApprovePriceDetails(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication) {
+	public String saveAndApprovePriceDetails(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale, Authentication authentication) {
 		return this.actionProcessing(priceBean, bindingResult, model, locale, authentication, MVCConstants.ACTION_NEW_APPROVE);
 	}
 
@@ -140,9 +151,12 @@ public class PriceController {
 			BigInteger itemPriceId = new BigInteger(req.getParameter(MVCConstants.PRICE_ID_PARAM));
 			ItemPrice itemPrice = this.priceService.searchPrice(itemPriceId);
 			if (itemPrice != null) {
-				PriceBean priceBean = PriceTransformer.transformItemPriceDomain(itemPrice);
-				this.updatePriceBeans(priceBean, model, MVCConstants.ACTION_EDIT);
-				logger.info("The provided item price has been retrieved from database for modification");
+					Integer taxGroupId = itemPrice.getItem().getItemOptions().getTaxGroupId();
+					TaxGroup taxGroup = this.commonService.retrieveTaxGroup(taxGroupId);
+					PriceBean priceBean = PriceTransformer.transformItemPriceDomain(itemPrice, Boolean.TRUE, taxGroup);
+					this.updatePriceBeans(priceBean, model, MVCConstants.ACTION_EDIT);
+					logger.info("The provided item price has been retrieved from database for modification");
+
 			} else {
 				logger.info("There was no item price existing for retrieval");
 			}
@@ -155,14 +169,12 @@ public class PriceController {
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_PRICE_URL, params = { MVCConstants.SAVE_PRICE_PARAM })
-	public String savePriceDetailsAfterEdit(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication) {
+	public String savePriceDetailsAfterEdit(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale, Authentication authentication) {
 		return this.actionProcessing(priceBean, bindingResult, model, locale, authentication, MVCConstants.ACTION_EDIT_SAVE);
 	}
 
 	@PostMapping(value = ViewPathConstants.EDIT_PRICE_URL, params = { MVCConstants.APPROVE_PRICE_PARAM })
-	public String approvePriceDetailsAfterEdit(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale,
-			Authentication authentication) {
+	public String approvePriceDetailsAfterEdit(@ModelAttribute @Valid PriceBean priceBean, BindingResult bindingResult, Model model, Locale locale, Authentication authentication) {
 		return this.actionProcessing(priceBean, bindingResult, model, locale, authentication, MVCConstants.ACTION_EDIT_APPROVE);
 	}
 
@@ -178,7 +190,7 @@ public class PriceController {
 			ItemPrice clearancePrice = this.priceService.searchPrice(priceBean.getClearanceResetId());
 			PriceBean clearancePriceBean = null;
 			if (clearancePrice != null) {
-				clearancePriceBean = PriceTransformer.transformItemPriceDomain(clearancePrice);
+				clearancePriceBean = PriceTransformer.transformItemPriceDomain(clearancePrice, Boolean.FALSE,null);
 				priceBean.setExistingClearance(clearancePriceBean);
 				logger.info("The clearance has been retrieved successfully");
 			}
@@ -188,18 +200,18 @@ public class PriceController {
 			SaleItem saleItem = null;
 			try {
 				saleItem = this.saleItemService.getItem(priceBean.getItemId(), priceBean.getLocationId());
-				if(saleItem !=null) {
+				if (saleItem != null) {
 					logger.info("the {} item details for sale item has been retrieved successfully", priceBean.getItemId());
 					priceBean.setPriceDtls(saleItem);
-				}else {
+				} else {
 					logger.error("the {} item details were not retrieved due to some issue", priceBean.getItemId());
 				}
 			} catch (UnsupportedEncodingException e) {
 				logger.error("There is an error while retrieving skus for price event screen", e);
 			}
 		}
-		
-		if(StringUtils.isBlank(priceBean.getItemDesc()) && priceBean.getPriceDtls()!=null) {
+
+		if (StringUtils.isBlank(priceBean.getItemDesc()) && priceBean.getPriceDtls() != null) {
 			priceBean.setItemDesc(priceBean.getPriceDtls().getName());
 		}
 
@@ -241,25 +253,31 @@ public class PriceController {
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			if (userDetails != null) {
-				ItemPrice itemPrice = PriceTransformer.transformPriceBean(priceBean);
-				itemPrice = PriceTransformer.updatePrice(itemPrice, userDetails.getUsername(), action);
-				if (priceBean.getClearanceResetId() != null) {
-					if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
-						itemPrice = this.priceService.createClearanceReset(itemPrice, userDetails.getUsername());
-					} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
-						itemPrice = this.priceService.approveClearanceReset(itemPrice, userDetails.getUsername());
+				Item item = this.itemService.retrieveItem(priceBean.getItemId());
+				if (item != null && item.getItemOptions() != null) {
+					Integer taxGroupId = item.getItemOptions().getTaxGroupId();
+					TaxGroup taxGroup = this.commonService.retrieveTaxGroup(taxGroupId);
+
+					ItemPrice itemPrice = PriceTransformer.transformPriceBean(priceBean, taxGroup);
+					itemPrice = PriceTransformer.updatePrice(itemPrice, userDetails.getUsername(), action);
+					if (priceBean.getClearanceResetId() != null) {
+						if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
+							itemPrice = this.priceService.createClearanceReset(itemPrice, userDetails.getUsername());
+						} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
+							itemPrice = this.priceService.approveClearanceReset(itemPrice, userDetails.getUsername());
+						}
+					} else {
+						if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
+							itemPrice = this.priceService.createItemPrice(itemPrice);
+						} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
+							itemPrice = this.priceService.saveAndApproveItemPrice(itemPrice);
+						}
 					}
-				} else {
-					if (MVCConstants.ACTION_NEW_SAVE.equals(action) || MVCConstants.ACTION_EDIT_SAVE.equals(action)) {
-						itemPrice = this.priceService.createItemPrice(itemPrice);
-					} else if (MVCConstants.ACTION_NEW_APPROVE.equals(action) || MVCConstants.ACTION_EDIT_APPROVE.equals(action)) {
-						itemPrice = this.priceService.saveAndApproveItemPrice(itemPrice);
-					}
+					status = Boolean.TRUE;
+					priceBean = this.updateSuccess(itemPrice, model, locale, action, status);
+					this.updatePriceBeans(priceBean, model, action);
+					logger.info("The Item Price action has been completed successfully");
 				}
-				status = Boolean.TRUE;
-				priceBean = this.updateSuccess(itemPrice, model, locale, action, status);
-				this.updatePriceBeans(priceBean, model, action);
-				logger.info("The Item Price action has been completed successfully");
 			}
 		} catch (Exception e) {
 			logger.error("There is an error while saving newly created item price", e);
@@ -275,7 +293,16 @@ public class PriceController {
 	}
 
 	private PriceBean updateSuccess(ItemPrice itemPrice, Model model, Locale locale, String action, Boolean status) {
-		PriceBean priceBean = PriceTransformer.transformItemPriceDomain(itemPrice);
+		PriceBean priceBean = null;
+		if(itemPrice.getTaxInclusive()!=null && itemPrice.getTaxInclusive()) {
+			Item item = this.itemService.retrieveItem(itemPrice.getItem().getItemId());
+			Integer taxGroupId = item.getItemOptions().getTaxGroupId();
+			TaxGroup taxGroup = this.commonService.retrieveTaxGroup(taxGroupId);
+			priceBean = PriceTransformer.transformItemPriceDomain(itemPrice, Boolean.TRUE, taxGroup);
+		}else {
+			priceBean = PriceTransformer.transformItemPriceDomain(itemPrice, Boolean.FALSE,null);
+		}
+			
 		BigInteger itemPriceId = priceBean.getItemPriceId();
 		if (MVCConstants.ACTION_NEW_SAVE.equals(action) && status) {
 			logger.info("The {} is newly generated price record", itemPriceId);
@@ -285,8 +312,7 @@ public class PriceController {
 			model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.price.edit.success", new Object[] { itemPriceId }, locale));
 		} else if ((MVCConstants.ACTION_EDIT_APPROVE.equals(action) || MVCConstants.ACTION_NEW_APPROVE.equals(action)) && status) {
 			logger.info("The {} is approved price record", itemPriceId);
-			model.addAttribute(MVCConstants.SUCCESS,
-					this.messageSource.getMessage("commerce.screen.price.approve.success", new Object[] { itemPriceId }, locale));
+			model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.price.approve.success", new Object[] { itemPriceId }, locale));
 		} else {
 			logger.warn("There seems to an error for price action");
 			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.common.failure", null, locale));
@@ -398,7 +424,7 @@ public class PriceController {
 		try {
 			ItemPrice clearanceRcd = this.priceService.getOldestClearance(priceBean.getItemId(), priceBean.getLocationId());
 			if (clearanceRcd != null) {
-				clearanceBean = PriceTransformer.transformItemPriceDomain(clearanceRcd);
+				clearanceBean = PriceTransformer.transformItemPriceDomain(clearanceRcd, Boolean.FALSE,null);
 				logger.info("The clearance record has been retrieved successfully to be reset");
 			} else {
 				logger.info("There is no clearance existing for this item and location yet!!");

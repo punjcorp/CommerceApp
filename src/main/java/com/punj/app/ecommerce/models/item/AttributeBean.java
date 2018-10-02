@@ -22,6 +22,8 @@ public class AttributeBean implements Serializable {
 	private String valDescription;
 	private Integer valSeqNo;
 
+	private String existingAttr;
+
 	private List<String> attrValues;
 	private List<AttributeBean> attrValList;
 
@@ -168,12 +170,26 @@ public class AttributeBean implements Serializable {
 	}
 
 	/**
-	 * @param attrValList the attrValList to set
+	 * @param attrValList
+	 *            the attrValList to set
 	 */
 	public void setAttrValList(List<AttributeBean> attrValList) {
 		this.attrValList = attrValList;
 	}
 
-	
+	/**
+	 * @return the existingAttr
+	 */
+	public String getExistingAttr() {
+		return existingAttr;
+	}
+
+	/**
+	 * @param existingAttr
+	 *            the existingAttr to set
+	 */
+	public void setExistingAttr(String existingAttr) {
+		this.existingAttr = existingAttr;
+	}
 
 }

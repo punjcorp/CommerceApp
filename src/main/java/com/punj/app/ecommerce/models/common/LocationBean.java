@@ -22,7 +22,9 @@ public class LocationBean {
 	private String address1;
 	private String address2;
 	private String city;
+	private String district;
 	private String state;
+	private String stateCode;
 	private String country;
 	private String pincode;
 	private String neighborhood;
@@ -34,6 +36,7 @@ public class LocationBean {
 	private String defaultTender;
 
 	private String gstNo;
+	private String panNo;
 
 	private LocalDateTime lastBusinessDate;
 	private LocalDateTime lastCreatedDate;
@@ -338,6 +341,50 @@ public class LocationBean {
 	 */
 	public void setGstNo(String gstNo) {
 		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the stateCode
+	 */
+	public String getStateCode() {
+		return stateCode;
+	}
+
+	/**
+	 * @param stateCode
+	 *            the stateCode to set
+	 */
+	public void setStateCode(String stateCode) {
+		this.stateCode = stateCode;
+	}
+
+	/**
+	 * @return the panNo
+	 */
+	public String getPanNo() {
+		return panNo;
+	}
+
+	/**
+	 * @param panNo
+	 *            the panNo to set
+	 */
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
+	}
+
+	/**
+	 * @return the district
+	 */
+	public String getDistrict() {
+		return district;
+	}
+
+	/**
+	 * @param district the district to set
+	 */
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 }

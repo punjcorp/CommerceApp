@@ -43,4 +43,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Transa
 			" AND business_date = ?3 and txn_type in ('SALE','RETURN')", nativeQuery = true)
 	Integer getLastTransactionNo(Integer locationId, Integer registerId, LocalDateTime businessDate);
 
+	@Query(value = "select * from pi_pos_industry.txn_master where location_id=?1 and business_date between ?2 and ?3 order by location_id asc, business_date asc, register asc,txn_no asc, created_date asc", nativeQuery = true)
+	public List<Transaction> getSaleTxnsByMonth(Integer locationId, String startDate, String endDate);
+
 }

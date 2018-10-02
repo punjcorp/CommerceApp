@@ -15,9 +15,23 @@ public final class ServiceConstants {
 
 	public static final Integer REGISTER_ONE = 1;
 
-	public static final String RCPT_SALE_STORE = "Sale Store Copy";
-	public static final String RCPT_SALE_CUSTOMER = "Sale Customer Copy";
+	public static final String TABLE_SALES_INVOICE="sale_txn_invoices";
+	 
+	public static final String RCPT_SALE_STORE="Sale Store Copy";
+	public static final String RCPT_SALE_TRANSPORT="Sale Transport Copy";
+	public static final String RCPT_SALE_DUPLICATE="Sale Duplicate Copy";
+	public static final String RCPT_SALE_CUSTOMER="Sale Customer Copy";
+	
+	public static final String RCPT_DISPLAY_FIRST="ORIGINAL COPY";
+	public static final String RCPT_DISPLAY_SECOND="TRANSPORT COPY";
+	public static final String RCPT_DISPLAY_THIRD="DUPLICATE COPY";
+	
+	public static final String[] RCPT_DISPLAY_ARRAY= {ServiceConstants.RCPT_DISPLAY_FIRST, ServiceConstants.RCPT_DISPLAY_THIRD, ServiceConstants.RCPT_DISPLAY_SECOND};
+	
+	public static final String[] RCPT_ARRAY= {ServiceConstants.RCPT_SALE_STORE, ServiceConstants.RCPT_SALE_DUPLICATE, ServiceConstants.RCPT_SALE_TRANSPORT, ServiceConstants.RCPT_SALE_CUSTOMER};
 
+	public static final String CREATIVE_TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_txn.jasper";
+	public static final String CREATIVE_TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/creative_sale_receipt_items.jasper";
 	public static final String ACTION_EXPENSE = "Expense";
 
 	public static final String CUSTOMER_TYPE_CLIENT = "CUSTOMER";
@@ -38,6 +52,8 @@ public final class ServiceConstants {
 	public static final String LEDGER_ACTION_EXPENSE_FROM_REGISTER = "4";
 	public static final String LEDGER_ACTION_SALE_TXN = "5";
 	public static final String LEDGER_ACTION_RETURN_TXN = "6";
+	public static final String LEDGER_ACTION_SALE_TXN_REVERSAL = "7";
+	public static final String LEDGER_ACTION_RETURN_TXN_REVERSAL = "8";
 	public static final String LEDGER_ACTION_PAYMENT_SUPPLIER = "11";
 	public static final String LEDGER_ACTION_SUPPLIER_PO_RECEIVED = "12";
 	public static final String LEDGER_ACTION_SUPPLIER_PO_RETURN = "13";
@@ -69,6 +85,7 @@ public final class ServiceConstants {
 	public static final String TXN_NOSALE = "NOSALE";
 	public static final String TXN_SALE = "SALE";
 	public static final String TXN_RETURN= "RETURN";
+	public static final String TXN_ALL= "All";
 	public static final String TXN_SUPPLIER_PAYMENT= "SUPPLIER_PAYMENT";
 	public static final String TXN_PURCHASE_ORDER_RECEIVED= "SUPPLIER_PO_RECEIVED";
 	public static final String TXN_ORDER_RETURN= "SUPPLIER_ORDER_RETURN";
@@ -94,6 +111,8 @@ public final class ServiceConstants {
 	public static final String SKU_CREATION_FUNCTIONALITY = "SKU_CREATION";
 	public static final String SALE_TXN_FUNCTIONALITY = "SALE_TXN";
 	public static final String RETURN_TXN_FUNCTIONALITY = "RETURN_TXN";
+	public static final String SALE_TXN_REVERSAL_FUNCTIONALITY = "SALE_TXN_REVERSAL";
+	public static final String RETURN_TXN_REVERSAL_FUNCTIONALITY = "RETURN_TXN_REVERSAL";
 	public static final String RECEIVE_ORDER_FUNCTIONALITY = "RECEIVE_ORDER";
 	public static final String SUPPLIER_ORDER_RETURN_FUNCTIONALITY = "SUPPLIER_ORDER_RETURN";
 	public static final String STOCK_ADJUSTMENT_FUNCTIONALITY = "STOCK_ADJUSTMENT";
@@ -115,8 +134,13 @@ public final class ServiceConstants {
 	public static final String PAYMENT_DUE = "payment_due";
 	public static final String PAYMENT_CREDIT = "payment_credit";
 	
+	public static final String CUST_JOURNAL_CREDIT = "customer_credit";
+	public static final String CUST_JOURNAL_CREDIT_RETURN = "customer_credit_return";
+	
 	public static final String JOURNAL_CREDIT = "credit";
 	public static final String JOURNAL_CREDIT_RETURN = "credit_return";
+	public static final String JOURNAL_CREDIT_REVERSAL = "credit_reversal";
+	public static final String JOURNAL_CREDIT_RETURN_REVERSAL = "credit_return_reversal";
 
 	public static final String ACCOUNT_TYPE_SUPPLIER = "SUPPLIER";
 	public static final String ACCOUNT_TYPE_CUSTOMER = "CUSTOMER";

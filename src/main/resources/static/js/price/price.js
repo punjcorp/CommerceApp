@@ -71,6 +71,7 @@ $(function() {
 								value : item.itemId,
 								desc : descVal,
 								longDesc : item.longDesc,
+								taxInclusive : item.itemOptions.taxInclusive,
 								pic : '/images/default_image.png',
 								skuImage : finalItemPic
 							}
@@ -150,6 +151,9 @@ function updateItemDetails(event, ui) {
 
 	$('#itemDesc').val(ui.item.desc);
 	$('#itemId').val(ui.item.value);
+	if(typeof(ui.item.taxInclusive)!=="undefined" && ui.item.taxInclusive!=undefined && ui.item.taxInclusive=="true"){
+		$('#taxType').val('inclusive');
+	}
 
 }
 
@@ -234,6 +238,7 @@ function renderControls() {
 	} else if (priceTypeVal == 4) {
 		$('#endDateContainer').addClass('d-none');
 		$('#amtContainer').addClass('d-none');
+		$('#taxTypeContainer').addClass('d-none');
 	}
 
 }

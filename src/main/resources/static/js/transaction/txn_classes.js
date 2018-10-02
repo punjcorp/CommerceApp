@@ -12,6 +12,7 @@ var TransactionId = function() {
 	this.registerId;
 	this.businessDate;
 	this.username;
+	this.uniqueTxnNo;
 }
 
 $.extend(TransactionId.prototype, {
@@ -71,6 +72,7 @@ $.extend(TransactionHeader.prototype, {
  */
 var SaleLineItem = function(
 		itemId,
+		hsnNo,
 		itemName,
 		itemDesc,
 		qty,
@@ -79,6 +81,9 @@ var SaleLineItem = function(
 		suggestedPrice,
 		maxRetailPrice,
 		discount,
+		cgstCode,
+		sgstCode,
+		igstCode,
 		cgstTax,
 		sgstTax,
 		igstTax,
@@ -89,6 +94,7 @@ var SaleLineItem = function(
 		itemImage) {
 	if (arguments.length > 0) {
 		this.itemId = itemId;
+		this.hsnNo = hsnNo;
 		this.itemName = itemName;
 		this.itemDesc = itemDesc;
 		this.qty = qty;
@@ -100,6 +106,9 @@ var SaleLineItem = function(
 		this.cgstTax = cgstTax;
 		this.sgstTax = sgstTax;
 		this.igstTax = igstTax;
+		this.cgstCode=cgstCode,
+		this.sgstCode=sgstCode,
+		this.igstCode=igstCode,
 		this.cgstTaxRate = cgstTaxRate;
 		this.sgstTaxRate = sgstTaxRate;
 		this.igstTaxRate = igstTaxRate;
@@ -107,6 +116,7 @@ var SaleLineItem = function(
 		this.itemImage = itemImage;
 	} else {
 		this.itemId;
+		this.hsnNo;
 		this.itemName;
 		this.itemDesc;
 		this.qty;
@@ -115,6 +125,9 @@ var SaleLineItem = function(
 		this.suggestedPrice;
 		this.maxRetailPrice;
 		this.discount;
+		this.cgstCode,
+		this.sgstCode,
+		this.igstCode,
 		this.cgstTax;
 		this.sgstTax;
 		this.igstTax;
@@ -244,6 +257,8 @@ $.extend(SaleLineItem.prototype, {
 	},
 	updateModifiedItemValues : function(){
 		var itemId=this.itemId;
+		
+		this.itemName=$('#li_name' + itemId).val();
 		
 		this.qty=+$('#li_qty' + itemId).val();
 
@@ -429,8 +444,9 @@ $.extend(SaleLineItem.prototype, {
 		if (txn_type == 'R')
 			totalItemPrice = itemPrice + discountAmt + sgstTaxAmt + cgstTaxAmt;
 		else
-			totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
-		
+			totalItemPrice = itemPrice - discountAmt + totalTaxAmt;
+				
+		totalItemPrice = Math.round(totalItemPrice);
 		totalItemPrice = totalItemPrice.toFixed(2);
 
 		$('#li_itemTotal' + itemId).text(i18next.t('common_currency_sign_inr') + ' ' + totalItemPrice);
@@ -456,8 +472,14 @@ $.extend(SaleLineItem.prototype, {
 		var saleLineItemHtml = '<div class="col-1 padding-sm">';
 		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
+		
+		//saleLineItemHtml += '<input type="hidden" id="li_name' + saleLineItem.itemId + '" value="'+saleLineItem.itemName+'"> </input>';
+		
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
-		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
+		if(typeof(saleLineItem.hsnNo)!=="undefined" && saleLineItem.hsnNo!=undefined && saleLineItem.hsnNo!="")
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + ' - ' +saleLineItem.hsnNo + '</b><br/>';
+		else
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br/>';
 		saleLineItemHtml += saleLineItem.itemName;
 		saleLineItemHtml += '</span></div>';
 
@@ -733,7 +755,10 @@ $.extend(SaleLineItem.prototype, {
 		saleLineItemHtml += '<img src="' + saleLineItem.itemImage + '" class="img-fluid" alt="Image for item ' + saleLineItem.itemId + '"/>';
 		saleLineItemHtml += '</div>';
 		saleLineItemHtml += '<div class="col-2 padding-sm"><span>';
-		saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br>';
+		if(typeof(saleLineItem.hsnNo)!=="undefined" && saleLineItem.hsnNo!=undefined && saleLineItem.hsnNo!="")
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + ' - ' +saleLineItem.hsnNo + '</b><br/>';
+		else
+			saleLineItemHtml += '<b>' + saleLineItem.itemId + '</b><br/>';
 		saleLineItemHtml += saleLineItem.itemName;
 		saleLineItemHtml += '</span></div>';
 
@@ -956,6 +981,7 @@ $.extend(SaleLineItem.prototype, {
 	},
 	parseSaleLineItem : function(data) {
 		var itemId = data.itemId;
+		var hsnNo = data.hsnNo;
 		var itemName = data.name;
 		var itemDesc = data.longDesc;
 		var qty = data.qty;
@@ -971,6 +997,9 @@ $.extend(SaleLineItem.prototype, {
 		else
 			itemImage = '/images/item_image_default_200.png';
 
+		var cgstCode;
+		var sgstCode;
+		var igstCode;
 		var cgstTax;
 		var sgstTax;
 		var cgstTaxRate;
@@ -986,21 +1015,25 @@ $.extend(SaleLineItem.prototype, {
 		if (data.igstTax) {
 			igstTax = data.igstTax.amount;
 			igstTaxRate = data.igstTax.percentage;
+			igstCode = data.igstTax.typeCode;
 
-			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate);
+			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate, igstCode);
 		} else {
 			cgstTax = data.cgstTax.amount;
 			cgstTaxRate = data.cgstTax.percentage;
+			cgstCode = data.cgstTax.typeCode;
+			
 			sgstTax = data.sgstTax.amount;
 			sgstTaxRate = data.sgstTax.percentage;
+			sgstCode = data.sgstTax.typeCode;
 
-			cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate);
-			sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate);
+			cgstTaxLineItem = new TaxLineItem(data.itemId, data.cgstTax.taxGroupId, data.cgstTax.taxRuleRateId, cgstTax, cgstTaxRate, cgstCode);
+			sgstTaxLineItem = new TaxLineItem(data.itemId, data.sgstTax.taxGroupId, data.sgstTax.taxRuleRateId, sgstTax, sgstTaxRate, sgstCode);
 		}
 
 		// calculate the total for item after taxes and everything for sale item
 		var itemTotal = data.totalAmt;
-		var saleLineItem = new SaleLineItem(itemId, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstTax, sgstTax, igstTax,
+		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstCode, sgstCode, igstCode,cgstTax, sgstTax, igstTax,
 				cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
 
 		/**
@@ -1023,13 +1056,14 @@ $.extend(SaleLineItem.prototype, {
 /**
  * Class definition for Tax Line Item Starts
  */
-var TaxLineItem = function(itemId, taxGroupId, taxRuleRateId, totalTaxAmt, taxRuleRate) {
+var TaxLineItem = function(itemId, taxGroupId, taxRuleRateId, totalTaxAmt, taxRuleRate, taxCode) {
 	this.txnId = new TransactionId();
 
 	this.seqNo;
 	this.itemId = itemId;
 	this.taxGroupId = taxGroupId;
 	this.taxRuleRateId = taxRuleRateId;
+	this.taxCode = taxCode;
 	this.totalTaxAmt = totalTaxAmt;
 	this.totalTaxableAmt = 0.00;
 	this.totalTaxExemptAmt = 0.00;

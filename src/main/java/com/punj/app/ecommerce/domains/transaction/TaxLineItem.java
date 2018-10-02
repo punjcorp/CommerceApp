@@ -54,6 +54,9 @@ public class TaxLineItem implements Serializable {
 	private Integer taxGroupId;
 	@Column(name = "tax_rule_rate_id")
 	private Integer taxRuleRateId;
+	
+	@Column(name = "tax_code")
+	private String taxCode;
 
 	@Column(name = "created_by")
 	private String createdBy;
@@ -315,6 +318,19 @@ public class TaxLineItem implements Serializable {
 		this.itemId = itemId;
 	}
 
+	/**
+	 * @return the taxCode
+	 */
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	/**
+	 * @param taxCode the taxCode to set
+	 */
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

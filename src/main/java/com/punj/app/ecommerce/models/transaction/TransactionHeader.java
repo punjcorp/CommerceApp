@@ -54,6 +54,7 @@ public class TransactionHeader {
 	private BigDecimal totalIGSTTaxAmt;
 	private BigDecimal totalTaxAmt;
 	private BigDecimal totalDueAmt;
+	private BigDecimal roundedTotalAmt;
 
 	private String totalDueAmtWords;
 
@@ -460,6 +461,21 @@ public class TransactionHeader {
 	 */
 	public void setPdfbytes(byte[] pdfbytes) {
 		this.pdfbytes = pdfbytes;
+	}
+
+	/**
+	 * @return the roundedTotalAmt
+	 */
+	public BigDecimal getRoundedTotalAmt() {
+		return roundedTotalAmt;
+	}
+
+	/**
+	 * @param roundedTotalAmt
+	 *            the roundedTotalAmt to set
+	 */
+	public void setRoundedTotalAmt(BigDecimal roundedTotalAmt) {
+		this.roundedTotalAmt = roundedTotalAmt;
 	}
 
 }

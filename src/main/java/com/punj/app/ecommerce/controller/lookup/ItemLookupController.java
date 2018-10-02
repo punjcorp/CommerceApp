@@ -54,6 +54,7 @@ import com.punj.app.ecommerce.models.inventory.ItemInventory;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemBeanDTO;
+import com.punj.app.ecommerce.models.item.ItemOptionsBean;
 import com.punj.app.ecommerce.models.lookup.ItemLookupBean;
 import com.punj.app.ecommerce.models.price.PriceBean;
 import com.punj.app.ecommerce.services.InventoryService;
@@ -253,6 +254,7 @@ public class ItemLookupController {
 		try {
 			ItemBean itemBean = null;
 			HierarchyBean hierarchyBean = null;
+			ItemOptionsBean itemOptionsBean = null;
 			for (Item item : itemsList) {
 				itemBean = new ItemBean();
 				/**
@@ -264,6 +266,12 @@ public class ItemLookupController {
 				itemBean.setParentItemId(item.getParentItemId());
 				itemBean.setCreatedBy(item.getCreatedBy());
 				itemBean.setCreatedDate(item.getCreatedDate());
+
+				if (item.getItemOptions() != null) {
+					itemOptionsBean = new ItemOptionsBean();
+					itemOptionsBean.setTaxInclusive(item.getItemOptions().getTaxInclusiveFlag().toString());
+					itemBean.setItemOptions(itemOptionsBean);
+				}
 
 				// Setting the hierarchy information
 				Hierarchy hierarchy = item.getHierarchy();

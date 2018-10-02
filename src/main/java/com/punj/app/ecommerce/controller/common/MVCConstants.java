@@ -416,4 +416,29 @@ public final class MVCConstants {
 
 	public static final String ACCOUNT_BEAN_PARAM= "accountBean";
 	
+	public static final String PAYMENT_FULL = "full";
+	public static final String PAYMENT_PART = "part";
+	public static final String PAYMENT_ADVANCE = "advance";
+	public static final String PAYMENT_DUE = "payment_due";
+	public static final String PAYMENT_CREDIT = "payment_credit";
+	
+	public static final String JOURNAL_CREDIT = "credit";
+	public static final String JOURNAL_CREDIT_RETURN = "credit_return";
+	
+	public static final String CUST_JOURNAL_CREDIT = "customer_credit";
+	public static final String CUST_JOURNAL_CREDIT_RETURN = "customer_credit_return";
+	
+	public static final String PAYMENT_FULL_DISPLAY = "Full Payment";
+	public static final String PAYMENT_PART_DISPLAY = "Part Payment";
+	public static final String PAYMENT_ADVANCE_DISPLAY = "Advance Payment";
+	public static final String PAYMENT_DUE_DISPLAY = "Due Payment";
+	public static final String PAYMENT_CREDIT_DISPLAY = "Purchase Order Received";
+	
+	public static final String JOURNAL_CREDIT_CUST_DISPLAY = "Sale Transaction to Customer";
+	public static final String JOURNAL_CREDIT_RETURN_CUST_DISPLAY = "Return Transaction from Customer";
+
+	
+	public static final String ATTR_BEAN_PARAM= "attrBean";
+	public static final String ATTR_BEANS_PARAM= "attrs";
+	
 }

@@ -83,4 +83,37 @@ public class AttributeTransformer {
 		return attributeBean;
 	}
 
+	
+	
+	public static List<Attribute> transformAttributeBeans(List<AttributeBean> attributeBeans) {
+
+		List<Attribute> attributes = new ArrayList<>(attributeBeans.size());
+		Attribute attribute;
+
+		for (AttributeBean attributeBean : attributeBeans) {
+			attribute = AttributeTransformer.transformAttributeBean(attributeBean);
+			attributes.add(attribute);
+		}
+
+		logger.info("The attributes list has been transformed from bean list successfully");
+
+		return attributes;
+	}
+
+	public static Attribute transformAttributeBean(AttributeBean attributeBean) {
+
+		Attribute attribute= new Attribute();
+
+		attribute.setAttributeId(attributeBean.getAttributeId());
+		attribute.setCode(attributeBean.getCode());
+		attribute.setName(attributeBean.getName());
+		attribute.setDescription(attributeBean.getDescription());
+		attribute.setValCode(attributeBean.getValCode());
+		attribute.setValName(attributeBean.getValName());
+		attribute.setValDesc(attributeBean.getValDescription());
+		attribute.setValSeqNo(attributeBean.getValSeqNo());
+
+		logger.info("The attribute data has been transformed from bean successfully");
+		return attribute;
+	}
 }

@@ -43,6 +43,7 @@ $(function() {
 		columns: [ { "name": "sNo" },
 		    { "name": "createdOn" },
 		    { "name": "locationId" },
+		    { "name": "txnType" },
 		    { "name": "desc" },
 		    { "name": "credit" },
 		    { "name": "debit" } ]

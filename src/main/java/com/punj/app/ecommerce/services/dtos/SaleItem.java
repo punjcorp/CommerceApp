@@ -16,6 +16,7 @@ public class SaleItem implements Serializable {
 	private static final long serialVersionUID = -7569779611406105207L;
 
 	private BigInteger itemId;
+	private String hsnNo;
 	private String name;
 	private String longDesc;
 	private String imagePath;
@@ -289,6 +290,20 @@ public class SaleItem implements Serializable {
 	 */
 	public void setMaxRetailPrice(BigDecimal maxRetailPrice) {
 		this.maxRetailPrice = maxRetailPrice;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 }

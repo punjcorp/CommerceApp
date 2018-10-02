@@ -18,6 +18,7 @@ public class AccountJournalBean {
 	private BigInteger journalId;
 	private Integer accountId;
 	private String journalType;
+	private String journalTypeDisplay;
 
 	private BigDecimal amount;
 
@@ -209,6 +210,21 @@ public class AccountJournalBean {
 	 */
 	public void setAccountHeadBean(AccountHeadBean accountHeadBean) {
 		this.accountHeadBean = accountHeadBean;
+	}
+
+	/**
+	 * @return the journalTypeDisplay
+	 */
+	public String getJournalTypeDisplay() {
+		return journalTypeDisplay;
+	}
+
+	/**
+	 * @param journalTypeDisplay
+	 *            the journalTypeDisplay to set
+	 */
+	public void setJournalTypeDisplay(String journalTypeDisplay) {
+		this.journalTypeDisplay = journalTypeDisplay;
 	}
 
 }

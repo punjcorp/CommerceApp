@@ -9,7 +9,7 @@
 <!-- This thymeleaf fragment include all the header stuff -->
 <th:block th:replace="common/header:: header"></th:block>
 <!-- This thymeleaf fragment include the item lookup code-->
-<th:block th:include="lookup/item_lookup :: itemlookup-scripts"></th:block>
+<th:block th:include="lookup/item/item_lookup :: itemlookup-scripts"></th:block>
 <link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
 <script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
@@ -17,8 +17,8 @@
 </head>
 <body>
 	<div id="wrapper">
-		
-		
+
+
 		<!-- Page Content -->
 		<div id="page-content-wrapper-no-menu">
 			<!-- This thymeleaf fragment include the top navigation bar-->
@@ -41,12 +41,12 @@
 										class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
 								</span></span> <span th:text="#{commerce.screen.actions.edit}"></span>
 							</a> <a th:href="@{/admin/add_price}" class="btn btn-sm btn-success"> <span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
-										class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i> <i
-										class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+										class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i> <i class="fas fa-plus"
+										data-fa-transform="shrink-10 right-10 up-4"></i>
 								</span></span> <span th:text="#{commerce.home.menu.add.price}"></span>
-							</a> <a th:href="@{/admin/manage_price}" class="btn btn-sm btn-success"> <span class="fa-2x mr-2"> <span class="fa-layers fa-fw">
-										<i class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i> <i
-										class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+							</a> <a th:href="@{/admin/manage_price}" class="btn btn-sm btn-success"> <span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+										class="far fa-file" data-fa-transform="rotate-180"></i> <i class="fas fa-dollar-sign" data-fa-transform="shrink-10 up-2"></i> <i class="fas fa-cog"
+										data-fa-transform="shrink-10 right-10 up-4"></i>
 								</span></span> <span th:text="#{commerce.home.menu.search.price}"></span>
 							</a>
 						</div>
@@ -73,8 +73,8 @@
 										<label for="itemId"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.sku.item}">Style/Item</span></small></label>
 										<div class="input-group text-left">
 											<div class="input-group-prepend">
-												<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-file-alt" data-fa-transform="rotate-180"></i>
-														<i class="fas fa-search" data-fa-transform="shrink-10 right-10 up-4"></i>
+												<span class="input-group-text"> <span class="fa-layers fa-fw"> <i class="fas fa-file-alt" data-fa-transform="rotate-180"></i> <i
+														class="fas fa-search" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
 												</span>
 											</div>
@@ -96,8 +96,7 @@
 										<div class="input-group text-left">
 											<select th:field="*{locationId}" class="form-control input-sm">
 												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.inventory.location}">Select Location</option>
-												<option th:each="location: ${priceBean.locations}" th:value="${location.locationId}"
-													th:text="${location.locationId} + ' - ' +${location.name}"></option>
+												<option th:each="location: ${priceBean.locations}" th:value="${location.locationId}" th:text="${location.locationId} + ' - ' +${location.name}"></option>
 											</select>
 										</div>
 										<small th:if="${#fields.hasErrors('locationId')}" th:errors="*{locationId}" class="text-danger align-top">Location Error </small>
@@ -118,8 +117,8 @@
 												<option value="4" th:text="#{commerce.screen.price.type.clearance.reset}">Clearance Reset</option>
 											</select>
 										</div>
-										<small class="text-danger align-top d-none" id="priceTypeMsg"></small> <small th:if="${#fields.hasErrors('priceType')}"
-											th:errors="*{priceType}" class="text-danger align-top">Price Type Error </small>
+										<small class="text-danger align-top d-none" id="priceTypeMsg"></small> <small th:if="${#fields.hasErrors('priceType')}" th:errors="*{priceType}"
+											class="text-danger align-top">Price Type Error </small>
 									</div>
 								</div>
 								<div class="col-6">
@@ -145,8 +144,8 @@
 											<label><small><span th:text="#{commerce.screen.price.old.clearance.created.by}">Oldest Clearance Created By</span></small></label>
 											<div>
 												<h5>
-													<span id="oldClrCreatedBy" th:text="${priceBean.existingClearance!=null}?${priceBean.existingClearance.createdBy}:''">Oldest
-														Clearance Created By</span>
+													<span id="oldClrCreatedBy" th:text="${priceBean.existingClearance!=null}?${priceBean.existingClearance.createdBy}:''">Oldest Clearance
+														Created By</span>
 												</h5>
 											</div>
 										</div>
@@ -155,10 +154,9 @@
 							</div>
 							<!-- Price Event Price Details Starts -->
 							<div class="row">
-								<div class="col-6">
+								<div class="col-3">
 									<div th:class="${priceBean.priceType!=null and priceBean.priceType=='4'}?'form-group d-none':'form-group'" id="amtContainer">
-										<label for="itemPriceAmt"><small><span class="pos-mandatory" th:text="#{commerce.screen.price.item.price}">Item Price
-													Amount</span></small></label>
+										<label for="itemPriceAmt"><small><span class="pos-mandatory" th:text="#{commerce.screen.price.item.price}">Item Price Amount</span></small></label>
 										<div class="input-group text-left">
 											<div class="input-group-prepend">
 												<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
@@ -167,6 +165,26 @@
 										</div>
 										<small th:if="${#fields.hasErrors('itemPriceAmt')}" th:errors="*{itemPriceAmt}" class="text-danger align-top">Item Price Error </small>
 									</div>
+								</div>
+								<div class="col-3">
+
+									<div class="form-group"  id="taxTypeContainer">
+										<label> <small><span class="pos-mandatory" th:text="#{commerce.screen.item.price.inclusive.flag}">Item Price
+													(Inclusive/Exclusive)</span> </small>
+										</label>
+										<div class="input-group">
+											<select th:field="*{taxType}" class="form-control input-sm">
+												<option class="form-text" value="exclusive">
+                                                Exclusive
+                                            </option>
+												<option class="form-text" value="inclusive">
+                                                Inclusive
+                                            </option>
+											</select>
+										</div>
+										<div th:if="${#fields.hasErrors('taxType')}" th:errors="*{taxType}" class="text-danger">Tax Inclusive Error</div>
+									</div>
+
 								</div>
 								<div class="col-6">
 									<div th:class="${priceBean.priceDtls!=null}?'row':'row d-none'" id="priceDtlsContainer">
@@ -218,7 +236,7 @@
 											<input type="text" th:field="*{startDate}" class="form-control input-sm" data-input="data-input"
 												th:placeholder="#{commerce.screen.common.date.start.placeholder}"></input>
 											<div class="input-group-append">
-												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="material-icons">done</i></a>
+												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check-circle fa-2x"></i></a>
 											</div>
 										</div>
 										<small th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger align-top">Start Date Error </small>
@@ -232,7 +250,7 @@
 											<input type="text" th:field="*{endDate}" class="form-control input-sm" data-input="data-input"
 												th:placeholder="#{commerce.screen.common.date.end.placeholder}"></input>
 											<div class="input-group-append">
-												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="material-icons">done</i></a>
+												<a class="btn btn-info btn-sm" title="toggle" data-toggle="data-toggle"><i class="fas fa-check-circle fa-2x"></i></a>
 											</div>
 										</div>
 										<small th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger align-top">End Date Error</small>
@@ -252,7 +270,7 @@
 												th:if="${priceBean.status==null || priceBean.status=='C'}">
 												<i class="fas fa-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
 											</button>
-											
+
 										</div>
 									</div>
 								</div>
@@ -279,12 +297,12 @@
 				</div>
 				<div class="modal-body">
 					<!-- This thymeleaf fragment include the item lookup code-->
-					<div th:include="lookup/item_lookup :: itemlookup-screen"></div>
+					<div th:include="lookup/item/item_lookup :: itemlookup-screen"></div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal" value="Close" th:value="#{commerce.btn.close}">Close</button>
-					<button type="button" id="itemChooseBtn" class="btn btn-primary" value="Choose This Supplier" th:value="#{commerce.btn.choose.item}">Choose
-						This Item</button>
+					<button type="button" id="itemChooseBtn" class="btn btn-primary" value="Choose This Supplier" th:value="#{commerce.btn.choose.item}">Choose This
+						Item</button>
 				</div>
 			</div>
 		</div>

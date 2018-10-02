@@ -409,5 +409,22 @@ public final class ViewPathConstants {
 	 * The GSTR pages section ends
 	 */
 	
+	/**
+	 * The Attribute pages section starts
+	 */
+	public static final String ATTR_VAL_ACTION_URL = "/admin/attr_val_action";
+	public static final String ATTR_VAL_ACTION_PAGE = "item/attributes/add_attr_vals";
+
+	
+	public static final String SAVE_ATTR_VAL_ORDER_URL = "/admin/save_attr_val_order";
+	public static final String SAVE_ATTR_DETAILS_URL = "/admin/save_attr_details";
+	public static final String SAVE_ATTR_VAL_DETAILS_URL = "/admin/save_attr_val_details";
+	public static final String DELETE_ATTR_VAL_DETAILS_URL = "/admin/delete_attr_val_details";
+	
+	/**
+	 * The Attributepages section ends
+	 */	
+	
+	
 }
 

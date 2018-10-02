@@ -34,8 +34,7 @@
 						</span><span th:text="#{commerce.home.menu.open.store}">Open Store</span>
 						</a>
 					</div>
-					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}" th:object="${dailyDeedBean}" method="post"
-						th:if="${dailyDeedBean!=null}">
+					<form id="openRegisterForm" action="#" th:action="@{/pos/open_register}" th:object="${dailyDeedBean}" method="post" th:if="${dailyDeedBean!=null}">
 						<div class="row">
 							<div class="col-6">
 								<label for="registerId"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.open.select}">Select
@@ -65,7 +64,10 @@
 												<div class="row box-footer">
 													<div class="col">
 														<div th:if="${register.lastStatus}">
-															<input type="hidden" th:id="${register.registerId+'_reg_status'}" th:value="${register.lastStatus}"></input> <small><span
+															<input type="hidden" th:id="${register.registerId+'_reg_last_business_date'}" th:value="${#temporals.format(register.lastBusinessDate, 'dd-MMM-yy HH:mm:ss')}"></input>
+															<input type="hidden" th:id="${register.registerId+'_reg_is_closed'}" th:value="${register.isClosedToday}"></input> 
+															<input type="hidden"
+																th:id="${register.registerId+'_reg_status'}" th:value="${register.lastStatus}"></input> <small><span
 																th:text="#{commerce.screen.store.open.status.last}"></span></small> : <span th:text="${register.lastStatus}"></span>
 														</div>
 														<div th:if="${register.lastBusinessDate}">
@@ -98,10 +100,22 @@
 											<div class="input-group text-left">
 												<label><h5>
 														<input type="hidden" th:field="*{referrerURL}"></input> <input type="hidden" th:field="*{locationId}"></input> <input type="hidden"
-															th:field="*{locationName}"></input> <span th:text="${dailyDeedBean.locationId}">Location Id</span> - <span
-															th:text="${dailyDeedBean.locationName}"></span>
+															th:field="*{locationName}"></input> <input type="hidden" th:field="*{gstNo}"></input> <span th:text="${dailyDeedBean.locationId}">Location
+															Id</span> - <span th:text="${dailyDeedBean.locationName}"></span>
 													</h5></label>
 											</div>
+										</div>
+									</div>
+								</div>
+
+								<div th:if="${newReg!=null}">
+									<div class="form-group">
+										<label><small></small></label>
+										<div class="input-group text-left">
+											<button type="button" id="btnAddRegister" class="btn btn-success mx-3">
+												<span class="fa-layers fa-fw fa-2x"> <i class="fas fa-tablet-alt"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-11 up-4"></i>
+												</span> <span th:text="#{commerce.screen.btn.add.new.register}"></span>
+											</button>
 										</div>
 									</div>
 								</div>
@@ -252,6 +266,9 @@
 	</div>
 	<!-- /#wrapper -->
 	<script th:inline="javascript" th:if="${dailyDeedBean!=null}">
+		var open_reg_url= /*[[@{/pos/open_register}]]*/;
+		var existing_reg_nos= /*[[${regNos}]]*/;
+	
 		$(function() {
 			var referrer_url= /*[[${dailyDeedBean.referrerURL}]]*/;
 			var url= /*[[@{/pos/sale(registerId)}]]*/;
@@ -262,7 +279,94 @@
 				processRegisterRequest(regValue, url);
 			   });
 			
+			$('#btnAddRegister').click(function(){
+				$('#txnNewRegisterModal').modal({backdrop: 'static', keyboard: false});
+			});
+			
+			$('#btnSaveRegister').click(function(){
+				saveRegister();
+			});
+			
+			$('#btnRegOpenProceed').click(function(){
+				window.location.href=open_reg_url;
+			});
 		});
 	</script>
+
+	<!-- Add new Register Modal -->
+	<div class="modal fade " id="txnNewRegisterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" th:if="${newReg!=null}">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						<span th:text="#{commerce.screen.register.add.modal.title}"> Add New Register</span>
+					</h5>
+					<button type="button" id="btnCloseModal" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body text-center">
+					<div id="registerDetails">
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div id="commonNewRegError" class="text-danger text-left py-2"></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="form-group  text-left">
+									<label for="registerId"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.add.reg.no}">Register No</span></small></label>
+									<div class="input-group text-left">
+										<input type="number" step="1" id="newReg_registerId" class="form-control input-sm"
+											th:placeholder="#{commerce.screen.register.add.reg.no.placeholder}" maxlength="3"></input>
+									</div>
+									<div id="newRegNoError" class="text-danger"></div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="form-group  text-left">
+									<label for="name"><small><span class="pos-mandatory" th:text="#{commerce.screen.register.add.reg.name}">Register Name</span></small></label>
+									<div class="input-group text-left">
+										<input type="text" id="newReg_name" class="form-control input-sm" th:placeholder="#{commerce.screen.register.add.reg.name.placeholder}"
+											maxlength="100"></input>
+									</div>
+									<div id="newRegNameError" class="text-danger"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="col-12 d-none text-center" id="regSaveProgressDiv">
+						<i class="fas fa-cog fa-spin fa-9x"></i>
+						<div>
+							<span th:text="#{commerce.screen.register.add.modal.progress}"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-sm-6 col-md-6">
+							<div class="form-group">
+								<div class="input-group">
+									<button type="button" class="btn btn-info" id="btnSaveRegister">
+										<i class="fas fa-tablet-alt mx-2"></i><span th:text="#{commerce.screen.btn.register.add.reg.save}"></span>
+									</button>
+									
+									<button type="button" class="btn btn-success d-none" id="btnRegOpenProceed">
+										<i class="fas fa-tablet-alt mx-2"></i><span th:text="#{commerce.screen.btn.register.add.reg.proceed}"></span>
+									</button>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 </body>
 </html>

@@ -140,6 +140,8 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 			logger.info("The payment journal details has been successfully saved.");
 			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)) {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.CUST_JOURNAL_CREDIT) || journalDetails.getJournalType().equals(ServiceConstants.CUST_JOURNAL_CREDIT_RETURN)) {
+				accountHead.setDueAmount(accountHead.getDueAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_PART) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT_RETURN)) {

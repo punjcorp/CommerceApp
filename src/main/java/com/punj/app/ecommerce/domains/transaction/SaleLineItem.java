@@ -20,6 +20,9 @@ public class SaleLineItem implements Serializable {
 	@EmbeddedId
 	private SaleLineItemId saleLineItemId;
 
+	@Column(name = "item_desc")
+	private String itemDesc;
+
 	private BigDecimal qty;
 	@Column(name = "gross_qty")
 	private BigDecimal grossQty;
@@ -618,10 +621,26 @@ public class SaleLineItem implements Serializable {
 	}
 
 	/**
-	 * @param discountPct the discountPct to set
+	 * @param discountPct
+	 *            the discountPct to set
 	 */
 	public void setDiscountPct(BigDecimal discountPct) {
 		this.discountPct = discountPct;
+	}
+
+	/**
+	 * @return the itemDesc
+	 */
+	public String getItemDesc() {
+		return itemDesc;
+	}
+
+	/**
+	 * @param itemDesc
+	 *            the itemDesc to set
+	 */
+	public void setItemDesc(String itemDesc) {
+		this.itemDesc = itemDesc;
 	}
 
 	/*
