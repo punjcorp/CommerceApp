@@ -47,4 +47,8 @@ public interface PriceService {
 	
 	public List<ItemPrice> getFutureItemPrices(BigInteger itemId, Integer locationId, LocalDateTime businessDate);
 
+	public List<ItemPrice> retrieveItemPrice(BigInteger itemId, Integer locationId);
+	
+	public List<ItemPrice> retrieveAllItemPrices(BigInteger itemId);
+	
 }

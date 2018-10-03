@@ -236,6 +236,9 @@ public final class ViewPathConstants {
 	public static final String INV_LOOKUP_URL = "/inventory_lookup";
 	public static final String INV_LOOKUP_PAGE= "lookup/item/inventory_lookup";
 	
+	public static final String PRICE_LOOKUP_URL = "/price_lookup";
+	public static final String PRICE_LOOKUP_PAGE= "lookup/item/price_lookup";
+	
 	public static final String LOOKUP_ITEM_URL = "/item_lookup";
 	public static final String LOOKUP_ITEM_PAGE= "lookup/item/item_lookup";
 	public static final String LOOKUP_ITEM_DETAILS_URL= "/item_details_lookup";
@@ -423,6 +426,18 @@ public final class ViewPathConstants {
 	
 	/**
 	 * The Attributepages section ends
+	 */	
+	
+
+	/**
+	 * The Setup pages section starts
+	 */
+	public static final String STORE_SETUP_URL = "/admin/configure_store";
+	public static final String STORE_SETUP_PAGE = "admin/store_setup";
+
+	
+	/**
+	 * The Setup pages section ends
 	 */	
 	
 	

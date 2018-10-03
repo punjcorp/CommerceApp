@@ -742,8 +742,11 @@ public class ItemServiceImpl implements ItemService {
 
 		logger.info("The price information will be updated in price records now.");
 
-		List<Location> locations = this.commonService.retrieveAllLocations();
-		this.updateItemPrices(locations, item, item.getModifiedBy());
+		if(item.getItemLevel()!=null && ServiceConstants.ITEM_LEVEL.equals(item.getItemLevel())) {
+			List<Location> locations = this.commonService.retrieveAllLocations();
+			this.updateItemPrices(locations, item, item.getModifiedBy());
+		}
+		
 
 		return item;
 

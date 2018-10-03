@@ -285,4 +285,26 @@ public class PriceServiceImpl implements PriceService {
 		return itemPrices;
 	}
 
+	@Override
+	public List<ItemPrice> retrieveItemPrice(BigInteger itemId, Integer locationId) {
+		List<ItemPrice> itemPrices= this.itemPriceRepository.getItemPricesByLocation(itemId, locationId);
+		if(itemPrices!=null && !itemPrices.isEmpty()) {
+			logger.info("The requested item prices has been retrieved successfully");
+		} else {
+			logger.info("There were no prices found for the provided item and location");
+		}
+		return itemPrices;
+	}
+
+	@Override
+	public List<ItemPrice> retrieveAllItemPrices(BigInteger itemId) {
+		List<ItemPrice> itemPrices= this.itemPriceRepository.getAllItemPrices(itemId);
+		if(itemPrices!=null && !itemPrices.isEmpty()) {
+			logger.info("The requested item prices has been retrieved successfully");
+		} else {
+			logger.info("There were no prices found for the provided item and location");
+		}
+		return itemPrices;
+	}
+
 }

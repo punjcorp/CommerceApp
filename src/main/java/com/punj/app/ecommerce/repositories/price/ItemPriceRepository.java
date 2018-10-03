@@ -28,5 +28,11 @@ public interface ItemPriceRepository extends JpaRepository<ItemPrice, BigInteger
 
 	@Query(value = "select itmprc.* from commercedb.item_price itmprc where itmprc.item_id = ?1 AND itmprc.location_id = ?2  and itmprc.status='A' and itmprc.start_date > now() and itmprc.price_change_type<>4 order by itmprc.start_date asc, itmprc.price_change_type desc", nativeQuery = true)
 	public List<ItemPrice> getItemPricesByDate(BigInteger itemId, Integer locationId);
+	
+	@Query(value = "select itmprc.* from commercedb.item_price itmprc where itmprc.item_id = ?1 AND itmprc.location_id = ?2  and itmprc.status='A' and itmprc.price_change_type<>4 order by itmprc.start_date asc, itmprc.price_change_type desc", nativeQuery = true)
+	public List<ItemPrice> getItemPricesByLocation(BigInteger itemId, Integer locationId);
+	
+	@Query(value = "select itmprc.* from commercedb.item_price itmprc where itmprc.item_id = ?1 and itmprc.status='A' and itmprc.price_change_type<>4 order by itmprc.start_date asc, itmprc.price_change_type desc", nativeQuery = true)
+	public List<ItemPrice> getAllItemPrices(BigInteger itemId);
 
 }

@@ -374,6 +374,7 @@ public final class MVCConstants {
 	public static final String DELETE_PARAM= "delete";
 	public static final String ITEM_INV_BEAN= "inventoryBean";
 	public static final String ITEM_INV_BEANS= "invBeans";
+	public static final String ITEM_PRICE_BEANS= "priceBeans";
 	public static final String ADD_INV_ADJUST_ITEM_PARAM= "addInvAdjustItem";
 	public static final String REMOVE_INV_ADJUST_ITEM_PARAM= "removeInvAdjustItem";
 	public static final String SAVE_INV_ADJUST_PARAM= "saveInvAdjust";

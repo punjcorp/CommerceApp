@@ -49,6 +49,7 @@ public class ItemConverter {
 		itemPrice.setCreatedDate(LocalDateTime.now());
 		itemPrice.setEndDate(null);
 		itemPrice.setItem(item);
+		itemPrice.setTaxInclusive(item.getItemOptions().getTaxInclusiveFlag());
 
 		BigDecimal itemPriceAmt = null;
 		if (item.getItemOptions().getTaxInclusiveFlag()) {
