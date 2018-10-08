@@ -190,6 +190,7 @@ public class OrderReturnServiceImpl implements OrderReturnService {
 		orderReturn = this.orderReturnRepository.save(orderReturn);
 		if (orderReturn != null) {
 			logger.info("The new return for order {} has been created with provided details", orderReturn.getOrderReturnId());
+			orderReturn =this.orderReturnRepository.findOne(orderReturn.getOrderReturnId());
 			if (orderReturn.getStatus().equals(ServiceConstants.STATUS_APPROVED)) {
 				this.postApprovalActions(orderReturn, username);
 			}

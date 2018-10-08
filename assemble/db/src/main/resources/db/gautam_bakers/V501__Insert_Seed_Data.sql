@@ -11,12 +11,6 @@ USE `commercedb` ;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
--- -----------------------------------------------------
--- Seed data for location
--- -----------------------------------------------------
-truncate `commercedb`.`location`;
-INSERT INTO `commercedb`.`location` (`location_id`,`location_type`,`name`,`description`,`status`,`address1`,`address2`,`city`,`district`,`state`,`country`,`pincode`,`neighborhood`,`locale`,`currency`,`telephone1`,`telephone2`,`store_manager`,`email_address`,`created_date`,`created_by`,`modified_date`,`modified_by`,`gst_no`) VALUES (${PI_POS_T_STORE_NO},'S','${PI_POS_T_STORE_NAME}','${PI_POS_T_STORE_DESC}','A','${PI_POS_T_STORE_ADDRESS_1}','${PI_POS_T_STORE_ADDRESS_2}','${PI_POS_T_STORE_CITY}','${PI_POS_T_STORE_DISTRICT}','${PI_POS_T_STORE_STATE}','${PI_POS_T_STORE_COUNTRY}','${PI_POS_T_STORE_PINCODE}','${PI_POS_T_STORE_NEIGHBORHOOD}','en_US','INR','${PI_POS_T_STORE_PHONE2}','${PI_POS_T_STORE_PHONE2}','${PI_POS_T_STORE_MANAGER}','${PI_POS_T_STORE_EMAIL}',now(),'admin',NULL,NULL,'${PI_POS_T_STORE_GST_NO}');
-commit;
 
 -- -----------------------------------------------------
 -- Seed data for reason_codes
@@ -32,6 +26,9 @@ INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
 INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Damaged', 'POR', 'This is for damaged item returns', 'admin', '2018-07-26 12:20:17');
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Over Shipped', 'POR', 'This is for over shipment item returns', 'admin', '2018-07-26 12:20:17');
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Bad Quality', 'POR', 'This is for item returns due to bad quality', 'admin', '2018-07-26 12:20:17');
 
 commit;
 
@@ -162,26 +159,16 @@ commit;
 -- -----------------------------------------------------
 -- Seed data for repository and tenders
 -- -----------------------------------------------------
-truncate `commercedb`.`location_repo`;
 truncate `commercedb`.`repository_master`;
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (1, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (2, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (3, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 
 
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, ${PI_POS_T_STORE_NO}, 1, 1, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, ${PI_POS_T_STORE_NO}, 2, 0, 'admin', now());
-INSERT INTO `commercedb`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, ${PI_POS_T_STORE_NO}, 3, 0, 'admin', now());
 
 commit;
 
 
--- -----------------------------------------------------
--- Seed data for register_master table
--- -----------------------------------------------------
-truncate `commercedb`.`register_master`;
-INSERT INTO `commercedb`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (${PI_POS_T_STORE_NO}, 1, 'Register One', 'admin', now());
-commit;
 
 -- -----------------------------------------------------
 -- Seed data for tax tables
@@ -192,7 +179,7 @@ truncate `commercedb`.`tax_group_rule`;
 truncate `commercedb`.`tax_group`;
 truncate `commercedb`.`tax_location`;
 truncate `commercedb`.`tax_authority`;
-truncate `commercedb`.`tax_location_mapping`;
+-- truncate `commercedb`.`tax_location_mapping`;
 
 
 INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
@@ -202,15 +189,13 @@ INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_dig
 INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Within State', 'I', 'This tax location is for all sales within state', 'admin', now());
 INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Outside State', 'O','This tax location is for all sales outside state', 'admin', now());
 
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (${PI_POS_T_STORE_NO}, 1);
-INSERT INTO `commercedb`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (${PI_POS_T_STORE_NO}, 2);
 
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 10', 'This group is applied for 10 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 12', 'This group is applied for 12 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 18', 'This group is applied for 18 percent tax rate of GST', 'admin', now());
-INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 28', 'This group is applied for 28 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable',0, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST',5, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 10', 'This group is applied for 10 percent tax rate of GST',10, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 12', 'This group is applied for 12 percent tax rate of GST',12, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 18', 'This group is applied for 18 percent tax rate of GST',18, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 28', 'This group is applied for 28 percent tax rate of GST',28, 'admin', now());
 
 
 INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
@@ -370,10 +355,10 @@ INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `crea
 -- -----------------------------------------------------
 -- Seed data for user
 -- -----------------------------------------------------
-insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location,`status`, created_by, created_date)
-values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', ${PI_POS_T_STORE_NO},'A', 'admin', '2018-01-16 20:19:09');
-insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
-values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', ${PI_POS_T_STORE_NO},'A', 'admin', '2018-01-16 20:19:09');
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
+values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 'A', 'admin', '2018-01-16 20:19:09');
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count,  `status`, created_by, created_date)
+values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 'A', 'admin', '2018-01-16 20:19:09');
 
 
 -- -----------------------------------------------------
@@ -387,8 +372,6 @@ values('cashier', '$2a$10$iHH8hs7bMG.7ud5.DdCMteuxwXZRNikGUYuySm4r5drTBkTsVC7B2'
 -- -----------------------------------------------------
 -- Seed data for user role
 -- -----------------------------------------------------
-INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', ${PI_POS_T_STORE_NO}, 'admin', now(), now(), now());
-INSERT INTO `commercedb`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', ${PI_POS_T_STORE_NO}, 'admin', now(), now(), now());
 
 -- -----------------------------------------------------
 -- Seed data for user addresses

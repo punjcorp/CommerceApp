@@ -100,7 +100,7 @@ public class OrderPrintController {
 				orderBean = new OrderBean();
 				orderBean.setOrderId(new BigInteger(orderIdParam));
 
-				byte[] pdfBytes = (byte[]) this.orderPrintUtil.createOrderReport(null,orderBean, userDetails.getUsername(), session, MVCConstants.REPORT_ORDER_VIEW);
+				byte[] pdfBytes = (byte[]) this.orderPrintUtil.createOrderReport(null,orderBean, userDetails.getUsername(), session, MVCConstants.REPORT_ORDER_VIEW, Boolean.FALSE);
 
 				if (pdfBytes != null) {
 					response.setContentType(MediaType.APPLICATION_PDF_VALUE);
@@ -140,7 +140,7 @@ public class OrderPrintController {
 				orderBean.setOrderId(new BigInteger(orderIdParam));
 
 				JasperPrint jasperPrint = (JasperPrint) this.orderPrintUtil.createOrderReport(null, orderBean, userDetails.getUsername(), session,
-						MVCConstants.REPORT_ORDER_PRINT);
+						MVCConstants.REPORT_ORDER_PRINT, Boolean.FALSE);
 
 				if (jasperPrint != null) {
 					JasperPrintManager.printReport(jasperPrint, Boolean.FALSE);
@@ -174,7 +174,7 @@ public class OrderPrintController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			JasperPrint jasperPrint = (JasperPrint) this.orderPrintUtil.createOrderReport(null, orderBean, userDetails.getUsername(), session,
-					MVCConstants.REPORT_ORDER_PRINT);
+					MVCConstants.REPORT_ORDER_PRINT, Boolean.FALSE);
 
 			if (jasperPrint != null) {
 				JasperPrintManager.printReport(jasperPrint, Boolean.FALSE);

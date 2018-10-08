@@ -19,6 +19,8 @@ public class LocationBean {
 	@NotNull
 	private String name;
 
+	private String description;
+
 	private String address1;
 	private String address2;
 	private String city;
@@ -34,6 +36,8 @@ public class LocationBean {
 	private String email;
 
 	private String defaultTender;
+	private String locale;
+	private String currency;
 
 	private String gstNo;
 	private String panNo;
@@ -381,10 +385,56 @@ public class LocationBean {
 	}
 
 	/**
-	 * @param district the district to set
+	 * @param district
+	 *            the district to set
 	 */
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the locale
+	 */
+	public String getLocale() {
+		return locale;
+	}
+
+	/**
+	 * @param locale
+	 *            the locale to set
+	 */
+	public void setLocale(String locale) {
+		this.locale = locale;
+	}
+
+	/**
+	 * @return the currency
+	 */
+	public String getCurrency() {
+		return currency;
+	}
+
+	/**
+	 * @param currency
+	 *            the currency to set
+	 */
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 }

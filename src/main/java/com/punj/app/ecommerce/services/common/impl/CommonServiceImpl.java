@@ -25,6 +25,7 @@ import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.ReasonCode;
 import com.punj.app.ecommerce.domains.common.Register;
+import com.punj.app.ecommerce.domains.common.State;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
 import com.punj.app.ecommerce.domains.finance.DailyTotals;
@@ -43,6 +44,7 @@ import com.punj.app.ecommerce.repositories.common.LocationRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonCodeRepository;
 import com.punj.app.ecommerce.repositories.common.ReasonSearchRepository;
 import com.punj.app.ecommerce.repositories.common.RegisterRepository;
+import com.punj.app.ecommerce.repositories.common.StateRepository;
 import com.punj.app.ecommerce.repositories.common.UOMRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchyRepository;
 import com.punj.app.ecommerce.repositories.item.HierarchySearchRepository;
@@ -82,6 +84,7 @@ public class CommonServiceImpl implements CommonService {
 	private TransactionService txnService;
 	private FinanceService financeService;
 	private DenominationRepository denominationRepository;
+	private StateRepository stateRepository;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -91,6 +94,15 @@ public class CommonServiceImpl implements CommonService {
 
 	@Value("${app.default.currency.code}")
 	private String defaultCurrencyCode;
+
+	/**
+	 * @param stateRepository
+	 *            the stateRepository to set
+	 */
+	@Autowired
+	public void setStateRepository(StateRepository stateRepository) {
+		this.stateRepository = stateRepository;
+	}
 
 	/**
 	 * @param financeService
@@ -597,6 +609,47 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
+	public Map<String, State> statesAsMapByGSTCode() {
+		Map<String, State> gstCodeMap = null;
+		List<State> states = this.retrieveAllStates();
+		if (states != null && !states.isEmpty()) {
+			gstCodeMap = new HashMap<>(states.size());
+			for (State state : states) {
+				gstCodeMap.put(state.getStateCode(), state);
+			}
+			logger.info("All the GST states has been converted to a Map with GST codes (03, 01 etc) as keys successfully");
+		} else {
+			logger.info("There are no GST states found in GST State code table");
+		}
+		return gstCodeMap;
+	}
+
+	@Override
+	public Map<String, State> statesAsMapByStateCode() {
+		Map<String, State> stateCodeMap = null;
+		List<State> states = this.retrieveAllStates();
+		if (states != null && !states.isEmpty()) {
+			stateCodeMap = new HashMap<>(states.size());
+			for (State state : states) {
+				stateCodeMap.put(state.getStateCode(), state);
+			}
+			logger.info("All the GST states has been converted to a Map with state codes (PB, JK etc) as keys successfully");
+		} else {
+			logger.info("There are no GST states found in GST State code table");
+		}
+		return stateCodeMap;
+	}
+
+	@Override
+	public List<State> retrieveAllStates() {
+		List<State> states = this.stateRepository.findAll();
+		if (states != null && !states.isEmpty()) {
+			logger.info("All the GST states has been retrieved successfully");
+		} else {
+			logger.info("There are no GST states found in GST State code table");
+		}
+		return states;
+	}
 	public TaxGroup retrieveTaxGroup(Integer taxGroupId) {
 		TaxGroup taxGroup=this.taxGroupRepository.findOne(taxGroupId);
 

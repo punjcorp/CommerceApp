@@ -210,32 +210,36 @@ public class UserServiceImpl implements UserService {
 		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}", pwd.getStatus(), pwd.getModifiedBy(),
 				pwd.getUsername(), pwd.getPassword(), pwd.getModifiedDate());
 
-		pwd.setUsername(userDetails.getUsername());
-		pwd.setStatus("A");
-		pwd = passwordRepository.findOne(Example.of(pwd));
-
-		pwd.setStatus("E");
-		if (StringUtils.isNotEmpty(changedBy))
-			pwd.setModifiedBy(changedBy);
+		Password pwdSearch=new Password();
+		if(userDetails==null || StringUtils.isBlank(userDetails.getUsername()))
+			pwdSearch.setUsername("admin");
 		else
-			pwd.setModifiedBy(pwd.getUsername());
+			pwdSearch.setUsername(userDetails.getUsername());
+		pwdSearch.setStatus("A");
+		pwdSearch = passwordRepository.findOne(Example.of(pwdSearch));
 
-		pwd = passwordRepository.save(pwd);
+		pwdSearch.setStatus("E");
+		if (StringUtils.isNotEmpty(changedBy))
+			pwdSearch.setModifiedBy(changedBy);
+		else
+			pwdSearch.setModifiedBy(pwd.getUsername());
+
+		pwdSearch = passwordRepository.save(pwdSearch);
 
 		Password changedPassword = new Password();
 
 		changedPassword.setPassword(Utils.getPassEncoder().encode(newPassword));
 		changedPassword.setModifiedDate(LocalDateTime.now());
-		changedPassword.setUsername(pwd.getUsername());
+		changedPassword.setUsername(pwdSearch.getUsername());
 		if (StringUtils.isNotEmpty(changedBy))
 			changedPassword.setModifiedBy(changedBy);
 		else
-			changedPassword.setModifiedBy(pwd.getUsername());
+			changedPassword.setModifiedBy(pwdSearch.getUsername());
 
 		changedPassword.setStatus("A");
 		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}", changedPassword.getStatus(),
 				changedPassword.getModifiedBy(), changedPassword.getUsername(), changedPassword.getPassword(), changedPassword.getModifiedDate());
-		passwordRepository.save(changedPassword);
+		changedPassword=passwordRepository.save(changedPassword);
 		return changedPassword;
 	}
 
@@ -500,6 +504,13 @@ public class UserServiceImpl implements UserService {
 
 		}
 		return retrievedUser;
+	}
+
+	@Override
+	public List<UserRole> addUserRoles(List<UserRole> userRoles) {
+		userRoles=this.userRoleRepository.save(userRoles);
+		logger.info("The user role details has been saved successfully");
+		return userRoles;
 	}
 
 }

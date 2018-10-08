@@ -1,685 +1,501 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta th:name="_csrf" th:content="${_csrf.token}"/>
-    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta charset="utf-8"/>
-    <title th:text="#{commerce.screen.item.edit.style.title}"></title>
-    <!-- This thymeleaf fragment include all the header stuff -->
-    <div th:replace="common/header:: header"></div>
-    <script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
-    <script src="../../js/item/item_classes.js" th:src="@{/js/item/item_classes.js}"></script>
-    <script src="../../js/item/item.js" th:src="@{/js/item/item.js}"></script>
+<meta th:name="_csrf" th:content="${_csrf.token}" />
+<meta th:name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="utf-8" />
+<title th:text="#{commerce.screen.item.edit.style.title}"></title>
+<!-- This thymeleaf fragment include all the header stuff -->
+<div th:replace="common/header:: header"></div>
+<script src="../../js/jquery-ui.min.js" th:src="@{/js/jquery-ui.min.js}"></script>
+<script src="../../js/item/item_classes.js" th:src="@{/js/item/item_classes.js}"></script>
+<script src="../../js/item/item.js" th:src="@{/js/item/item.js}"></script>
 </head>
 <body>
-<div id="wrapper">
+	<div id="wrapper">
 
 
-    <!-- Page Content -->
-    <div id="page-content-wrapper-no-menu">
-        <!-- This thymeleaf fragment include the top navigation bar-->
-        <div th:include="common/navbar :: navbarMenu"></div>
-        <!-- This thymeleaf fragment is the body part for the page-->
-        <div class="card content-container">
-            <div class="card-header">
-                <h3>
-                    <span th:text="#{commerce.screen.item.edit.style.caption}"></span>
-                </h3>
-            </div>
-            <div class="card-body">
-                <div class="card-text">
-                    <div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
-                    <div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
-                    <div id="styleActions" class="col-12 p-4" th:if="${ alert!=null}">
-                        <a th:href="@{/admin/add_style}" class="btn btn-sm btn-success"><span class="fa-2x mr-2"> <span
-                                class="fa-layers fa-fw"> <i
-                                class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus"
-                                                                                               data-fa-transform="shrink-10 right-10 up-4"></i>
+		<!-- Page Content -->
+		<div id="page-content-wrapper-no-menu">
+			<!-- This thymeleaf fragment include the top navigation bar-->
+			<div th:include="common/navbar :: navbarMenu"></div>
+			<!-- This thymeleaf fragment is the body part for the page-->
+			<div class="card content-container">
+				<div class="card-header">
+					<h3>
+						<span th:text="#{commerce.screen.item.edit.style.caption}"></span>
+					</h3>
+				</div>
+				<div class="card-body">
+					<div class="card-text">
+						<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
+						<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
+						<div id="styleActions" class="col-12 p-4" th:if="${ alert!=null}">
+							<a th:href="@{/admin/add_style}" class="btn btn-sm btn-success"><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
+										class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
 								</span>
-							</span> <span th:text="#{commerce.home.menu.add.style}"></span></a> <a
-                            th:href="@{/admin/search_item}" class="btn btn-sm btn-success"> <span
-                            class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
-                                                                                  data-fa-transform="rotate-180"></i> <i
-                            class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+							</span> <span th:text="#{commerce.home.menu.add.style}"></span></a> <a th:href="@{/admin/search_item}" class="btn btn-sm btn-success"> <span class="fa-2x mr-2">
+									<span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-cog"
+										data-fa-transform="shrink-10 right-10 up-4"></i>
 								</span>
 							</span> <span th:text="#{commerce.home.menu.search.item}"></span>
-                    </a>
-                    </div>
-                    <form class="form" id="addItem" th:action="@{/admin/edit_style}" th:object="${itemBean}"
-                          enctype="multipart/form-data" method="post">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <small><span th:text="#{commerce.screen.item.name}">Item Name</span></small>
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="text" th:field="*{name}" class="form-control input-sm"
-                                               th:placeholder="#{commerce.screen.item.name.placeholder}"></input> <input
-                                            type="hidden" th:field="*{itemId}"></input> <input type="hidden"
-                                                                                               th:field="*{status}"></input>
-                                        <input type="hidden"
-                                               th:field="*{parentItemId}"></input> <input type="hidden"
-                                                                                          th:field="*{itemLevel}"></input>
-                                        <input type="hidden" th:field="*{createdBy}"></input>
-                                        <input type="hidden" th:field="*{createdDate}"></input> <input type="hidden"
-                                                                                                       th:field="*{itemOptions.itemId}"></input>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">
-                                        Name Error
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <small><span th:text="#{commerce.screen.item.hsn}">HSN No</span></small>
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="text" th:field="*{itemOptions.hsnNo}" class="form-control input-sm"
-                                               th:placeholder="#{commerce.screen.item.hsn.placeholder}"></input>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('itemOptions.hsnNo')}"
-                                         th:errors="*{itemOptions.hsnNo}" class="text-danger">HSN No Error
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <small><span th:text="#{commerce.screen.item.description}">Item Description</span>
-                                </small>
-                            </label>
-                            <div class="input-group">
-                                <textarea th:field="*{longDesc}" class="form-control input-sm"
-                                          th:placeholder="#{commerce.screen.item.description.placeholder}"
-                                          rows="2"></textarea>
-                            </div>
-                            <div th:if="${#fields.hasErrors('longDesc')}" th:errors="*{longDesc}" class="text-danger">
-                                Description Error
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-4 col-sm-4 col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <small><span class="pos-mandatory"
-                                                     th:text="#{commerce.screen.item.current.price}">Current Selling Price</span>
-                                        </small>
-                                    </label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><span
-                                                    th:text="#{commerce.screen.common.currency.inr}"></span></span>
-                                        </div>
-                                        <input type="number" step="0.01" class="form-control input-sm pos-amount"
-                                               th:placeholder="#{commerce.screen.item.current.price.placeholder}"
-                                               th:field="*{itemOptions.currentPrice}"></input>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('itemOptions.currentPrice')}"
-                                         th:errors="*{itemOptions.currentPrice}" class="text-danger">Current
-                                        Price Error
-                                    </div>
-                                </div>
-                            </div>
+							</a>
+						</div>
+						<form class="form" id="addItem" th:action="@{/admin/edit_style}" th:object="${itemBean}" enctype="multipart/form-data" method="post">
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<label> <small><span th:text="#{commerce.screen.item.name}">Item Name</span></small>
+										</label>
+										<div class="input-group">
+											<input type="text" th:field="*{name}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.name.placeholder}"></input> <input
+												type="hidden" th:field="*{itemId}"></input> <input type="hidden" th:field="*{status}"></input> <input type="hidden" th:field="*{parentItemId}"></input>
+											<input type="hidden" th:field="*{itemLevel}"></input> <input type="hidden" th:field="*{createdBy}"></input> <input type="hidden"
+												th:field="*{createdDate}"></input> <input type="hidden" th:field="*{itemOptions.itemId}"></input>
+										</div>
+										<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</div>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<label> <small><span th:text="#{commerce.screen.item.hsn}">HSN No</span></small>
+										</label>
+										<div class="input-group">
+											<input type="text" th:field="*{itemOptions.hsnNo}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.hsn.placeholder}"></input>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.hsnNo')}" th:errors="*{itemOptions.hsnNo}" class="text-danger">HSN No Error</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label> <small><span th:text="#{commerce.screen.item.description}">Item Description</span> </small>
+								</label>
+								<div class="input-group">
+									<textarea th:field="*{longDesc}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.description.placeholder}" rows="2"></textarea>
+								</div>
+								<div th:if="${#fields.hasErrors('longDesc')}" th:errors="*{longDesc}" class="text-danger">Description Error</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<div class="form-group">
+										<label> <small><span class="pos-mandatory" th:text="#{commerce.screen.item.current.price}">Current Selling Price</span> </small>
+										</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text"><span th:text="#{commerce.screen.common.currency.inr}"></span></span>
+											</div>
+											<input type="number" step="0.01" class="form-control input-sm pos-amount" th:placeholder="#{commerce.screen.item.current.price.placeholder}"
+												th:field="*{itemOptions.currentPrice}"></input>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.currentPrice')}" th:errors="*{itemOptions.currentPrice}" class="text-danger">Current Price Error</div>
+									</div>
+								</div>
 
-                            <div class="col-xs-3 col-sm-3 col-md-3">
-                                <div class="form-group">
-                                    <label>
-                                        <small><span class="pos-mandatory"
-                                                     th:text="#{commerce.screen.item.price.inclusive.flag}">Item Price (Inclusive/Exclusive)</span>
-                                        </small>
-                                    </label>
-                                    <div class="input-group">
-                                        <select th:field="*{itemOptions.taxInclusive}" class="form-control input-sm">
-                                            <option class="form-text" value="exclusive"
-                                                    th:selected="${(itemBean.itemOptions.taxInclusive!=null and itemBean.itemOptions.taxInclusive=='exclusive') or (itemBean.itemOptions.taxInclusive==null)}">
+								<div class="col-xs-3 col-sm-3 col-md-3">
+									<div class="form-group">
+										<label> <small><span class="pos-mandatory" th:text="#{commerce.screen.item.price.inclusive.flag}">Item Price
+													(Inclusive/Exclusive)</span> </small>
+										</label>
+										<div class="input-group">
+											<select th:field="*{itemOptions.taxInclusive}" class="form-control input-sm">
+												<option class="form-text" value="exclusive"
+													th:selected="${(itemBean.itemOptions.taxInclusive!=null and itemBean.itemOptions.taxInclusive=='exclusive') or (itemBean.itemOptions.taxInclusive==null)}">
                                                 Exclusive
                                             </option>
-                                            <option class="form-text" value="inclusive"
-                                                    th:selected="${(itemBean.itemOptions.taxInclusive!=null and itemBean.itemOptions.taxInclusive=='inclusive')}">
+												<option class="form-text" value="inclusive"
+													th:selected="${(itemBean.itemOptions.taxInclusive!=null and itemBean.itemOptions.taxInclusive=='inclusive')}">
                                                 Inclusive
                                             </option>
-                                        </select>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('itemOptions.taxInclusive')}"
-                                         th:errors="*{itemOptions.taxInclusive}" class="text-danger">Tax Inclusive Error
-                                    </div>
-                                </div>
-                            </div>
+											</select>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.taxInclusive')}" th:errors="*{itemOptions.taxInclusive}" class="text-danger">Tax Inclusive Error</div>
+									</div>
+								</div>
 
-                            <div class="col-xs-5 col-sm-5 col-md-5">
-                                <div class="form-group">
-                                    <label>
-                                        <small><span class="pos-mandatory" th:text="#{commerce.screen.item.tax.group}">Tax Group</span>
-                                        </small>
-                                    </label>
-                                    <div class="input-group">
-                                        <select th:field="*{itemOptions.taxGroupId}" class="form-control input-sm">
-                                            <option class="form-text text-muted" value="" selected="selected"
-                                                    th:text="#{commerce.screen.item.select.tax.group}">Select Tax
+								<div class="col-xs-5 col-sm-5 col-md-5">
+									<div class="form-group">
+										<label> <small><span class="pos-mandatory" th:text="#{commerce.screen.item.tax.group}">Tax Group</span> </small>
+										</label>
+										<div class="input-group">
+											<select th:field="*{itemOptions.taxGroupId}" class="form-control input-sm">
+												<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.tax.group}">Select Tax
                                                 Group
                                             </option>
-                                            <option th:each="taxGroup: ${taxGroups}" th:value="${taxGroup.taxGroupId}"
-                                                    th:text="${taxGroup.name} + ' - ' +${taxGroup.description}"></option>
-                                        </select>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('itemOptions.taxGroupId')}"
-                                         th:errors="*{itemOptions.taxGroupId}" class="text-danger">Tax Group Error
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Images -->
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="card form-group">
-                                    <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-11 text-left">Images</div>
-                                            <div class="col-1 text-right">
-                                                <a data-toggle="collapse" href="#images" aria-expanded="false"
-                                                   aria-controls="images"><i class="fas fa-angle-down"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="images" class="collapse show">
-                                        <div class="card-body">
-                                            <div class="row"
-                                                 th:if="${itemBean.itemImages!=null and #lists.size(itemBean.itemImages)>0}">
-                                                <div class="col" th:each="itemImage,itrStat:${itemBean.itemImages}">
-                                                    <div class="card-text preview-thumbnail"
-                                                         th:id="'preview'+${itrStat.index}">
-                                                        <img th:src="@{/images/item_image_default_200.png}"
-                                                             class="img-thumbnail"
-                                                             th:if="${itemBean.itemImages[__${itrStat.index}__].imageURL==null or itemBean.itemImages[__${itrStat.index}__].imageURL==''}"/>
-                                                        <img
-                                                                th:src="'data:'+${itemBean.itemImages[__${itrStat.index}__].imageType}+';base64,'+${itemBean.itemImages[__${itrStat.index}__].baseEncodedImage}"
-                                                                class="img-thumbnail"
-                                                                th:if="${itemBean.itemImages[__${itrStat.index}__].imageURL!=null and itemBean.itemImages[__${itrStat.index}__].imageURL!=''}"/>
-                                                    </div>
-                                                    <div class="card-text">
-                                                        <div class="form-group">
-                                                            <label>
-                                                                <small><span
-                                                                        th:text="#{commerce.screen.item.image}"> </span>
-                                                                    <span th:text="${itrStat.index+1}"> </span></small>
-                                                            </label>
-                                                            <div class="input-group">
-                                                                <input type="file" class="form-control input-sm"
-                                                                       th:placeholder="#{commerce.screen.item.image.placeholder}"
-                                                                       th:field="*{itemImages[__${itrStat.index}__].imageData}"
-                                                                       accept="image/*"
-                                                                       th:if="${itemBean.itemImages[__${itrStat.index}__].imageURL==null or itemBean.itemImages[__${itrStat.index}__].imageURL==''}"/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-text">
-                                                        <div class="form-group">
-                                                            <label>
-                                                                <small><span
-                                                                        th:text="#{commerce.screen.item.image.name}">Item Image Name</span>
-                                                                    <span
-                                                                            th:text="${itrStat.index+1}"> </span>
-                                                                </small>
-                                                            </label>
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control input-sm"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].name}"
-                                                                       th:placeholder="#{commerce.screen.item.image.name.placeholder}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].itemImageId}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].itemId}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].imageURL}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].imageType}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].baseEncodedImage}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].createdBy}"></input>
-                                                                <input type="hidden"
-                                                                       th:field="${itemBean.itemImages[__${itrStat.index}__].createdDate}"></input>
-                                                            </div>
-                                                            <div th:if="${#fields.hasErrors('itemImages[__${itrStat.index}__].name')}"
-                                                                 th:errors="${itemBean.itemImages[__${itrStat.index}__].name}"
-                                                                 class="text-danger">Item Image Name Error
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Style Attributes -->
-                        <div class="row d-none">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="card form-group">
-                                    <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-11 text-left">
-                                                <span th:text="#{commerce.screen.item.attribute.caption}"></span>
-                                            </div>
-                                            <div class="col-1 text-right">
-                                                <a data-toggle="collapse" href="#itemAttributes" aria-expanded="false"
-                                                   aria-controls="itemAttributes"><i class="fas fa-angle-down"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="itemAttributes" class="collapse show">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span th:text="#{commerce.screen.item.attribute}">Select Item Attribute</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="text" class="form-control input-sm"
-                                                                   th:field="*{attrName}"
-                                                                   th:placeholder="#{commerce.screen.item.attribute.placeholder}"></input>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="col-12 d-none text-center" id="progressDiv">
-                                                        <i class="fas fa-cog fa-spin fa-5x"></i>
-                                                        <div>
-                                                            <span th:text="#{commerce.screen.item.attribute.values.progress}"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="attributesDiv"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Default Settings -->
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="card form-group">
-                                    <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-11 text-left">
-                                                <span th:text="#{commerce.screen.item.advance.options.caption}"></span>
-                                            </div>
-                                            <div class="col-1 text-right">
-                                                <a data-toggle="collapse" href="#defaultOptions" aria-expanded="false"
-                                                   aria-controls="defaultOptions"><i class="fas fa-angle-down"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="defaultOptions" class="collapse">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span th:text="#{commerce.screen.item.hierarchy}">Item Hierarchy
-																		(Department/Sub-Department/Category/Sub-Category)</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="text" th:field="*{hierarchy.name}"
-                                                                   class="form-control input-sm"
-                                                                   th:placeholder="#{commerce.screen.item.hierarchy.placeholder}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('hierarchy.name')}"
-                                                             th:errors="*{hierarchy.name}" class="text-danger">Item
-                                                            Hierarchy Error
-                                                        </div>
-                                                        <input type="hidden"
-                                                               th:field="*{hierarchy.hierarchyId}"></input>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span th:text="#{commerce.screen.item.select.type}">Select Item Type</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <select th:field="*{itemType}"
-                                                                    class="form-control input-sm">
-                                                                <option class="form-text text-muted" value=""
-                                                                        selected="selected"
-                                                                        th:text="#{commerce.screen.item.select.type}">
+												<option th:each="taxGroup: ${taxGroups}" th:value="${taxGroup.taxGroupId}" th:text="${taxGroup.name} + ' - ' +${taxGroup.description}"></option>
+											</select>
+										</div>
+										<div th:if="${#fields.hasErrors('itemOptions.taxGroupId')}" th:errors="*{itemOptions.taxGroupId}" class="text-danger">Tax Group Error</div>
+									</div>
+								</div>
+							</div>
+							<!-- Images -->
+							<div class="row">
+								<div class="col-xs-12 col-sm-12 col-md-12">
+									<div class="card form-group">
+										<div class="card-header">
+											<div class="row">
+												<div class="col-11 text-left">Images</div>
+												<div class="col-1 text-right">
+													<a data-toggle="collapse" href="#images" aria-expanded="false" aria-controls="images"><i class="fas fa-angle-down"></i></a>
+												</div>
+											</div>
+										</div>
+										<div id="images" class="collapse show">
+											<div class="card-body">
+												<div class="row" th:if="${itemBean.itemImages!=null and #lists.size(itemBean.itemImages)>0}">
+													<div class="col" th:each="itemImage,itrStat:${itemBean.itemImages}">
+														<div class="card-text preview-thumbnail" th:id="'preview'+${itrStat.index}">
+															<img th:src="@{/images/item_image_default_200.png}" class="img-thumbnail"
+																th:if="${itemBean.itemImages[__${itrStat.index}__].imageURL==null or itemBean.itemImages[__${itrStat.index}__].imageURL==''}" /> <img
+																th:src="'data:'+${itemBean.itemImages[__${itrStat.index}__].imageType}+';base64,'+${itemBean.itemImages[__${itrStat.index}__].baseEncodedImage}"
+																class="img-thumbnail"
+																th:if="${itemBean.itemImages[__${itrStat.index}__].imageURL!=null and itemBean.itemImages[__${itrStat.index}__].imageURL!=''}" />
+														</div>
+														<div class="card-text">
+															<div class="form-group">
+																<label> <small><span th:text="#{commerce.screen.item.image}"> </span> <span th:text="${itrStat.index+1}"> </span></small>
+																</label>
+																<div class="input-group">
+																	<input type="file" class="form-control input-sm" th:placeholder="#{commerce.screen.item.image.placeholder}"
+																		th:field="*{itemImages[__${itrStat.index}__].imageData}" accept="image/*"
+																		th:if="${itemBean.itemImages[__${itrStat.index}__].imageURL==null or itemBean.itemImages[__${itrStat.index}__].imageURL==''}" />
+																</div>
+															</div>
+														</div>
+														<div class="card-text">
+															<div class="form-group">
+																<label> <small><span th:text="#{commerce.screen.item.image.name}">Item Image Name</span> <span th:text="${itrStat.index+1}">
+																	</span> </small>
+																</label>
+																<div class="input-group">
+																	<input type="text" class="form-control input-sm" th:field="${itemBean.itemImages[__${itrStat.index}__].name}"
+																		th:placeholder="#{commerce.screen.item.image.name.placeholder}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].itemImageId}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].itemId}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].imageURL}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].imageType}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].baseEncodedImage}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].createdBy}"></input> <input type="hidden"
+																		th:field="${itemBean.itemImages[__${itrStat.index}__].createdDate}"></input>
+																</div>
+																<div th:if="${#fields.hasErrors('itemImages[__${itrStat.index}__].name')}" th:errors="${itemBean.itemImages[__${itrStat.index}__].name}"
+																	class="text-danger">Item Image Name Error</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Style Attributes -->
+							<div class="row d-none">
+								<div class="col-xs-12 col-sm-12 col-md-12">
+									<div class="card form-group">
+										<div class="card-header">
+											<div class="row">
+												<div class="col-11 text-left">
+													<span th:text="#{commerce.screen.item.attribute.caption}"></span>
+												</div>
+												<div class="col-1 text-right">
+													<a data-toggle="collapse" href="#itemAttributes" aria-expanded="false" aria-controls="itemAttributes"><i class="fas fa-angle-down"></i></a>
+												</div>
+											</div>
+										</div>
+										<div id="itemAttributes" class="collapse show">
+											<div class="card-body">
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.attribute}">Select Item Attribute</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="text" class="form-control input-sm" th:field="*{attrName}" th:placeholder="#{commerce.screen.item.attribute.placeholder}"></input>
+															</div>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="col-12 d-none text-center" id="progressDiv">
+															<i class="fas fa-cog fa-spin fa-5x"></i>
+															<div>
+																<span th:text="#{commerce.screen.item.attribute.values.progress}"></span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div id="attributesDiv"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Default Settings -->
+							<div class="row">
+								<div class="col-xs-12 col-sm-12 col-md-12">
+									<div class="card form-group">
+										<div class="card-header">
+											<div class="row">
+												<div class="col-11 text-left">
+													<span th:text="#{commerce.screen.item.advance.options.caption}"></span>
+												</div>
+												<div class="col-1 text-right">
+													<a data-toggle="collapse" href="#defaultOptions" aria-expanded="false" aria-controls="defaultOptions"><i class="fas fa-angle-down"></i></a>
+												</div>
+											</div>
+										</div>
+										<div id="defaultOptions" class="collapse">
+											<div class="card-body">
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.hierarchy}">Item Hierarchy
+																		(Department/Sub-Department/Category/Sub-Category)</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="text" th:field="*{hierarchy.name}" class="form-control input-sm" th:placeholder="#{commerce.screen.item.hierarchy.placeholder}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('hierarchy.name')}" th:errors="*{hierarchy.name}" class="text-danger">Item Hierarchy Error</div>
+															<input type="hidden" th:field="*{hierarchy.hierarchyId}"></input>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.select.type}">Select Item Type</span> </small>
+															</label>
+															<div class="input-group">
+																<select th:field="*{itemType}" class="form-control input-sm">
+																	<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.type}">
                                                                     Select Item
                                                                     Type
                                                                 </option>
-                                                                <option th:value="merchandise"
-                                                                        th:text="#{commerce.screen.item.type.merch}"></option>
-                                                                <option th:value="nonmerch"
-                                                                        th:text="#{commerce.screen.item.type.nonmerch}"></option>
-                                                                <option th:value="service"
-                                                                        th:text="#{commerce.screen.item.type.service}"></option>
-                                                            </select>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemType')}"
-                                                             th:errors="*{itemType}" class="text-danger">Item TypeError
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span th:text="#{commerce.screen.item.uom}">Unit of Measure</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <select th:field="*{itemOptions.uom}"
-                                                                    class="form-control input-sm">
-                                                                <option class="form-text text-muted" value=""
-                                                                        selected="selected"
-                                                                        th:text="#{commerce.screen.item.select.uom}">
+																	<option th:value="merchandise" th:text="#{commerce.screen.item.type.merch}"></option>
+																	<option th:value="nonmerch" th:text="#{commerce.screen.item.type.nonmerch}"></option>
+																	<option th:value="service" th:text="#{commerce.screen.item.type.service}"></option>
+																</select>
+															</div>
+															<div th:if="${#fields.hasErrors('itemType')}" th:errors="*{itemType}" class="text-danger">Item TypeError</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.uom}">Unit of Measure</span> </small>
+															</label>
+															<div class="input-group">
+																<select th:field="*{itemOptions.uom}" class="form-control input-sm">
+																	<option class="form-text text-muted" value="" th:text="#{commerce.screen.item.select.uom}">
                                                                     Select UOM
                                                                 </option>
-                                                                <option th:each="uom: ${UOMs}" th:value="${uom.code}"
-                                                                        th:text="${uom.name} + ' - ' +${uom.description}"></option>
-                                                            </select>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.uom')}"
-                                                             th:errors="*{itemOptions.uom}" class="text-danger">UOM
-                                                            Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span th:text="#{commerce.screen.item.pack.size}">Pack Size</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="text" th:field="*{itemOptions.packSize}"
-                                                                   class="form-control input-sm"
-                                                                   th:placeholder="#{commerce.screen.item.pack.size.placeholder}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.packSize')}"
-                                                             th:errors="*{itemOptions.packSize}" class="text-danger">
-                                                            Pack Size Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span th:text="#{commerce.screen.item.unit.cost}">Unit Cost Amount</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="number" step="0.01"
-                                                                   class="form-control input-sm"
-                                                                   th:placeholder="#{commerce.screen.item.unit.cost.placeholder}"
-                                                                   th:field="*{itemOptions.unitCost}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.unitCost')}"
-                                                             th:errors="*{itemOptions.unitCost}" class="text-danger">
-                                                            Unit Cost Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span
-                                                                    th:text="#{commerce.screen.item.mrp}">MRP</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="number" step="0.01"
-                                                                   class="form-control input-sm"
-                                                                   th:placeholder="#{commerce.screen.item.mrp.placeholder}"
-                                                                   th:field="*{itemOptions.maxRetailPrice}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.maxRetailPrice')}"
-                                                             th:errors="${itemOptions.maxRetailPrice}"
-                                                             class="text-danger">MRP
-                                                            Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span
-                                                                    th:text="#{commerce.screen.item.suggested.price}">Suggested Price</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="number" step="0.01"
-                                                                   class="form-control input-sm"
-                                                                   th:placeholder="#{commerce.screen.item.suggested.price.placeholder}"
-                                                                   th:field="*{itemOptions.suggestedPrice}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.suggestedPrice')}"
-                                                             th:errors="*{itemOptions.suggestedPrice}"
-                                                             class="text-danger">Suggested
-                                                            Price Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span
-                                                                    th:text="#{commerce.screen.item.compareat.price}">Compare At Price</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="number" step="0.01"
-                                                                   class="form-control input-sm"
-                                                                   th:placeholder="#{commerce.screen.item.compareat.price.placeholder}"
-                                                                   th:field="*{itemOptions.compareAtPrice}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.compareAtPrice')}"
-                                                             th:errors="*{itemOptions.compareAtPrice}"
-                                                             class="text-danger">Compare
-                                                            At Price Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-group">
-                                                        <label>
-                                                            <small><span
-                                                                    th:text="#{commerce.screen.item.restocking.fee}">Restocking Fee</span>
-                                                            </small>
-                                                        </label>
-                                                        <div class="input-group">
-                                                            <input type="number" step="0.01"
-                                                                   class="form-control input-sm"
-                                                                   placeholder="Restocking Fee"
-                                                                   th:field="*{itemOptions.restockingFee}"></input>
-                                                        </div>
-                                                        <div th:if="${#fields.hasErrors('itemOptions.restockingFee')}"
-                                                             th:errors="${itemOptions.restockingFee}"
-                                                             class="text-danger">Restocking
-                                                            Fee Error
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.discountFlag}"/>
-                                                            <span
-                                                                    th:text="#{commerce.screen.item.discount.flag}">Discount Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.returnFlag}"></input>
-                                                            <span th:text="#{commerce.screen.item.return.flag}">Return Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.taxFlag}"/>
-                                                            <span
-                                                                    th:text="#{commerce.screen.item.tax.flag}">Tax Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.askQtyFlag}"></input>
-                                                            <span th:text="#{commerce.screen.item.ask.qty.flag}">Ask Qty Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.askPriceFlag}"/>
-                                                            <span
-                                                                    th:text="#{commerce.screen.item.ask.price.flag}">Ask Price Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.descFlag}"></input>
-                                                            <span
-                                                                    th:text="#{commerce.screen.item.ask.desc.flag}">Ask Description Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.priceChangeFlag}"/>
-                                                            <span th:text="#{commerce.screen.item.price.change.flag}">Price Change Allowed</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.nonMerchFlag}"></input>
-                                                            <span th:text="#{commerce.screen.item.non.merch.flag}">Non Merch Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.minAgeFlag}"/>
-                                                            <span
-                                                                    th:text="#{commerce.screen.item.min.age.flag}">Min Age Needed</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                                    <div class="form-check text-left">
-                                                        <label class="form-check-label"> <input type="checkbox"
-                                                                                                class="form-check-input"
-                                                                                                th:field="*{itemOptions.customerPromptFlag}"></input>
-                                                            <span th:text="#{commerce.screen.item.customer.prompt.flag}">Customer Prompt Flag</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" th:if="${alert==null}">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <label></label>
-                                    <div class="input-group text-left">
-                                        <button type="submit" name="saveStyle" value="saveStyle"
-                                                class="btn btn-info mx-2"
-                                                th:if="${itemBean.status==null || itemBean.status=='C'}">
-                                            <i class="far fa-save fa-2x mx-2"></i> <span
-                                                th:text="#{commerce.screen.btn.submit.save}"></span>
-                                        </button>
-                                        <button type="submit" name="saveApproveStyle" value="saveApproveStyle"
-                                                class="btn btn-info  mx-2"
-                                                th:if="${itemBean.status==null || itemBean.status=='C'}">
-                                            <i class="far fa-save fa-2x mx-1"></i><span class="fa-2x mr-2"> <span
-                                                class="fa-layers fa-fw"> <i class="far fa-file-alt"
-                                                                            data-fa-transform="rotate-180"></i> <i
-                                                class="fas fa-pencil-alt"
-                                                data-fa-transform="shrink-10 right-10 up-4"></i>
+																	<option th:each="uom: ${UOMs}" th:value="${uom.code}" th:text="${uom.code} + ' - ' +${uom.name}"></option>
+																</select>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.uom')}" th:errors="*{itemOptions.uom}" class="text-danger">UOM Error</div>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.pack.size}">Pack Size</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="text" th:field="*{itemOptions.packSize}" class="form-control input-sm"
+																	th:placeholder="#{commerce.screen.item.pack.size.placeholder}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.packSize')}" th:errors="*{itemOptions.packSize}" class="text-danger">Pack Size Error</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.unit.cost}">Unit Cost Amount</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.unit.cost.placeholder}"
+																	th:field="*{itemOptions.unitCost}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.unitCost')}" th:errors="*{itemOptions.unitCost}" class="text-danger">Unit Cost Error</div>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.mrp}">MRP</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.mrp.placeholder}"
+																	th:field="*{itemOptions.maxRetailPrice}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.maxRetailPrice')}" th:errors="${itemOptions.maxRetailPrice}" class="text-danger">MRP Error</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.suggested.price}">Suggested Price</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.suggested.price.placeholder}"
+																	th:field="*{itemOptions.suggestedPrice}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.suggestedPrice')}" th:errors="*{itemOptions.suggestedPrice}" class="text-danger">Suggested
+																Price Error</div>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.compareat.price}">Compare At Price</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="number" step="0.01" class="form-control input-sm" th:placeholder="#{commerce.screen.item.compareat.price.placeholder}"
+																	th:field="*{itemOptions.compareAtPrice}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.compareAtPrice')}" th:errors="*{itemOptions.compareAtPrice}" class="text-danger">Compare At
+																Price Error</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+															<label> <small><span th:text="#{commerce.screen.item.restocking.fee}">Restocking Fee</span> </small>
+															</label>
+															<div class="input-group">
+																<input type="number" step="0.01" class="form-control input-sm" placeholder="Restocking Fee" th:field="*{itemOptions.restockingFee}"></input>
+															</div>
+															<div th:if="${#fields.hasErrors('itemOptions.restockingFee')}" th:errors="${itemOptions.restockingFee}" class="text-danger">Restocking Fee
+																Error</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.discountFlag}" /> <span
+																th:text="#{commerce.screen.item.discount.flag}">Discount Flag</span>
+															</label>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.returnFlag}"></input> <span
+																th:text="#{commerce.screen.item.return.flag}">Return Flag</span>
+															</label>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.taxFlag}" /> <span
+																th:text="#{commerce.screen.item.tax.flag}">Tax Flag</span>
+															</label>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.askQtyFlag}"></input> <span
+																th:text="#{commerce.screen.item.ask.qty.flag}">Ask Qty Flag</span>
+															</label>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.askPriceFlag}" /> <span
+																th:text="#{commerce.screen.item.ask.price.flag}">Ask Price Flag</span>
+															</label>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.descFlag}"></input> <span
+																th:text="#{commerce.screen.item.ask.desc.flag}">Ask Description Flag</span>
+															</label>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.priceChangeFlag}" /> <span
+																th:text="#{commerce.screen.item.price.change.flag}">Price Change Allowed</span>
+															</label>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.nonMerchFlag}"></input> <span
+																th:text="#{commerce.screen.item.non.merch.flag}">Non Merch Flag</span>
+															</label>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.minAgeFlag}" /> <span
+																th:text="#{commerce.screen.item.min.age.flag}">Min Age Needed</span>
+															</label>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-check text-left">
+															<label class="form-check-label"> <input type="checkbox" class="form-check-input" th:field="*{itemOptions.customerPromptFlag}"></input> <span
+																th:text="#{commerce.screen.item.customer.prompt.flag}">Customer Prompt Flag</span>
+															</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row" th:if="${alert==null}">
+								<div class="col-xs-12 col-sm-12 col-md-12">
+									<div class="form-group">
+										<label></label>
+										<div class="input-group text-left">
+											<button type="submit" name="saveStyle" value="saveStyle" class="btn btn-info mx-2" th:if="${itemBean.status==null || itemBean.status=='' || itemBean.status=='C'}">
+												<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
+											</button>
+											<button type="submit" name="saveApproveStyle" value="saveApproveStyle" class="btn btn-info  mx-2"
+												th:if="${itemBean.status==null || itemBean.status=='' || itemBean.status=='C'}">
+												<i class="far fa-save fa-2x mx-1"></i><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
+														data-fa-transform="rotate-180"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
-												</span><span
-                                                th:text="#{commerce.screen.btn.submit.save.approve}"></span>
-                                        </button>
-                                        <a th:href="@{/admin/add_sku(styleId=${itemBean.itemId})}"
-                                           class="btn btn-success mx-2" th:if="${itemBean.status=='A'}"><span
-                                                class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
-                                                class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
-                                                class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+												</span><span th:text="#{commerce.screen.btn.submit.save.approve}"></span>
+											</button>
+											<a th:href="@{/admin/add_sku(styleId=${itemBean.itemId})}" class="btn btn-success mx-2" th:if="${itemBean.status=='A'}"><span class="fa-2x mr-2">
+													<span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus"
+														data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
-											</span> <span th:text="#{commerce.home.menu.add.sku}"></span></a> <a
-                                            th:href="@{/admin/add_style}" class="btn btn-success  mx-2"><span
-                                            class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
-                                            class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
-                                            class="fas fa-plus" data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span> <span th:text="#{commerce.home.menu.add.sku}"></span></a> <a th:href="@{/admin/add_style}" class="btn btn-success  mx-2"><span class="fa-2x mr-2">
+													<span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i class="fas fa-plus"
+														data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
-											</span> <span th:text="#{commerce.home.menu.add.style}"></span></a> <a
-                                            th:href="@{/admin/search_item}" class="btn btn-success  mx-2"> <span
-                                            class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i
-                                            class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
-                                            class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
+											</span> <span th:text="#{commerce.home.menu.add.style}"></span></a> <a th:href="@{/admin/search_item}" class="btn btn-success  mx-2"> <span
+												class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt" data-fa-transform="rotate-180"></i> <i
+														class="fas fa-cog" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>
 											</span> <span th:text="#{commerce.home.menu.search.item}"></span>
-                                    </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="card-footer text-muted"></div>
-        </div>
-    </div>
-    <!-- /#page-content-wrapper -->
-</div>
-<!-- /#wrapper -->
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="card-footer text-muted"></div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+	</div>
+	<!-- /#wrapper -->
 </body>
 </html>

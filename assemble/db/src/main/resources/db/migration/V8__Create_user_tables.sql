@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`user` (
   `email` VARCHAR(100) NULL,
   `login_count` INT NOT NULL DEFAULT 0,
   `status` VARCHAR(2) NOT NULL,
-  `default_location` INT(4) NOT NULL,
+  `default_location` INT(4) NULL,
   `photo` MEDIUMBLOB NULL,
   `photo_type` VARCHAR(120) NULL,
   `photo_url` VARCHAR(300) NULL,

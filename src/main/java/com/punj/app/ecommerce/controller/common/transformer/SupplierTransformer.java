@@ -60,12 +60,16 @@ public class SupplierTransformer {
 		supplierBean.setModifiedBy(supplier.getModifiedBy());
 		supplierBean.setModifiedDate(supplier.getModifiedDate());
 
-		List<AddressBean> supplierAddresses = CommonMVCTransformer.transformAddresses(supplier.getAddresses());
-		supplierBean.setAddresses(supplierAddresses);
+		if(supplier.getAddresses()!=null && !supplier.getAddresses().isEmpty()) {
+			List<AddressBean> supplierAddresses = CommonMVCTransformer.transformAddresses(supplier.getAddresses());
+			supplierBean.setAddresses(supplierAddresses);
+			
 
-		supplierBean.setPrimaryAddressIndex(CommonMVCTransformer.getPrimaryAddressIndex(supplierBean.getAddresses()));
-		if (supplierBean.getPrimaryAddressIndex() > -1)
-			supplierBean.setPrimaryAddress(CommonMVCTransformer.getPrimaryAddress(supplier.getAddresses()));
+			supplierBean.setPrimaryAddressIndex(CommonMVCTransformer.getPrimaryAddressIndex(supplierBean.getAddresses()));
+			if (supplierBean.getPrimaryAddressIndex() > -1)
+				supplierBean.setPrimaryAddress(CommonMVCTransformer.getPrimaryAddress(supplier.getAddresses()));
+		}
+
 
 		logger.info("The supplier details has been updated in bean object now");
 		return supplierBean;

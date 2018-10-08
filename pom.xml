@@ -81,7 +81,7 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-java8time</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search-orm</artifactId>
@@ -158,11 +158,84 @@
 			<artifactId>pdfbox</artifactId>
 			<version>2.0.4</version>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
+			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.14</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<proguardVersion>5.3.3</proguardVersion>
+					<injar>${project.build.finalName}.jar</injar>
+					<outjar>${project.build.finalName}.jar</outjar>
+					<obfuscate>true</obfuscate>
+					<options>
+						<option>-dontshrink</option>
+						<option>-dontoptimize</option>
+
+
+						<!-- This option will replace all strings in reflections method invocations 
+							with new class names. For example, invokes Class.forName('className') -->
+						<option>-adaptclassstrings</option>
+						<!-- This option will save all original annotations and etc. Otherwise 
+							all we be removed from files. -->
+						<option>-keepattributes
+							Exceptions,InnerClasses,Signature,Deprecated,*Annotation*,EnclosingMethod</option>
+						<!-- This option will save all original names in interfaces (without 
+							obfuscate). -->
+						<option>-keepnames interface **</option>
+						<!-- This option will save all original methods parameters in files 
+							defined in -keep sections, otherwise all parameter names will be obfuscate. -->
+						<!--option>-keepparameternames</option -->
+						<!-- This option will save all original class files (without obfuscate) 
+							but obfuscate all in domain package. -->
+						<!--option>-keep class !com.slm.proguard.example.spring.boot.domain.** 
+							{ *; }</option -->
+						<!-- This option will save all original class files (without obfuscate) 
+							in service package -->
+						<!--<option>-keep class com.slm.proguard.example.spring.boot.service 
+							{ *; }</option> -->
+						<!-- This option will save all original interfaces files (without obfuscate) 
+							in all packages. -->
+						<option>-keep interface * extends * { *; }</option>
+						<option>-keep class com.punj.app.ecommerce.CommerceApp { *; }</option>
+						<option>-keepnames class com.punj.app.ecommerce.** { *; }</option>
+					</options>
+					<libs>
+						<!-- Include main JAVA library required. -->
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.proguard</groupId>
+						<artifactId>proguard-base</artifactId>
+						<version>5.3.3</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
+
+
+
+
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -179,6 +252,9 @@
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+						<configuration>
+							<mainClass>com.punj.app.ecommerce.CommerceApp</mainClass>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

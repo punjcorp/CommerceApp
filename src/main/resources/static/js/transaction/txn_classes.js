@@ -258,7 +258,7 @@ $.extend(SaleLineItem.prototype, {
 	updateModifiedItemValues : function(){
 		var itemId=this.itemId;
 		
-		this.itemName=$('#li_name' + itemId).val();
+		//this.itemName=$('#li_name' + itemId).val();
 		
 		this.qty=+$('#li_qty' + itemId).val();
 
@@ -444,7 +444,7 @@ $.extend(SaleLineItem.prototype, {
 		if (txn_type == 'R')
 			totalItemPrice = itemPrice + discountAmt + sgstTaxAmt + cgstTaxAmt;
 		else
-			totalItemPrice = itemPrice - discountAmt + totalTaxAmt;
+			totalItemPrice = itemPrice - discountAmt + sgstTaxAmt + cgstTaxAmt;
 				
 		totalItemPrice = Math.round(totalItemPrice);
 		totalItemPrice = totalItemPrice.toFixed(2);

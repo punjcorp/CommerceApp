@@ -62,14 +62,14 @@ public class LoginController {
 		this.userService = userService;
 	}
 
-	@GetMapping(ViewPathConstants.LOGIN_URL)
+	/*@GetMapping(ViewPathConstants.LOGIN_URL)
 	public String login(Model model) {
 		model.addAttribute("loginBean", new LoginBean());
 		return ViewPathConstants.LOGIN_PAGE;
 
 	}
-
-	@PostMapping(ViewPathConstants.LOGIN_URL)
+*/
+	@PostMapping(ViewPathConstants.STORE_SETUP_URL)
 	public String validateLogin(@ModelAttribute LoginBean loginBean, Model model, HttpSession session, Locale locale) {
 		logger.info("Entered details User Name {} and Password {} ", loginBean.getUsername(), loginBean.getPassword());
 		List<Password> passwords = userService.getAllPasswordsByUsername(loginBean.getUsername());

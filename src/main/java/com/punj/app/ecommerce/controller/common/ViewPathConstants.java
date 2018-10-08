@@ -432,8 +432,9 @@ public final class ViewPathConstants {
 	/**
 	 * The Setup pages section starts
 	 */
-	public static final String STORE_SETUP_URL = "/admin/configure_store";
-	public static final String STORE_SETUP_PAGE = "admin/store_setup";
+	public static final String STORE_SETUP_URL = "/start";
+	public static final String SAVE_STORE_SETUP_URL = "/save_pi_pos_setup";
+	public static final String STORE_SETUP_PAGE = "setup/initial_setup";
 
 	
 	/**

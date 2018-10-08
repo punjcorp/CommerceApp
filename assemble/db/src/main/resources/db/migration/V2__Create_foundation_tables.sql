@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`location` (
   `country` VARCHAR(45) NOT NULL,
   `pincode` VARCHAR(6) NOT NULL,
   `neighborhood` VARCHAR(100) NULL,
+  `district` VARCHAR(45) NULL,
   `locale` VARCHAR(10) NOT NULL,
   `default_tender` VARCHAR(30) NOT NULL DEFAULT 'CASH',
   `currency` VARCHAR(3) NOT NULL,
@@ -164,6 +165,18 @@ ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX `code_UNIQUE` ON `commercedb`.`denomination_master` (`code` ASC);
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`gst_state_codes`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`gst_state_codes`;
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`gst_state_codes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `state_code` VARCHAR(5) NOT NULL,
+  `state_name` VARCHAR(80) NOT NULL,
+  `state_name_short` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
 
 
 

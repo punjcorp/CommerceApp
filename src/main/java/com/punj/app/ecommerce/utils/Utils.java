@@ -208,13 +208,24 @@ public class Utils {
 	 * Static method tester
 	 */
 	public static void main(String[] args) {
-		logger.info("password is {}", Utils.encodePassword("cashier"));
+		LocalDate currentDate = LocalDate.now();
+		String utilString = RandomStringUtils.random(142, Boolean.TRUE, Boolean.TRUE);
+		String monthDay = String.format("%02d", currentDate.getDayOfMonth());
+		String month = String.format("%02d", currentDate.getMonthValue());
+		int year = currentDate.getYear();
+		
+		StringBuffer finalResult=new StringBuffer();
+		finalResult.append(utilString.substring(0, 27));
+		finalResult.append(monthDay);
+		finalResult.append(utilString.substring(28, 37));
+		finalResult.append(month);
+		finalResult.append(utilString.substring(38, 119));
+		finalResult.append(year);
+		finalResult.append(utilString.substring(120, 141));
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yy HH:mm:ss");
-		String formattedDate = LocalDateTime.now().format(formatter);
-		System.out.println("here is the output " + formattedDate);
-		LocalDateTime newDate = LocalDateTime.parse(formattedDate, formatter);
-		System.out.println("here is the new output " + newDate);
+		System.out.println(finalResult.toString());
+		
+		System.out.println(Utils.encodePassword("kashish"));
 
 	}
 

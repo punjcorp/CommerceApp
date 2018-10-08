@@ -441,5 +441,10 @@ public final class MVCConstants {
 	
 	public static final String ATTR_BEAN_PARAM= "attrBean";
 	public static final String ATTR_BEANS_PARAM= "attrs";
+
+	public static final String SETUP_STATUS_BEAN= "setupStatus";
+	public static final String INITIAL_SETUP_BEAN= "initBean";
+	public static final String LOGIN_BEAN= "loginBean";
+	public static final String SETUP_NEEDED_PARAM= "isSetupNeeded";
 	
 }

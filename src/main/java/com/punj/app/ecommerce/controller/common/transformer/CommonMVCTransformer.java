@@ -139,6 +139,36 @@ public class CommonMVCTransformer {
 		return locationBean;
 	}
 
+	public static Location transformLocationBean(LocationBean locationBean) {
+		Location location= new Location();
+		location.setLocationId(locationBean.getLocationId());
+		//Hardcoded as of now, later on ask on the screen
+		location.setLocationType("S");
+		location.setName(locationBean.getName());
+		location.setDefaultTender(locationBean.getDefaultTender());
+		location.setGstNo(locationBean.getGstNo());
+
+		location.setAddress1(locationBean.getAddress1());
+		location.setAddress2(locationBean.getAddress2());
+		location.setCity(locationBean.getCity());
+		location.setNeighborhood(locationBean.getNeighborhood());
+		location.setDistrict(locationBean.getDistrict());
+		location.setState(locationBean.getState());
+		location.setCountry(locationBean.getCountry());
+		location.setPincode(locationBean.getPincode());
+		location.setEmail(locationBean.getEmail());
+		location.setManager(locationBean.getManager());
+		location.setTelephone1(locationBean.getTelephone1());
+		location.setTelephone2(locationBean.getTelephone2());
+		
+		location.setCurrency(locationBean.getCurrency());
+		location.setLocale(locationBean.getLocale());
+		
+		logger.info("The location bean details has been transformed into location ");
+		return location;
+	}
+	
+	
 	public static LocationBean transformLocationDomainPartially(Location location, Boolean partial) {
 		LocationBean locationBean = new LocationBean();
 		locationBean.setLocationId(location.getLocationId());

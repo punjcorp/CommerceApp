@@ -103,7 +103,7 @@ public class OrderPrintUtil {
 		return orderList;
 	}
 
-	public Object createOrderReport(Order order, OrderBean orderBean, String username, HttpSession session, String requestType) {
+	public Object createOrderReport(Order order, OrderBean orderBean, String username, HttpSession session, String requestType, Boolean createNew) {
 
 		BigInteger orderId = orderBean.getOrderId();
 		JasperPrint orderReport = null;
@@ -112,7 +112,7 @@ public class OrderPrintUtil {
 		// Print if found
 		Object sessionResult = this.retrieveOrderReportInSession(orderId, session, requestType);
 
-		if (sessionResult == null) {
+		if (sessionResult == null || createNew) {
 			// Step 2 - Create Report Object if step 1 fails
 			// Check if data is available for order otherwise retrieve from database
 			List<OrderReportBean> orderList = this.generateOrderReportBean(orderBean, username);

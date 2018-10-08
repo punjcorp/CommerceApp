@@ -291,10 +291,10 @@
 															</label>
 															<div class="input-group">
 																<select th:field="*{itemOptions.uom}" class="form-control input-sm">
-																	<option class="form-text text-muted" value="" selected="selected" th:text="#{commerce.screen.item.select.uom}">
+																	<option class="form-text text-muted" value="" th:text="#{commerce.screen.item.select.uom}">
                                                                     Select UOM
                                                                 </option>
-																	<option th:each="uom: ${UOMs}" th:value="${uom.code}" th:text="${uom.name} + ' - ' +${uom.description}"></option>
+																	<option th:each="uom: ${UOMs}" th:value="${uom.code}" th:text="${uom.code} + ' - ' +${uom.name}"></option>
 																</select>
 															</div>
 															<div th:if="${#fields.hasErrors('itemOptions.uom')}" th:errors="*{itemOptions.uom}" class="text-danger">UOM Error</div>
@@ -480,11 +480,11 @@
 									<div class="form-group">
 										<label></label>
 										<div class="input-group text-left">
-											<button type="submit" name="saveStyle" value="saveStyle" class="btn btn-info mx-2" th:if="${itemBean.status==null || itemBean.status=='C'}">
+											<button type="submit" name="saveStyle" value="saveStyle" class="btn btn-info mx-2" th:if="${itemBean.status==null || itemBean.status=='' || itemBean.status=='C'}">
 												<i class="far fa-save fa-2x mx-2"></i> <span th:text="#{commerce.screen.btn.submit.save}"></span>
 											</button>
 											<button type="submit" name="saveApproveStyle" value="saveApproveStyle" class="btn btn-info  mx-2"
-												th:if="${itemBean.status==null || itemBean.status=='C'}">
+												th:if="${itemBean.status==null || itemBean.status=='' || itemBean.status=='C'}">
 												<i class="far fa-save fa-2x mx-1"></i><span class="fa-2x mr-2"> <span class="fa-layers fa-fw"> <i class="far fa-file-alt"
 														data-fa-transform="rotate-180"></i> <i class="fas fa-pencil-alt" data-fa-transform="shrink-10 right-10 up-4"></i>
 												</span>

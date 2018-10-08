@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`tax_group` (
   `tax_group_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(80) NOT NULL,
   `description` VARCHAR(300) NULL,
+  `aggregated_rate` DECIMAL(12,2) NOT NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
