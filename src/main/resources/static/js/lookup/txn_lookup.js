@@ -25,7 +25,7 @@ $(function() {
 	
 	endDateTime=$('#endDateTime').flatpickr({
 		dateFormat : 'd-M-y',
-		maxDate : "today"
+		//maxDate : "today"
 	});
 	
 	txnDataTable=$('#txnDataTable').DataTable( {

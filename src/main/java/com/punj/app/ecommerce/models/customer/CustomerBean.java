@@ -35,8 +35,8 @@ public class CustomerBean {
 	@Size(min = 2, max = 80, message = "{commerce.error.string.size}")
 	private String name;
 
-	@NotNull
-	@Size(min = 7, max = 15, message = "{commerce.error.int.size}")
+	/*@NotNull
+	@Size(min = 7, max = 15, message = "{commerce.error.int.size}")*/
 	private String phone;
 
 	private String phone2;
@@ -45,8 +45,8 @@ public class CustomerBean {
 	private String panNo;
 	private String stateCode;
 
-	@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
-	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
+	//@Size(min = 6, max = 80, message = "{commerce.error.string.size}")
+	//@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}")
 	private String email;
 
 	private String createdBy;

@@ -14,7 +14,7 @@ public final class ServiceConstants {
 	}
 
 	public static final Integer REGISTER_ONE = 1;
-
+	public static final String REGISTER_ONE_NAME = "Register One";
 	public static final String TABLE_SALES_INVOICE="sale_txn_invoices";
 	 
 	public static final String RCPT_SALE_STORE="Sale Store Copy";

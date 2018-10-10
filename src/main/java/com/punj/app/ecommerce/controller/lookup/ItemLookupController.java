@@ -143,6 +143,11 @@ public class ItemLookupController {
 		this.commerceContext = commerceContext;
 	}
 
+	@PostMapping(ViewPathConstants.LOOKUP_ITEM_DETAILS_URL)
+	public String processItemDetails(Model model, final HttpServletRequest req, Locale locale, RedirectAttributes redirectAttrs) {
+		return this.getItemDetails(model, req, locale, redirectAttrs);
+	}
+	
 	@GetMapping(ViewPathConstants.LOOKUP_ITEM_DETAILS_URL)
 	public String getItemDetails(Model model, final HttpServletRequest req, Locale locale, RedirectAttributes redirectAttrs) {
 		BigInteger itemId = new BigInteger(req.getParameter(MVCConstants.ITEM_ID_PARAM));

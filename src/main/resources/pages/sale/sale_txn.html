@@ -62,6 +62,20 @@
 												th:errors="${customerBean.customerSearchText}" class="text-danger">Customer Search Error</small>
 										</div>
 									</div>
+									<div class="col">
+
+											<label for="name"><small></small></label>
+											<div>
+												<button type="button" id="btnLastTxn" class="btn btn-secondary" th:title="#{commerce.tooltip.btn.last.txn}">
+													<i class="fas fa-receipt fa-2x"></i>
+												</button>
+
+												<button type="button" id="btnChangeBDate" class="btn btn-info" th:title="#{commerce.tooltip.btn.change.bdate}">
+													<i class="far fa-calendar-alt fa-2x"></i>
+												</button>
+											
+											</div>
+										</div>
 								</div>
 							</div>
 						</div>
@@ -106,7 +120,9 @@
 												<button type="button" id="btnChangeCustomer" class="btn btn-info" th:title="#{commerce.tooltip.btn.change.customer}">
 													<i class="fas fa-male fa-2x"></i>
 												</button>
-
+												<button type="button" id="btnChangeBDate1" class="btn btn-info" th:title="#{commerce.tooltip.btn.change.bdate}">
+													<i class="far fa-calendar-alt fa-2x"></i>
+												</button>
 												<button type="button" id="btnAssociateCustomer" class="btn btn-info d-none" th:title="#{commerce.tooltip.btn.associate.customer}">
 													<i class="fas fa-male fa-2x"></i>
 												</button>

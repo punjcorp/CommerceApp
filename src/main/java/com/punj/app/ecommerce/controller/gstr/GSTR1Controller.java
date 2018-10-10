@@ -4,7 +4,7 @@ package com.punj.app.ecommerce.controller.gstr;
  */
 
 import java.io.File;
-import java.math.BigInteger;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -140,8 +140,10 @@ public class GSTR1Controller {
 		try {
 			Map<Customer, Map<String, List<GSTInvoice>>> saleTxns = this.gstrService.retrieveGSTRInvoiceData(locationId, finMonth);
 
+			Location location=this.commonService.retrieveLocationDetails(locationId);
+			
 			List<GSTHSN> hsnDetails = this.gstrService.retrieveGSTRHSNData(locationId, finMonth);
-			String gstNo = "03AAEFC0339G1Z2";
+			String gstNo = location.getGstNo();
 			gstr1Obj = GSTROneUtil.generateGSTR1(finYear, finMonth, gstNo, hsnDetails, saleTxns);
 		} catch (Exception e) {
 			logger.error("There has been an error while generating GSTR1 JSON file");
@@ -166,17 +168,47 @@ public class GSTR1Controller {
 		finYears.add(finYear);
 		model.addAttribute(MVCConstants.GSTR_FIN_YEARS_LIST, finYears);
 
+		
 		List<FinancialMonth> finMonths = new ArrayList<>();
-		FinancialMonth finMonth = new FinancialMonth();
-		finMonth.setCode("09");
-		finMonth.setDesc("September");
-		finMonth.setFinMonthId(1);
-		finMonths.add(finMonth);
-		finMonth = new FinancialMonth();
-		finMonth.setCode("08");
-		finMonth.setDesc("August");
-		finMonth.setFinMonthId(2);
-		finMonths.add(finMonth);
+		YearMonth thisMonth = YearMonth.now();
+	
+		FinancialMonth finMonth = null;
+		int count=1;
+		int seqNo=1;
+		int month=thisMonth.getMonthValue();
+		YearMonth itrMonth=thisMonth;
+		if(month<=3) {
+			while(month>0) {
+				finMonth = new FinancialMonth();
+				finMonth.setCode(month+"");
+				finMonth.setDesc(itrMonth.getMonth().toString());
+				finMonth.setFinMonthId(seqNo);
+				finMonths.add(finMonth);
+				
+				itrMonth=thisMonth.minusMonths(count);
+				month=itrMonth.getMonthValue();
+				count++;
+				seqNo++;
+			}
+		}
+		
+		
+		count=1;
+		
+		while(month>3) {
+			finMonth = new FinancialMonth();
+			finMonth.setCode(month+"");
+			finMonth.setDesc(itrMonth.getMonth().toString());
+			finMonth.setFinMonthId(seqNo);
+			finMonths.add(finMonth);
+			
+			itrMonth=thisMonth.minusMonths(count);
+			month=itrMonth.getMonthValue();
+			count++;
+			seqNo++;
+		}
+		
+		
 		model.addAttribute(MVCConstants.GSTR_FIN_MONTHS_LIST, finMonths);
 
 		model.addAttribute(MVCConstants.GSTR_SEARCH_BEAN, gstrSearchBean);

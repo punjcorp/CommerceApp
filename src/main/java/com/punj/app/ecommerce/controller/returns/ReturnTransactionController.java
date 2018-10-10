@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -57,7 +58,7 @@ public class ReturnTransactionController {
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-	
+
 	/**
 	 * @param transactionService
 	 *            the transactionService to set
@@ -66,7 +67,6 @@ public class ReturnTransactionController {
 	public void setTransactionService(TransactionService transactionService) {
 		this.transactionService = transactionService;
 	}
-
 
 	/**
 	 * @param commonService
@@ -84,6 +84,12 @@ public class ReturnTransactionController {
 	@Autowired
 	public void setCommerceContext(CommerceContext commerceContext) {
 		this.commerceContext = commerceContext;
+	}
+
+	@PostMapping(ViewPathConstants.RETURN_TXN_URL)
+	public String processReturnTxnScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
+		return this.showSaleScreen(model, session, req, redirectAttrs, locale);
+
 	}
 
 	@GetMapping(ViewPathConstants.RETURN_TXN_URL)
@@ -125,6 +131,12 @@ public class ReturnTransactionController {
 			if (StringUtils.isEmpty(registerIdValue)) {
 				registerId = (Integer) session.getAttribute(openLocId + MVCConstants.REGISTER_ID_PARAM);
 				registerName = (String) session.getAttribute(openLocId + MVCConstants.REG_NAME_PARAM);
+				if (registerId == null) {
+					registerId =MVCConstants.REG_ONE;
+					registerName = MVCConstants.REG_ONE_NAME;
+					session.setAttribute(openLocId+ MVCConstants.REGISTER_ID_PARAM, registerId );
+					session.setAttribute(openLocId + MVCConstants.REG_NAME_PARAM, registerName );
+				}
 			} else {
 				registerId = new Integer(registerIdValue);
 				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
@@ -158,8 +170,7 @@ public class ReturnTransactionController {
 				} else {
 					req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 					redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.RETURN_TXN_URL);
-					redirectAttrs.addFlashAttribute(MVCConstants.ALERT,
-							this.messageSource.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
+					redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
 					logger.info("There is no valid store or register provided for the return transaction screen");
 					return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 				}

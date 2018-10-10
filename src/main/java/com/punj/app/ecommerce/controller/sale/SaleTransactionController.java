@@ -34,6 +34,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -124,6 +125,11 @@ public class SaleTransactionController {
 		this.commerceContext = commerceContext;
 	}
 
+	@PostMapping(ViewPathConstants.POS_URL)
+	public String processSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
+		return this.showSaleScreen(model, session, req, redirectAttrs, locale);
+	}
+
 	@GetMapping(ViewPathConstants.POS_URL)
 	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		try {
@@ -163,6 +169,12 @@ public class SaleTransactionController {
 			if (StringUtils.isEmpty(registerIdValue)) {
 				registerId = (Integer) session.getAttribute(openLocId + MVCConstants.REGISTER_ID_PARAM);
 				registerName = (String) session.getAttribute(openLocId + MVCConstants.REG_NAME_PARAM);
+				if(registerId==null) {
+					registerId =MVCConstants.REG_ONE;
+					registerName = MVCConstants.REG_ONE_NAME;
+					session.setAttribute(openLocId+ MVCConstants.REGISTER_ID_PARAM, registerId );
+					session.setAttribute(openLocId + MVCConstants.REG_NAME_PARAM, registerName );
+				}
 			} else {
 				registerId = new Integer(registerIdValue);
 				registerName = req.getParameter(MVCConstants.REG_NAME_PARAM);
@@ -388,7 +400,7 @@ public class SaleTransactionController {
 	@GetMapping(ViewPathConstants.DELETE_SALE_TXN_URL)
 	public String deleteSaleTransaction(@RequestParam("txnId") String uniqueTxnNo, Model model, final HttpSession session, final HttpServletRequest req,
 			RedirectAttributes redirectAttrs, Locale locale, Authentication authentication) {
-		
+
 		try {
 			if (StringUtils.isNotBlank(uniqueTxnNo)) {
 				UserDetails userDetails = (UserDetails) authentication.getPrincipal();

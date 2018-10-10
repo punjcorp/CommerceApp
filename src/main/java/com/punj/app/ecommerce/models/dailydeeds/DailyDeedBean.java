@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup.ValidationGroupSkipStoreOpen;
 import com.punj.app.ecommerce.models.tender.TenderBean;
 
 /**
@@ -20,15 +21,17 @@ import com.punj.app.ecommerce.models.tender.TenderBean;
  */
 public class DailyDeedBean {
 
-	@NotNull(message = "{commerce.error.location.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
+	@NotNull(message = "{commerce.error.location.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class, ValidationGroupSkipStoreOpen.class })
 	private Integer locationId;
 	private String locationName;
 	private String gstNo;
 	private String defaultTender;
 
+	private Boolean skipClosingProcess;
+
 	private String locationStatus;
 
-	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
+	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class, ValidationGroupSkipStoreOpen.class })
 	private LocalDateTime businessDate;
 
 	@NotNull(message = "{commerce.error.register.empty}", groups = { ValidationGroup.ValidationGroupRegOpen.class })
@@ -342,6 +345,21 @@ public class DailyDeedBean {
 	 */
 	public void setGstNo(String gstNo) {
 		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the skipClosingProcess
+	 */
+	public Boolean getSkipClosingProcess() {
+		return skipClosingProcess;
+	}
+
+	/**
+	 * @param skipClosingProcess
+	 *            the skipClosingProcess to set
+	 */
+	public void setSkipClosingProcess(Boolean skipClosingProcess) {
+		this.skipClosingProcess = skipClosingProcess;
 	}
 
 }

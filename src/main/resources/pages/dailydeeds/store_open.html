@@ -8,6 +8,7 @@
 <!-- This thymeleaf fragment include all the header stuff -->
 <th:block th:replace="common/header:: header"></th:block>
 <link href="../../static/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}" rel="stylesheet" />
+<script src="../../static/js/moment.js" th:src="@{/js/moment.js}"></script>
 <script src="../../static/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 <link href="../../static/css/box_radio.css" th:href="@{/css/box_radio.css}" rel="stylesheet" />
 <script src="../../static/js/dailydeed.js" th:src="@{/js/dailydeed.js}"></script>
@@ -29,7 +30,10 @@
 					<div th:if="${ success!=null}" th:text="${success}" class="alert alert-success " role="alert"></div>
 					<div th:if="${ alert!=null}" th:text="${alert}" class="alert alert-danger " role="alert"></div>
 					<form id="openStoreForm" action="#" th:action="@{/pos/open_store}" th:object="${dailyDeedBean}" method="post">
-						<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.store.open.choose}">Select Location choice to
+					<input type="hidden" th:field="*{skipClosingProcess}"></input>
+						<div class="row">
+							<div class="col-6">
+							<label for="locationId"><small><span class="pos-mandatory" th:text="#{commerce.screen.store.open.choose}">Select Location choice to
 									proceed</span></small></label> <small th:if="${#fields.hasErrors('locationId')}" th:errors="${dailyDeedBean.locationId}" class="text-danger align-top">Location Error
 						</small>
 						<div class="box-radio-parent">
@@ -47,6 +51,7 @@
 												</div>
 												<div>
 													<h3>
+														<input type="hidden" th:id="${location.locationId+'_sale_b_date'}" th:value="${#temporals.format(location.lastSaleBusinessDate, 'dd-MMM-yy')}"></input>
 														<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> <input type="hidden"
 															th:id="${location.locationId+'_gst_no'}" th:value="${location.gstNo}"></input> <input type="hidden"
 															th:id="${location.locationId+'_loc_default_tender'}" th:value="${location.defaultTender}"></input> <span th:text="${location.name}"></span>
@@ -85,7 +90,10 @@
 								</label>
 							</th:block>
 						</div>
-						<div th:class="row" id="businessDateContainer">
+							</div>
+							<div class="col-6">
+							
+							<div th:class="row" id="businessDateContainer">
 							<div class="col-6">
 								<div class="form-group">
 									<label for="businessDate"><small><span class="pos-mandatory" th:text="#{commerce.screen.common.date.business}">Business Date</span></small></label>
@@ -102,7 +110,12 @@
 								</div>
 							</div>
 						</div>
-						<div id="tenderListContainer" th:class="${dailyDeedBean.locationId!=null}?'':'d-none'">
+							</div>
+						</div>
+					
+						
+						
+						<div id="tenderListContainer" th:class="${dailyDeedBean.locationId!=null}?'':'d-none'" th:if="${dailyDeedBean.skipClosingProcess!=null and dailyDeedBean.skipClosingProcess}">
 							<input type="hidden" th:field="*{selectedTenderId}"></input> <input type="hidden" th:field="*{selectedDenominationId}"></input>
 							<th:block th:each="tender,itrStat:${dailyDeedBean.tenders}">
 								<div class="border-box">

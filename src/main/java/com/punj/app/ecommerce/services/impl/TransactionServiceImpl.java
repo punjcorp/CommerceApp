@@ -1076,14 +1076,11 @@ public class TransactionServiceImpl implements TransactionService {
 		}
 
 		if (endDate == null) {
-			endDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
-			endDate.plusDays(1);
+			txnList = this.txnLookupRepository.searchTxnsWithoutEndDate(txnTypes, startDate.toString());
 		} else {
 			endDate.plusDays(1);
+			txnList = this.txnLookupRepository.searchTxns(txnTypes, startDate.toString(), endDate.toString());
 		}
-
-		txnList = this.txnLookupRepository.searchTxns(txnTypes, startDate.toString(), endDate.toString());
-
 		logger.info("The {} no of txns has been found since Start Date {} and till End Date {} of type {} txns.", txnList.size(), startDate, endDate, txnType);
 
 		return txnList;

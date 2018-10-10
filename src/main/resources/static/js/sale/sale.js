@@ -201,6 +201,14 @@ $(function() {
 		printLastxn();
 	});	
 	
+	$('#btnChangeBDate').click(function() {
+		window.location.href='/pos/open_store';
+	});	
+	
+	$('#btnChangeBDate1').click(function() {
+		window.location.href='/pos/open_store';
+	});
+	
 	$('#btnChooseAddress').click(function() {
 		renderSelectedAddress();
 	});

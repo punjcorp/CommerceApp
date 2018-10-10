@@ -48,8 +48,10 @@ public class DailyDeedTransformer {
 				dailyDeedBean.getRegister());
 		storeOpenTxn.setTransactionId(transactionId);
 
-		List<TenderDTO> tenders = DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders(), dailyDeedBean.getConcilationBean());
-		storeOpenTxn.setTenders(tenders);
+		if(dailyDeedBean.getTenders()!=null && !dailyDeedBean.getTenders().isEmpty()) {
+			List<TenderDTO> tenders = DailyDeedTransformer.transformTenderList(dailyDeedBean.getTenders(), dailyDeedBean.getConcilationBean());
+			storeOpenTxn.setTenders(tenders);
+		}
 
 		logger.info("The selected ids and list index from management page has been seperated");
 		return storeOpenTxn;

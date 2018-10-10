@@ -47,7 +47,6 @@
 													<span th:text="*{customerId}"></span>
 												</h5>
 											</div>
-											<small th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</small>
 										</div>
 									</div>
 									<div class="col-xs-9 col-sm-9 col-md-9">
@@ -63,7 +62,7 @@
 								<div class="row">
 									<div class="col-xs-6 col-sm-6 col-md-6">
 										<div class="form-group  text-left">
-											<label for="phone"><small><span class="pos-mandatory" th:text="#{commerce.screen.customer.phone1}">Customer Phone 1</span></small></label>
+											<label for="phone"><small><span th:text="#{commerce.screen.customer.phone1}">Customer Phone 1</span></small></label>
 											<div class="input-group text-left">
 												<input type="number" th:field="*{phone}" class="form-control input-sm pos-mandatory" th:placeholder="#{commerce.screen.customer.phone1.placeholder}"
 													maxlength="15"></input>
@@ -85,7 +84,7 @@
 								<div class="row">
 									<div class="col-xs-12 col-sm-12 col-md-12">
 										<div class="form-group  text-left">
-											<label for="email"><small><span class="pos-mandatory" th:text="#{commerce.screen.customer.email}">Customer Email</span></small></label>
+											<label for="email"><small><span th:text="#{commerce.screen.customer.email}">Customer Email</span></small></label>
 											<div class="input-group text-left">
 												<input type="email" th:field="*{email}" class="form-control input-sm" th:placeholder="#{commerce.screen.customer.email.placeholder}" maxlength="80"></input>
 											</div>

@@ -321,27 +321,63 @@ function processRegCreationFailure() {
 	$('#commonNewRegError').html('<h5>There was some issue while saving Register Details, please contact system administrator!!</h5>');
 }
 
-function locValChanged(cntl) {
-	var locValue = $(cntl).val();
+function processSkipOpening(){
+	var locValue = $('input:radio[name=locationId]:checked').val();
 	var bDateVal = $('#businessDate').val();
-	if (typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" && typeof (locValue) !== "undefined" && locValue != undefined
-			&& locValue != "") {
-		// updateBusinessDate(cntl);
-		// processLocationRequest(locValue, url);
-		checkLocationStatus(locValue, bDateVal);
+	var salesBDate = $('#'+locValue+'_sale_b_date').val();
+	var orgSalesBDate= $('#'+locValue+'_sale_b_date').val();
+	
+	if(typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" &&  typeof (salesBDate) !== "undefined" && salesBDate != undefined && salesBDate != "" ){
+		bDateVal=moment(bDateVal, "DD-MMM-YY");
+		salesBDate=moment(salesBDate, "DD-MMM-YY");
+		if(bDateVal.isBefore(salesBDate)){
+			bDateCntl.set("minDate",orgSalesBDate);
+		}else{
+			if (typeof (locValue) !== "undefined" && locValue != undefined
+					&& locValue != "") {
+				$('#screenBusyModal').modal({backdrop: 'static', keyboard: false});
+				submitForm('openStoreForm','openStore');
+			}
+			bDateCntl.set("minDate",orgSalesBDate);
+		}
+	}else{
+		bDateCntl.set("minDate",orgSalesBDate);
+	}
+	
+}
+
+function locValChanged(cntl) {
+	var skipOpening=$('#skipClosingProcess').val();
+	if(skipOpening=='true'){
+		processSkipOpening();
+	}else{
+		var locValue = $(cntl).val();
+		var bDateVal = $('#businessDate').val();
+		if (typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" && typeof (locValue) !== "undefined" && locValue != undefined
+				&& locValue != "") {
+			// updateBusinessDate(cntl);
+			// processLocationRequest(locValue, url);
+			checkLocationStatus(locValue, bDateVal);
+		}
 	}
 
 }
 
 function bDateValChanged(cntl) {
-	$('#btnOpenStore').addClass("d-none");
-	$('#tenderListContainer').addClass("d-none");
-	var bDateVal = $('#businessDate').val();
-	var locId = $('input:radio[name=locationId]:checked').val();
-	if (typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" && typeof (locId) !== "undefined" && locId != undefined && locId != "") {
-		checkLocationStatus(locId, bDateVal);
-		// processLocationRequest(locValue, url);
+	var skipOpening=$('#skipClosingProcess').val();
+	if(skipOpening=='true'){
+		processSkipOpening();
+	}else{
+		$('#btnOpenStore').addClass("d-none");
+		$('#tenderListContainer').addClass("d-none");
+		var bDateVal = $('#businessDate').val();
+		var locId = $('input:radio[name=locationId]:checked').val();
+		if (typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" && typeof (locId) !== "undefined" && locId != undefined && locId != "") {
+			checkLocationStatus(locId, bDateVal);
+			// processLocationRequest(locValue, url);
+		}
 	}
+	
 
 }
 

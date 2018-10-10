@@ -107,8 +107,10 @@ public class CommonMVCTransformer {
 		LocationBean locationBean = null;
 		List<LocationBean> locations = null;
 		Transaction txnDetails;
+		LocalDateTime businessDate;
 
 		Map<Integer, Transaction> lastTxnStatusTxns = locationDTO.getLastTxnStatus();
+		Map<Integer, LocalDateTime> lastSalesDateMap = locationDTO.getLastSaleBDate();
 
 		List<Location> locationList = locationDTO.getLocations();
 		if (locationList != null && !locationList.isEmpty()) {
@@ -117,6 +119,8 @@ public class CommonMVCTransformer {
 				locationBean = CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
 				txnDetails = lastTxnStatusTxns.get(locationBean.getLocationId());
 				locationBean = CommonMVCTransformer.updateLocationTxnStatus(locationBean, txnDetails);
+				businessDate = lastSalesDateMap.get(locationBean.getLocationId());
+				locationBean.setLastSaleBusinessDate(businessDate);
 				locations.add(locationBean);
 			}
 		}

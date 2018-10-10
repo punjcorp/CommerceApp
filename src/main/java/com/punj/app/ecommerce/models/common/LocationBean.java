@@ -42,7 +42,7 @@ public class LocationBean {
 	private LocalDateTime lastCreatedDate;
 	private String lastStatus;
 	private Boolean eligibleForStoreOpen = Boolean.TRUE;
-
+	private LocalDateTime lastSaleBusinessDate;
 	/**
 	 * @return the locationId
 	 */
@@ -385,6 +385,20 @@ public class LocationBean {
 	 */
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+
+	/**
+	 * @return the lastSaleBusinessDate
+	 */
+	public LocalDateTime getLastSaleBusinessDate() {
+		return lastSaleBusinessDate;
+	}
+
+	/**
+	 * @param lastSaleBusinessDate the lastSaleBusinessDate to set
+	 */
+	public void setLastSaleBusinessDate(LocalDateTime lastSaleBusinessDate) {
+		this.lastSaleBusinessDate = lastSaleBusinessDate;
 	}
 
 }

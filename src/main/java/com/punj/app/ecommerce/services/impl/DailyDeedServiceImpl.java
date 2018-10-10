@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,9 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	private TenderCountRepository tenderCountRepository;
 	private FinanceService financeService;
 	private LocationStatusRepository locationStatusRepository;
+
+	@Value("${app.skip.opening.closing.process}")
+	private Boolean skipClosingProcess;
 
 	/**
 	 * @param locationStatusRepository
@@ -460,37 +464,36 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 
 	@Override
 	public LocStatusDTO isLocationOpenAllowed(Integer locationId, LocalDateTime businessDate) {
-		LocStatusDTO locStatusDTO=new LocStatusDTO();
-		
+		LocStatusDTO locStatusDTO = new LocStatusDTO();
+
 		locStatusDTO.setBusinessDate(businessDate);
 		locStatusDTO.setLocationId(locationId);
-		
-		LocalDateTime bDate=null;
-		
-		List<LocationStatus> locStatusList=this.getLocationStausForOpening(locationId, businessDate);
-		
-		if(locStatusList!=null && !locStatusList.isEmpty()) {
-			for(LocationStatus locStatus:locStatusList) {
-				bDate=locStatus.getLocationStatusId().getBusinessDate();
-						
-				if(bDate!=null && bDate.equals(businessDate)) {
+
+		LocalDateTime bDate = null;
+
+		List<LocationStatus> locStatusList = this.getLocationStausForOpening(locationId, businessDate);
+
+		if (locStatusList != null && !locStatusList.isEmpty()) {
+			for (LocationStatus locStatus : locStatusList) {
+				bDate = locStatus.getLocationStatusId().getBusinessDate();
+
+				if (bDate != null && bDate.equals(businessDate)) {
 					locStatusDTO.setHasOpen(locStatus.getStoreOpenExists());
 					locStatusDTO.setHasClosed(locStatus.getStoreCloseExists());
 					locStatusDTO.setHasSales(locStatus.getSaleExists());
-					
-				}else {
-					if(!locStatusDTO.getHasOpenedInFuture()) {
+
+				} else {
+					if (!locStatusDTO.getHasOpenedInFuture()) {
 						locStatusDTO.setHasOpenedInFuture(locStatus.getStoreOpenExists());
 					}
-					if(!locStatusDTO.getHasClosedInFuture()) {
+					if (!locStatusDTO.getHasClosedInFuture()) {
 						locStatusDTO.setHasClosedInFuture(locStatus.getStoreCloseExists());
 					}
-					if(!locStatusDTO.getHasSalesInFuture()) {
+					if (!locStatusDTO.getHasSalesInFuture()) {
 						locStatusDTO.setHasSalesInFuture(locStatus.getSaleExists());
 					}
 				}
-				
-					
+
 			}
 		}
 
@@ -512,30 +515,106 @@ public class DailyDeedServiceImpl implements DailyDeedService {
 	@Transactional
 	public void resetLocationForBusiness(Integer locationId, LocalDateTime businessDate) {
 
-		//Delete all the future date daily deed txns, the sales are not part of it 
+		// Delete all the future date daily deed txns, the sales are not part of it
 		this.resetFutureTxns(locationId, businessDate);
-				
+
 		// Delete existing store close and last register close transactions
-		Transaction storeCloseTxn=this.transactionService.searchStoreCloseTxn(locationId, businessDate);
-		Transaction regCloseTxn=this.transactionService.searchLastRegCloseTxn(locationId, businessDate);
+		Transaction storeCloseTxn = this.transactionService.searchStoreCloseTxn(locationId, businessDate);
+		Transaction regCloseTxn = this.transactionService.searchLastRegCloseTxn(locationId, businessDate);
 		logger.info("The last register close and store close transactions has been retrieved for {} business date", businessDate);
-		if(storeCloseTxn!=null && regCloseTxn!=null) {
-			
-			//Delete register close
-			//Delete store close
+		if (storeCloseTxn != null && regCloseTxn != null) {
+
+			// Delete register close
+			// Delete store close
 			this.transactionService.deleteStoreCloseTxn(storeCloseTxn.getTransactionId());
 			this.transactionService.deleteRegCloseTxn(regCloseTxn.getTransactionId());
 			logger.info("The last register close and store close transactions for {} business date has been delete successfully ", businessDate);
-			
-		}else{
+
+		} else {
 			logger.error("There were no store close transaction found for the business date");
 		}
-		
+
 	}
-	
+
 	private void resetFutureTxns(Integer locationId, LocalDateTime businessDate) {
 		this.transactionService.deleteAllFutureTxns(locationId, businessDate);
 		logger.info("All the exisitng transactions with future dates has been deleted successfully ");
 	}
-	
+
+	@Override
+	@Transactional
+	public Boolean skipOpenProcess(DailyTransaction storeOpenDetails, String username) {
+		Boolean result = Boolean.FALSE;
+
+		Transaction storeOpenTxn=this.transactionService.searchLocationOpenTxn(storeOpenDetails.getTransactionId().getLocationId(), storeOpenDetails.getTransactionId().getBusinessDate());
+		
+		if(storeOpenTxn!=null) {
+			logger.info("The store open transaction already exists.");
+			result=Boolean.TRUE;
+		}else {
+			/**
+			 * Store Open Process Starts
+			 */
+			
+			TransactionIdDTO txnIdDTO = new TransactionIdDTO();
+			txnIdDTO.setBusinessDate(storeOpenDetails.getTransactionId().getBusinessDate());
+			txnIdDTO.setLocationId(storeOpenDetails.getTransactionId().getLocationId());
+			txnIdDTO.setRegister(ServiceConstants.REGISTER_ONE);
+
+			Transaction txnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_STORE);
+			logger.info("The store open transaction number has been generated successfully.");
+			txnDetails = this.transactionService.saveTransaction(txnDetails);
+			logger.info("The store open transaction basic details has been saved successfully.");
+			if (txnDetails != null) {
+
+				BigDecimal totalTxnAmount = BigDecimal.ZERO;
+				txnDetails.setTotalAmt(totalTxnAmount);
+
+				// this.updateDailySafe(txnDetails, tenderCountList, username);
+				this.updateStoreTotals(txnDetails);
+				this.updateLedgerJournal(txnDetails, username);
+
+				result = Boolean.TRUE;
+				logger.info("The store open process has been successfully processed and saved.");
+
+			} else {
+				logger.info("The store open process has failed due to some unknown problem");
+			}
+
+			/**
+			 * Store Open Process Ends
+			 */
+			
+			
+			/**
+			 * Register Open Process Starts
+			 */
+			
+			Transaction regTxnDetails = this.transactionService.createTransactionInstance(txnIdDTO, username, ServiceConstants.TXN_OPEN_REGISTER);
+
+			// Transaction details
+			regTxnDetails = this.transactionService.saveTransaction(regTxnDetails);
+			if (regTxnDetails != null) {
+
+				BigDecimal totalTxnAmount = BigDecimal.ZERO;
+				regTxnDetails.setTotalAmt(totalTxnAmount);
+
+				DailyTotals resultDailyTotals = this.updateRegisterTotals(regTxnDetails);
+				if(result)
+					result=Boolean.TRUE;
+				logger.info("The reg open txn save procees has been successfully completed.");
+			} else {
+				result=Boolean.FALSE;
+				logger.info("The reg open txn save procees has failed due to some unknown problem");
+			}
+			/**
+			 * Register Open Process Ends
+			 */
+
+		}
+		
+		logger.info("The automatic creation of store opening and closing process has completed");
+		return result;
+	}
+
 }

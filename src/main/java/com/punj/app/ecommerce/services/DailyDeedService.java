@@ -41,4 +41,6 @@ public interface DailyDeedService {
 	
 	public void resetLocationForBusiness(Integer locationId, LocalDateTime businessDate);
 
+	public Boolean skipOpenProcess(DailyTransaction storeOpenDetails, String username);
+	
 }

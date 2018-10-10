@@ -13,6 +13,9 @@ public final class MVCConstants {
 		throw new IllegalStateException("MVC Constant class");
 	}
 
+	public static final Integer REG_ONE= 1;
+	public static final String REG_ONE_NAME= "Register One";
+	
 	public static final Boolean LOC_PARTIAL= Boolean.TRUE;
 	public static final Boolean LOC_FULL= Boolean.FALSE;
 	public static final String TNDR_CASH = "CASH";

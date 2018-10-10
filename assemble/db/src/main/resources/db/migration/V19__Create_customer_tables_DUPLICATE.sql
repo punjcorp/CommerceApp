@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `pi_pos_industry`.`customer` (
   `email` VARCHAR(80) NULL,
   `gst_no` VARCHAR(15) NULL,
   `pan_no` VARCHAR(10) NULL,
-  `phone` VARCHAR(20) NOT NULL,
+  `phone` VARCHAR(20) NULL,
   `phone2` VARCHAR(20) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,

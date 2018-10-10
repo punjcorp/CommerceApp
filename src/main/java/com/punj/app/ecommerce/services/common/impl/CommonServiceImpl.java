@@ -259,8 +259,28 @@ public class CommonServiceImpl implements CommonService {
 		List<Location> locations = this.retrieveAllLocations();
 		locationDTO.setLocations(locations);
 		locationDTO.setLastTxnStatus(this.retrieveLocationsStoreTxnStatus(locations));
+		locationDTO.setLastSaleBDate(this.retrieveLocationsLastSalesDate(locations));
 		logger.info("All the location details with daily status has been retrieved successfully");
 		return locationDTO;
+	}
+	
+	private Map<Integer, LocalDateTime> retrieveLocationsLastSalesDate(List<Location> locations) {
+		Map<Integer, LocalDateTime> locationLastDateMap = new HashMap<>();
+		Set<String> txnTypes = new HashSet<>();
+		txnTypes.add(ServiceConstants.TXN_SALE);
+		txnTypes.add(ServiceConstants.TXN_RETURN);
+		Transaction txnDetails;
+		Integer locationId;
+		for (Location location : locations) {
+			locationId = location.getLocationId();
+			txnDetails = this.txnService.searchTxnByCriteria(locationId, txnTypes);
+			if(txnDetails!=null)
+				locationLastDateMap.put(locationId, txnDetails.getTransactionId().getBusinessDate());
+			else
+				locationLastDateMap.put(locationId, null);
+		}
+		logger.info("The last sales/return txn dates for all location has been retrieved successfully");
+		return locationLastDateMap;
 	}
 
 	private Map<Integer, Transaction> retrieveLocationsStoreTxnStatus(List<Location> locations) {
