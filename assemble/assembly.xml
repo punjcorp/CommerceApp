@@ -1,0 +1,83 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+	<id>assemble</id>
+
+	<formats>
+		<format>
+                zip
+            </format>
+	</formats>
+
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<fileSets>
+		<fileSet>
+			<outputDirectory>installables/confs/</outputDirectory>
+			<directory>${project.basedir}/assemble/app/confs/</directory>
+			<!--To include single file into the zip -->
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<outputDirectory>installables/db/</outputDirectory>
+			<directory>${project.basedir}/assemble/db/</directory>
+			<!--To include single file into the zip -->
+			<includes>
+				<include>**</include>
+			</includes>
+			<excludes>
+				<exclude>model*/*</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<outputDirectory>installables/pi_pos_app/</outputDirectory>
+			<directory>${project.basedir}/assemble/app/pi_pos_app/</directory>
+			<!--To include single file into the zip -->
+			<includes>
+				<include>*/*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>/</outputDirectory>
+			<directory>${project.basedir}/assemble/</directory>
+			<!--To include single file into the zip -->
+			<includes>
+				<include>*.iss</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>installables/32-bit/</outputDirectory>
+			<directory>${project.basedir}/assemble/app/utils/</directory>
+			<!--To include single file into the zip -->
+			<includes>
+				<include>mysql*/*</include>
+			</includes>
+		</fileSet>
+		
+		<fileSet>
+			<outputDirectory>installables/64-bit/</outputDirectory>
+			<directory>${project.basedir}/assemble/app/utils/</directory>
+			<!--To include single file into the zip -->
+			<includes>
+				<include>mysql*/*</include>
+			</includes>
+		</fileSet>
+
+	</fileSets>
+
+
+	<files>
+		<file>
+			<source>${project.basedir}/target/${artifactId}-${version}.${packaging}</source>
+			<outputDirectory>installables/pi_pos_app/lib/</outputDirectory>
+			<destName>${artifactId}.${packaging}</destName>
+		</file>
+		
+	</files>
+
+</assembly>

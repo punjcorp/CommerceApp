@@ -51,21 +51,21 @@
 	<pageHeader>
 		<band height="34" splitType="Stretch">
 			<textField>
-				<reportElement x="72" y="5" width="80" height="11" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
+				<reportElement x="72" y="4" width="142" height="11" uuid="9320d711-2b2d-4139-990f-c2c1e5713337"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getTxnNo()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="254" y="19" width="80" height="11" uuid="3f86fd80-e8ee-44dd-8a63-79b1206712aa"/>
+				<reportElement x="254" y="19" width="175" height="11" uuid="3f86fd80-e8ee-44dd-8a63-79b1206712aa"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getRegisterId()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="254" y="4" width="100" height="11" uuid="e4a9d15c-effa-455f-bb5f-2843adc25d9e"/>
+				<reportElement x="254" y="4" width="175" height="11" uuid="e4a9d15c-effa-455f-bb5f-2843adc25d9e"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
@@ -121,7 +121,7 @@
 				<textFieldExpression><![CDATA[" : "+$F{transactionHeader}.getCreatedBy()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="72" y="18" width="80" height="11" uuid="45370602-22c5-4c48-bdfd-1e7c2c7274bd"/>
+				<reportElement x="72" y="19" width="142" height="11" uuid="45370602-22c5-4c48-bdfd-1e7c2c7274bd"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
