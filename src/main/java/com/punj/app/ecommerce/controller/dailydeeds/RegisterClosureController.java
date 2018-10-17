@@ -331,12 +331,17 @@ public class RegisterClosureController {
 					InputStream txnClosingReportStream = getClass().getResourceAsStream(MVCConstants.TXN_REG_CLOSE_REPORT);
 					JasperReport jasperReport = (JasperReport) JRLoader.loadObject(txnClosingReportStream);
 					logger.debug("The closing report has been compiled now");
+					
+					InputStream headerStream= getClass().getResourceAsStream(MVCConstants.HEADER_RECEIPT_REPORT);
+					JasperReport jasperHeaderReport= (JasperReport) JRLoader.loadObject(headerStream);
+					logger.debug("The header receipt report has been compiled now");
 
 					ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
 					JRBeanCollectionDataSource txnDS = new JRBeanCollectionDataSource(txnList);
 					logger.debug("The report data source and resource bundle is ready now");
 
 					Map<String, Object> paramMap = new HashMap<>();
+					paramMap.put(MVCConstants.HEADER_REPORT_DIR, jasperHeaderReport);
 					paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
 					paramMap.put(JRParameter.REPORT_LOCALE, locale);
 					logger.debug("The parameter set for setting receipt data is ready");
@@ -353,7 +358,7 @@ public class RegisterClosureController {
 					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM, pdfBytes);
 
 					// This section will save the receipt in database
-					List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+					List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, Boolean.TRUE, Boolean.FALSE);
 					Boolean result = this.txnService.saveTransactionReceipt(txnReceipts);
 					if (result) {
 						logger.info("The transaction receipts has been saved in DB successfully");

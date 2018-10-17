@@ -104,7 +104,7 @@ public class StoreSetupController {
 				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.initial.setup.failed", null, locale));
 				model.addAttribute(MVCConstants.INITIAL_SETUP_BEAN, initialSetupBean);
 			} else {
-				model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.initial.setup.success", null, locale));
+				model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.initial.setup.success", null, locale));
 				model.addAttribute(MVCConstants.INITIAL_SETUP_BEAN, initialSetupBean);
 				logger.info("The initial store setup has completed successfully");
 			}

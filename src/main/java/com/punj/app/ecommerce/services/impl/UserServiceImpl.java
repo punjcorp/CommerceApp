@@ -37,6 +37,7 @@ import com.punj.app.ecommerce.repositories.user.UserRoleRepository;
 import com.punj.app.ecommerce.repositories.user.UserSearchRepository;
 import com.punj.app.ecommerce.services.UserService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.common.SetupService;
 import com.punj.app.ecommerce.services.converter.UserConverter;
 import com.punj.app.ecommerce.services.dtos.UserPrincipal;
 import com.punj.app.ecommerce.utils.Pager;
@@ -57,12 +58,22 @@ public class UserServiceImpl implements UserService {
 	private CardRepository cardRepository;
 	private RoleRepository roleRepository;
 	private UserRoleRepository userRoleRepository;
+	private SetupService setupService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @param setupService
+	 *            the setupService to set
+	 */
+	@Autowired
+	public void setSetupService(SetupService setupService) {
+		this.setupService = setupService;
+	}
 
 	/**
 	 * @param roleRepository
@@ -207,11 +218,11 @@ public class UserServiceImpl implements UserService {
 
 	public Password updatePassword(UserDetails userDetails, Password pwd, String newPassword, String changedBy) {
 
-		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}", pwd.getStatus(), pwd.getModifiedBy(),
-				pwd.getUsername(), pwd.getPassword(), pwd.getModifiedDate());
+		logger.info("The new details for updating current password are as follows 1 {} 2{} 3{} 4{} 5{}", pwd.getStatus(), pwd.getModifiedBy(), pwd.getUsername(), pwd.getPassword(),
+				pwd.getModifiedDate());
 
-		Password pwdSearch=new Password();
-		if(userDetails==null || StringUtils.isBlank(userDetails.getUsername()))
+		Password pwdSearch = new Password();
+		if (userDetails == null || StringUtils.isBlank(userDetails.getUsername()))
 			pwdSearch.setUsername("admin");
 		else
 			pwdSearch.setUsername(userDetails.getUsername());
@@ -237,9 +248,9 @@ public class UserServiceImpl implements UserService {
 			changedPassword.setModifiedBy(pwdSearch.getUsername());
 
 		changedPassword.setStatus("A");
-		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}", changedPassword.getStatus(),
-				changedPassword.getModifiedBy(), changedPassword.getUsername(), changedPassword.getPassword(), changedPassword.getModifiedDate());
-		changedPassword=passwordRepository.save(changedPassword);
+		logger.info("The new details after the changed password are as follows 1 {} 2{} 3{} 4{} 5{}", changedPassword.getStatus(), changedPassword.getModifiedBy(),
+				changedPassword.getUsername(), changedPassword.getPassword(), changedPassword.getModifiedDate());
+		changedPassword = passwordRepository.save(changedPassword);
 		return changedPassword;
 	}
 
@@ -328,45 +339,31 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) {
-		User user = this.getUserDetails(username);
-		if (user != null) {
+		User user = null;
 
-			UserPrincipal userDetails = UserConverter.convertUser(user);
-			if (userDetails != null) {
-				return userDetails;
+		if (this.setupService.isSetupGood()) {
+			user = this.getUserDetails(username);
+			if (user != null) {
 
-			} else{
-				logger.info("The user password or user roles were not retrieved.");
+				UserPrincipal userDetails = UserConverter.convertUser(user);
+				if (userDetails != null) {
+					return userDetails;
+
+				} else {
+					logger.info("The user password or user roles were not retrieved.");
+					throw new UsernameNotFoundException(username);
+				}
+
+			} else {
+				logger.info("The user basic details were not retrieved.");
 				throw new UsernameNotFoundException(username);
 			}
-
 		} else {
 			logger.info("The user basic details were not retrieved.");
 			throw new UsernameNotFoundException(username);
 		}
-	}
 
-	/*
-	 * @Override
-	 * 
-	 * @Transactional public UserDetails loadUserByUsername(String username) { User user = this.getUserDetails(username); if (user != null) { String
-	 * password = null; List<Password> passwords = user.getPasswords(); if (passwords != null && !passwords.isEmpty()) { for (Password passwd : passwords)
-	 * { if (passwd.getStatus().equals(ServiceConstants.STATUS_APPROVED)) { password = passwd.getPassword(); break; } }
-	 * 
-	 * List<UserRole> userRoles = user.getUserRoles();
-	 * 
-	 * if (userRoles != null && !userRoles.isEmpty()) {
-	 * 
-	 * List<GrantedAuthority> authorities = new ArrayList<>(); GrantedAuthority authority = null; for (UserRole userRole : userRoles) { authority = new
-	 * SimpleGrantedAuthority(userRole.getUserRoleId().getRole().getName()); authorities.add(authority); }
-	 * 
-	 * return new org.springframework.security.core.userdetails.User(username, password, authorities); } else {
-	 * logger.info("The user roles were not retrieved."); throw new UsernameNotFoundException(username); }
-	 * 
-	 * } else { logger.info("The user passwords were not retrieved."); throw new UsernameNotFoundException(username); }
-	 * 
-	 * } else { logger.info("The user basic details were not retrieved."); throw new UsernameNotFoundException(username); } }
-	 */
+	}
 
 	@Override
 	public List<Role> getAllUserRoles() {
@@ -508,7 +505,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserRole> addUserRoles(List<UserRole> userRoles) {
-		userRoles=this.userRoleRepository.save(userRoles);
+		userRoles = this.userRoleRepository.save(userRoles);
 		logger.info("The user role details has been saved successfully");
 		return userRoles;
 	}

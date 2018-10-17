@@ -26,10 +26,10 @@ public class OrderBean implements Serializable {
 	private static final long serialVersionUID = -4016931635705372146L;
 
 	private BigInteger orderId;
-	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
 	private Integer supplierId;
 	private String supplierName;
-	@NotNull(message = "{commerce.error.string.empty}", groups = {ValidationGroup.VGAddOrder.class})
+	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
 	private Integer locationId;
 	private String locationName;
 
@@ -43,6 +43,8 @@ public class OrderBean implements Serializable {
 	private String createdBy;
 	private LocalDateTime createdDate;
 
+	private Boolean isIgstApplicable;
+
 	private BigDecimal estimatedCost = BigDecimal.ZERO;
 	private BigDecimal discountAmount = BigDecimal.ZERO;
 	private BigDecimal taxAmount = BigDecimal.ZERO;
@@ -52,6 +54,8 @@ public class OrderBean implements Serializable {
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	private BigDecimal paidAmount = BigDecimal.ZERO;
 
+	private String totalAmountInWords;
+
 	private BigDecimal actualSubTotalCost = BigDecimal.ZERO;
 	private BigDecimal actualTaxAmount = BigDecimal.ZERO;
 	private BigDecimal actualCgstTaxAmount = BigDecimal.ZERO;
@@ -59,12 +63,14 @@ public class OrderBean implements Serializable {
 	private BigDecimal actualIgstTaxAmount = BigDecimal.ZERO;
 	private BigDecimal actualTotalAmount = BigDecimal.ZERO;
 
+	private String actualTotalAmountInWords;
+
 	private String status;
 	private String displayStatus;
 	private String comments;
 
 	private Pager pager;
-	
+
 	@Valid
 	private List<OrderBillBean> orderBills;
 
@@ -527,6 +533,51 @@ public class OrderBean implements Serializable {
 	 */
 	public void setOrderBills(List<OrderBillBean> orderBills) {
 		this.orderBills = orderBills;
+	}
+
+	/**
+	 * @return the totalAmountInWords
+	 */
+	public String getTotalAmountInWords() {
+		return totalAmountInWords;
+	}
+
+	/**
+	 * @param totalAmountInWords
+	 *            the totalAmountInWords to set
+	 */
+	public void setTotalAmountInWords(String totalAmountInWords) {
+		this.totalAmountInWords = totalAmountInWords;
+	}
+
+	/**
+	 * @return the actualTotalAmountInWords
+	 */
+	public String getActualTotalAmountInWords() {
+		return actualTotalAmountInWords;
+	}
+
+	/**
+	 * @param actualTotalAmountInWords
+	 *            the actualTotalAmountInWords to set
+	 */
+	public void setActualTotalAmountInWords(String actualTotalAmountInWords) {
+		this.actualTotalAmountInWords = actualTotalAmountInWords;
+	}
+
+	/**
+	 * @return the isIgstApplicable
+	 */
+	public Boolean getIsIgstApplicable() {
+		return isIgstApplicable;
+	}
+
+	/**
+	 * @param isIgstApplicable
+	 *            the isIgstApplicable to set
+	 */
+	public void setIsIgstApplicable(Boolean isIgstApplicable) {
+		this.isIgstApplicable = isIgstApplicable;
 	}
 
 }

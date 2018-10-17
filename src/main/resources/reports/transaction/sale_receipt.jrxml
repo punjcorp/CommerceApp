@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="594" pageHeight="422" orientation="Landscape" columnWidth="580" leftMargin="14" rightMargin="0" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-DS"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
+	<parameter name="HEADER_REPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="SUBREPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<queryString>
 		<![CDATA[]]>
@@ -40,40 +41,11 @@
 	</background>
 	<title>
 		<band height="50" splitType="Stretch">
-			<rectangle>
-				<reportElement x="-14" y="0" width="594" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
-				<graphicElement>
-					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
-				</graphicElement>
-			</rectangle>
-			<textField>
-				<reportElement x="90" y="0" width="400" height="18" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="14" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationDetails}.getLocationId()+" - "+$F{locationDetails}.getName()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="90" y="20" width="400" height="11" uuid="8f54dff4-7760-4e57-8057-8d7925464f4e"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationDetails}.getAddress1()+", "+$F{locationDetails}.getCity()+", "+$F{locationDetails}.getState()+"."]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="90" y="33" width="400" height="11" uuid="38491bf6-f59b-467a-81a1-787b7ba5904c"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Phone: "+$F{locationDetails}.getTelephone1()+", Email: " +$F{locationDetails}.getEmail()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="-8" y="33" width="150" height="11" uuid="56642454-8dd1-4ae0-b433-2a7e05a11f05"/>
-				<textElement textAlignment="Left">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{locationDetails}.getGstNo()!=null)?"GSTIN: "+$F{locationDetails}.getGstNo():""]]></textFieldExpression>
-			</textField>
+			<subreport>
+				<reportElement x="-10" y="0" width="595" height="50" uuid="05751c91-e00c-49ee-a95d-527344bd5352"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanArrayDataSource(new Object[] {$F{locationDetails}})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{HEADER_REPORT_DIR}]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>
@@ -167,7 +139,7 @@
 	<columnHeader>
 		<band height="18" splitType="Stretch">
 			<rectangle>
-				<reportElement x="-14" y="0" width="594" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
+				<reportElement x="-10" y="0" width="595" height="18" backcolor="#ACDBFC" uuid="24b9f90e-d138-407a-924e-f2d98fc25f13"/>
 				<graphicElement>
 					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
 				</graphicElement>
@@ -238,104 +210,104 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="211" splitType="Stretch">
+		<band height="640" splitType="Stretch">
 			<subreport>
-				<reportElement positionType="FixRelativeToBottom" x="1" y="0" width="584" height="210" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="575" height="640" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement x="-14" y="210" width="594" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+				<reportElement x="-10" y="639" width="595" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
 			</line>
 		</band>
 	</detail>
 	<summary>
-		<band height="79" splitType="Stretch">
+		<band height="80" splitType="Stretch">
 			<rectangle radius="7">
-				<reportElement x="369" y="0" width="193" height="79" backcolor="#ACDBFC" uuid="b1e38d50-0d89-4c46-bd67-ae85df78f022"/>
+				<reportElement x="369" y="1" width="193" height="79" backcolor="#ACDBFC" uuid="b1e38d50-0d89-4c46-bd67-ae85df78f022"/>
 				<graphicElement>
 					<pen lineStyle="Solid"/>
 				</graphicElement>
 			</rectangle>
 			<textField pattern="Rs #0.00#">
-				<reportElement x="489" y="1" width="64" height="11" uuid="474e7945-8444-48d5-adcf-7d0c75a45166"/>
+				<reportElement x="489" y="2" width="64" height="11" uuid="474e7945-8444-48d5-adcf-7d0c75a45166"/>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getSubTotalAmt()]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#">
-				<reportElement x="489" y="13" width="64" height="11" uuid="87da7309-0085-445f-a7bd-14b7e398b73c"/>
+				<reportElement x="489" y="14" width="64" height="11" uuid="87da7309-0085-445f-a7bd-14b7e398b73c"/>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDiscountAmt()]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#">
-				<reportElement x="489" y="25" width="64" height="11" uuid="ed9869b9-6599-43a4-800c-3643f99fca0c"/>
+				<reportElement x="489" y="26" width="64" height="11" uuid="ed9869b9-6599-43a4-800c-3643f99fca0c"/>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalTaxAmt()]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#" isBlankWhenNull="true">
-				<reportElement x="499" y="37" width="54" height="11" uuid="7a2c5a4c-47b0-4f8c-b82d-b2f385020fc1"/>
+				<reportElement x="499" y="38" width="54" height="11" uuid="7a2c5a4c-47b0-4f8c-b82d-b2f385020fc1"/>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalSGSTTaxAmt()]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#" isBlankWhenNull="true">
-				<reportElement x="499" y="49" width="54" height="11" uuid="20bb673f-b67f-4f9a-a2bc-d9b55d142263"/>
+				<reportElement x="499" y="50" width="54" height="11" uuid="20bb673f-b67f-4f9a-a2bc-d9b55d142263"/>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalCGSTTaxAmt()]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#">
-				<reportElement x="489" y="61" width="64" height="11" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
+				<reportElement x="489" y="62" width="64" height="11" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmt()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="369" y="1" width="100" height="11" uuid="206022c2-2dae-4602-9a32-c154bc1ca24c"/>
+				<reportElement x="369" y="2" width="100" height="11" uuid="206022c2-2dae-4602-9a32-c154bc1ca24c"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Subtotal Amount :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ContainerBottom" x="369" y="13" width="100" height="11" uuid="97391194-5ff4-4fec-b415-5f71eb3f8a5b"/>
+				<reportElement stretchType="ContainerBottom" x="369" y="14" width="100" height="11" uuid="97391194-5ff4-4fec-b415-5f71eb3f8a5b"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Discount Amount :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ContainerBottom" x="369" y="25" width="100" height="11" uuid="abfbef39-bb55-4cfb-935a-ca5483241c23"/>
+				<reportElement stretchType="ContainerBottom" x="369" y="26" width="100" height="11" uuid="abfbef39-bb55-4cfb-935a-ca5483241c23"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Total Tax Amount :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ContainerBottom" x="379" y="37" width="90" height="11" uuid="aca6f5d1-50cc-4e60-a8a7-31873dd773c6"/>
+				<reportElement stretchType="ContainerBottom" x="379" y="38" width="90" height="11" uuid="aca6f5d1-50cc-4e60-a8a7-31873dd773c6"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Total SGST :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="379" y="49" width="90" height="11" uuid="b1a6d827-ed11-408e-ad5d-80d195cd3245"/>
+				<reportElement x="379" y="50" width="90" height="11" uuid="b1a6d827-ed11-408e-ad5d-80d195cd3245"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Total CGST :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ContainerBottom" x="369" y="61" width="100" height="11" uuid="78673dc5-a755-4eea-b067-ab9ba4477a29"/>
+				<reportElement stretchType="ContainerBottom" x="369" y="62" width="100" height="11" uuid="78673dc5-a755-4eea-b067-ab9ba4477a29"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>

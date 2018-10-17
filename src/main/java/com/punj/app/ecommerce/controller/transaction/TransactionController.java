@@ -3,6 +3,8 @@
  */
 package com.punj.app.ecommerce.controller.transaction;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.punj.app.ecommerce.common.web.CommerceContext;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
+import com.punj.app.ecommerce.controller.common.PrintUtil;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.TransactionTransformer;
 import com.punj.app.ecommerce.domains.transaction.TransactionReceipt;
@@ -69,9 +73,31 @@ public class TransactionController {
 	private TransactionService transactionService;
 	private CommerceContext commerceContext;
 	private ResourceBundleMessageSource messageSource;
+	private PrintUtil printUtil;
 
 	@Value("${commerce.resource.bundle.base}")
 	private String resourceBundleBase;
+
+	@Value("${commerce.txn.receipt.copies}")
+	private Integer receiptCopies;
+
+	@Value("${commerce.printer.name}")
+	private String printerName;
+
+	@Value("${commerce.receipt.pdf.output}")
+	private String outputDir;
+
+	@Value("${commerce.receipt.export.method}")
+	private String reportMethod;
+
+	/**
+	 * @param messageSource
+	 *            the messageSource to set
+	 */
+	@Autowired
+	public void setPrintUtil(PrintUtil printUtil) {
+		this.printUtil = printUtil;
+	}
 
 	/**
 	 * @param messageSource
@@ -112,15 +138,14 @@ public class TransactionController {
 	@PostMapping(value = ViewPathConstants.TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@Transactional
-	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale,
-			Authentication authentication) {
+	public TransactionHeader saveTransactionDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		TransactionDTO txnDTO = TransactionTransformer.transformSaleTransaction(saleTxn, userDetails.getUsername());
 		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
+			txnReceipt = this.generateReceiptPDFs(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
 		}
 
@@ -137,15 +162,14 @@ public class TransactionController {
 	@PostMapping(value = ViewPathConstants.RETURN_TXN_SAVE_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	@Transactional
-	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale,
-			Authentication authentication) {
+	public TransactionHeader saveReturnTxnDetails(@RequestBody SaleTransaction saleTxn, Model model, HttpSession session, Locale locale, Authentication authentication) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		TransactionDTO txnDTO = TransactionTransformer.transformReturnTransaction(saleTxn, userDetails.getUsername());
 		TransactionId txnId = this.transactionService.saveSaleTransaction(txnDTO);
 		SaleTransactionReceipt txnReceipt = null;
 		if (txnId != null) {
 			SaleTransactionReceiptDTO receiptDetails = this.transactionService.generateTransactionReceipt(txnId);
-			txnReceipt = this.generateReceiptPDF(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
+			txnReceipt = this.generateReceiptPDFs(receiptDetails, session, saleTxn.getTransactionHeader().getCreatedBy(), locale, txnId);
 
 		}
 
@@ -159,8 +183,7 @@ public class TransactionController {
 
 	}
 
-	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,
-			TransactionId txnId) {
+	public SaleTransactionReceipt generateReceiptPDF(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale, TransactionId txnId) {
 		SaleTransactionReceipt txnReceipt = null;
 		try {
 			txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);
@@ -202,7 +225,7 @@ public class TransactionController {
 				txnHeader.setPdfbytes(pdfBytes);
 
 				// This section will save the receipt in database
-				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, Boolean.TRUE, Boolean.FALSE);
 				Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 				if (result) {
 					logger.info("The transaction receipts has been saved in DB successfully");
@@ -249,6 +272,135 @@ public class TransactionController {
 		} catch (IOException e) {
 			logger.error("There is an error while generating receipt for last txn", e);
 		}
+	}
+
+	public SaleTransactionReceipt generateReceiptPDFs(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale, TransactionId txnId) {
+		SaleTransactionReceipt txnReceipt = null;
+		try {
+			txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);
+			List<JRBeanCollectionDataSource> txnReceiptDSs = this.prepareReceiptsArray(receiptDetails, session, username, locale, txnId);
+			if (txnReceiptDSs != null && !txnReceiptDSs.isEmpty() && txnReceipt != null) {
+				InputStream txnReceiptReportStream = getClass().getResourceAsStream(MVCConstants.TXN_RECEIPT_REPORT);
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(txnReceiptReportStream);
+				logger.debug("The parent receipt report has been compiled now");
+
+				InputStream txnReceiptStreamChild = getClass().getResourceAsStream(MVCConstants.TXN_RECEIPT_ITEMS_REPORT);
+				JasperReport jasperReportChild = (JasperReport) JRLoader.loadObject(txnReceiptStreamChild);
+				logger.debug("The child receipt report has been compiled now");
+				
+				InputStream headerStream= getClass().getResourceAsStream(MVCConstants.HEADER_RECEIPT_REPORT);
+				JasperReport jasperHeaderReport= (JasperReport) JRLoader.loadObject(headerStream);
+				logger.debug("The header receipt report has been compiled now");
+
+				ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
+				logger.debug("The receipt data source and resource bundle is ready now");
+
+				Map<String, Object> paramMap = new HashMap<>();
+				paramMap.put(MVCConstants.HEADER_REPORT_DIR, jasperHeaderReport);
+				paramMap.put(MVCConstants.SUB_REPORT_DIR, jasperReportChild);
+				paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+				paramMap.put(JRParameter.REPORT_LOCALE, locale);
+				logger.debug("The parameter set for setting receipt data is ready");
+
+				String uniqueTxnNo = receiptDetails.getTxn().getTransactionId().toString();
+
+				List<JasperPrint> jasperPrints = new ArrayList<>(txnReceiptDSs.size());
+				JasperPrint jasperPrint = null;
+				for (JRBeanCollectionDataSource txnDS : txnReceiptDSs) {
+					jasperPrint = JasperFillManager.fillReport(jasperReport, paramMap, txnDS);
+					jasperPrints.add(jasperPrint);
+				}
+
+				ByteArrayOutputStream out = null;
+				if (StringUtils.isNotBlank(this.reportMethod) && this.reportMethod.equals(MVCConstants.REPORT_METHOD_PDF)) {
+					out = this.printUtil.exportAsPDFBytes(jasperPrints);
+					byte[] pdfBytes = out.toByteArray();
+					session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_PARAM, pdfBytes);
+
+				} else if (StringUtils.isNotBlank(this.reportMethod) && this.reportMethod.equals(MVCConstants.REPORT_METHOD_RTF)) {
+					this.printUtil.exportAsRTFFile(uniqueTxnNo, jasperPrints);
+
+				} else if (StringUtils.isNotBlank(this.reportMethod) && this.reportMethod.equals(MVCConstants.REPORT_METHOD_JPG)) {
+					this.printUtil.exportAsImage(uniqueTxnNo, jasperPrints);
+				}
+
+				// This is to print the receipt when user select the printing option
+				session.setAttribute(uniqueTxnNo + MVCConstants.RCPT_JASPER_PARAM, jasperPrints);
+				// This is to show the receipt PDF in view screen
+				session.setAttribute(MVCConstants.LAST_TXN_NO, uniqueTxnNo);
+				session.setAttribute(MVCConstants.RCPT_PRINTER_NAME, this.printerName);
+
+				this.saveTxnReceipts(jasperPrints, username, txnId);
+
+			}
+		} catch (JRException e) {
+			logger.error("There is an error while generating receipt for txn", e);
+		} catch (FileNotFoundException e) {
+			logger.error("There is an error while generating receipt for txn", e);
+		} catch (IOException e) {
+			logger.error("There is an error while generating receipt for txn", e);
+		}
+		return txnReceipt;
+
+	}
+
+	public List<JRBeanCollectionDataSource> prepareReceiptsArray(SaleTransactionReceiptDTO receiptDetails, HttpSession session, String username, Locale locale,
+			TransactionId txnId) {
+		List<JRBeanCollectionDataSource> txnReceipts = null;
+		if (this.receiptCopies != null && this.receiptCopies > 0) {
+			String receiptType = null;
+			String receiptMsg = null;
+			SaleTransactionReceipt txnReceipt = null;
+			txnReceipts = new ArrayList<>(this.receiptCopies);
+			for (int i = 1; i <= this.receiptCopies; i++) {
+				receiptType = this.messageSource.getMessage("commerce.screen.sale.receipt.copy." + i, new Object[] {}, locale);
+				if (i == 1)
+					receiptMsg = this.messageSource.getMessage("commerce.screen.sale.receipt.msg.copy." + i, new Object[] {}, locale);
+				else
+					receiptMsg = null;
+
+				txnReceipt = TransactionTransformer.transformReceiptDetails(receiptDetails, username);
+				txnReceipt.setReceiptType(receiptType);
+				txnReceipt.setReceiptMsg(receiptMsg);
+				List<SaleTransactionReceipt> txnList = new ArrayList<>(1);
+				txnList.add(txnReceipt);
+
+				JRBeanCollectionDataSource txnDS = new JRBeanCollectionDataSource(txnList);
+
+				txnReceipts.add(txnDS);
+			}
+		}
+		return txnReceipts;
+	}
+
+	public void saveTxnReceipts(List<JasperPrint> jasperPrints, String username, TransactionId txnId) {
+		int count = 1;
+		Boolean isOriginal = Boolean.FALSE;
+		try {
+			List<TransactionReceipt> finalTxnReceipts = new ArrayList<>();
+			for (JasperPrint jasperPrint : jasperPrints) {
+				byte pdfBytes[] = JasperExportManager.exportReportToPdf(jasperPrint);
+				if (count == 1)
+					isOriginal = Boolean.TRUE;
+				else
+					isOriginal = Boolean.FALSE;
+
+				// This section will save the receipt in database
+				List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, isOriginal, Boolean.FALSE);
+				finalTxnReceipts.addAll(txnReceipts);
+				count++;
+			}
+			Boolean result = this.transactionService.saveTransactionReceipt(finalTxnReceipts);
+			if (result) {
+				logger.info("The transaction receipts has been saved in DB successfully");
+			} else {
+				logger.info("The transaction receipts were not saved due to unknown reason");
+			}
+
+		} catch (JRException e) {
+			logger.error("There is an error while generating receipt for txn", e);
+		}
+
 	}
 
 }

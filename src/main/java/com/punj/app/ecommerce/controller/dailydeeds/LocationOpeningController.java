@@ -48,6 +48,8 @@ import com.punj.app.ecommerce.models.tender.TenderBean;
 import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ConfigService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 
@@ -65,10 +67,21 @@ public class LocationOpeningController {
 	private CommerceContext commerceContext;
 	private TransactionService txnService;
 	private RegisterOpenValidator registerOpenValidator;
+	private ConfigService configService;
 
 	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
 
+	
+	/**
+	 * @param configService
+	 *            the configService to set
+	 */
+	@Autowired
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
+	
 	/**
 	 * @param registerOpenValidator
 	 *            the registerOpenValidator to set
@@ -142,6 +155,9 @@ public class LocationOpeningController {
 			if (StringUtils.isNotBlank(referrerURL))
 				dailyDeedBean.setReferrerURL(referrerURL);
 
+			
+			String locationIdStr=this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
+			this.defaultLocation=new Integer(locationIdStr);
 			// Change this later on and make it an ajax call based on store selected from store open screen
 			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(this.defaultLocation);
 			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);

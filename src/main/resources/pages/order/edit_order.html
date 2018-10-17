@@ -195,7 +195,10 @@
 																</div>
 																<input type="text" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}" class="form-control input-sm"
 																	th:placeholder="#{commerce.screen.order.item}" maxlength="150"></input> <input type="hidden"
-																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}"></input> <input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}"></input> 
+																	<input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].hsnNo}"></input>
+																	<input type="hidden"
 																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderItemId}"></input>
 																<div class="input-group-append d-none" th:id="'itemSearchBusy'+${itrStat.index}">
 																	<span class="input-group-text"> <i class="fas fa-circle-notch fa-spin"></i>

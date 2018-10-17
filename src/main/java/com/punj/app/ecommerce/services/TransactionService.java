@@ -50,4 +50,6 @@ public interface TransactionService {
 	public TransactionDTO searchTransactionDetails(String uniqueTxnNo);
 
 	public List<TransactionDTO> searchTransactionDetailsByMonth(Integer locationId, String finMonth);
+
+	public TransactionReceipt searchTransactionReceipt(String uniqueTxnNo, String receiptType);
 }

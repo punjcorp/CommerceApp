@@ -254,12 +254,17 @@ public class ExpenseController {
 		InputStream txnReceiptStreamChild = getClass().getResourceAsStream(MVCConstants.EXPENSE_RECEIPT_TENDERS_REPORT);
 		JasperReport jasperReportChild = (JasperReport) JRLoader.loadObject(txnReceiptStreamChild);
 		logger.debug("The child expense tender receipt report has been compiled now");
+		
+		InputStream headerStream= getClass().getResourceAsStream(MVCConstants.HEADER_RECEIPT_REPORT);
+		JasperReport jasperHeaderReport= (JasperReport) JRLoader.loadObject(headerStream);
+		logger.debug("The header receipt report has been compiled now");
 
 		ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
 		JRBeanCollectionDataSource expenseDS = new JRBeanCollectionDataSource(expenseList);
 		logger.debug("The expense receipt data source and resource bundle is ready now");
 
 		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(MVCConstants.HEADER_REPORT_DIR, jasperHeaderReport);
 		paramMap.put(MVCConstants.SUB_REPORT_DIR, jasperReportChild);
 		paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
 		paramMap.put(JRParameter.REPORT_LOCALE, locale);
@@ -276,7 +281,7 @@ public class ExpenseController {
 		session.setAttribute(txnId + MVCConstants.RCPT_PARAM, pdfBytes);
 
 		// This section will save the receipt in database
-		List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username);
+		List<TransactionReceipt> txnReceipts = TransactionTransformer.getReceipts(pdfBytes, txnId, username, Boolean.TRUE, Boolean.FALSE);
 		Boolean result = this.transactionService.saveTransactionReceipt(txnReceipts);
 		if (result) {
 			logger.info("The expense transaction receipts has been saved in DB successfully");

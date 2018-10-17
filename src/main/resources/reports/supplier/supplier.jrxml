@@ -40,67 +40,68 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="80" splitType="Stretch">
+		<band height="74" splitType="Stretch">
 			<textField>
-				<reportElement stretchType="RelativeToTallestObject" x="30" y="1" width="170" height="11" uuid="dc916b8b-e890-4f14-8095-47dc66a8c9b7"/>
+				<reportElement stretchType="RelativeToTallestObject" x="30" y="1" width="170" height="12" uuid="dc916b8b-e890-4f14-8095-47dc66a8c9b7"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Proportional"/>
 				</textElement>
 				<textFieldExpression><![CDATA["  :  "+$F{name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="12" width="30" height="11" uuid="60586e0d-9622-4f0f-bff9-a8d4026685f2"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="13" width="30" height="12" uuid="60586e0d-9622-4f0f-bff9-a8d4026685f2"/>
 				<textElement>
-					<font size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
 				<text><![CDATA[Phone]]></text>
 			</staticText>
 			<textField>
-				<reportElement stretchType="RelativeToTallestObject" x="30" y="12" width="80" height="11" uuid="d26e83d0-b5e1-4610-9dac-3e85f37e1de7"/>
+				<reportElement stretchType="RelativeToTallestObject" x="30" y="13" width="170" height="12" uuid="d26e83d0-b5e1-4610-9dac-3e85f37e1de7"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<textFieldExpression><![CDATA["  :  " +$F{phone1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  " +$F{phone1}+(($F{phone2}.isEmpty())?",  ":",  "+$F{phone2})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="23" width="30" height="11" uuid="2b227d83-7ea0-4852-9815-21d5ef9132c1"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="25" width="30" height="12" uuid="2b227d83-7ea0-4852-9815-21d5ef9132c1"/>
 				<textElement>
-					<font size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
 				<text><![CDATA[Email]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="30" y="23" width="170" height="11" uuid="202e60b8-d1e4-41e0-9b29-6c62732cc1a4"/>
+				<reportElement x="30" y="25" width="170" height="12" uuid="202e60b8-d1e4-41e0-9b29-6c62732cc1a4"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<textFieldExpression><![CDATA["  :  " +$F{email}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="110" y="12" width="90" height="11" uuid="53350ce5-5edd-4718-a949-cdb842b3d1f2"/>
-				<textElement>
-					<font fontName="Calibri" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{phone2}.isEmpty())?",  ":",  "+$F{phone2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["  :  " +(($F{email}!=null && !$F{email}.equals(""))?$F{email}:" - ")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="1" width="30" height="11" uuid="9c665b9e-df6a-40dc-b146-2e0f7d9fcdc5"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="1" width="30" height="12" uuid="9c665b9e-df6a-40dc-b146-2e0f7d9fcdc5"/>
 				<textElement>
-					<font size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
 				<text><![CDATA[Name]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="40" y="34" width="160" height="46" uuid="ea621ee1-c68b-476b-ae8a-f0cd25ef7db8"/>
+				<reportElement x="42" y="37" width="158" height="36" uuid="ea621ee1-c68b-476b-ae8a-f0cd25ef7db8"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{addresses})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUPPLIER_ADDRESS_REPORT}]]></subreportExpression>
 			</subreport>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="37" width="42" height="12" uuid="73d3c2db-b676-46c3-8b08-bdbe18edadc9"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+					<paragraph lineSpacing="Fixed"/>
+				</textElement>
+				<text><![CDATA[Address  : ]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>

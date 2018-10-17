@@ -138,7 +138,10 @@
 															<div>
 																<span th:text="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></span>
 															</div>
-															<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}"></input> <input type="hidden"
+															<input type="hidden" th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemId}"></input> 
+															<input type="hidden"
+																	th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].hsnNo}"></input>
+															<input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].itemDesc}"></input> <input type="hidden"
 																th:field="${orderBeanDTO.order.orderItems[__${itrStat.index}__].orderItemId}"></input>
 														</div>

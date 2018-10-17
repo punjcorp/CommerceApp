@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`purchase_order_items` (
   `order_item_id` BIGINT NOT NULL AUTO_INCREMENT,
   `order_id` BIGINT NOT NULL,
   `item_id` BIGINT NOT NULL,
+  `hsn_no` VARCHAR(15) NULL,
   `item_name` VARCHAR(150) NOT NULL,
   `unit_cost` DECIMAL(12,2) NOT NULL,
   `ordered_qty` DECIMAL(12,2) NOT NULL,

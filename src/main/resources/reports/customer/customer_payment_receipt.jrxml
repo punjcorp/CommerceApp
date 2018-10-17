@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customer_payment_receipt" pageWidth="594" pageHeight="422" orientation="Landscape" columnWidth="580" leftMargin="14" rightMargin="0" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customer_payment_receipt" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
 	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
+	<parameter name="HEADER_REPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="SUBREPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<queryString>
 		<![CDATA[]]>
@@ -34,40 +27,11 @@
 	</background>
 	<title>
 		<band height="50" splitType="Stretch">
-			<rectangle>
-				<reportElement x="-14" y="0" width="594" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
-				<graphicElement>
-					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
-				</graphicElement>
-			</rectangle>
-			<textField>
-				<reportElement x="90" y="0" width="400" height="18" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="14" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationBean}.getLocationId()+" - "+$F{locationBean}.getName()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="90" y="20" width="400" height="11" uuid="8f54dff4-7760-4e57-8057-8d7925464f4e"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationBean}.getAddress1()+", "+$F{locationBean}.getCity()+", "+$F{locationBean}.getState()+"."]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="90" y="33" width="400" height="11" uuid="38491bf6-f59b-467a-81a1-787b7ba5904c"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Phone: "+$F{locationBean}.getTelephone1()+", Email: " +$F{locationBean}.getEmail()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="-8" y="33" width="100" height="11" uuid="56642454-8dd1-4ae0-b433-2a7e05a11f05"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationBean}.getGstNo()!=null && $F{locationBean}.getGstNo()!=""?"GSTIN: "+$F{locationBean}.getGstNo():""]]></textFieldExpression>
-			</textField>
+			<subreport>
+				<reportElement x="-10" y="0" width="595" height="50" uuid="2245a44b-5b35-4414-84a8-cfe9260c8c7b"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanArrayDataSource(new Object[] {$F{locationBean}})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{HEADER_REPORT_DIR}]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>
@@ -107,12 +71,12 @@
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
-			<textField pattern=" : MMM d, yyyy h:mm:ss a">
+			<textField pattern="dd-MMM-yyyy">
 				<reportElement x="472" y="4" width="94" height="11" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getCreatedDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" : "+java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yyyy").format($F{journalBean}.getCreatedDate())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="472" y="19" width="94" height="11" uuid="92e984d4-0a1c-442b-8d3f-848d32070dd7"/>
@@ -131,7 +95,7 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="274" splitType="Stretch">
+		<band height="270" splitType="Stretch">
 			<textField>
 				<reportElement x="72" y="11" width="100" height="11" uuid="018fefdf-fe12-4259-a58e-4236a92743ce"/>
 				<textElement>
@@ -165,7 +129,7 @@
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" : "+$F{journalBean}.getRemarks()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" : "+(($F{journalBean}.getRemarks()!=null && !$F{journalBean}.getRemarks().equals(""))?$F{journalBean}.getRemarks():" - ")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="51" width="60" height="14" uuid="2c0990b6-4ea7-442e-959a-30ca28ef1aab"/>
@@ -175,12 +139,12 @@
 				<text><![CDATA[Description]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="1" y="122" width="565" height="148" uuid="93af2007-1f21-4096-a382-bd973ec783c7"/>
+				<reportElement x="1" y="122" width="575" height="148" uuid="93af2007-1f21-4096-a382-bd973ec783c7"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{journalBean}.getPaymentTenders())]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
 			<rectangle>
-				<reportElement x="-14" y="102" width="594" height="20" forecolor="#000000" backcolor="#ACDBFC" uuid="93a754d3-7c28-4802-9c39-a6e8428a565a"/>
+				<reportElement x="-10" y="102" width="595" height="20" forecolor="#000000" backcolor="#ACDBFC" uuid="93a754d3-7c28-4802-9c39-a6e8428a565a"/>
 				<graphicElement>
 					<pen lineWidth="0.0"/>
 				</graphicElement>
@@ -220,12 +184,12 @@
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
-			<textField pattern=" : INR  ##########.00">
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="72" y="82" width="208" height="11" uuid="9fe64e6a-c140-4385-b7e4-69c877775bf9"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{journalBean}.getAmount()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" : "+($F{journalBean}.getAmount()!=null?$F{journalBean}.getAmount():java.math.BigDecimal.ZERO)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="81" width="72" height="14" uuid="7fb4bd58-4211-4dff-9c99-10920b4a546b"/>
@@ -235,7 +199,7 @@
 				<text><![CDATA[Total Amount]]></text>
 			</staticText>
 			<line>
-				<reportElement x="-14" y="2" width="594" height="1" uuid="b22946e2-6172-47fb-9566-fd72e59acf81"/>
+				<reportElement x="-10" y="2" width="595" height="1" uuid="b22946e2-6172-47fb-9566-fd72e59acf81"/>
 			</line>
 		</band>
 	</detail>
@@ -256,7 +220,7 @@
 				<textFieldExpression><![CDATA[$F{journalBean}.getPrintedBy()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="-14" y="0" width="594" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+				<reportElement x="-10" y="0" width="595" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
 			</line>
 		</band>
 	</summary>

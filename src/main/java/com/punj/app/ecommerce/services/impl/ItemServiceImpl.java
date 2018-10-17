@@ -594,6 +594,7 @@ public class ItemServiceImpl implements ItemService {
 		saleItem.setItemId(itemLocTax.getItemLocationTaxId().getItemId());
 		saleItem.setName(itemLocTax.getName());
 		saleItem.setLongDesc(itemLocTax.getLongDesc());
+		saleItem.setHsnNo(itemLocTax.getHsnNo());
 		// Check this out
 		saleItem.setImagePath(itemLocTax.getName());
 		saleItem.setQty(1.0);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="orders" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="0fe0a85d-b4ce-49b9-912f-c2ee1c6a8abe">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="orders_received" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="0fe0a85d-b4ce-49b9-912f-c2ee1c6a8abe">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -329,28 +329,28 @@
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getTaxAmount()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualTaxAmount()]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00" isBlankWhenNull="true">
 				<reportElement x="501" y="38" width="64" height="14" forecolor="#000000" uuid="dab8d990-ca2f-494a-a41b-0bd517957510"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable()==null || ((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable().equals(java.lang.Boolean.FALSE))?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getSgstTaxAmount():"N/A"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable()==null || ((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable().equals(java.lang.Boolean.FALSE))?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualSgstTaxAmount():"N/A"]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00" isBlankWhenNull="true">
 				<reportElement x="501" y="55" width="64" height="14" forecolor="#000000" uuid="f8146aba-77bc-4405-be99-2e3163f7468d"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable()==null || ((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable().equals(java.lang.Boolean.FALSE))?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getCgstTaxAmount():"N/A"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable()==null || ((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable().equals(java.lang.Boolean.FALSE))?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualCgstTaxAmount():"N/A"]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00">
 				<reportElement x="490" y="89" width="75" height="14" forecolor="#000000" uuid="f023b74d-1c57-42ca-90b9-69e393063438"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getTotalAmount()!=null?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getTotalAmount():java.math.BigDecimal.ZERO]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualTotalAmount()!=null?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualTotalAmount():java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement stretchType="ContainerBottom" x="384" y="21" width="100" height="14" forecolor="#000000" uuid="5626dc8f-9631-47ad-a852-420dcc6c7e8e"/>
@@ -385,7 +385,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getEstimatedCost()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualSubTotalCost()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="385" y="4" width="100" height="14" forecolor="#000000" uuid="983905e7-803d-4009-b7bb-32c835577e22"/>
@@ -399,7 +399,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable()!=null && ((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable().equals(java.lang.Boolean.TRUE))?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIgstTaxAmount():"N/A"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable()!=null && ((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getIsIgstApplicable().equals(java.lang.Boolean.TRUE))?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualIgstTaxAmount():"N/A"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="395" y="72" width="90" height="14" forecolor="#000000" uuid="27b15a6e-1dfc-4459-86c8-f750bcfa7913"/>
@@ -413,7 +413,7 @@
 				<textElement>
 					<font fontName="Arial" size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getTotalAmountInWords()!=null?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getTotalAmountInWords():""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualTotalAmountInWords()!=null?((com.punj.app.ecommerce.models.order.OrderBean)$F{order}.get(0)).getActualTotalAmountInWords():""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="2" y="71" width="100" height="14" forecolor="#000000" uuid="12ec5867-ab65-443d-92d7-887ca3ac001f"/>

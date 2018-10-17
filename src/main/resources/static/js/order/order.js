@@ -136,6 +136,7 @@ $(function() {
 						
 		            	$('#order\\.orderItems'+index+'\\.itemDesc').val('');		
 		            	$('#order\\.orderItems'+index+'\\.itemId').val('');						
+		            	$('#order\\.orderItems'+index+'\\.hsnNo').val('');
 						
 						$('#itemSearchErrorMsg'+index).addClass('invalid-feedback');
 						$('#itemSearchErrorMsg'+index).html('Please enter a valid Item!');
@@ -352,6 +353,7 @@ function getItemDetails(event, ui) {
 function renderOrderItem(orderItem) {
 	$('#order\\.orderItems' + targetItemIndex + '\\.itemId').val(orderItem.itemId);
 	$('#order\\.orderItems' + targetItemIndex + '\\.itemDesc').val(orderItem.name);
+	$('#order\\.orderItems' + targetItemIndex + '\\.hsnNo').val(orderItem.hsnNo);
 	$('#itemSearchHelp').html(orderItem.name + '<br>' + orderItem.longDesc);
 	$('#order\\.orderItems' + targetItemIndex + '\\.orderedQty').val(orderItem.qty.toFixed(2));
 	$('#order\\.orderItems' + targetItemIndex + '\\.unitCost').val((+orderItem.unitCostAmt).toFixed(2));

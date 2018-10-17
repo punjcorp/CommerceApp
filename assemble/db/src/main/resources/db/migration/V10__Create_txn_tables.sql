@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`txn_receipt` (
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,
   `modified_date` DATETIME NULL,
-  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`),
+  PRIMARY KEY (`location_id`, `business_date`, `register`, `txn_no`, `receipt_type`),
   CONSTRAINT `fk_txn_receipt_txn_master1`
     FOREIGN KEY (`location_id` , `business_date` , `register` , `txn_no`)
     REFERENCES `commercedb`.`txn_master` (`location_id` , `business_date` , `register` , `txn_no`)

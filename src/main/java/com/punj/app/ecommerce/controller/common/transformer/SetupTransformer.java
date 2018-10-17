@@ -36,11 +36,13 @@ public class SetupTransformer {
 	public static Password transformPasswordDetails(InitialSetupBean initialSetupBean) {
 		Password password=null;
 		AccountBean accountBean = initialSetupBean.getAccount();
-		List<Password> passwords = AccountTransformer.transformAccountPassword(accountBean);
+		List<Password> passwords = AccountTransformer.transformAccountPasswordWithoutEncoding(accountBean);
 		if(passwords!=null && !passwords.isEmpty())
 			password=passwords.get(0);
 		logger.info("The account password details has been transformed successfully");
 		return password;
 	}
+	
+	
 
 }

@@ -238,9 +238,11 @@ public class OrderReturnPrintUtil {
 			JasperReport supplierReport = this.getTemplateForReport(MVCConstants.SUPPLIER_REPORT);
 			JasperReport supplierAddressReport = this.getTemplateForReport(MVCConstants.ADDRESS_REPORT);
 			JasperReport orderReturnItemsReport = this.getTemplateForReport(MVCConstants.ORDER_RETURN_ITEMS_REPORT);
+			JasperReport jasperHeaderReport= this.getTemplateForReport(MVCConstants.HEADER_RECEIPT_REPORT);
 			logger.info("All the compiled reports for order return printing has been loaded.");
 
 			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put(MVCConstants.HEADER_REPORT_DIR, jasperHeaderReport);
 			paramMap.put(MVCConstants.ORDER_RETURN_HEADER_REPORT_PARAM, orderReturnHeaderReport);
 			paramMap.put(MVCConstants.DELIVERY_LOCATION_REPORT_PARAM, deliveryLocationReport);
 			paramMap.put(MVCConstants.SUPPLIER_REPORT_PARAM, supplierReport);

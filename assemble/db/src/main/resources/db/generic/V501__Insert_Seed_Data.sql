@@ -5,340 +5,315 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema pi_pos_industry
+-- Schema commercedb
 -- -----------------------------------------------------
-USE `pi_pos_industry` ;
+USE `commercedb` ;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+
 -- -----------------------------------------------------
--- Seed data for location
+-- Seed data for global_config
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`location`;
-INSERT INTO `pi_pos_industry`.`location` (`location_id`,`location_type`,`name`,`description`,`status`,`address1`,`address2`,`city`,`state`,`country`,`pincode`,`neighborhood`,`locale`,`currency`,`telephone1`,`telephone2`,`store_manager`,`email_address`,`created_date`,`created_by`,`modified_date`,`modified_by`) VALUES (7997,'S','commerce site','This is the descripton for only location in commerce site as of now','A','Kharar',NULL,'Kharar','Panjab','India','140301','Arya Collage road','en_US','INR','8847523677',NULL,'Amit','eramitpunj@gmail.com','2017-12-11 12:56:07','Admin',NULL,NULL);
-INSERT INTO `pi_pos_industry`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (2, 'W', 'Warehouse 1', 'this is sample warehouse 1', 'A', 'Mohali', 'Mohali', 'Punjab', 'India', '140301', '7 Phase', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin');
-INSERT INTO `pi_pos_industry`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (3, 'S', 'Store 2', 'this is sample store 2', 'A', 'Mohali', 'Mohali', 'Punjab', 'India', '140301', '7 Phase', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin');
-INSERT INTO `pi_pos_industry`.`location` (`location_id`, `location_type`, `name`, `description`, `status`, `address1`, `city`, `state`, `country`, `pincode`, `neighborhood`, `locale`, `currency`, `telephone1`, `store_manager`, `email_address`, `created_date`, `created_by`) VALUES (27, 'S', 'Store 3', 'this is sample store 3', 'A', 'Chandigarh', 'Chandigarh', 'Punjab', 'India', '140301', 'Sector 34', 'en_US', 'INR', '8847523677', 'Amit', 'eramitpunj@gmail.com', now(), 'Admin'); 
+truncate `commercedb`.`global_config`;
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Item Default Hierarchy','app.item.default.hierarchy','Default');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Item Type','app.item.default.item.type','merchandise');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default UOM','app.item.default.uom','UNT');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Item Pack Size','app.item.default.pack.size','1');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Unit Cost','app.item.default.unit.cost','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Max Retail Price','app.item.default.mrp','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Suggested Price','app.item.default.suggested.price','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Compare At Price','app.item.default.compareat.price','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Restocking Price','app.item.default.restocking.fee','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Discount Applicable Flag','app.item.default.discount.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Return Applicable Flag','app.item.default.return.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Tax Applicable Flag','app.item.default.tax.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Ask Quantity Flag','app.item.default.ask.qty.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Price Change Allowed Flag','app.item.default.price.change.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Application License','app.license.key','0onKTpdIL9gkJ4LZRmoC6J7wxBm0871iras7rp10TFLH4AxsMF1MEDHErSxvfUK8KMQgot6AtK5ixonTLkJy9RDuNgmcK4JBPkV0gBt2qXUUE4ibhTsyi00u52018zSB78dx6LqJQ0V0l2QLAF');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Currency','app.default.currency.code','INR');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Store Open Process Skip Flag','app.skip.opening.closing.process','false');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default List Screen Page Size','app.screen.default.page.size','8');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default List Screen Page Count','app.screen.default.page.count','5');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Printer Name','app.default.printer.name','RICOH SP 210 DDST');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Receipt Export Format','app.default.receipt.export.method','PDF');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Location','app.default.location','1234');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Receipt Copies Count','app.default.receipt.copies.count','2');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Receipt Copies Name','app.default.receipt.copies.name','Original, Duplicate');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Location','app.default.location','');
 commit;
 
 -- -----------------------------------------------------
 -- Seed data for reason_codes
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`reason_codes`;
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Electricity Bill', 'Bill', 'This is for electricity Bill', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Water Bill', 'Bill', 'This is for MC water bill', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Internet Bill', 'Bill', 'This is for Internet Bill', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Tea', 'Daily Use', 'This is for tea ', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Snacks', 'Daily Use', 'This is for snacks', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Lease Rent', 'Bill', 'This is rent for the room', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Payment', 'General Expense', 'this is payment for anything which will be described in remarks', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Damaged', 'POR', 'This is for damaged item returns', 'admin', '2018-07-26 12:20:17');
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Over Shipped', 'POR', 'This is for over shipment item returns', 'admin', '2018-07-26 12:20:17');
-INSERT INTO `pi_pos_industry`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Bad Quality', 'POR', 'This is for item returns due to bad quality', 'admin', '2018-07-26 12:20:17');
+truncate `commercedb`.`reason_codes`;
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Electricity Bill', 'Bill', 'This is for electricity Bill', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Water Bill', 'Bill', 'This is for MC water bill', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Internet Bill', 'Bill', 'This is for Internet Bill', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Tea', 'Daily Use', 'This is for tea ', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Snacks', 'Daily Use', 'This is for snacks', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Lease Rent', 'Bill', 'This is rent for the room', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Payment', 'General Expense', 'this is payment for anything which will be described in remarks', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Repository To Register', 'Move', 'This reason code is used to move money from store repository to register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Repository', 'Move', 'This reason code is used to move money from register till to store repository', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Register To Register', 'Move', 'This reason code is used to move money from one register till to another register till', 'admin', now());
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Damaged', 'POR', 'This is for damaged item returns', 'admin', '2018-07-26 12:20:17');
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Over Shipped', 'POR', 'This is for over shipment item returns', 'admin', '2018-07-26 12:20:17');
+INSERT INTO `commercedb`.`reason_codes` (`reason_name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Bad Quality', 'POR', 'This is for item returns due to bad quality', 'admin', '2018-07-26 12:20:17');
 
 commit;
 
 -- -----------------------------------------------------
 -- Seed data for gst_state_codes
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`gst_state_codes`;
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('01'),trim('Jammu and Kashmir'),trim('JK'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('02'),trim('Himachal Pradesh'),trim('HP'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('03'),trim('Punjab'),trim('PB'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('04'),trim('Chandigarh'),trim('CH'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('05'),trim('Uttarakhand'),trim('UK'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('06'),trim('Haryana'),trim('HR'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('07'),trim('Delhi'),trim('DL'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('08'),trim('Rajasthan'),trim('RJ'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('09'),trim('Uttar Pradesh'),trim('UP'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('10'),trim('Bihar'),trim('BR'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('11'),trim('Sikkim'),trim('SK'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('12'),trim('Arunachal Pradesh'),trim('AR'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('13'),trim('Nagaland'),trim('NL'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('14'),trim('Manipur'),trim('MN'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('15'),trim('Mizoram'),trim('MZ'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('16'),trim('Tripura'),trim('TR'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('17'),trim('Meghalaya'),trim('ML'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('18'),trim('Assam'),trim('AS'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('19'),trim('West Bengal'),trim('WB'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('20'),trim('Jharkhand'),trim('JH'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('21'),trim('Odisha'),trim('OD'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('22'),trim('Chattisgarh'),trim('CG'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('23'),trim('Madhya Pradesh'),trim('MP'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('24'),trim('Gujarat'),trim('GJ'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('25'),trim('Daman and Diu'),trim('DD'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('26'),trim('Dadra and Nagar Haveli'),trim('DN'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('27'),trim('Maharashtra'),trim('MH'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('28'),trim('Andhra Pradesh (Before)'),trim('AD'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('29'),trim('Karnataka'),trim('KA'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('30'),trim('Goa'),trim('GA'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('31'),trim('Lakshadweep Islands'),trim('LD'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('32'),trim('Kerala'),trim('KL'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('33'),trim('Tamil Nadu'),trim('TN'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('34'),trim('Pondicherry'),trim('PY'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('35'),trim('Andaman and Nicobar Islands'),trim('AN'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('36'),trim('Telangana'),trim('TS'));
-insert into  pi_pos_industry.gst_state_codes  (state_code, state_name, state_name_short) values(trim('37'),trim('Andhra Pradesh (New)'),trim('AD'));
+truncate `commercedb`.`gst_state_codes`;
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('01'),trim('Jammu and Kashmir'),trim('JK'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('02'),trim('Himachal Pradesh'),trim('HP'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('03'),trim('Punjab'),trim('PB'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('04'),trim('Chandigarh'),trim('CH'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('05'),trim('Uttarakhand'),trim('UK'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('06'),trim('Haryana'),trim('HR'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('07'),trim('Delhi'),trim('DL'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('08'),trim('Rajasthan'),trim('RJ'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('09'),trim('Uttar Pradesh'),trim('UP'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('10'),trim('Bihar'),trim('BR'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('11'),trim('Sikkim'),trim('SK'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('12'),trim('Arunachal Pradesh'),trim('AR'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('13'),trim('Nagaland'),trim('NL'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('14'),trim('Manipur'),trim('MN'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('15'),trim('Mizoram'),trim('MZ'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('16'),trim('Tripura'),trim('TR'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('17'),trim('Meghalaya'),trim('ML'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('18'),trim('Assam'),trim('AS'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('19'),trim('West Bengal'),trim('WB'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('20'),trim('Jharkhand'),trim('JH'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('21'),trim('Odisha'),trim('OD'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('22'),trim('Chattisgarh'),trim('CG'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('23'),trim('Madhya Pradesh'),trim('MP'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('24'),trim('Gujarat'),trim('GJ'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('25'),trim('Daman and Diu'),trim('DD'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('26'),trim('Dadra and Nagar Haveli'),trim('DN'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('27'),trim('Maharashtra'),trim('MH'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('28'),trim('Andhra Pradesh (Before)'),trim('AD'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('29'),trim('Karnataka'),trim('KA'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('30'),trim('Goa'),trim('GA'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('31'),trim('Lakshadweep Islands'),trim('LD'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('32'),trim('Kerala'),trim('KL'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('33'),trim('Tamil Nadu'),trim('TN'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('34'),trim('Pondicherry'),trim('PY'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('35'),trim('Andaman and Nicobar Islands'),trim('AN'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('36'),trim('Telangana'),trim('TS'));
+insert into  commercedb.gst_state_codes  (state_code, state_name, state_name_short) values(trim('37'),trim('Andhra Pradesh (New)'),trim('AD'));
 
 commit;
-
 
 
 -- -----------------------------------------------------
 -- Seed data for uom_master
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`uom_master`;
-
+truncate `commercedb`.`uom_master`;
 -- GST UOMs
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BAGS','BAG','BAGS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BALE','BAL','BALE','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNDLES','BDL','BUNDLES','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUCKLES','BKL','BUCKLES','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BILLION OF UNITS','BOU','BILLION OF UNITS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOX','BOX','BOX','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOTTLES','BTL','BOTTLES','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNCHES','BUN','BUNCHES','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CANS','CAN','CANS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC METERS','CBM','CUBIC METERS','VOLUME','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC CENTIMETERS','CCM','CUBIC CENTIMETERS','VOLUME','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CENTIMETERS','CMS','CENTIMETERS','LENGTH','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CARTONS','CTN','CARTONS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DOZENS','DOZ','DOZENS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DRUMS','DRM','DRUMS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GREAT GROSS','GGK','GREAT GROSS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GRAMMES','GMS','GRAMMES','WEIGHT','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS','GRS','GROSS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS YARDS','GYD','GROSS YARDS','LENGTH','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOGRAMS','KGS','KILOGRAMS','WEIGHT','1','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOLITRE','KLR','KILOLITRE','VOLUME','1','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOMETRE','KME','KILOMETRE','LENGTH','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('MILILITRE','MLT','MILILITRE','VOLUME','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METERS','MTR','METERS','LENGTH','1','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METRIC TON','MTS','METRIC TON','WEIGHT','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('NUMBERS','NOS','NUMBERS','QTY','1','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PACKS','PAC','PACKS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PIECES','PCS','PIECES','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PAIRS','PRS','PAIRS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('QUINTAL','QTL','QUINTAL','WEIGHT','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('ROLLS','ROL','ROLLS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SETS','SET','SETS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE FEET','SQF','SQUARE FEET','AREA','1','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE METERS','SQM','SQUARE METERS','AREA','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE YARDS','SQY','SQUARE YARDS','AREA','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TABLETS','TBS','TABLETS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TEN GROSS','TGM','TEN GROSS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('THOUSANDS','THD','THOUSANDS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TONNES','TON','TONNES','WEIGHT','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TUBES','TUB','TUBES','WEIGHT','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('US GALLONS','UGS','US GALLONS','VOLUME','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('UNITS','UNT','UNITS','QTY','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('YARDS','YDS','YARDS','LENGTH','0','admin',now());
-INSERT INTO `pi_pos_industry`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('OTHERS','OTH','OTHERS','OTHERS','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BAGS','BAG','BAGS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BALE','BAL','BALE','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNDLES','BDL','BUNDLES','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUCKLES','BKL','BUCKLES','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BILLION OF UNITS','BOU','BILLION OF UNITS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOX','BOX','BOX','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BOTTLES','BTL','BOTTLES','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('BUNCHES','BUN','BUNCHES','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CANS','CAN','CANS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC METERS','CBM','CUBIC METERS','VOLUME','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CUBIC CENTIMETERS','CCM','CUBIC CENTIMETERS','VOLUME','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CENTIMETERS','CMS','CENTIMETERS','LENGTH','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('CARTONS','CTN','CARTONS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DOZENS','DOZ','DOZENS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('DRUMS','DRM','DRUMS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GREAT GROSS','GGK','GREAT GROSS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GRAMMES','GMS','GRAMMES','WEIGHT','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS','GRS','GROSS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('GROSS YARDS','GYD','GROSS YARDS','LENGTH','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOGRAMS','KGS','KILOGRAMS','WEIGHT','1','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOLITRE','KLR','KILOLITRE','VOLUME','1','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('KILOMETRE','KME','KILOMETRE','LENGTH','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('MILILITRE','MLT','MILILITRE','VOLUME','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METERS','MTR','METERS','LENGTH','1','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('METRIC TON','MTS','METRIC TON','WEIGHT','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('NUMBERS','NOS','NUMBERS','QTY','1','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PACKS','PAC','PACKS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PIECES','PCS','PIECES','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('PAIRS','PRS','PAIRS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('QUINTAL','QTL','QUINTAL','WEIGHT','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('ROLLS','ROL','ROLLS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SETS','SET','SETS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE FEET','SQF','SQUARE FEET','AREA','1','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE METERS','SQM','SQUARE METERS','AREA','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('SQUARE YARDS','SQY','SQUARE YARDS','AREA','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TABLETS','TBS','TABLETS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TEN GROSS','TGM','TEN GROSS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('THOUSANDS','THD','THOUSANDS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TONNES','TON','TONNES','WEIGHT','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('TUBES','TUB','TUBES','WEIGHT','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('US GALLONS','UGS','US GALLONS','VOLUME','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('UNITS','UNT','UNITS','QTY','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('YARDS','YDS','YARDS','LENGTH','0','admin',now());
+INSERT INTO `commercedb`.`uom_master` (`name`, `code`, `description`, `type`, `is_primary`, `created_by`, `created_date`)	values('OTHERS','OTH','OTHERS','OTHERS','0','admin',now());
 commit;
 
 -- -----------------------------------------------------
 -- Seed data for denomination_master
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`denomination_master`;
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`, `description`) VALUES ('INR', '0.50', '0.50', '50 paisa');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '1.00', '1');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '2.00', '2');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '5.00', '5');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '10.00', '10');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '20.00', '20');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '50.00', '50');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '100.00', '100');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '200.00', '200');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '500.00', '500');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '1000.00', '1000');
-INSERT INTO `pi_pos_industry`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '2000.00', '2000');
+truncate `commercedb`.`denomination_master`;
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`, `description`) VALUES ('INR', '0.50', '0.50', '50 paisa');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '1.00', '1');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '2.00', '2');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '5.00', '5');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '10.00', '10');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '20.00', '20');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '50.00', '50');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '100.00', '100');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '200.00', '200');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '500.00', '500');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '1000.00', '1000');
+INSERT INTO `commercedb`.`denomination_master` (`currency_code`, `code`, `value`) VALUES ('INR', '2000.00', '2000');
 commit;
 
 -- -----------------------------------------------------
 -- Seed data for tender_master table
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`tender_master`;
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cash', 'CASH', 'This is the cash tender description', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit Card', 'CC', 'This is credit card tender', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paypal', 'PAYPAL', 'This is paypal online payment', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Paytm', 'PAYTM', 'This is PAYTM online payment', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cheque', 'CHEQUE', 'This is bank account cheque', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Change', 'CHANGE', 'This is change for cash tender', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit', 'CREDIT', 'This is for Credit tender to give udhar', 'admin', '2018-07-06 19:46:21');
+truncate `commercedb`.`tender_master`;
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Cash', 'CASH', 'This is the cash tender description', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Change', 'CHANGE', 'This is change for cash tender', 'admin', now());
+INSERT INTO `commercedb`.`tender_master` (`name`, `type`, `description`, `created_by`, `created_date`) VALUES ('Credit', 'CREDIT', 'This is for Credit tender to give udhar', 'admin', '2018-07-06 19:46:21');
 
 commit;
 
 -- -----------------------------------------------------
 -- Seed data for repository and tenders
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`location_repo`;
-truncate `pi_pos_industry`.`repository_master`;
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (1, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (2, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (3, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (4, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (5, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (6, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES ('7', 'Main Safe', 'This is main safe for credit in the store', '2018-07-06 19:46:22', '2018-07-06 19:46:22', 'A', 'admin', '2018-07-06 19:46:22');
+truncate `commercedb`.`repository_master`;
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (1, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (2, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
+INSERT INTO `commercedb`.`repository_master` (`tender_id`, `name`, `description`, `begin_date_time`, `end_date_time`, `status`, `created_by`, `created_date`) VALUES (3, 'Main Safe', 'This is main safe in the store', now(), now(), 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 1, 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 2, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 3, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 4, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 5, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 7997, 7, 0, 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 2, '1', 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 2, 7, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 3, '1', 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 3, 7, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES ('1', 27, '1', 1, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 6, 0, 'admin', now());
-INSERT INTO `pi_pos_industry`.`location_repo` (`repository_id`, `location_id`, `tender_id`, `reconcilation_flag`, `created_by`, `created_date`) VALUES (1, 27, 7, 0, 'admin', now());
 
 commit;
 
 
--- -----------------------------------------------------
--- Seed data for register_master table
--- -----------------------------------------------------
-truncate `pi_pos_industry`.`register_master`;
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (7997, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (2, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (3, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES (27, 1, 'First Register', 'admin', now());
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('2', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '2', 'Second Register', 'admin', '2018-07-06 19:46:22');
-INSERT INTO `pi_pos_industry`.`register_master` (`location_id`, `register_id`, `name`, `created_by`, `created_date`) VALUES ('7997', '3', 'Third Register', 'admin', '2018-07-06 19:46:22');
-
-commit;
 
 -- -----------------------------------------------------
 -- Seed data for tax tables
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`tax_rate_rule`;
-truncate `pi_pos_industry`.`tax_bracket`;
-truncate `pi_pos_industry`.`tax_group_rule`;
-truncate `pi_pos_industry`.`tax_group`;
-truncate `pi_pos_industry`.`tax_location`;
-truncate `pi_pos_industry`.`tax_authority`;
-truncate `pi_pos_industry`.`tax_location_mapping`;
-
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (2, 2);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (3, 2);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (27, 2);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 1);
-INSERT INTO `pi_pos_industry`.`tax_location_mapping` (`location_id`, `tax_location_id`) VALUES (7997, 2);
-
-INSERT INTO `pi_pos_industry`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('State Govt of India', 'N', '2', 'admin', now());
+truncate `commercedb`.`tax_rate_rule`;
+truncate `commercedb`.`tax_bracket`;
+truncate `commercedb`.`tax_group_rule`;
+truncate `commercedb`.`tax_group`;
+truncate `commercedb`.`tax_location`;
+truncate `commercedb`.`tax_authority`;
+-- truncate `commercedb`.`tax_location_mapping`;
 
 
-INSERT INTO `pi_pos_industry`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Within State', 'I', 'This tax location is for all sales within state', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Outside State', 'O','This tax location is for all sales outside state', 'admin', now());
-
-INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 10', 'This group is applied for 10 percent tax rate of GST', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 12', 'This group is applied for 12 percent tax rate of GST', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 18', 'This group is applied for 18 percent tax rate of GST', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group` (`name`, `description`, `created_by`, `created_date`) VALUES ('GST 28', 'This group is applied for 28 percent tax rate of GST', 'admin', now());
+INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('Central Govt of India', 'N', '2', 'admin', now());
+INSERT INTO `commercedb`.`tax_authority` (`name`, `rounding_code`, `rounding_digit_qty`, `created_by`, `created_date`) VALUES ('State Govt of India', 'N', '2', 'admin', now());
 
 
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
+INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Within State', 'I', 'This tax location is for all sales within state', 'admin', now());
+INSERT INTO `commercedb`.`tax_location` (`name`,`code`, `description`, `created_by`, `created_date`) VALUES ('Outside State', 'O','This tax location is for all sales outside state', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 0', 'This tax group is applied when no GST is applicable',0, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 5', 'This group is applied for 5 percent tax rate of GST',5, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 10', 'This group is applied for 10 percent tax rate of GST',10, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 12', 'This group is applied for 12 percent tax rate of GST',12, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 18', 'This group is applied for 18 percent tax rate of GST',18, 'admin', now());
+INSERT INTO `commercedb`.`tax_group` (`name`, `description`, `aggregated_rate`, `created_by`, `created_date`) VALUES ('GST 28', 'This group is applied for 28 percent tax rate of GST',28, 'admin', now());
+
+
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`) VALUES ('1', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
+
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('2', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('2', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('2', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
 
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('3', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('3', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('3', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
 
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('4', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('4', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('4', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
 
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('5', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('5', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('5', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
 
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('6', '1', '1', '0', 'SGST', 'This is the rules for group SGST', '0', '1', '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('6', '1', '1', '1', 'CGST', 'This is the rules for group CGST', '1', '1', '0', 'CGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
+INSERT INTO `commercedb`.`tax_group_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `seq_no`, `name`, `description`, `compound_seq_nbr`, `compound_flag`, `trans_level_flag`, `type_code`, `status`, `created_by`, `created_date`)
  VALUES ('6', '2', '1', '0', 'IGST', 'This is the rules for group IGST', '0', '0', '0', 'IGST', 'A', 'admin', now()); 
 
 
 
-INSERT INTO `pi_pos_industry`.`tax_bracket` (`seq_no`, `breakpoint`, `tax_amount`, `created_date`, `created_by`) VALUES ('1', '-1', '-1', now(), 'admin');
+INSERT INTO `commercedb`.`tax_bracket` (`seq_no`, `breakpoint`, `tax_amount`, `created_date`, `created_by`) VALUES ('1', '-1', '-1', now(), 'admin');
 
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('1', '1', '1', '0', '1', '0', now(), now(), '0', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('1', '1', '1', '1', '1', '1', now(), now(), '0', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('2', '1', '1', '0', '1', '0', now(), now(), '2.5', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('2', '1', '1', '1', '1', '1', now(), now(), '2.5', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('3', '1', '1', '0', '1', '0', now(), now(), '5', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('3', '1', '1', '1', '1', '1', now(), now(), '5', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('4', '1', '1', '0', '1', '0', now(), now(), '6', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('4', '1', '1', '1', '1', '1', now(), now(), '6', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('5', '1', '1', '0', '1', '0', now(), now(), '9', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('5', '1', '1', '1', '1', '1', now(), now(), '9', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('6', '1', '1', '0', '1', '0', now(), now(), '14', 'SGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('6', '1', '1', '1', '1', '1', now(), now(), '14', 'CGST', 'A', 'admin', now());
 
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('1', '2', '1', '0', '1', '0', now(), now(), '0', 'IGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('2', '2', '1', '0', '1', '0', now(), now(), '5', 'IGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('3', '2', '1', '0', '1', '0', now(), now(), '10', 'IGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('4', '2', '1', '0', '1', '0', now(), now(), '12', 'IGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('5', '2', '1', '0', '1', '0', now(), now(), '18', 'IGST', 'A', 'admin', now());
-INSERT INTO `pi_pos_industry`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
+INSERT INTO `commercedb`.`tax_rate_rule` (`tax_group_id`, `tax_location_id`, `tax_authority_id`, `tax_group_rule_seq`, `tax_bracket_id`, `seq_no`, `effective_date`, `expiry_date`, `percentage`, `type_code`, `status`, `created_by`, `created_date`) 
 VALUES ('6', '2', '1', '0', '1', '0', now(), now(), '28', 'IGST', 'A', 'admin', now());
 commit;
 
@@ -346,24 +321,24 @@ commit;
 -- -----------------------------------------------------
 -- Seed data for inventory
 -- -----------------------------------------------------
-truncate pi_pos_industry.stock_reason_code;
-truncate pi_pos_industry.stock_bucket;
+truncate commercedb.stock_reason_code;
+truncate commercedb.stock_bucket;
 
-insert into pi_pos_industry.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
 values('Stock on Hand', 'SOH', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
-insert into pi_pos_industry.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
 values('Order', 'RESERVED', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
-insert into pi_pos_industry.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
 values('Expired Stock', 'NON_SELL', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
-insert into pi_pos_industry.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
 values('Damaged', 'NON_SELL', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
-insert into pi_pos_industry.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
+insert into commercedb.stock_bucket (`name`, system_bucket, created_by, created_date, modified_by, modified_date, `status`)
 values('Not Sellable', 'NON_SELL', 'admin', '2018-01-27 11:18:45', NULL, NULL, 'A');
 
 
-insert into pi_pos_industry.stock_reason_code(reason_code, `name`, from_bucket_id, to_bucket_id, from_stock_action, to_stock_action, created_by, created_date)
+insert into commercedb.stock_reason_code(reason_code, `name`, from_bucket_id, to_bucket_id, from_stock_action, to_stock_action, created_by, created_date)
 values('STKIN', 'commerce.reason.code.inventory.stockin', NULL, '1', NULL, 'ADD', 'admin', '2018-01-27 11:23:31');
-insert into pi_pos_industry.stock_reason_code(reason_code, `name`, from_bucket_id, to_bucket_id, from_stock_action, to_stock_action, created_by, created_date)
+insert into commercedb.stock_reason_code(reason_code, `name`, from_bucket_id, to_bucket_id, from_stock_action, to_stock_action, created_by, created_date)
 values('STKOUT', 'commerce.reason.code.inventory.stockout', '1', NULL, 'SUBTRACT', NULL, 'admin', '2018-01-27 11:23:31');
 
 
@@ -371,17 +346,8 @@ values('STKOUT', 'commerce.reason.code.inventory.stockout', '1', NULL, 'SUBTRACT
 -- -----------------------------------------------------
 -- Seed data for item_hierarchy
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`item_hierarchy`;
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`, `sort_order`, `hidden_flag`, `created_by`, `created_date`) VALUES ('dept', 'Default', 'This is default department for any item', '1', 'N', 'admin', now());
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('dept','Mens','Mens',1,'N','2017-12-07 17:55:32','admin',NULL);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Clothes','Clothes',1,'N','2017-12-07 17:56:25','admin',1);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Shirts','Shirts',1,'N','2017-12-07 18:01:00','admin',2);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal','Formal',1,'N','2017-12-07 18:01:00','admin',3);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Shoes','Shoes',1,'N','2017-12-07 18:01:00','admin',1);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subdept','Personal Care','Personal Care',1,'N','2017-12-07 18:01:00','admin',1);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('class','Pants','Pants',1,'N','2017-12-07 18:01:00','admin',2);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Formal','Formal',1,'N','2017-12-07 18:01:00','admin',3);
-INSERT INTO `pi_pos_industry`.`item_hierarchy` (`level_code`, `name`, `description`,`sort_order`,`hidden_flag`,`created_date`,`created_by`,`parent_id`) VALUES ('subclass','Casual','Casual',1,'N','2017-12-07 18:01:00','admin',3);
+truncate `commercedb`.`item_hierarchy`;
+INSERT INTO `commercedb`.`item_hierarchy` (`level_code`, `name`, `description`, `sort_order`, `hidden_flag`, `created_by`, `created_date`) VALUES ('dept', 'Default', 'This is default department for any item', '1', 'N', 'admin', now());
 
 commit;
 
@@ -389,87 +355,67 @@ commit;
 -- -----------------------------------------------------
 -- Seed data for attribute_master
 -- -----------------------------------------------------
-truncate `pi_pos_industry`.`attribute_master`;
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'L', 'Large', 'This is Large SIZE', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'M', 'Medium', 'This is Medium SIZE', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'S', 'Small', 'This is Small SIZE', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'RED', 'Red', 'This is RED Color', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'GREEN', 'Green', 'This is GREEN Color', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'BLUE', 'Blue', 'This is BLUE Color', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'L', 'Length', 'This is Length of the Dimension', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'B', 'Breadth', 'This is Breadth of the Dimension', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'W', 'Width', 'This is Width of the Dimension', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '100', '100 gms', 'This is the Weight of 100 gms', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '200', '200 gms', 'This is the Weight of 200 gms', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '250', '250 gms', 'This is the Weight of 250 gms', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '500', '500 gms', 'This is the Weight of 500 gms', '4');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '1', '1 Kg', 'This is the Weight of 1 Kg', '5');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '2', '2 Kgs', 'This is the Weight of 2 Kgs', '6');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '5', '5 Kgs', 'This is the Weight of 5  Kgs', '7');
+truncate `commercedb`.`attribute_master`;
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'L', 'Large', 'This is Large SIZE', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'M', 'Medium', 'This is Medium SIZE', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('S', 'Size', 'This is to capture SIZE', 'S', 'Small', 'This is Small SIZE', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'RED', 'Red', 'This is RED Color', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'GREEN', 'Green', 'This is GREEN Color', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('C', 'Color', 'This is to capture Color', 'BLUE', 'Blue', 'This is BLUE Color', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'L', 'Length', 'This is Length of the Dimension', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'B', 'Breadth', 'This is Breadth of the Dimension', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('D', 'Dimension', 'This is to capture Dimension', 'W', 'Width', 'This is Width of the Dimension', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '100', '100 gms', 'This is the Weight of 100 gms', '1');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '200', '200 gms', 'This is the Weight of 200 gms', '2');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '250', '250 gms', 'This is the Weight of 250 gms', '3');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '500', '500 gms', 'This is the Weight of 500 gms', '4');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '1', '1 Kg', 'This is the Weight of 1 Kg', '5');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '2', '2 Kgs', 'This is the Weight of 2 Kgs', '6');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('W', 'Weight', 'This is to measure weight ', '5', '5 Kgs', 'This is the Weight of 5  Kgs', '7');
+INSERT INTO `commercedb`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('NA', 'None', 'This is for items with no attributes and have only one SKU ', 'P', 'Plain', 'This is plain version for SKU related to item', '1');
 
-
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('NA', 'None', 'This is for items with no attributes', 'P', 'Plain', 'This attribute is selected for items with no differentiator for SKUs', '1');
-
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '100', '100 ml', 'This is the Volume of 100 ml', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '200', '200 ml', 'This is the Weight of 200 ml', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '250', '250 ml', 'This is the Weight of 250 ml', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '300', '300 ml', 'This is the Weight of 350 ml', '4');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '400', '400 ml', 'This is the Weight of 400 ml', '5');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '500', '500 ml', 'This is the Weight of 500 ml', '6');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '1', '1 ltr', 'This is the Weight of 1 ltr', '7');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '2', '2 ltr', 'This is the Weight of 2 ltr', '8');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('V', 'Volume', 'This is to measure volume of any liquid item', '5', '5 ltr', 'This is the Weight of 5 ltr', '9');
-
-
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'CH', 'Chocolate', 'Chocolate Flavor Item', '1');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'VA', 'Vanilla', 'Vanilla Flavor Item', '2');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'ST', 'Strawberry', 'Strawberry Flavor Item', '3');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'PA', 'Pineapple', 'Pineapple Flavor Item', '4');
-INSERT INTO `pi_pos_industry`.`attribute_master` (`attr_code`, `attr_name`, `attr_description`, `value_code`, `value_name`, `value_description`, `value_seq_no`) VALUES ('F', 'Flavor', 'This is to provide flavor of any item', 'BF', 'Black Forest', 'Black Forest Flavor Item', '5');
 commit;
 
 
 -- -----------------------------------------------------
 -- Seed data for user role
 -- -----------------------------------------------------
-INSERT INTO `pi_pos_industry`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('ADMIN', 'This is admin role for administrators of the website', 'admin', now());
-INSERT INTO `pi_pos_industry`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('CASHIER', 'This is cashier role for cashiers ', 'admin', now());
+INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('ADMIN', 'This is admin role for administrators of the website', 'admin', now());
+INSERT INTO `commercedb`.`role` (`role_name`, `description`, `created_by`, `created_date`) VALUES ('CASHIER', 'This is cashier role for cashiers ', 'admin', now());
 
 -- -----------------------------------------------------
 -- Seed data for user
 -- -----------------------------------------------------
-insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
-values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 7997, 'A', 'admin', '2018-01-16 20:19:09');
-insert into pi_pos_industry.user (username, first_name, last_name, phone1, phone2, email, login_count, default_location, `status`, created_by, created_date)
-values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 27, 'A', 'admin', '2018-01-16 20:19:09');
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count, `status`, created_by, created_date)
+values('admin', 'admin', 'admin', '8847523677', '8968834880', 'admin', '0', 'A', 'admin', '2018-01-16 20:19:09');
+insert into commercedb.user (username, first_name, last_name, phone1, phone2, email, login_count,  `status`, created_by, created_date)
+values('cashier', 'cashier', 'cashier', '8847523677', '8968834880', 'cashier', '0', 'A', 'admin', '2018-01-16 20:19:09');
 
 
 -- -----------------------------------------------------
 -- Seed data for user_password
 -- -----------------------------------------------------
-insert into pi_pos_industry.user_password( username, password, modified_by, modified_date, `status`)
+insert into commercedb.user_password( username, password, modified_by, modified_date, `status`)
 values('admin', '$2a$10$IWjH12W2tgjFRcfEGWgFBekSZwfiFnJTkCk9vwct05CoTU5ZArOrO', 'admin', '2018-01-22 19:40:52', 'A');
-insert into pi_pos_industry.user_password( username, password, modified_by, modified_date, `status`)
+insert into commercedb.user_password( username, password, modified_by, modified_date, `status`)
 values('cashier', '$2a$10$iHH8hs7bMG.7ud5.DdCMteuxwXZRNikGUYuySm4r5drTBkTsVC7B2', 'admin', '2018-01-22 19:40:52', 'A');
 
 -- -----------------------------------------------------
 -- Seed data for user role
 -- -----------------------------------------------------
-INSERT INTO `pi_pos_industry`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('admin', '1', '7997', 'admin', now(), now(), now());
-INSERT INTO `pi_pos_industry`.`user_role` (`username`, `role_id`, `location_id`, `created_by`, `created_date`, `begin_date`, `end_date`) VALUES ('cashier', '2', '7997', 'admin', now(), now(), now());
 
 -- -----------------------------------------------------
 -- Seed data for user addresses
 -- -----------------------------------------------------
-insert into pi_pos_industry.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
-values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
-insert into pi_pos_industry.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
-values('Y', 'Home', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
+insert into commercedb.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
+values('Y', 'Work', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
+insert into commercedb.address_master ( `primary`, address_type, address1, address2, city, state, country, pincode)
+values('Y', 'Work', 'Kharar', '', 'Kharar', 'Punjab', 'India', '140301');
 
-insert into pi_pos_industry.user_address ( username, address_id)
+insert into commercedb.user_address ( username, address_id)
 values('admin', '1');
 
-insert into pi_pos_industry.user_address ( username, address_id)
+insert into commercedb.user_address ( username, address_id)
 values('cashier', '2');
 
 

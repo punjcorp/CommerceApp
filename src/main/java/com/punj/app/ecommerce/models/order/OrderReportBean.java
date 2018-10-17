@@ -19,6 +19,7 @@ public class OrderReportBean implements Serializable {
 	private static final long serialVersionUID = 2222042071826466527L;
 
 	private BigInteger orderId;
+	private String reportType;
 	private String username;
 	private List<OrderBean> order;
 	private List<OrderItemBean> orderItems;
@@ -129,6 +130,21 @@ public class OrderReportBean implements Serializable {
 	 */
 	public void setSupplier(List<SupplierBean> supplier) {
 		this.supplier = supplier;
+	}
+
+	/**
+	 * @return the reportType
+	 */
+	public String getReportType() {
+		return reportType;
+	}
+
+	/**
+	 * @param reportType
+	 *            the reportType to set
+	 */
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
 	}
 
 }

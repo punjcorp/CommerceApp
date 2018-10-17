@@ -27,6 +27,8 @@ public class OrderItemBean {
 	@NotNull(message = "{commerce.error.string.empty}", groups = { ValidationGroup.VGAddOrder.class })
 	private BigInteger itemId;
 
+	private Integer seqNo;
+	private String hsnNo;
 	private String itemDesc;
 
 	private BigInteger orderId;
@@ -75,8 +77,8 @@ public class OrderItemBean {
 	private LocalDateTime delieveredDate;
 
 	private BigDecimal returnedQty;
-	private Boolean isReturnAllowed=Boolean.FALSE;
-	
+	private Boolean isReturnAllowed = Boolean.FALSE;
+
 	@NotNull(message = "{commerce.error.amount.empty}", groups = { ValidationGroup.VGReceiveOrder.class })
 	@DecimalMin(value = "0.01", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
 	@DecimalMax(value = "9999999999.99", message = "{commerce.error.amt.range}", groups = { ValidationGroup.VGReceiveOrder.class })
@@ -668,7 +670,8 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param returnedQty the returnedQty to set
+	 * @param returnedQty
+	 *            the returnedQty to set
 	 */
 	public void setReturnedQty(BigDecimal returnedQty) {
 		this.returnedQty = returnedQty;
@@ -682,10 +685,40 @@ public class OrderItemBean {
 	}
 
 	/**
-	 * @param isReturnAllowed the isReturnAllowed to set
+	 * @param isReturnAllowed
+	 *            the isReturnAllowed to set
 	 */
 	public void setIsReturnAllowed(Boolean isReturnAllowed) {
 		this.isReturnAllowed = isReturnAllowed;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
+	}
+
+	/**
+	 * @return the seqNo
+	 */
+	public Integer getSeqNo() {
+		return seqNo;
+	}
+
+	/**
+	 * @param seqNo the seqNo to set
+	 */
+	public void setSeqNo(Integer seqNo) {
+		this.seqNo = seqNo;
 	}
 
 }

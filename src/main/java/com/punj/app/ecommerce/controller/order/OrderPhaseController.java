@@ -38,6 +38,7 @@ import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer
 import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.order.OrderBill;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
@@ -47,6 +48,7 @@ import com.punj.app.ecommerce.models.order.OrderBeanDTO;
 import com.punj.app.ecommerce.models.order.OrderBillBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.OrderService;
+import com.punj.app.ecommerce.services.SupplierService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 
@@ -61,7 +63,26 @@ public class OrderPhaseController {
 	private OrderService orderService;
 	private MessageSource messageSource;
 	private CommonService commonService;
-
+	private SupplierService supplierService;
+	private OrderPrintUtil orderPrintUtil;
+	
+	
+	/**
+	 * @param supplierService
+	 *            the supplierService to set
+	 */
+	@Autowired
+	public void setSupplierService(SupplierService supplierService) {
+		this.supplierService = supplierService;
+	}
+	/**
+	 * @param orderPrintUtil
+	 *            the orderPrintUtil to set
+	 */
+	@Autowired
+	public void setOrderPrintUtil(OrderPrintUtil orderPrintUtil) {
+		this.orderPrintUtil = orderPrintUtil;
+	}
 	/**
 	 * @param orderService
 	 *            the orderService to set
@@ -90,15 +111,27 @@ public class OrderPhaseController {
 	}
 
 	@GetMapping(ViewPathConstants.APPROVE_ORDER_URL)
-	public String approveOrder(Model model, RedirectAttributes redirectAttrs, final HttpServletRequest req, Locale locale) {
+	public String approveOrder(Model model, RedirectAttributes redirectAttrs, final HttpServletRequest req, Locale locale, Authentication authentication, HttpSession session) {
 		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 			BigInteger orderId = new BigInteger(req.getParameter(MVCConstants.ORDER_ID_PARAM));
 
 			if (orderId.compareTo(BigInteger.ZERO) > 0) {
 				Order order = this.orderService.searchOrder(orderId);
 				if (order != null) {
 					if (order.getStatus().equals(MVCConstants.STATUS_CREATED)) {
-					this.orderService.approveOrder(orderId);
+					order=this.orderService.approveOrder(orderId);
+					
+					order = this.orderService.searchOrder(order.getOrderId());
+					if (order != null) {
+						Supplier supplier = this.supplierService.searchSupplier(order.getSupplier().getSupplierId());
+						order.setSupplier(supplier);
+					}
+					OrderBean orderBean = OrderTransformer.transformOrder(order);
+					// This section is to update order report details
+					this.orderPrintUtil.createOrderReport(order, orderBean, userDetails.getUsername(), session, MVCConstants.REPORT_ORDER_VIEW, Boolean.TRUE);
+					logger.info("The {} order report objects has been updated successfully", order.getOrderId());
+					
 					redirectAttrs.addFlashAttribute(MVCConstants.SUCCESS,
 							messageSource.getMessage("commerce.screen.order.manage.approve.success", new Object[] { orderId }, locale));
 
@@ -321,6 +354,17 @@ public class OrderPhaseController {
 
 			orderBeanDTO.getOrder().setStatus(order.getStatus());
 
+			order = this.orderService.searchOrder(order.getOrderId());
+			if (order != null) {
+				Supplier supplier = this.supplierService.searchSupplier(order.getSupplier().getSupplierId());
+				order.setSupplier(supplier);
+			}
+			OrderBean orderBean = OrderTransformer.transformOrder(order);
+			orderBeanDTO.setOrder(orderBean);
+			// This section is to update order report details
+			this.orderPrintUtil.createOrderReport(order, orderBean, userDetails.getUsername(), session, MVCConstants.REPORT_ORDER_VIEW, Boolean.TRUE);
+			
+			
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.receive.success", new Object[] { order.getOrderId() }, locale));
 			this.updateOrderModelDetails(model, orderBeanDTO);
@@ -348,6 +392,16 @@ public class OrderPhaseController {
 			order = this.orderService.receiveAllOrder(order, userDetails.getUsername());
 			orderBeanDTO.getOrder().setStatus(order.getStatus());
 
+			order = this.orderService.searchOrder(order.getOrderId());
+			if (order != null) {
+				Supplier supplier = this.supplierService.searchSupplier(order.getSupplier().getSupplierId());
+				order.setSupplier(supplier);
+			}
+			OrderBean orderBean = OrderTransformer.transformOrder(order);
+			orderBeanDTO.setOrder(orderBean);
+			// This section is to update order report details
+			this.orderPrintUtil.createOrderReport(order, orderBean, userDetails.getUsername(), session, MVCConstants.REPORT_ORDER_VIEW, Boolean.TRUE);
+			
 			logger.info("All the purchase order items has been marked as received all successfully");
 			model.addAttribute(MVCConstants.SUCCESS,
 					messageSource.getMessage("commerce.screen.order.receive.all.success", new Object[] { order.getOrderId() }, locale));

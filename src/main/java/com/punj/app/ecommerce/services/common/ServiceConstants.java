@@ -40,6 +40,7 @@ public final class ServiceConstants {
 
 	public static final String TENDER_CASH = "Cash";
 	public static final String TENDER_CREDIT = "Credit";
+	public static final String TENDER_CHANGE_CODE = "CHANGE";
 
 	public static final String REASON_REPO_TO_REGISTER = "Repository To Register";
 	public static final String REASON_REGISTER_TO_REPO = "Register To Repository";
@@ -149,4 +150,7 @@ public final class ServiceConstants {
 	public static final String PRICE_TYPE_PROMOTION = "2";
 	public static final String PRICE_TYPE_CLEARANCE = "3";
 
+	public static final String APP_CONF_UTIL_STRING= "app.license.key";
+	public static final String APP_DEFAULT_LOCATION= "app.default.location";
+	
 }

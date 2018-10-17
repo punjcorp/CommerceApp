@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,7 @@ public class OrderPrintUtil {
 
 		if (orderReportBean != null) {
 			orderList = new ArrayList<>();
+			
 			orderList.add(orderReportBean);
 		}
 		logger.info("The order report bean object has been generated successfully");
@@ -205,16 +207,32 @@ public class OrderPrintUtil {
 
 			JRBeanCollectionDataSource orderDS = new JRBeanCollectionDataSource(orderCollection);
 
-			JasperReport orderReport = this.getTemplateForOrder(MVCConstants.ORDER_REPORT);
+			
+			String reportType=orderCollection.get(0).getReportType();
+			
 
 			JasperReport orderHeaderReport = this.getTemplateForOrder(MVCConstants.ORDER_HEADER_REPORT);
 			JasperReport deliveryLocationReport = this.getTemplateForOrder(MVCConstants.DELIEVERY_LOCATION_REPORT);
 			JasperReport supplierReport = this.getTemplateForOrder(MVCConstants.SUPPLIER_REPORT);
 			JasperReport supplierAddressReport = this.getTemplateForOrder(MVCConstants.ADDRESS_REPORT);
-			JasperReport orderItemsReport = this.getTemplateForOrder(MVCConstants.ORDER_ITEMS_REPORT);
+			JasperReport jasperHeaderReport= this.getTemplateForOrder(MVCConstants.HEADER_RECEIPT_REPORT);
+			
+			JasperReport orderItemsReport = null;
+			JasperReport orderReport = null;
+			if(StringUtils.isNotBlank(reportType) && reportType.equals(MVCConstants.PO_REPORT_RECEIVED)) {
+				orderReport = this.getTemplateForOrder(MVCConstants.ORDER_RECEIVED_REPORT);
+				orderItemsReport = this.getTemplateForOrder(MVCConstants.ORDER_ITEMS_RECEIVED_REPORT);
+			}
+			else {
+				orderReport = this.getTemplateForOrder(MVCConstants.ORDER_REPORT);
+				orderItemsReport = this.getTemplateForOrder(MVCConstants.ORDER_ITEMS_REPORT);
+			}
+				
+			
 			logger.info("All the compiled reports for order printing has been loaded.");
 
 			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put(MVCConstants.HEADER_REPORT_DIR, jasperHeaderReport);
 			paramMap.put(MVCConstants.ORDER_HEADER_REPORT_PARAM, orderHeaderReport);
 			paramMap.put(MVCConstants.DELIVERY_LOCATION_REPORT_PARAM, deliveryLocationReport);
 			paramMap.put(MVCConstants.SUPPLIER_REPORT_PARAM, supplierReport);

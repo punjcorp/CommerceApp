@@ -32,6 +32,7 @@ import com.punj.app.ecommerce.models.order.OrderBillBean;
 import com.punj.app.ecommerce.models.order.OrderItemBean;
 import com.punj.app.ecommerce.models.order.OrderReportBean;
 import com.punj.app.ecommerce.models.supplier.SupplierBean;
+import com.punj.app.ecommerce.utils.NumberToWordConverter;
 import com.punj.app.ecommerce.utils.Pager;
 import com.punj.app.ecommerce.utils.Utils;
 
@@ -55,6 +56,7 @@ public class OrderTransformer {
 		orderBean.setActualSubTotalCost(orderBean.getEstimatedCost());
 		orderBean.setActualTaxAmount(orderBean.getTaxAmount());
 		orderBean.setActualTotalAmount(orderBean.getTotalAmount());
+		orderBean.setActualTotalAmountInWords(NumberToWordConverter.convertBigDecimalToWords(orderBean.getTotalAmount()));
 
 		Order order = OrderTransformer.transformOrderBean(orderBean, username, MVCConstants.STATUS_RECEIVED, Boolean.TRUE);
 
@@ -109,16 +111,29 @@ public class OrderTransformer {
 
 		orderBean.setEstimatedCost(order.getEstimatedCost());
 		orderBean.setTaxAmount(order.getTaxAmount());
+		
 		orderBean.setTotalAmount(order.getTotalAmount());
+		orderBean.setTotalAmountInWords(NumberToWordConverter.convertBigDecimalToWords(orderBean.getTotalAmount()));
 
-		if (orderBean.getEstimatedCost().compareTo(BigDecimal.ZERO) > 0 && orderBean.getActualSubTotalCost().compareTo(BigDecimal.ZERO) == 0) {
+		if(order.getActualSubTotalCost()!=null && order.getActualSubTotalCost().compareTo(BigDecimal.ZERO) > 0) {
+			orderBean.setActualSubTotalCost(order.getActualSubTotalCost());	
+		}else if (orderBean.getEstimatedCost().compareTo(BigDecimal.ZERO) > 0 && order.getActualSubTotalCost()!=null && order.getActualSubTotalCost().compareTo(BigDecimal.ZERO) == 0) {
 			orderBean.setActualSubTotalCost(orderBean.getEstimatedCost());
 		}
-		if (orderBean.getTaxAmount().compareTo(BigDecimal.ZERO) > 0 && orderBean.getActualTaxAmount().compareTo(BigDecimal.ZERO) == 0) {
+		
+		if(order.getActualTaxAmount()!=null && order.getActualTaxAmount().compareTo(BigDecimal.ZERO) > 0) {
+			orderBean.setActualTaxAmount(order.getActualTaxAmount());	
+		}else if (orderBean.getTaxAmount().compareTo(BigDecimal.ZERO) > 0 && order.getActualTaxAmount()!=null && order.getActualTaxAmount().compareTo(BigDecimal.ZERO) == 0) {
 			orderBean.setActualTaxAmount(orderBean.getTaxAmount());
 		}
-		if (orderBean.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && orderBean.getActualTotalAmount().compareTo(BigDecimal.ZERO) == 0) {
+		
+		
+		if(order.getActualTotalAmount()!=null && order.getActualTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+			orderBean.setActualTotalAmount(order.getActualTotalAmount());	
+			orderBean.setActualTotalAmountInWords(NumberToWordConverter.convertBigDecimalToWords(order.getActualTotalAmount()));
+		}else if (orderBean.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && order.getActualTotalAmount()!=null && order.getActualTotalAmount().compareTo(BigDecimal.ZERO) == 0) {
 			orderBean.setActualTotalAmount(orderBean.getTotalAmount());
+			orderBean.setActualTotalAmountInWords(NumberToWordConverter.convertBigDecimalToWords(orderBean.getTotalAmount()));
 		}
 
 		orderBean.setDiscountAmount(order.getDiscountAmount());
@@ -147,20 +162,23 @@ public class OrderTransformer {
 		BigDecimal sgstTaxAmt = BigDecimal.ZERO;
 		BigDecimal cgstTaxAmt = BigDecimal.ZERO;
 		BigDecimal igstTaxAmt = BigDecimal.ZERO;
-
+		int seqNo=1;
 		for (OrderItem orderItem : orderItems) {
 			orderItemBean = OrderTransformer.transformOrderItem(orderItem);
+			
+			orderItemBean.setSeqNo(seqNo);
+			seqNo++;
 
 			if (orderItemBean.getSgstTaxAmount() != null) {
-				sgstTaxAmt.add(orderItemBean.getSgstTaxAmount());
+				sgstTaxAmt=sgstTaxAmt.add(orderItemBean.getSgstTaxAmount());
 			}
 
 			if (orderItemBean.getCgstTaxAmount() != null) {
-				cgstTaxAmt.add(orderItemBean.getCgstTaxAmount());
+				cgstTaxAmt=cgstTaxAmt.add(orderItemBean.getCgstTaxAmount());
 			}
 
 			if (orderItemBean.getIgstTaxAmount() != null) {
-				igstTaxAmt.add(orderItemBean.getIgstTaxAmount());
+				igstTaxAmt=igstTaxAmt.add(orderItemBean.getIgstTaxAmount());
 			}
 
 			if (orderItemBean.getOrderedQty().compareTo(BigDecimal.ZERO) > 0
@@ -196,7 +214,9 @@ public class OrderTransformer {
 		orderBean.setCgstTaxAmount(cgstTaxAmt);
 		orderBean.setSgstTaxAmount(sgstTaxAmt);
 		orderBean.setIgstTaxAmount(igstTaxAmt);
-
+		
+		if((igstTaxAmt !=null && sgstTaxAmt==null)||(igstTaxAmt!=null && igstTaxAmt.compareTo(BigDecimal.ZERO)>0 && sgstTaxAmt!=null && sgstTaxAmt.compareTo(BigDecimal.ZERO)<=0))
+			orderBean.setIsIgstApplicable(Boolean.TRUE);
 		logger.info("The order item details list has been transformed successfully");
 		return orderItemBeans;
 	}
@@ -307,6 +327,7 @@ public class OrderTransformer {
 		
 		orderItemBean.setOrderId(orderItem.getOrder().getOrderId());
 		orderItemBean.setItemId(orderItem.getItemId());
+		orderItemBean.setHsnNo(orderItem.getHsnNo());
 		orderItemBean.setItemDesc(orderItem.getItemDesc());
 		orderItemBean.setUnitCost(orderItem.getUnitCost());
 		orderItemBean.setOrderedQty(orderItem.getOrderedQty());
@@ -554,6 +575,7 @@ public class OrderTransformer {
 		else
 			orderItem.setOrderItemId(orderItem.getOrderItemId());
 		orderItem.setItemDesc(orderItemBean.getItemDesc());
+		orderItem.setHsnNo(orderItemBean.getHsnNo());
 
 		orderItem.setOrderedQty(orderItemBean.getOrderedQty());
 		orderItem.setUnitCost(orderItemBean.getUnitCost());
@@ -585,6 +607,15 @@ public class OrderTransformer {
 		OrderReportBean orderReportBean = new OrderReportBean();
 
 		orderReportBean.setOrderId(orderBean.getOrderId());
+		
+		if(orderBean.getStatus().equals(MVCConstants.STATUS_CREATED) || orderBean.getStatus().equals(MVCConstants.STATUS_CREATED))
+			orderReportBean.setReportType(MVCConstants.PO_REPORT_ESTIMATES);
+		else if(orderBean.getStatus().equals(MVCConstants.STATUS_APPROVED)) {
+			orderReportBean.setReportType(MVCConstants.PO_REPORT_SUPPLIER);
+		}else if(orderBean.getStatus().equals(MVCConstants.STATUS_RECEIVED)) {
+			orderReportBean.setReportType(MVCConstants.PO_REPORT_RECEIVED);
+		}else
+			orderReportBean.setReportType(MVCConstants.PO_REPORT_ESTIMATES);
 
 		List<OrderBean> orderList = new ArrayList<>();
 		orderList.add(orderBean);

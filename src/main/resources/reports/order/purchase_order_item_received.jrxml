@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_items" pageWidth="575" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fddeabd7-7c64-4be8-b68c-63fd517d9070">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_items_received" pageWidth="575" pageHeight="842" columnWidth="575" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fddeabd7-7c64-4be8-b68c-63fd517d9070">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -17,6 +17,9 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
+	<field name="seqNo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[seqNo]]></fieldDescription>
+	</field>
 	<field name="sgstTaxAmount" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[sgstTaxAmount]]></fieldDescription>
 	</field>
@@ -140,9 +143,6 @@
 	<field name="actualMaxRetailPrice" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[actualMaxRetailPrice]]></fieldDescription>
 	</field>
-	<field name="seqNo" class="java.lang.Integer">
-		<fieldDescription><![CDATA[seqNo]]></fieldDescription>
-	</field>
 	<variable name="totalCost_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
 		<variableExpression><![CDATA[$F{totalCost}]]></variableExpression>
 	</variable>
@@ -150,7 +150,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="23" splitType="Stretch">
+		<band height="64" splitType="Stretch">
 			<textField>
 				<reportElement x="17" y="4" width="130" height="14" uuid="474b614d-bbc3-4944-9d65-176361b2ab39"/>
 				<textElement>
@@ -218,6 +218,66 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{seqNo}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="199" y="36" width="60" height="14" uuid="51d8dd5d-ef39-4589-b214-d0b55b6f07b1"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actualUnitCost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="311" y="36" width="80" height="14" uuid="19b2e063-dbae-425d-9c3c-4c245a19f707"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actualCostAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="495" y="36" width="80" height="14" uuid="a86c10db-0254-4e03-aa23-cbe0eb719946"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actualTotalCost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="36" width="50" height="14" uuid="1a67804f-1c70-41a8-87f7-f3b9f3d9108d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c94f04c1-9eb7-4fea-80e9-13f3d407702f"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sgstActualTaxAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="36" width="50" height="14" uuid="3a81585a-0891-4951-9a18-10af016924e3"/>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{delieveredQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="443" y="36" width="50" height="14" uuid="6eadf971-1931-4313-938e-5f2a50cb46fa">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c94f04c1-9eb7-4fea-80e9-13f3d407702f"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cgstActualTaxAmount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="199" y="18" width="376" height="10" uuid="2d14a6ec-0d2d-4484-a61c-7ee936f8e396"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" isItalic="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[(Estimated Details)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="199" y="50" width="376" height="10" uuid="31d47339-d1b8-4c24-a26e-e37d68662df4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8" isItalic="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[(Actuals Details)]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>

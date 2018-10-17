@@ -29,6 +29,9 @@ public class ItemLocationTax implements Serializable {
 	private String name;
 	@Column(name = "long_desc")
 	private String longDesc;
+	
+	@Column(name = "hsn_no")
+	private String hsnNo;
 
 	@Column(name = "base_unit_cost")
 	private BigDecimal baseUnitCost;
@@ -334,6 +337,20 @@ public class ItemLocationTax implements Serializable {
 	 */
 	public void setIgstRateRuleId(Integer igstRateRuleId) {
 		this.igstRateRuleId = igstRateRuleId;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 }

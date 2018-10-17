@@ -60,12 +60,12 @@ VIEW `commercedb`.`v_location_tax` AS
 DROP VIEW IF EXISTS `commercedb`.`v_item_location_tax` ;
 DROP TABLE IF EXISTS `commercedb`.`v_item_location_tax`;
 USE `commercedb`;
-CREATE 
-VIEW `commercedb`.`v_item_location_tax` AS
+CREATE VIEW `commercedb`.`v_item_location_tax` AS
     SELECT 
         `itm`.`item_id` AS `item_id`,
         `itm`.`name` AS `name`,
         `itm`.`long_desc` AS `long_desc`,
+        `itmopt`.`hsn_no` AS `hsn_no`,
         `itmopt`.`unit_cost` AS `base_unit_cost`,
         `taxdtl`.`location_id` AS `location_id`,
         `taxdtl`.`tax_group_id` AS `tax_group_id`,

@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_closing" pageWidth="594" pageHeight="422" orientation="Landscape" columnWidth="580" leftMargin="14" rightMargin="0" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reg_closing" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-DS"/>
 	<subDataset name="Dataset1" uuid="990f3aca-eca5-47b5-a50a-d964642d2c50">
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
+	<parameter name="HEADER_REPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="SUBREPORT_DIR" class="net.sf.jasperreports.engine.JasperReport"/>
 	<queryString>
 		<![CDATA[]]>
@@ -85,40 +78,11 @@
 	</background>
 	<title>
 		<band height="50" splitType="Stretch">
-			<rectangle>
-				<reportElement x="-14" y="0" width="594" height="50" backcolor="#ACDBFC" uuid="62d3c682-f9fd-4812-9b0f-0358e5251c7c"/>
-				<graphicElement>
-					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
-				</graphicElement>
-			</rectangle>
-			<textField>
-				<reportElement x="90" y="0" width="400" height="18" uuid="8a46886e-a923-4e18-a745-5d844fe1f9ae"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="14" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationBean}.getLocationId()+" - "+$F{locationBean}.getName()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="90" y="20" width="400" height="11" uuid="8f54dff4-7760-4e57-8057-8d7925464f4e"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationBean}.getAddress1()+", "+$F{locationBean}.getCity()+", "+$F{locationBean}.getState()+"."]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="90" y="33" width="400" height="11" uuid="38491bf6-f59b-467a-81a1-787b7ba5904c"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Phone: "+$F{locationBean}.getTelephone1()+", Email: " +$F{locationBean}.getEmail()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="-8" y="33" width="100" height="11" uuid="56642454-8dd1-4ae0-b433-2a7e05a11f05"/>
-				<textElement textAlignment="Center">
-					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{locationBean}.getGstNo()!=null && $F{locationBean}.getGstNo()!=""?"GSTIN: "+$F{locationBean}.getGstNo():""]]></textFieldExpression>
-			</textField>
+			<subreport>
+				<reportElement x="-10" y="0" width="595" height="50" uuid="ba7336d1-a075-4fba-bf8a-20b9fe47cfb9"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanArrayDataSource(new Object[] {$F{locationBean}})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{HEADER_REPORT_DIR}]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 	<pageHeader>
@@ -151,12 +115,12 @@
 				</textElement>
 				<text><![CDATA[Date]]></text>
 			</staticText>
-			<textField pattern=" : MMM d, yyyy h:mm:ss a">
+			<textField pattern="dd-MMM-yyyy">
 				<reportElement x="472" y="4" width="94" height="11" uuid="a7697de8-d22a-4838-be02-243c0572d332"/>
 				<textElement>
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{businessDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yyyy").format($F{businessDate})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="40" y="19" width="94" height="11" uuid="92e984d4-0a1c-442b-8d3f-848d32070dd7"/>
@@ -175,25 +139,25 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="274" splitType="Stretch">
+		<band height="180" splitType="Stretch">
 			<line>
-				<reportElement x="-14" y="2" width="594" height="1" uuid="b22946e2-6172-47fb-9566-fd72e59acf81"/>
+				<reportElement x="-10" y="2" width="595" height="1" uuid="b22946e2-6172-47fb-9566-fd72e59acf81"/>
 			</line>
-			<textField>
-				<reportElement x="138" y="111" width="100" height="14" uuid="d0b1cf4d-ce00-496e-9919-6f58fe2cb8d5"/>
+			<textField pattern=" Rs #0.00#">
+				<reportElement x="138" y="91" width="100" height="14" uuid="d0b1cf4d-ce00-496e-9919-6f58fe2cb8d5"/>
 				<textElement>
 					<font fontName="Calibri" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{startOfDayAmount}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="111" width="118" height="14" uuid="f4038340-b244-47cf-9559-51584ccf88da"/>
+				<reportElement x="20" y="91" width="118" height="14" uuid="f4038340-b244-47cf-9559-51584ccf88da"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[SOD Amount : ]]></text>
 			</staticText>
-			<textField>
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="464" y="10" width="100" height="14" uuid="2ae588fa-dacd-4a34-9e82-df70a00a82d2"/>
 				<textElement>
 					<font fontName="Calibri" size="10" isBold="true"/>
@@ -207,12 +171,12 @@
 				</textElement>
 				<text><![CDATA[Total Transaction Amount : ]]></text>
 			</staticText>
-			<textField>
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="467" y="64" width="100" height="11" uuid="bf30f115-a4a8-4bb7-993e-3c2221cc94e2"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalNoSalesAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalNoSalesAmount}!=null?$F{totalNoSalesAmount}:java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="341" y="64" width="126" height="12" uuid="c43b8b89-e5f4-404d-a9cf-a39f07f59a8f"/>
@@ -226,7 +190,7 @@
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalReturnCount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalReturnCount}!=null?$F{totalReturnCount}:0]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="19" y="44" width="118" height="12" uuid="5ce3773b-c782-4a24-8906-bcb849acafb9"/>
@@ -235,26 +199,26 @@
 				</textElement>
 				<text><![CDATA[Total Returns Count : ]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="138" y="192" width="100" height="14" uuid="c2f16e4b-2fca-4fae-9ac8-77aa68a01280"/>
+			<textField pattern=" Rs #0.00#">
+				<reportElement x="138" y="154" width="100" height="14" uuid="c2f16e4b-2fca-4fae-9ac8-77aa68a01280"/>
 				<textElement>
 					<font fontName="Calibri" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{profitAmount}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="192" width="118" height="14" uuid="709b96dc-8c75-4556-8e04-d72517c1ddc2"/>
+				<reportElement x="20" y="154" width="118" height="14" uuid="709b96dc-8c75-4556-8e04-d72517c1ddc2"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Profit Amount : ]]></text>
 			</staticText>
-			<textField>
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="466" y="46" width="100" height="11" uuid="a3b85a2f-0b11-48e8-ac64-560f2e11423b"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalReturnsamount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalReturnsamount}!=null?$F{totalReturnsamount}:java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="340" y="46" width="126" height="12" uuid="14426cee-e017-4e3d-b540-c44dfb5e5d82"/>
@@ -263,12 +227,12 @@
 				</textElement>
 				<text><![CDATA[Total Returns Amount : ]]></text>
 			</staticText>
-			<textField>
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="466" y="29" width="100" height="11" uuid="633b6b45-6326-4160-b806-8b7eda1fe49e"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalSalesamount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalSalesamount}!=null?$F{totalSalesamount}:java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="340" y="29" width="126" height="12" uuid="17231084-68c1-4e7e-8311-7d578e7db300"/>
@@ -291,12 +255,12 @@
 				</textElement>
 				<text><![CDATA[Total Transaction Count : ]]></text>
 			</staticText>
-			<textField>
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="467" y="83" width="100" height="11" uuid="46d74c58-9bf0-4cea-a55b-39ceb017b749"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalExpensesAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalExpensesAmount}!=null?$F{totalExpensesAmount}:java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="341" y="83" width="126" height="12" uuid="7ad0d863-d8a8-4bea-b6ad-2fad91e41646"/>
@@ -310,7 +274,7 @@
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalSalesCount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalSalesCount}!=null?$F{totalSalesCount}:0]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="19" y="28" width="118" height="12" uuid="a352f96d-fe01-4941-b66d-d70ffbea9c6a"/>
@@ -324,7 +288,7 @@
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalNoSalesCount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalNoSalesCount}!=null?$F{totalNoSalesCount}:0]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="19" y="60" width="118" height="12" uuid="1ac22ce2-3200-4f8c-9359-42d478530d4d"/>
@@ -333,26 +297,26 @@
 				</textElement>
 				<text><![CDATA[Total NoSales Count : ]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="138" y="132" width="100" height="14" uuid="20bea733-26dd-4ab6-8b6e-212d400d0621"/>
+			<textField pattern=" Rs #0.00#">
+				<reportElement x="138" y="112" width="100" height="14" uuid="20bea733-26dd-4ab6-8b6e-212d400d0621"/>
 				<textElement>
 					<font fontName="Calibri" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{endOfDayAmount}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="132" width="118" height="14" uuid="aa196dd2-f0f2-4e76-91af-ee87c6ce197b"/>
+				<reportElement x="20" y="112" width="118" height="14" uuid="aa196dd2-f0f2-4e76-91af-ee87c6ce197b"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[EOD Amount : ]]></text>
 			</staticText>
-			<textField>
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="468" y="101" width="100" height="11" uuid="d8265e44-ef13-4336-9740-be1803dc81bc"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{totalPaymentAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalPaymentAmount}!=null?$F{totalPaymentAmount}:java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="340" y="101" width="126" height="12" uuid="f1570e5a-a7cf-4120-9fd6-6dc606f40445"/>
@@ -380,7 +344,7 @@
 				<textFieldExpression><![CDATA[$F{printedBy}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="-14" y="0" width="594" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+				<reportElement x="-10" y="0" width="595" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
 			</line>
 			<textField>
 				<reportElement x="334" y="22" width="100" height="10" uuid="93487103-07d6-4d1d-9951-e317370ac49a"/>

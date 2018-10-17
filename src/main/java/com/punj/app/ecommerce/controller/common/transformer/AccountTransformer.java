@@ -228,6 +228,25 @@ public class AccountTransformer {
 		logger.info("The account password bean details has been transformed to user password successfully");
 		return passwords;
 	}
+	
+	public static List<Password> transformAccountPasswordWithoutEncoding(AccountBean accountBean) {
+
+		List<Password> passwords = new ArrayList<>();
+
+		Password newPassword = new Password();
+		newPassword.setModifiedBy(accountBean.getCreatedBy());
+		newPassword.setStatus(MVCConstants.STATUS_ACTIVE);
+		newPassword.setPasswordId(accountBean.getPasswordId());
+
+		newPassword.setPassword(accountBean.getPassword());
+		newPassword.setUsername(accountBean.getUsername());
+		newPassword.setModifiedDate(LocalDateTime.now());
+
+		passwords.add(newPassword);
+		logger.info("The account password bean details has been transformed to user password successfully");
+		return passwords;
+	}
+	
 
 	public static AccountBeanDTO transformUserDTO(UserDTO userDTO) throws IOException {
 		AccountBeanDTO accountBeanDTO = null;

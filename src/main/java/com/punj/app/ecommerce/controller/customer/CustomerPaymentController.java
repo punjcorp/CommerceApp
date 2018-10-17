@@ -279,12 +279,17 @@ public class CustomerPaymentController {
 		InputStream txnReceiptStreamChild = getClass().getResourceAsStream(MVCConstants.CUSTOMER_PAYMENT_RECEIPT_TENDERS_REPORT);
 		JasperReport jasperReportChild = (JasperReport) JRLoader.loadObject(txnReceiptStreamChild);
 		logger.debug("The child payment tender receipt report has been compiled now");
+		
+		InputStream headerStream= getClass().getResourceAsStream(MVCConstants.HEADER_RECEIPT_REPORT);
+		JasperReport jasperHeaderReport= (JasperReport) JRLoader.loadObject(headerStream);
+		logger.debug("The header receipt report has been compiled now");
 
 		ResourceBundle resourceBundle = ResourceBundle.getBundle(this.resourceBundleBase);
 		JRBeanCollectionDataSource paymentDS = new JRBeanCollectionDataSource(paymentList);
 		logger.debug("The payment receipt data source and resource bundle is ready now");
 
 		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(MVCConstants.HEADER_REPORT_DIR, jasperHeaderReport);
 		paramMap.put(MVCConstants.SUB_REPORT_DIR, jasperReportChild);
 		paramMap.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
 		paramMap.put(JRParameter.REPORT_LOCALE, locale);

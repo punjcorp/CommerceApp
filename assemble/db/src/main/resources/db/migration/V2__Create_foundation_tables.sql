@@ -178,6 +178,19 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`gst_state_codes` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `commercedb`.`global_config`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `commercedb`.`global_config`;
+
+
+CREATE TABLE IF NOT EXISTS `commercedb`.`global_config` (
+  `conf_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(150) NOT NULL,
+  `conf_key` VARCHAR(150) NOT NULL,
+  `conf_value` VARCHAR(300) NULL,
+  PRIMARY KEY (`conf_id`))
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

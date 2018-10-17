@@ -29,27 +29,22 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.punj.app.ecommerce.controller.common.ItemDefaultConfig;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.HierarchyTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
-import com.punj.app.ecommerce.controller.common.transformer.OrderTransformer;
 import com.punj.app.ecommerce.domains.common.UOM;
 import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
-import com.punj.app.ecommerce.domains.order.Order;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
-import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.item.HierarchyBean;
 import com.punj.app.ecommerce.models.item.ItemBean;
 import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.models.item.ItemOptionsBean;
-import com.punj.app.ecommerce.models.order.OrderBean;
-import com.punj.app.ecommerce.models.order.OrderBeanDTO;
-import com.punj.app.ecommerce.models.supplier.SupplierBean;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ConfigService;
+import com.punj.app.ecommerce.services.common.ServiceConstants;
 
 /**
  * @author admin
@@ -61,9 +56,8 @@ public class ManageStyleController {
 	private static final Logger logger = LogManager.getLogger();
 	private ItemService itemService;
 	private CommonService commonService;
+	private ConfigService configService;
 	private MessageSource messageSource;
-
-	private ItemDefaultConfig itemConfig;
 
 	/**
 	 * @param userService
@@ -84,12 +78,12 @@ public class ManageStyleController {
 	}
 
 	/**
-	 * @param userService
-	 *            the userService to set
+	 * @param configService
+	 *            the configService to set
 	 */
 	@Autowired
-	public void setItemDefaultConfig(ItemDefaultConfig itemConfig) {
-		this.itemConfig = itemConfig;
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
 	}
 
 	/**
@@ -168,7 +162,7 @@ public class ManageStyleController {
 
 		ItemOptionsBean itemOptionsBean = itemBean.getItemOptions();
 
-		String defaultHierarchyName = this.itemConfig.defaultHierarchy;
+		String defaultHierarchyName = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_HIERARCHY);
 		Hierarchy hierarchy = this.commonService.retrieveHierarchy(defaultHierarchyName);
 		if (hierarchy != null) {
 			HierarchyBean hierarchyBean = HierarchyTransformer.transformHierarchy(hierarchy);
@@ -178,11 +172,11 @@ public class ManageStyleController {
 			logger.info("The default item configuration for Item hierarchy was not retrieved");
 		}
 
-		String defaultItemType = this.itemConfig.defaultItemType;
+		String defaultItemType = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_TYPE);
 		itemBean.setItemType(defaultItemType);
 		logger.info("The default item type has been set successfully");
 
-		String defaultUOMCode = this.itemConfig.defaultUOM;
+		String defaultUOMCode = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_UOM);
 		UOM uom = this.commonService.retrieveUOM(defaultUOMCode);
 		if (uom != null) {
 			itemOptionsBean.setUom(uom.getCode());
@@ -191,7 +185,8 @@ public class ManageStyleController {
 			logger.info("The default item configuration for Item UOM was not retrieved");
 		}
 
-		Integer defaultPackSize = this.itemConfig.defaultPackSize;
+		String defaultPaxkSizeStr=this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_PACK_SIZE);
+		Integer defaultPackSize = new Integer(defaultPaxkSizeStr);
 		itemOptionsBean.setPackSize(defaultPackSize.toString());
 		logger.info("The default pack size has been set successfully");
 
@@ -199,27 +194,27 @@ public class ManageStyleController {
 		 * All the price configuration starts here
 		 */
 
-		BigDecimal defaultUnitCost = this.itemConfig.defaultUnitCost;
+		BigDecimal defaultUnitCost = new BigDecimal(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_UNIT_COST));
 		itemOptionsBean.setUnitCost(defaultUnitCost);
 		logger.info("The default unit cost has been set successfully");
 
-		BigDecimal defaultSuggestedPrice = this.itemConfig.defaultSuggestedPrice;
+		BigDecimal defaultSuggestedPrice = new BigDecimal(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_SUGGESTED_PRICE));
 		itemOptionsBean.setSuggestedPrice(defaultSuggestedPrice);
 		logger.info("The default suggested Price has been set successfully");
 
-		BigDecimal defaultRestockingFee = this.itemConfig.defaultRestockingFee;
+		BigDecimal defaultRestockingFee = new BigDecimal(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_RESTOCKING_FEE));
 		itemOptionsBean.setRestockingFee(defaultRestockingFee);
 		logger.info("The default restocking fee has been set successfully");
 
-		BigDecimal defaultCompareAtPrice = this.itemConfig.defaultCompareAtPrice;
+		BigDecimal defaultCompareAtPrice = new BigDecimal(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_COMPAREAT_PRICE));
 		itemOptionsBean.setCompareAtPrice(defaultCompareAtPrice);
 		logger.info("The default compare at price has been set successfully");
 
-		BigDecimal defaultMRP = this.itemConfig.defaultMRP;
+		BigDecimal defaultMRP = new BigDecimal(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_MRP));
 		itemOptionsBean.setMaxRetailPrice(defaultMRP);
 		logger.info("The default MRP has been set successfully");
 
-		BigDecimal defaultCurrentPrice = this.itemConfig.defaultCurrentPrice;
+		BigDecimal defaultCurrentPrice = new BigDecimal(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_SUGGESTED_PRICE));
 		itemOptionsBean.setCurrentPrice(defaultCurrentPrice);
 		logger.info("The default current price has been set successfully");
 
@@ -227,19 +222,19 @@ public class ManageStyleController {
 		 * All the flag configurations starts here
 		 */
 
-		Boolean defaultDiscountFlag = this.itemConfig.defaultDiscountFlag;
+		Boolean defaultDiscountFlag = new Boolean(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DISCOUNT_FLAG));
 		itemOptionsBean.setDiscountFlag(defaultDiscountFlag);
 
-		Boolean defaultAskQtyFlag = this.itemConfig.defaultAskQtyFlag;
+		Boolean defaultAskQtyFlag = new Boolean(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_ASK_QTY_FLAG));
 		itemOptionsBean.setAskQtyFlag(defaultAskQtyFlag);
 
-		Boolean defaultPriceChangeFlag = this.itemConfig.defaultPriceChangeFlag;
+		Boolean defaultPriceChangeFlag = new Boolean(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_PRICE_CHANGE_FLAG));
 		itemOptionsBean.setPriceChangeFlag(defaultPriceChangeFlag);
 
-		Boolean defaultReturnFlag = this.itemConfig.defaultReturnFlag;
+		Boolean defaultReturnFlag = new Boolean(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_RETURN_FLAG));
 		itemOptionsBean.setReturnFlag(defaultReturnFlag);
 
-		Boolean defaultDefaultTaxFlag = this.itemConfig.defaultTaxFlag;
+		Boolean defaultDefaultTaxFlag = new Boolean(this.configService.getAppConfigByKey(MVCConstants.APP_CONF_DEFAULT_TAX_FLAG));
 		itemOptionsBean.setTaxFlag(defaultDefaultTaxFlag);
 
 		logger.info("The default flags for item has been set successfully");
@@ -250,8 +245,7 @@ public class ManageStyleController {
 	}
 
 	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.SAVE_STYLE_PARAM })
-	public String addStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
-			Authentication authentication, Locale locale) {
+	public String addStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session, Authentication authentication, Locale locale) {
 		if (bindingResult.hasErrors()) {
 			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 			return ViewPathConstants.ADD_STYLE_PAGE;
@@ -260,15 +254,15 @@ public class ManageStyleController {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_NEW, MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM);
-			
-			if(item.getItemId()!=null)
+
+			if (item.getItemId() != null)
 				item = this.itemService.saveItem(item);
 			else
 				item = this.itemService.saveNewItem(item);
 			logger.info("The style details has been saved successfully");
 
 			if (item != null) {
-				itemBean=ItemTransformer.transformItem(item);
+				itemBean = ItemTransformer.transformItem(item);
 
 				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.add.success", new Object[] { item.getItemId().toString() }, locale));
 
@@ -285,29 +279,29 @@ public class ManageStyleController {
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
-	
+
 	@PostMapping(value = ViewPathConstants.ADD_STYLE_URL, params = { MVCConstants.SAVE_APPROVE_STYLE_PARAM })
-	public String saveApproveStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
-			Authentication authentication, Locale locale) {
-		
+	public String saveApproveStyle(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session, Authentication authentication,
+			Locale locale) {
+
 		if (bindingResult.hasErrors()) {
 			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 			return ViewPathConstants.ADD_STYLE_PAGE;
 		}
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			List<ItemImageBean> itemImagesBeans=itemBean.getItemImages();
+			List<ItemImageBean> itemImagesBeans = itemBean.getItemImages();
 			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_EDIT, MVCConstants.FUNCTIONALITY_APPROVE_STYLE_PARAM);
 
 			item = this.itemService.approveItem(item);
 			logger.info("The style details has been saved and approved successfully");
 
 			if (item != null) {
-				item=this.itemService.getItem(item.getItemId());
-				itemBean=ItemTransformer.transformItem(item);
+				item = this.itemService.getItem(item.getItemId());
+				itemBean = ItemTransformer.transformItem(item);
 				itemBean.setItemImages(itemImagesBeans);
-				
-				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.approve.success", new Object[] {  item.getItemId().toString()}, locale));
+
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.approve.success", new Object[] { item.getItemId().toString() }, locale));
 
 			} else {
 				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.item.approve.failure", null, locale));
@@ -322,20 +316,19 @@ public class ManageStyleController {
 
 		return ViewPathConstants.ADD_STYLE_PAGE;
 	}
-	
 
 	@GetMapping(value = ViewPathConstants.EDIT_STYLE_URL)
 	public String editStyle(Model model, final HttpServletRequest req, Locale locale) {
 		logger.info("The edit method for item has been called");
-		ItemBean itemBean=null;
+		ItemBean itemBean = null;
 		try {
 			BigInteger styleNumber = new BigInteger(req.getParameter(MVCConstants.STYLE_ID_PARAM));
 
-			Item item= this.itemService.getItem(styleNumber);
-			
+			Item item = this.itemService.getItem(styleNumber);
+
 			if (item != null) {
-				item=this.itemService.getItem(item.getItemId());
-				itemBean=ItemTransformer.transformItem(item);
+				item = this.itemService.getItem(item.getItemId());
+				itemBean = ItemTransformer.transformItem(item);
 				logger.info("The selected item has been updated successfully");
 			} else {
 				logger.info("There was some issue while retrieving Item details");
@@ -351,25 +344,25 @@ public class ManageStyleController {
 		return ViewPathConstants.EDIT_STYLE_PAGE;
 
 	}
-	
+
 	@PostMapping(value = ViewPathConstants.EDIT_STYLE_URL, params = { MVCConstants.SAVE_STYLE_PARAM })
-	public String addStyleAfterEdit(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
-			Authentication authentication, Locale locale) {
+	public String addStyleAfterEdit(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session, Authentication authentication,
+			Locale locale) {
 		if (bindingResult.hasErrors()) {
 			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 			return ViewPathConstants.EDIT_STYLE_PAGE;
 		}
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			List<ItemImageBean> itemImagesBeans=itemBean.getItemImages();
+			List<ItemImageBean> itemImagesBeans = itemBean.getItemImages();
 			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_EDIT, MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM);
 
 			item = this.itemService.saveItem(item);
 			logger.info("The style details has been saved successfully");
 
 			if (item != null) {
-				item=this.itemService.getItem(item.getItemId());
-				itemBean=ItemTransformer.transformItem(item);
+				item = this.itemService.getItem(item.getItemId());
+				itemBean = ItemTransformer.transformItem(item);
 				itemBean.setItemImages(itemImagesBeans);
 
 				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.edit.success", new Object[] { item.getItemId().toString() }, locale));
@@ -387,29 +380,29 @@ public class ManageStyleController {
 
 		return ViewPathConstants.EDIT_STYLE_PAGE;
 	}
-	
+
 	@PostMapping(value = ViewPathConstants.EDIT_STYLE_URL, params = { MVCConstants.SAVE_APPROVE_STYLE_PARAM })
-	public String saveApproveStyleAfterEdit(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session,
-			Authentication authentication, Locale locale) {
-		
+	public String saveApproveStyleAfterEdit(@ModelAttribute @Valid ItemBean itemBean, BindingResult bindingResult, Model model, HttpSession session, Authentication authentication,
+			Locale locale) {
+
 		if (bindingResult.hasErrors()) {
 			this.updateModelWithEssentialScreenData(itemBean, model, locale);
 			return ViewPathConstants.EDIT_STYLE_PAGE;
 		}
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			List<ItemImageBean> itemImagesBeans=itemBean.getItemImages();
+			List<ItemImageBean> itemImagesBeans = itemBean.getItemImages();
 			Item item = ItemTransformer.transformItemBean(itemBean, userDetails.getUsername(), MVCConstants.ACTION_EDIT, MVCConstants.FUNCTIONALITY_APPROVE_STYLE_PARAM);
 
 			item = this.itemService.approveItem(item);
 			logger.info("The style details has been saved and approved successfully");
 
 			if (item != null) {
-				item=this.itemService.getItem(item.getItemId());
-				itemBean=ItemTransformer.transformItem(item);
+				item = this.itemService.getItem(item.getItemId());
+				itemBean = ItemTransformer.transformItem(item);
 				itemBean.setItemImages(itemImagesBeans);
-				
-				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.approve.success", new Object[] {  item.getItemId().toString()}, locale));
+
+				model.addAttribute(MVCConstants.SUCCESS, messageSource.getMessage("commerce.screen.item.approve.success", new Object[] { item.getItemId().toString() }, locale));
 
 			} else {
 				model.addAttribute(MVCConstants.ALERT, messageSource.getMessage("commerce.screen.item.approve.failure", null, locale));
@@ -424,6 +417,5 @@ public class ManageStyleController {
 
 		return ViewPathConstants.EDIT_STYLE_PAGE;
 	}
-	
-	
+
 }

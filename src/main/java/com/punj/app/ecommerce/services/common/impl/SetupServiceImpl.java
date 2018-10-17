@@ -6,12 +6,11 @@ package com.punj.app.ecommerce.services.common.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.punj.app.ecommerce.controller.common.ItemDefaultConfig;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.common.ids.RegisterId;
@@ -41,6 +39,7 @@ import com.punj.app.ecommerce.repositories.tax.TaxLocationMapRepository;
 import com.punj.app.ecommerce.repositories.tax.TaxLocationRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
 import com.punj.app.ecommerce.services.UserService;
+import com.punj.app.ecommerce.services.common.ConfigService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.SetupService;
 
@@ -60,10 +59,17 @@ public class SetupServiceImpl implements SetupService {
 	private LocationSafeRepository locationSafeRepository;
 	private RegisterRepository registerRepository;
 	private UserService userService;
+	private ConfigService configService;
 
-	private ItemDefaultConfig itemConfig;
+	/**
+	 * @param configService
+	 *            the configService to set
+	 */
+	@Autowired
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
 
-	
 	/**
 	 * @param registerRepository
 	 *            the registerRepository to set
@@ -71,15 +77,6 @@ public class SetupServiceImpl implements SetupService {
 	@Autowired
 	public void setRegisterRepository(RegisterRepository registerRepository) {
 		this.registerRepository = registerRepository;
-	}
-	
-	/**
-	 * @param itemConfig
-	 *            the itemConfig to set
-	 */
-	@Autowired
-	public void setItemDefaultConfig(ItemDefaultConfig itemConfig) {
-		this.itemConfig = itemConfig;
 	}
 
 	/**
@@ -163,8 +160,8 @@ public class SetupServiceImpl implements SetupService {
 		if (location != null) {
 			Integer locationId = location.getLocationId();
 			logger.info("The location details has been saved successfully");
-			
-			Register register =this.setupRegister(locationId);
+
+			Register register = this.setupRegister(locationId);
 			if (register != null) {
 				logger.info("The register has been saved successfully");
 
@@ -172,7 +169,7 @@ public class SetupServiceImpl implements SetupService {
 				logger.error("There was some issue while saving the register details!!!");
 				result = Boolean.FALSE;
 			}
-			
+
 			password = this.userService.updatePassword(null, password, password.getPassword(), "ADMIN");
 			if (password != null) {
 				logger.info("The admin user password has been saved successfully");
@@ -201,7 +198,7 @@ public class SetupServiceImpl implements SetupService {
 
 			List<LocationSafe> locRepos = this.createLocationRepositeries(selectedTenders, locationId);
 			if (locRepos != null && !locRepos.isEmpty()) {
-				this.initiateSetup();
+				this.initiateSetup(locationId);
 				logger.info("The location repositeries creation for {} location was successful!", locationId);
 			} else {
 				logger.error("There was error while creating location repositories!!");
@@ -226,12 +223,12 @@ public class SetupServiceImpl implements SetupService {
 		RegisterId registerId = new RegisterId();
 		registerId.setRegister(1);
 		registerId.setLocationId(locationId);
-		
+
 		register.setRegisterId(registerId);
-		
-		register=this.registerRepository.save(register);
+
+		register = this.registerRepository.save(register);
 		logger.info("The initial register has been setup successfully");
-		
+
 		return register;
 
 	}
@@ -240,7 +237,7 @@ public class SetupServiceImpl implements SetupService {
 		List<LocationSafe> locRepos = null;
 		LocationSafe locRepo = null;
 		Map<String, Tender> tenderMap = null;
-
+		
 		List<Tender> tenderList = this.tenderRepository.findAll();
 		if (tenderList != null && !tenderList.isEmpty()) {
 			tenderMap = new HashMap<>();
@@ -248,8 +245,11 @@ public class SetupServiceImpl implements SetupService {
 				tenderMap.put(tender.getType(), tender);
 			}
 			locRepos = new ArrayList<>();
+			
+			List<String> tendersList=new ArrayList<>(Arrays.asList(tenders));
+			tendersList.add(ServiceConstants.TENDER_CHANGE_CODE);
 
-			for (String tenderCode : tenders) {
+			for (String tenderCode : tendersList) {
 				Tender tender = tenderMap.get(tenderCode);
 				if (tender != null) {
 					locRepo = new LocationSafe();
@@ -331,7 +331,7 @@ public class SetupServiceImpl implements SetupService {
 		return taxLocationMaps;
 	}
 
-	private void initiateSetup() {
+	private void initiateSetup(Integer locationId) {
 		LocalDate currentDate = LocalDate.now();
 		String utilString = RandomStringUtils.random(142, Boolean.TRUE, Boolean.TRUE);
 		String monthDay = String.format("%02d", currentDate.getDayOfMonth());
@@ -347,18 +347,16 @@ public class SetupServiceImpl implements SetupService {
 		finalResult.append(year);
 		finalResult.append(utilString.substring(120, 141));
 
-		try {
-			PropertiesConfiguration config = new PropertiesConfiguration("item_defaults.properties");
-			config.setProperty("app.license.key", finalResult.toString());
-			config.save();
-		} catch (ConfigurationException e) {
-			logger.error("There is some problem opening item_defaults.properties file", e);
-		}
+		Boolean result = this.configService.updateAppConfigByKey(ServiceConstants.APP_CONF_UTIL_STRING, finalResult.toString());
+		logger.info("The utility string has been updated successfully");
+
+		result = this.configService.updateAppConfigByKey(ServiceConstants.APP_DEFAULT_LOCATION, locationId.toString());
+		logger.info("The default location for installation has been successful!");
 
 	}
 
 	public Boolean isSetupGood() {
-		String utilString = this.itemConfig.getLicenseKey();
+		String utilString = this.configService.getAppConfigByKey(ServiceConstants.APP_CONF_UTIL_STRING);
 		if (StringUtils.isNotBlank(utilString)) {
 			LocalDate currentDate = LocalDate.now();
 			LocalDate originalDate = LocalDate.of(new Integer(utilString.substring(121, 125)).intValue(), new Integer(utilString.substring(38, 40)).intValue(),

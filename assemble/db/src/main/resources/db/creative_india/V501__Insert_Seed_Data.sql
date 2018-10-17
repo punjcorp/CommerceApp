@@ -11,6 +11,38 @@ USE `commercedb` ;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+
+-- -----------------------------------------------------
+-- Seed data for global_config
+-- -----------------------------------------------------
+truncate `commercedb`.`global_config`;
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Item Default Hierarchy','app.item.default.hierarchy','Default');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Item Type','app.item.default.item.type','merchandise');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default UOM','app.item.default.uom','UNT');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Item Pack Size','app.item.default.pack.size','1');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Unit Cost','app.item.default.unit.cost','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Max Retail Price','app.item.default.mrp','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Suggested Price','app.item.default.suggested.price','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Compare At Price','app.item.default.compareat.price','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Restocking Price','app.item.default.restocking.fee','0.00');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Discount Applicable Flag','app.item.default.discount.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Return Applicable Flag','app.item.default.return.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Tax Applicable Flag','app.item.default.tax.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Ask Quantity Flag','app.item.default.ask.qty.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Price Change Allowed Flag','app.item.default.price.change.flag','true');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Application License','app.license.key','0onKTpdIL9gkJ4LZRmoC6J7wxBm0871iras7rp10TFLH4AxsMF1MEDHErSxvfUK8KMQgot6AtK5ixonTLkJy9RDuNgmcK4JBPkV0gBt2qXUUE4ibhTsyi00u52018zSB78dx6LqJQ0V0l2QLAF');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Currency','app.default.currency.code','INR');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Store Open Process Skip Flag','app.skip.opening.closing.process','false');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default List Screen Page Size','app.screen.default.page.size','8');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default List Screen Page Count','app.screen.default.page.count','5');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Printer Name','app.default.printer.name','RICOH SP 210 DDST');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Receipt Export Format','app.default.receipt.export.method','PDF');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Location','app.default.location','1234');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Receipt Copies Count','app.default.receipt.copies.count','2');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Receipt Copies Name','app.default.receipt.copies.name','Original, Duplicate');
+INSERT INTO `commercedb`.`global_config` (`name`,`key`,`value`) VALUES ('Default Location','app.default.location','');
+commit;
+
 -- -----------------------------------------------------
 -- Seed data for location
 -- -----------------------------------------------------

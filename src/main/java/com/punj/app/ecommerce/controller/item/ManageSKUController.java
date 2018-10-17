@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.punj.app.ecommerce.controller.common.ItemDefaultConfig;
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.ItemTransformer;
@@ -57,8 +56,6 @@ public class ManageSKUController {
 	private CommonService commonService;
 	private MessageSource messageSource;
 
-	private ItemDefaultConfig itemConfig;
-
 	/**
 	 * @param userService
 	 *            the userService to set
@@ -75,15 +72,6 @@ public class ManageSKUController {
 	@Autowired
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
-	}
-
-	/**
-	 * @param userService
-	 *            the userService to set
-	 */
-	@Autowired
-	public void setItemDefaultConfig(ItemDefaultConfig itemConfig) {
-		this.itemConfig = itemConfig;
 	}
 
 	/**

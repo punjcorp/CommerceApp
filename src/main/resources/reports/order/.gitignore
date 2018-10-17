@@ -4,3 +4,5 @@
 /purchase_order_footer.jasper
 /purchase_order_header.jasper
 /purchase_order_item.jasper
+/purchase_order_item_received.jasper
+/purchase_order_received.jasper

@@ -82,6 +82,9 @@
 							<p class="lead-2">
 								<span th:text="#{commerce.screen.initial.setup.welcome.desc}"></span>
 							</p>
+							<p class="alert alert-danger" th:if="${(setupStatus==null or !setupStatus ) and (isSetupNeeded!=null and !isSetupNeeded)}">
+								<span th:text="#{commerce.screen.initial.setup.trial.expired}"></span>
+							</p>
 							<button id="btnSetupStart" type="button" th:class="${isSetupNeeded}?'btn btn-primary btn-lg my-4': 'btn btn-primary btn-lg my-4 d-none'" role="button">
 								<span th:text="#{commerce.screen.initial.setup.btn.start.setup}"></span>
 							</button>
@@ -93,7 +96,7 @@
 			<div class="row">
 				<div class="col-3">
 
-					<div id="loginContainer" th:class="${isSetupNeeded}?'border-box-filled d-none': 'border-box-filled'">
+					<div id="loginContainer" th:class="${isSetupNeeded}?'border-box-filled d-none': 'border-box-filled'"  th:if="${setupStatus!=null and setupStatus}">
 						<div class="border-box-title">
 							<h3>
 								<!-- <span th:text="#{commerce.screen.login.header}"></span> -->

@@ -54,6 +54,10 @@ public class OrderItem implements Serializable {
 	@Column(name = "item_name")
 	private String itemDesc;
 
+	@Field
+	@Column(name = "hsn_no")
+	private String hsnNo;
+
 	@Column(name = "ordered_qty")
 	private BigDecimal orderedQty;
 
@@ -82,7 +86,7 @@ public class OrderItem implements Serializable {
 
 	@Column(name = "returned_qty")
 	private BigDecimal returnedQty = BigDecimal.ZERO;
-	
+
 	// Actual Amounts
 	@Column(name = "actual_cost_amount")
 	private BigDecimal actualCostAmount = BigDecimal.ZERO;
@@ -390,10 +394,26 @@ public class OrderItem implements Serializable {
 	}
 
 	/**
-	 * @param returnedQty the returnedQty to set
+	 * @param returnedQty
+	 *            the returnedQty to set
 	 */
 	public void setReturnedQty(BigDecimal returnedQty) {
 		this.returnedQty = returnedQty;
+	}
+
+	/**
+	 * @return the hsnNo
+	 */
+	public String getHsnNo() {
+		return hsnNo;
+	}
+
+	/**
+	 * @param hsnNo
+	 *            the hsnNo to set
+	 */
+	public void setHsnNo(String hsnNo) {
+		this.hsnNo = hsnNo;
 	}
 
 }

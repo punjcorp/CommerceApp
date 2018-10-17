@@ -605,7 +605,7 @@ public class TransactionTransformer {
 
 	}
 
-	public static TransactionReceipt tranformReceiptDetails(TransactionId txnId, String username, String receiptType, byte[] pdfBytes) {
+	public static TransactionReceipt tranformReceiptDetails(TransactionId txnId, String username, String receiptType, byte[] pdfBytes, Boolean isExisting) {
 		TransactionReceipt txnReceipt = new TransactionReceipt();
 
 		TransactionReceiptId txnReceiptId = new TransactionReceiptId();
@@ -618,7 +618,10 @@ public class TransactionTransformer {
 		txnReceipt.setTransactionReceiptId(txnReceiptId);
 		txnReceipt.setCreatedBy(username);
 		txnReceipt.setCreatedDate(LocalDateTime.now());
-
+		if(isExisting) {
+			txnReceipt.setModifiedBy(username);
+			txnReceipt.setModifiedDate(LocalDateTime.now());
+		}
 		/*
 		 * This section will convert the PDF file in byte array which can be saved into Entity object
 		 */
@@ -628,10 +631,25 @@ public class TransactionTransformer {
 
 		return txnReceipt;
 	}
-
-	public static List<TransactionReceipt> getReceipts(byte[] pdfBytes, TransactionId txnId, String username) {
+	
+	public static List<TransactionReceipt> getReturnReceipts(byte[] pdfBytes, TransactionId txnId, String username, Boolean isExisting) {
 		List<TransactionReceipt> txnReceipts = new ArrayList<>();
-		TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnId, username, MVCConstants.RCPT_SALE_STORE, pdfBytes);
+		TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnId, username, MVCConstants.RCPT_SALE_STORE, pdfBytes, isExisting);
+		txnReceipts.add(txnReceipt);
+		logger.info("The transaction receipts has been transformed for saving in DB");
+
+		return txnReceipts;
+	}
+
+	public static List<TransactionReceipt> getReceipts(byte[] pdfBytes, TransactionId txnId, String username, Boolean isOriginal, Boolean isExisting) {
+		
+		List<TransactionReceipt> txnReceipts = new ArrayList<>();
+		String receiptType = null;
+		if (isOriginal)
+			receiptType = MVCConstants.RCPT_SALE_STORE;
+		else
+			receiptType = MVCConstants.RCPT_SALE_DUPLICATE;
+		TransactionReceipt txnReceipt = TransactionTransformer.tranformReceiptDetails(txnId, username, receiptType, pdfBytes, isExisting);
 		txnReceipts.add(txnReceipt);
 		logger.info("The transaction receipts has been transformed for saving in DB");
 

@@ -151,6 +151,7 @@ public final class MVCConstants {
 	
 	public static final String REPORT_OUTPUT_PDF="application/pdf";
 	public static final String SUB_REPORT_DIR="SUBREPORT_DIR";
+	public static final String HEADER_REPORT_DIR="HEADER_REPORT_DIR";
 	public static final String REPORT_PERMISSION_PRINTING="PRINTING";
 	
 	public static final String EXPENSE_PARAM= "expenseBean";
@@ -204,9 +205,11 @@ public final class MVCConstants {
 	public static final String ORDER_RETURN_ITEMS_REPORT="/reports/order/returns/order_return_item.jasper";
 	
 	public static final String ORDER_REPORT="/reports/order/purchase_order.jasper";
+	public static final String ORDER_RECEIVED_REPORT="/reports/order/purchase_order_received.jasper";
 	public static final String ORDER_HEADER_REPORT="/reports/order/purchase_order_header.jasper";
 	public static final String ORDER_FOOTER_REPORT="/reports/order/purchase_order_footer.jasper";
 	public static final String ORDER_ITEMS_REPORT="/reports/order/purchase_order_item.jasper";
+	public static final String ORDER_ITEMS_RECEIVED_REPORT="/reports/order/purchase_order_item_received.jasper";
 	public static final String SUPPLIER_REPORT="/reports/supplier/supplier.jasper";
 	public static final String DELIEVERY_LOCATION_REPORT="/reports/common/location.jasper";
 	
@@ -225,6 +228,7 @@ public final class MVCConstants {
 	public static final String CUSTOMER_PAYMENT_RECEIPT_REPORT="/reports/customer/customer_payment_receipt.jasper";
 	public static final String CUSTOMER_PAYMENT_RECEIPT_TENDERS_REPORT="/reports/customer/customer_payment_tenders.jasper";
 	
+	public static final String HEADER_RECEIPT_REPORT="/reports/common/header.jasper";
 	public static final String TXN_RECEIPT_REPORT="/reports/transaction/sale_receipt.jasper";
 	public static final String TXN_RECEIPT_ITEMS_REPORT="/reports/transaction/sale_receipt_items.jasper";
 	public static final String CREATIVE_TXN_RECEIPT_REPORT="/reports/transaction/creative_sale_txn.jasper";
@@ -447,4 +451,24 @@ public final class MVCConstants {
 	public static final String LOGIN_BEAN= "loginBean";
 	public static final String SETUP_NEEDED_PARAM= "isSetupNeeded";
 	
+	public static final String PO_REPORT_ESTIMATES= "ESTIMATES";
+	public static final String PO_REPORT_RECEIVED= "RECEIVED";
+	public static final String PO_REPORT_SUPPLIER= "SUPPLIER";
+
+	
+	public static final String APP_CONF_DEFAULT_HIERARCHY= "app.item.default.hierarchy";
+	public static final String APP_CONF_DEFAULT_TYPE= "app.item.default.item.type";
+	public static final String APP_CONF_DEFAULT_UOM= "app.item.default.uom";
+	public static final String APP_CONF_DEFAULT_PACK_SIZE= "app.item.default.pack.size";
+	public static final String APP_CONF_DEFAULT_UNIT_COST= "app.item.default.unit.cost";
+	public static final String APP_CONF_DEFAULT_MRP= "app.item.default.mrp";
+	public static final String APP_CONF_DEFAULT_SUGGESTED_PRICE= "app.item.default.suggested.price";
+	public static final String APP_CONF_DEFAULT_COMPAREAT_PRICE= "app.item.default.compareat.price";
+	public static final String APP_CONF_DEFAULT_RESTOCKING_FEE= "app.item.default.restocking.fee";
+	public static final String APP_CONF_DISCOUNT_FLAG= "app.item.default.discount.flag";
+	public static final String APP_CONF_RETURN_FLAG= "app.item.default.return.flag";
+	public static final String APP_CONF_DEFAULT_TAX_FLAG= "app.item.default.tax.flag";
+	public static final String APP_CONF_ASK_QTY_FLAG= "app.item.default.ask.qty.flag";
+	public static final String APP_CONF_PRICE_CHANGE_FLAG= "app.item.default.price.change.flag";
+	public static final String APP_DEFAULT_LOCATION= "app.default.location";	
 }

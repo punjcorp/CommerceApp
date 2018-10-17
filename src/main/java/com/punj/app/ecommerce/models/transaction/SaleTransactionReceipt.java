@@ -13,6 +13,9 @@ import com.punj.app.ecommerce.models.customer.CustomerBean;
  *
  */
 public class SaleTransactionReceipt {
+	private String applicableTax;
+	private String receiptType;
+	private String receiptMsg;
 	private LocationBean locationDetails;
 	private TransactionHeader transactionHeader;
 	private CustomerBean customer;
@@ -86,4 +89,50 @@ public class SaleTransactionReceipt {
 	public void setCustomer(CustomerBean customer) {
 		this.customer = customer;
 	}
+
+	/**
+	 * @return the applicableTax
+	 */
+	public String getApplicableTax() {
+		return applicableTax;
+	}
+
+	/**
+	 * @param applicableTax
+	 *            the applicableTax to set
+	 */
+	public void setApplicableTax(String applicableTax) {
+		this.applicableTax = applicableTax;
+	}
+
+	/**
+	 * @return the receiptType
+	 */
+	public String getReceiptType() {
+		return receiptType;
+	}
+
+	/**
+	 * @param receiptType
+	 *            the receiptType to set
+	 */
+	public void setReceiptType(String receiptType) {
+		this.receiptType = receiptType;
+	}
+
+	/**
+	 * @return the receiptMsg
+	 */
+	public String getReceiptMsg() {
+		return receiptMsg;
+	}
+
+	/**
+	 * @param receiptMsg
+	 *            the receiptMsg to set
+	 */
+	public void setReceiptMsg(String receiptMsg) {
+		this.receiptMsg = receiptMsg;
+	}
+
 }

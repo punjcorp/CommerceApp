@@ -48,34 +48,27 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="46" splitType="Stretch">
+		<band height="36" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="1" width="170" height="11" uuid="41020753-9357-4ad8-8196-6af9e9b58b59"/>
+				<reportElement x="0" y="0" width="170" height="12" uuid="41020753-9357-4ad8-8196-6af9e9b58b59"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{address1}+", "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{address1}+", "+(($F{address2}!=null && !$F{address2}.equals(""))?($F{address2}+", "):"")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="12" width="170" height="11" uuid="a08c6122-ab03-49eb-a64d-501fcee8a6f3"/>
+				<reportElement x="0" y="12" width="170" height="12" uuid="e2ba7609-a3dd-4ef4-9388-630b4c4f9592"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{address2}+", "]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="23" width="170" height="11" uuid="e2ba7609-a3dd-4ef4-9388-630b4c4f9592"/>
-				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{city}+", "+$F{state}+", "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="34" width="170" height="11" uuid="167c078d-635c-43b1-b500-24da83b60065"/>
+				<reportElement x="0" y="24" width="170" height="12" uuid="167c078d-635c-43b1-b500-24da83b60065"/>
 				<textElement>
-					<font fontName="Calibri" size="8"/>
+					<font fontName="Arial" size="9"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{country}+", "+$F{pincode}]]></textFieldExpression>

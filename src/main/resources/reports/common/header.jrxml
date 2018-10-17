@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="header" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="242ad310-e6d8-4b8d-9280-13fe3c51835e">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-DS"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="country" class="java.lang.String">
+		<fieldDescription><![CDATA[country]]></fieldDescription>
+	</field>
+	<field name="eligibleForStoreOpen" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[eligibleForStoreOpen]]></fieldDescription>
+	</field>
+	<field name="pincode" class="java.lang.String">
+		<fieldDescription><![CDATA[pincode]]></fieldDescription>
+	</field>
+	<field name="lastCreatedDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[lastCreatedDate]]></fieldDescription>
+	</field>
+	<field name="manager" class="java.lang.String">
+		<fieldDescription><![CDATA[manager]]></fieldDescription>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<fieldDescription><![CDATA[address2]]></fieldDescription>
+	</field>
+	<field name="city" class="java.lang.String">
+		<fieldDescription><![CDATA[city]]></fieldDescription>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<fieldDescription><![CDATA[address1]]></fieldDescription>
+	</field>
+	<field name="gstNo" class="java.lang.String">
+		<fieldDescription><![CDATA[gstNo]]></fieldDescription>
+	</field>
+	<field name="locationType" class="java.lang.String">
+		<fieldDescription><![CDATA[locationType]]></fieldDescription>
+	</field>
+	<field name="telephone2" class="java.lang.String">
+		<fieldDescription><![CDATA[telephone2]]></fieldDescription>
+	</field>
+	<field name="telephone1" class="java.lang.String">
+		<fieldDescription><![CDATA[telephone1]]></fieldDescription>
+	</field>
+	<field name="lastBusinessDate" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[lastBusinessDate]]></fieldDescription>
+	</field>
+	<field name="locationId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[locationId]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<field name="neighborhood" class="java.lang.String">
+		<fieldDescription><![CDATA[neighborhood]]></fieldDescription>
+	</field>
+	<field name="state" class="java.lang.String">
+		<fieldDescription><![CDATA[state]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[email]]></fieldDescription>
+	</field>
+	<field name="lastStatus" class="java.lang.String">
+		<fieldDescription><![CDATA[lastStatus]]></fieldDescription>
+	</field>
+	<field name="defaultTender" class="java.lang.String">
+		<fieldDescription><![CDATA[defaultTender]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="51" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="595" height="50" backcolor="#ACDBFC" uuid="c85724f7-56af-474a-8b68-318bf104b091"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="100" y="0" width="400" height="18" uuid="ce1d6045-5e9d-45f7-b134-93368682560d"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{locationId}+" - "+$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="20" width="400" height="11" uuid="ac08e8d0-29ba-4f84-89d0-470ac8ae997a"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{address1}+", "+$F{city}+", "+$F{state}+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="33" width="400" height="11" uuid="48df5236-27f1-45f9-863b-c2c3a3777f4b"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Phone: "+$F{telephone1}+", Email: " +$F{email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="33" width="150" height="11" uuid="1b012b0f-7de1-4194-b362-d20d85e63655"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{gstNo}!=null && !$F{gstNo}.equals(""))?"GSTIN: "+$F{gstNo}:""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="payment_tender_items" pageWidth="584" pageHeight="394" columnWidth="584" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="58e7f647-fbb4-4d62-9e41-b45f40e96ab4">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="payment_tender_items" pageWidth="575" pageHeight="394" columnWidth="575" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="58e7f647-fbb4-4d62-9e41-b45f40e96ab4">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CommerceReportBeans"/>
-	<property name="com.jaspersoft.studio.unit." value="inch"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -72,28 +80,28 @@
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{accountNo}==null?" - ":$F{accountNo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{accountNo}!=null && !$F{accountNo}.equals(""))?$F{accountNo}:" - "]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement x="275" y="2" width="200" height="11" uuid="9a326ea7-65f9-4914-87b9-fd087cd4b0cd"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{description}==null?" - ":$F{description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{description}!=null && !$F{description}.equals(""))?$F{description}:" - "]]></textFieldExpression>
 			</textField>
-			<textField pattern="INR  ##########.00">
+			<textField pattern=" Rs #0.00#">
 				<reportElement x="480" y="2" width="80" height="11" uuid="43fe7390-500d-4a32-af0a-a665b11db42d"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tenderAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tenderAmount}!=null?$F{tenderAmount}:java.math.BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="130" y="15" width="139" height="11" uuid="3092e02e-b770-422e-909f-a6793e7e9bf9"/>
 				<textElement>
 					<font fontName="Calibri" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{bankName}==null || $F{bankName}==""?"":"( Bank : "+$F{bankName}+" - "+$F{bankBranch}+" )"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{bankName}!=null && !$F{bankName}.equals(""))?"( Bank : "+$F{bankName}+" - "+$F{bankBranch}+" )":""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
