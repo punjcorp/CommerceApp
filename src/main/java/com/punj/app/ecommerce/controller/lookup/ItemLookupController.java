@@ -47,8 +47,6 @@ import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
-import com.punj.app.ecommerce.domains.item.LocSKUDetails;
-import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.inventory.ItemInventory;
@@ -149,7 +147,7 @@ public class ItemLookupController {
 	public String processItemDetails(Model model, final HttpServletRequest req, Locale locale, RedirectAttributes redirectAttrs) {
 		return this.getItemDetails(model, req, locale, redirectAttrs);
 	}
-
+	
 	@GetMapping(ViewPathConstants.LOOKUP_ITEM_DETAILS_URL)
 	public String getItemDetails(Model model, final HttpServletRequest req, Locale locale, RedirectAttributes redirectAttrs) {
 		BigInteger itemId = new BigInteger(req.getParameter(MVCConstants.ITEM_ID_PARAM));
@@ -162,19 +160,20 @@ public class ItemLookupController {
 					ItemLookupBean itemLookupBean = ItemTransformer.transformItemForLookup(item);
 
 					ItemStock itemStock = this.inventoryService.searchItemStock(itemId, locationId);
-					if (itemStock != null) {
+					if(itemStock!=null) {
 						ItemInventory itemInventory = InventoryBeanTransformer.transformItemStock(itemStock);
 						itemLookupBean.setItemInventory(itemInventory);
 					}
 
 					List<ItemPrice> itemPriceList = this.priceService.getFutureItemPrices(itemId, locationId, LocalDateTime.now());
-					if (itemPriceList != null && !itemPriceList.isEmpty()) {
+					if(itemPriceList!=null && !itemPriceList.isEmpty()) {
 						List<PriceBean> priceBeanList = PriceTransformer.transformItemPriceList(itemPriceList);
 						itemLookupBean.setItemFuturePrices(priceBeanList);
 					}
+					
 
 					ItemPrice itemPrice = this.priceService.getCurrentItemPrice(itemId, locationId, LocalDateTime.now());
-					if (itemPrice != null) {
+					if(itemPrice!=null) {
 						itemLookupBean.getItemOptions().setCurrentPrice(itemPrice.getItemPriceAmt());
 						itemLookupBean.setCurrentPriceStartDate(itemPrice.getStartDate());
 						itemLookupBean.setCurrentPriceEndDate(itemPrice.getEndDate());
@@ -182,13 +181,15 @@ public class ItemLookupController {
 					}
 
 					model.addAttribute(MVCConstants.ITEM_BEAN, itemLookupBean);
-					model.addAttribute(MVCConstants.SUCCESS, this.messageSource.getMessage("commerce.screen.lookup.item.details.success", new Object[] { itemId }, locale));
+					model.addAttribute(MVCConstants.SUCCESS,
+							this.messageSource.getMessage("commerce.screen.lookup.item.details.success", new Object[] { itemId }, locale));
 				} else {
 					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.lookup.item.details.failure", null, locale));
 				}
 			} else {
 				req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.LOOKUP_ITEM_DETAILS_URL + "?" + MVCConstants.ITEM_ID_PARAM + "=" + itemId);
+				redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM,
+						ViewPathConstants.LOOKUP_ITEM_DETAILS_URL + "?" + MVCConstants.ITEM_ID_PARAM + "=" + itemId);
 				logger.info("There is no open store existing as per application context, routing to store open screen");
 				return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 			}
@@ -209,8 +210,8 @@ public class ItemLookupController {
 
 	@PostMapping(value = ViewPathConstants.LOOKUP_ITEM_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public ItemBeanDTO lookupItem(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult, @RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page,
-			Model model, HttpSession session) {
+	public ItemBeanDTO lookupItem(@ModelAttribute @Valid SearchBean searchBean, BindingResult bindingResult,
+			@RequestParam(MVCConstants.PAGE_PARAM) Optional<Integer> page, Model model, HttpSession session) {
 		ItemBeanDTO items = new ItemBeanDTO();
 		if (bindingResult.hasErrors())
 			return items;
@@ -228,7 +229,8 @@ public class ItemLookupController {
 
 			this.setItemList(itemsList, items);
 			Pager tmpPager = itemList.getPager();
-			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(), ViewPathConstants.LOOKUP_ITEM_URL);
+			pager = new Pager(tmpPager.getResultSize(), tmpPager.getPageSize(), tmpPager.getCurrentPageNo(), tmpPager.getMaxDisplayPage(),
+					ViewPathConstants.LOOKUP_ITEM_URL);
 			items.setPager(pager);
 
 		} catch (Exception e) {
@@ -304,33 +306,6 @@ public class ItemLookupController {
 		return items.getItems();
 	}
 
-	@PostMapping(value = ViewPathConstants.LOC_SKU_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
-	@ResponseBody
-	public List<SaleItem> lookupLocSKU(@RequestBody @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
-		List<SaleItem> skuDtls = null;
-		if (bindingResult.hasErrors())
-			return skuDtls;
-		try {
-
-			Pager pager = new Pager();
-			pager.setCurrentPageNo(1);
-
-			SKUDtlDTO itemList = itemService.searchSKUDtls(searchBean.getSearchText(), searchBean.getLocationId(), pager);
-			if (itemList != null && itemList.getSkus() != null && !itemList.getSkus().isEmpty()) {
-				List<LocSKUDetails> itemsList = itemList.getSkus();
-				skuDtls = ItemTransformer.transformSKUDetails(itemsList);
-				logger.info("The item list based on the keyword has been retrieved");
-			}else {
-				logger.info("There was no match found");
-			}
-
-		} catch (Exception e) {
-			logger.error("There is an error while retrieving skus for sku lookup screen", e);
-			return null;
-		}
-		return skuDtls;
-	}
-
 	@PostMapping(value = ViewPathConstants.ORDER_ITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	public List<ItemBean> lookupOrderItems(@RequestBody @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
@@ -357,7 +332,8 @@ public class ItemLookupController {
 
 	@GetMapping(value = ViewPathConstants.SEARCH_ORDER_ITEM_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public SaleItem lookupOrderItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId, @RequestParam("supplierId") Integer supplierId) {
+	public SaleItem lookupOrderItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId,
+			@RequestParam("supplierId") Integer supplierId) {
 		SaleItem saleItem = this.itemService.retrieveItemDetails(locationId, supplierId, itemId, Boolean.FALSE);
 		logger.info("The order line item has been retrieved successfully");
 		return saleItem;

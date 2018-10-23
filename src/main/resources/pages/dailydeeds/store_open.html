@@ -51,7 +51,7 @@
 												</div>
 												<div>
 													<h3>
-														<input type="hidden" th:id="${location.locationId+'_sale_b_date'}" th:value="${location.lastSaleBusinessDate!=null?#temporals.format(location.lastSaleBusinessDate, 'dd-MMM-yy'):''}"></input>
+														<input type="hidden" th:id="${location.locationId+'_sale_b_date'}" th:value="${#temporals.format(location.lastSaleBusinessDate, 'dd-MMM-yy')}"></input>
 														<input type="hidden" th:id="${location.locationId+'_loc_name'}" th:value="${location.name}"></input> <input type="hidden"
 															th:id="${location.locationId+'_gst_no'}" th:value="${location.gstNo}"></input> <input type="hidden"
 															th:id="${location.locationId+'_loc_default_tender'}" th:value="${location.defaultTender}"></input> <span th:text="${location.name}"></span>

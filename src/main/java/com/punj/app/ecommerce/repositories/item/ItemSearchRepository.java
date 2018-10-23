@@ -20,8 +20,6 @@ import org.springframework.stereotype.Repository;
 
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
-import com.punj.app.ecommerce.domains.item.LocSKUDetails;
-import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -55,8 +53,7 @@ public class ItemSearchRepository {
 		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
 
 		// a very basic query by keywords
-		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("itemId", "name", "description", "createdBy", "hierarchy.name", "hierarchy.description")
-				.matching(text).createQuery();
+		org.apache.lucene.search.Query query = queryBuilder.keyword().onFields("itemId", "name", "description","createdBy","hierarchy.name","hierarchy.description").matching(text).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
 		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Item.class);
@@ -92,7 +89,8 @@ public class ItemSearchRepository {
 		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
 
 		// a very basic query by keywords
-		org.apache.lucene.search.Query query = queryBuilder.bool().must(queryBuilder.keyword().onFields("itemId", "name", "description").matching(text).createQuery())
+		org.apache.lucene.search.Query query = queryBuilder.bool()
+				.must(queryBuilder.keyword().onFields("itemId", "name", "description").matching(text).createQuery())
 				.must(queryBuilder.keyword().onFields("itemLevel").matching(2).createQuery()).createQuery();
 
 		// wrap Lucene query in an Hibernate Query object
@@ -111,42 +109,4 @@ public class ItemSearchRepository {
 		itemDTO.setPager(pager);
 		return itemDTO;
 	} // method search
-
-	/**
-	 * This method will return only the SKUs from the database
-	 * 
-	 * @param text
-	 * @param pager
-	 * @return
-	 */
-	public SKUDtlDTO searchLocationSKUDetails(String text, Integer locationId, Pager pager) {
-
-		SKUDtlDTO skuDTO = new SKUDtlDTO();
-		// get the full text entity manager
-		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
-
-		// create the query using Hibernate Search query DSL
-		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(LocSKUDetails.class).get();
-
-		// a very basic query by keywords
-		org.apache.lucene.search.Query query = queryBuilder.bool().must(queryBuilder.keyword().onFields("itemId", "name", "description", "itemPrice").matching(text).createQuery())
-				.must(queryBuilder.keyword().onFields("locationId").matching(locationId).createQuery()).createQuery();
-
-		// wrap Lucene query in an Hibernate Query object
-		org.hibernate.search.jpa.FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, LocSKUDetails.class);
-
-		jpaQuery.setFirstResult(pager.getStartCount());
-		jpaQuery.setMaxResults(pager.getPageSize());
-
-		// execute search and return results (sorted by relevance as default)
-		@SuppressWarnings("unchecked")
-		List<LocSKUDetails> results = jpaQuery.getResultList();
-
-		pager.setResultSize(jpaQuery.getResultSize());
-		skuDTO.setSkus(results);
-
-		skuDTO.setPager(pager);
-		return skuDTO;
-	} // method search
-
 }

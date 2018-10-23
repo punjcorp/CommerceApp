@@ -323,7 +323,6 @@ public final class ViewPathConstants {
 	
 	
 	public static final String SKU_LOOKUP_URL="/sku_lookup";
-	public static final String LOC_SKU_LOOKUP_URL="/loc_sku_lookup";
 	public static final String SALEITEM_LOOKUP_URL="/sale_item_lookup";
 	
 	/**
