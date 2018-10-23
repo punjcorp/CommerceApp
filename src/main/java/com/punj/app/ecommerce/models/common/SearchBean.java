@@ -18,6 +18,7 @@ public class SearchBean implements Serializable {
 	private static final long serialVersionUID = -1430637837387691511L;
 	@NotBlank(message = "{commerce.error.string.empty}")
 	private String searchText;
+	private Integer locationId;
 	private Integer page;
 	private Pager pager;
 
@@ -64,6 +65,21 @@ public class SearchBean implements Serializable {
 	 */
 	public void setPager(Pager pager) {
 		this.pager = pager;
+	}
+
+	/**
+	 * @return the locationId
+	 */
+	public Integer getLocationId() {
+		return locationId;
+	}
+
+	/**
+	 * @param locationId
+	 *            the locationId to set
+	 */
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
 	}
 
 	/*

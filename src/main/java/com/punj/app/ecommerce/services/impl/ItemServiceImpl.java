@@ -40,13 +40,13 @@ import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.SKUCounter;
+import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.domains.item.StyleCounter;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.item.ids.SKUCounterId;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.domains.tax.LocationTax;
-import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.domains.tax.ids.LocationTaxId;
 import com.punj.app.ecommerce.repositories.item.AttributeRepository;
 import com.punj.app.ecommerce.repositories.item.AttributeSearchRepository;
@@ -62,7 +62,6 @@ import com.punj.app.ecommerce.repositories.tax.LocationTaxRepository;
 import com.punj.app.ecommerce.services.InventoryService;
 import com.punj.app.ecommerce.services.ItemService;
 import com.punj.app.ecommerce.services.PriceService;
-import com.punj.app.ecommerce.services.TaxService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.converter.AttributeConverter;
@@ -108,7 +107,6 @@ public class ItemServiceImpl implements ItemService {
 	public void setLocationTaxRepository(LocationTaxRepository locationTaxRepository) {
 		this.locationTaxRepository = locationTaxRepository;
 	}
-
 
 	/**
 	 * @param itemImageRepository
@@ -757,27 +755,26 @@ public class ItemServiceImpl implements ItemService {
 
 		List<LocationTax> taxList = null;
 		List<ItemPrice> itemPriceList = null;
-		if(locations!=null && !locations.isEmpty()) {
+		if (locations != null && !locations.isEmpty()) {
 			taxList = this.retrieveTax(locations.get(0).getLocationId(), item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_OTHER_STATE);
-			
-			if(taxList!=null && !taxList.isEmpty()) {
-				
-				LocationTax taxItem=taxList.get(0);
-				
+
+			if (taxList != null && !taxList.isEmpty()) {
+
+				LocationTax taxItem = taxList.get(0);
+
 				itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations, taxItem.getPercentage());
 				itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
 				if (itemPriceList != null && !itemPriceList.isEmpty())
 					logger.info("The item price records were created successfully");
 				else
 					logger.info("There was some issue while creating the item prices");
-				
+
 			}
 		}
-		
-		
+
 		return itemPriceList;
 	}
-	
+
 	/**
 	 * This method retrieves all the taxes for a tax group
 	 * 
@@ -802,7 +799,6 @@ public class ItemServiceImpl implements ItemService {
 
 		return taxList;
 	}
-
 
 	@Override
 	@Transactional
@@ -1024,23 +1020,35 @@ public class ItemServiceImpl implements ItemService {
 		return updatedSKUs;
 	}
 
-
 	@Override
 	public Map<BigInteger, List<ItemImage>> retrieveItems(Set<BigInteger> itemIds) {
-		Map<BigInteger, List<ItemImage>> finalImageMap=new HashMap<>();
-		ItemImage itemImageCriteria=null;
-		Item itemCriteria=null;
-		for(BigInteger itemId:itemIds) {
-			
-			itemImageCriteria=new ItemImage();
-			itemCriteria=new Item();
+		Map<BigInteger, List<ItemImage>> finalImageMap = new HashMap<>();
+		ItemImage itemImageCriteria = null;
+		Item itemCriteria = null;
+		for (BigInteger itemId : itemIds) {
+
+			itemImageCriteria = new ItemImage();
+			itemCriteria = new Item();
 			itemCriteria.setItemId(itemId);
 			itemImageCriteria.setItem(itemCriteria);
-			
-			List<ItemImage> itemImages=this.itemImageRepository.findAll(Example.of(itemImageCriteria));
+
+			List<ItemImage> itemImages = this.itemImageRepository.findAll(Example.of(itemImageCriteria));
 			finalImageMap.put(itemId, itemImages);
 		}
 		return finalImageMap;
+	}
+
+	@Override
+	public SKUDtlDTO searchSKUDtls(String text, Integer locationId, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+
+		SKUDtlDTO items = this.itemSearchRepository.searchLocationSKUDetails(text, locationId, pager);
+		logger.info("The searched skus for location {} has been retrieved using keyword successfully", locationId);
+
+		return items;
 	}
 
 }

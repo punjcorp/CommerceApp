@@ -327,6 +327,11 @@ function processSkipOpening(){
 	var salesBDate = $('#'+locValue+'_sale_b_date').val();
 	var orgSalesBDate= $('#'+locValue+'_sale_b_date').val();
 	
+	if(typeof (salesBDate) === "undefined" || salesBDate == undefined || salesBDate == ""){
+		salesBDate =bDateVal;
+		orgSalesBDate=bDateVal;
+	}
+	
 	if(typeof (bDateVal) !== "undefined" && bDateVal != undefined && bDateVal != "" &&  typeof (salesBDate) !== "undefined" && salesBDate != undefined && salesBDate != "" ){
 		bDateVal=moment(bDateVal, "DD-MMM-YY");
 		salesBDate=moment(salesBDate, "DD-MMM-YY");
@@ -340,7 +345,7 @@ function processSkipOpening(){
 			}
 			bDateCntl.set("minDate",orgSalesBDate);
 		}
-	}else{
+	}else if (typeof (orgSalesBDate) !== "undefined" && orgSalesBDate != undefined && orgSalesBDate != "" ){
 		bDateCntl.set("minDate",orgSalesBDate);
 	}
 	

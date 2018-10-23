@@ -16,6 +16,7 @@ import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
+import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -68,6 +69,8 @@ public interface ItemService {
 	public ItemDTO searchItem(String text, Pager pager);
 
 	public ItemDTO searchSKUs(String text, Pager pager);
+
+	public SKUDtlDTO searchSKUDtls(String text, Integer locationId, Pager pager);
 
 	public ItemDTO listItems(Item itemCriteria, Pager pager);
 
