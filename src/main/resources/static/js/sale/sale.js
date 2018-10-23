@@ -51,9 +51,20 @@ $(function() {
 		source : function(request, response) {
 			$('#itemErrorMsg').hide();
 			$('#itemSearchBusy').removeClass('d-none');
-			$.post({
-				url : "/sku_lookup",
-				data : $('form[id=autoCompleteForm]').serialize(),
+			var searchData=new SearchBean();
+			searchData.locationId=txn_locationId;
+			searchData.searchText=$("#searchText").val();
+			var formData=JSON.stringify(searchData);
+			
+			$.ajax({
+				url : '/loc_sku_lookup',
+				type : 'POST',
+				cache : false,
+				data : formData,
+				
+				contentType : "application/json; charset=utf-8",
+				dataType : "json",
+			
 				success : function(data) {
 					$('#itemSearchBusy').addClass('d-none');
 					if(!data.length){
@@ -78,10 +89,32 @@ $(function() {
 								desc : descVal,
 								longDesc : item.longDesc,
 								pic : '/images/default_image.png',
-								skuImage: finalItemPic
+								skuImage: finalItemPic,
+								itemPrice: item.unitCostAmt,
+								itemId: item.itemId,
+								hsnNo:item.hsnNo,
+								name:item.name,
+								longDesc:item.longDesc,
+								imagePath:item.imagePath,
+								unitCostAmt:item.unitCostAmt,
+								suggestedPrice:item.suggestedPrice,
+								maxRetailPrice:item.maxRetailPrice,
+								priceAmt:item.priceAmt,
+								discountAmt:item.discountAmt,
+								taxAmt:item.taxAmt,
+								qty: item.qty,
+							totalAmt:item.totalAmt,
+							imageData:item.imageData,
+							imageType:item.imageType,
+							sgstTax:item.sgstTax,
+							cgstTax: item.cgstTax,
+							igstTax: item.igstTax
 							}
 						}));
 					}
+				},				
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader('X-CSRF-TOKEN', token)
 				}
 			});
 		},
@@ -98,7 +131,14 @@ $(function() {
 		select : function(event, ui) {
 			event.preventDefault();
 			if (ui.item) {
-				getItemDetails(event, ui);
+
+				updateGSTCalculationFlag();				
+				
+				txnAction.showSaleLineItem(ui.item);
+				reCalculateTenders();
+				//getItemDetails(event, ui);
+								
+				$('#searchText').val('');
 			}
 		}
 	});
@@ -427,20 +467,24 @@ $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 		}))))).appendTo(ul);
 		
 	}else{
-		return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
-			'class' : 'row'
-		}).append($('<div/>', {
-			'class' : 'col-4'
-		}).append($('<div/>', {
-			'class' : 'preview-thumbnail-cart'
-		}).append($('<img/>', {
-			src : item.skuImage,
-			class: 'img-thumbnail'
-		})))).append($('<div/>', {
-			'class' : 'col-6'
-		}).append($('<span/>', {
-			html : "<b>" + item.value + "</b><br/>" + item.desc
-		})))).appendTo(ul);
+		
+		var htmlData='<div class="row">';
+		htmlData+='<div class="col-4">';
+		htmlData+='<div class="preview-thumbnail-cart">';
+		htmlData+='<img src="'+item.skuImage+'" class="img-thumbnail">';
+		htmlData+='</div>';
+		htmlData+='</div>';
+		htmlData+='<div class="col">';
+		htmlData+='<span><b>'+item.value +'</b></span>';
+		htmlData+='<br/>'+item.desc;
+		htmlData+='</div>';
+		htmlData+='<div class="col text-right">';
+		htmlData+='<b><span class="text-danger">( '+ i18next.t('common_currency_sign_inr') +' '+item.itemPrice.toFixed(2) + ' )</span></b>';
+		htmlData+='</div>';
+		htmlData+='</div>';
+		
+		
+		return $("<li></li>").data("item.autocomplete", item).html(htmlData).appendTo(ul);
 	}
 
 	

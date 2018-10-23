@@ -5,6 +5,18 @@
 
 var isGSTFlag='';
 
+
+var SearchBean= function() {
+	this.searchText;
+	this.locationId;
+	this.pager;
+}
+
+$.extend(SearchBean.prototype, {
+
+	
+});
+
 /**
  * Class definition for Transaction Id Starts
  */

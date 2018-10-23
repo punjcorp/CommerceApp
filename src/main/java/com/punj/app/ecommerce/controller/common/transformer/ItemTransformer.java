@@ -4,7 +4,10 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
+import com.punj.app.ecommerce.domains.item.LocSKUDetails;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
 import com.punj.app.ecommerce.models.item.AttributeBean;
@@ -34,6 +38,8 @@ import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.models.item.ItemOptionsBean;
 import com.punj.app.ecommerce.models.lookup.ItemLookupBean;
+import com.punj.app.ecommerce.services.dtos.SaleItem;
+import com.punj.app.ecommerce.services.dtos.SaleItemTax;
 
 /**
  * @author admin
@@ -707,6 +713,120 @@ public class ItemTransformer {
 
 		logger.info("The attribute code list has been successfully retrieved");
 		return attrCodeList;
+	}
+
+	public static List<SaleItem> transformSKUDetails(List<LocSKUDetails> skuDetails) {
+		List<SaleItem> saleItems = new ArrayList<>();
+		SaleItem saleItem = null;
+		try {
+			for (LocSKUDetails locSKU : skuDetails) {
+
+				saleItem = ItemTransformer.transformSKUDetail(locSKU);
+				saleItems.add(saleItem);
+
+			}
+		} catch (UnsupportedEncodingException e) {
+			logger.error("There is some error transforming sku details", e);
+		}
+
+		logger.info("The sku details has been transformed to sale item details successfully");
+		return saleItems;
+	}
+
+	public static SaleItem transformSKUDetail(LocSKUDetails skuDetail) throws UnsupportedEncodingException {
+		SaleItem saleItem = new SaleItem();
+
+		saleItem.setItemId(skuDetail.getItemId());
+		saleItem.setDiscountAmt(BigDecimal.ZERO);
+		saleItem.setHsnNo(skuDetail.getHsnNo());
+
+		byte[] imageData = skuDetail.getImageData();
+		if (imageData != null) {
+			byte[] encodeBase64 = Base64.encodeBase64(imageData);
+			String base64Encoded = new String(encodeBase64, "UTF-8");
+
+			saleItem.setImageData(base64Encoded);
+		}
+
+		saleItem.setImageType(skuDetail.getImageType());
+		saleItem.setImagePath(skuDetail.getImageURL());
+
+		saleItem.setLongDesc(skuDetail.getDescription());
+		saleItem.setMaxRetailPrice(skuDetail.getMaxRetailPrice());
+		saleItem.setName(skuDetail.getName());
+		saleItem.setUnitCostAmt(skuDetail.getItemPrice());
+		saleItem.setPriceAmt(skuDetail.getItemPrice());
+		saleItem.setQty(1.0);
+		saleItem.setSuggestedPrice(skuDetail.getSuggestedPrice());
+
+		BigDecimal totalTaxAmt = ItemTransformer.updateSKUTax(skuDetail, saleItem);
+
+		saleItem.setTaxAmt(totalTaxAmt);
+		saleItem.setTotalAmt(saleItem.getPriceAmt().add(totalTaxAmt));
+
+		logger.info("The sku detail has been transformed to sale item detail successfully");
+		return saleItem;
+	}
+
+	private static BigDecimal updateSKUTax(LocSKUDetails skuDetail, SaleItem saleItem) {
+		SaleItemTax saleItemTax = null;
+		BigDecimal taxAmount = null;
+		BigDecimal totalTaxAmount = BigDecimal.ZERO;
+
+		saleItemTax = new SaleItemTax();
+		taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getIgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+
+		saleItemTax.setAmount(taxAmount);
+		saleItemTax.setLocationId(skuDetail.getLocationId());
+		saleItemTax.setPercentage(skuDetail.getIgstRate());
+		saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+		saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+		saleItemTax.setTaxGroupRateName(skuDetail.getIgstCode());
+		saleItemTax.setTaxRuleRateId(skuDetail.getIgstRateRuleId());
+		saleItemTax.setTaxRuleRateName(skuDetail.getIgstCode());
+		saleItemTax.setTypeCode(skuDetail.getIgstCode());
+
+		saleItem.setIgstTax(saleItemTax);
+		totalTaxAmount = totalTaxAmount.add(taxAmount);
+
+		logger.info("The sale item IGST tax details has been updated successfully");
+
+		saleItemTax = new SaleItemTax();
+		taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getSgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+
+		saleItemTax.setAmount(taxAmount);
+		saleItemTax.setLocationId(skuDetail.getLocationId());
+		saleItemTax.setPercentage(skuDetail.getSgstRate());
+		saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+		saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+		saleItemTax.setTaxGroupRateName(skuDetail.getSgstCode());
+		saleItemTax.setTaxRuleRateId(skuDetail.getSgstRateRuleId());
+		saleItemTax.setTaxRuleRateName(skuDetail.getSgstCode());
+		saleItemTax.setTypeCode(skuDetail.getSgstCode());
+
+		saleItem.setSgstTax(saleItemTax);
+		totalTaxAmount = totalTaxAmount.add(taxAmount);
+		logger.info("The sale item SGST tax details has been updated successfully");
+
+		saleItemTax = new SaleItemTax();
+		taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getCgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+
+		saleItemTax.setAmount(taxAmount);
+		saleItemTax.setLocationId(skuDetail.getLocationId());
+		saleItemTax.setPercentage(skuDetail.getCgstRate());
+		saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+		saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+		saleItemTax.setTaxGroupRateName(skuDetail.getCgstCode());
+		saleItemTax.setTaxRuleRateId(skuDetail.getCgstRateRuleId());
+		saleItemTax.setTaxRuleRateName(skuDetail.getCgstCode());
+		saleItemTax.setTypeCode(skuDetail.getCgstCode());
+
+		saleItem.setCgstTax(saleItemTax);
+		totalTaxAmount = totalTaxAmount.add(taxAmount);
+		logger.info("The sale item CGST tax details has been updated successfully");
+
+		return totalTaxAmount;
+
 	}
 
 }
