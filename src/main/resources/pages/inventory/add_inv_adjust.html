@@ -174,7 +174,7 @@
 							<div class="row">
 								<div class="col-xs-10 col-sm-10 col-md-10">
 									<div class="form-group">
-										<button type="submit" class="btn btn-info" name="saveInvAdjust" value="Save"
+										<button type="submit" class="btn btn-info" name="saveInvAdjust" value="Save" 
 											th:if="${invAdjustBean.status==null || invAdjustBean.status=='' || invAdjustBean.status=='C'}">
 											<i class="far fa-save fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.save}"></span>
 										</button>
@@ -182,11 +182,14 @@
 											th:if="${invAdjustBean.status==null || invAdjustBean.status=='' || invAdjustBean.status=='C'}">
 											<i class="fas fa-check fa-2x mx-2"></i><span th:text="#{commerce.screen.btn.submit.approve}"></span>
 										</button>
-										<a th:if="${invAdjustBean.invAdjustId!=null}" th:href="@{/admin/print_inv_adjust(invAdjustId=${invAdjustBean.invAdjustId})}"
+										<a th:if="${invAdjustBean.invAdjustId!=null}" th:href="@{/pdfviewer/web/viewer.html(file=@{/admin/view_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})})}" id="btnViewReport"
 											href="../inventory/inv_adjust.html" class="btn btn-secondary" target="_blank"><i class="fas fa-print fa-2x mx-2"></i><span
 											th:text="#{commerce.screen.actions.print}">Print</span></a> 
+											
 										<a th:href="@{/admin/add_inv_adjust}" class="btn btn-success"> <i
-											class="fas fa-plus fa-2x mx-2"></i> <span th:text="#{commerce.home.menu.add.inventory}"></span></a> <a th:href="@{/admin/manage_inv_adjust}"
+											class="fas fa-plus fa-2x mx-2"></i> <span th:text="#{commerce.home.menu.add.inventory}"></span></a> 
+										
+										<a th:href="@{/admin/manage_inv_adjust}"
 											class="btn btn-success"> <i class="fas fa-cog fa-2x mx-2"></i> <span th:text="#{commerce.home.menu.search.inventory}"></span>
 										</a>
 									</div>

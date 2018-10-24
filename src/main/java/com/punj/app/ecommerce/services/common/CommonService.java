@@ -62,6 +62,10 @@ public interface CommonService {
 	public BigInteger resetId(String name);
 
 	public List<ReasonCode> retrieveReasonCodes(ReasonCode reasonCodeCriteria);
+	
+	public Map<String,ReasonCode> retrieveReasonCodesMap(String reasonCodeType);
+	
+	public Map<Integer,ReasonCode> retrieveReasonCodeIdMap(String reasonCodeType);
 
 	public ReasonDTO retrieveReasonCodes(String searchText, Pager pager);
 

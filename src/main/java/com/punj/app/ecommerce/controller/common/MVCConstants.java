@@ -395,8 +395,8 @@ public final class MVCConstants {
 	public static final String SAVE_INV_ADJUSTS_PARAM= "saveInvAdjustItems";
 	public static final String DELETE_INV_ADJUSTS_PARAM="deleteInvAdjustItems";
 	
-	public static final String INV_ADJUST_REPORT="/reports/inventory/inv_adjust.jrxml";
-	public static final String INV_ADJUST_ITEMS_REPORT="/reports/inventory/inv_adjust_items.jrxml";	
+	public static final String INV_ADJUST_REPORT="/reports/inventory/inv_adjust.jasper";
+	public static final String INV_ADJUST_ITEMS_REPORT="/reports/inventory/inv_adjust_items.jasper";	
 	public static final String INV_ADJUST_ITEMS_REPORT_PARAM="INV_ADJUST_ITEMS_REPORT";
 	
 	public static final String INV_ADJUSTMENT_REPORT="/reports/inventory/list/inv_adjustments.jrxml";

@@ -249,6 +249,8 @@ public class OrderReturnServiceImpl implements OrderReturnService {
 		order = this.orderService.updateReturnedItems(orderId, returnQtyMap, username);
 
 		if (order != null) {
+			orderReturn=this.orderReturnRepository.findOne(orderReturn.getOrderReturnId());
+			
 			logger.info("The order returns item updates has been updated in original order items");
 			Boolean result = this.updateInventoryAfterApproval(orderReturn, username);
 			if (result)
@@ -289,6 +291,8 @@ public class OrderReturnServiceImpl implements OrderReturnService {
 	private Boolean updateInventoryAfterApproval(OrderReturn orderReturn, String username) {
 		Boolean result = Boolean.FALSE;
 
+		orderReturn=this.orderReturnRepository.findOne(orderReturn.getOrderReturnId());
+		
 		List<OrderReturnItem> orderReturnItems = orderReturn.getOrderReturnItems();
 		List<ItemStockJournal> inventoryDetails = this.createInventoryUpdates(orderReturnItems, username, orderReturn.getOrder().getLocation().getLocationId());
 		this.inventoryService.updateInventory(inventoryDetails);

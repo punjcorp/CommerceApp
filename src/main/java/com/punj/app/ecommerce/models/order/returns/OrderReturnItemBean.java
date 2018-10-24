@@ -34,6 +34,8 @@ public class OrderReturnItemBean {
 	@NotNull(message = "{commerce.error.option.empty}", groups = { ValidationGroup.VGAddOrderReturn.class })
 	private Integer reasonCodeId;
 
+	private String reasonCode;
+
 	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal costAmount = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
@@ -528,6 +530,21 @@ public class OrderReturnItemBean {
 	 */
 	public void setOrderId(BigInteger orderId) {
 		this.orderId = orderId;
+	}
+
+	/**
+	 * @return the reasonCode
+	 */
+	public String getReasonCode() {
+		return reasonCode;
+	}
+
+	/**
+	 * @param reasonCode
+	 *            the reasonCode to set
+	 */
+	public void setReasonCode(String reasonCode) {
+		this.reasonCode = reasonCode;
 	}
 
 }

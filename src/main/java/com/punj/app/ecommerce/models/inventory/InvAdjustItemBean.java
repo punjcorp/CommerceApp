@@ -15,12 +15,14 @@ import org.hibernate.validator.constraints.Range;
  */
 public class InvAdjustItemBean {
 	private BigInteger invAdjustId;
+	private Integer seqNo;
 	private BigInteger invAdjustLineItemId;
 	@NotNull(message = "{commerce.error.item.empty}")
 	private BigInteger itemId;
 	private String itemDesc;
 	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer reasonCodeId;
+	private String reasonCode;
 	@NotNull(message = "{commerce.error.qty.min.small}")
 	@Range(min = 1, max = 9999, message = "{commerce.error.nbr.range}")
 	private Integer qty;
@@ -146,6 +148,35 @@ public class InvAdjustItemBean {
 	 */
 	public void setItemDesc(String itemDesc) {
 		this.itemDesc = itemDesc;
+	}
+
+	/**
+	 * @return the seqNo
+	 */
+	public Integer getSeqNo() {
+		return seqNo;
+	}
+
+	/**
+	 * @param seqNo
+	 *            the seqNo to set
+	 */
+	public void setSeqNo(Integer seqNo) {
+		this.seqNo = seqNo;
+	}
+
+	/**
+	 * @return the reasonCode
+	 */
+	public String getReasonCode() {
+		return reasonCode;
+	}
+
+	/**
+	 * @param reasonCode the reasonCode to set
+	 */
+	public void setReasonCode(String reasonCode) {
+		this.reasonCode = reasonCode;
 	}
 
 }

@@ -49,6 +49,10 @@ public class Customer implements Serializable {
 	@Field
 	private String email;
 
+	@Field
+	@Column(name = "gst_no")
+	private String gstNo;
+
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -197,6 +201,21 @@ public class Customer implements Serializable {
 	 */
 	public void setAddresses(List<Address> addresses) {
 		this.addresses = addresses;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 }

@@ -6,7 +6,9 @@ package com.punj.app.ecommerce.services.impl;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.common.ReasonCode;
 import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.inventory.ItemStockBucket;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
@@ -738,4 +741,18 @@ public class InventoryServiceImpl implements InventoryService {
 		return itemStocks;
 	}
 
+	@Override
+	public Map<Integer, StockReason> reasonCodesMap() {
+		Map<Integer, StockReason> reasonCodeMap=null;
+		List<StockReason> reasonCodes=this.listAllReasonCodes();
+		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+			logger.info("The reason code details for inv adjust type were retrieved successfully");
+			reasonCodeMap=new HashMap<>();
+			for(StockReason reasonCode: reasonCodes) {
+				reasonCodeMap.put(reasonCode.getReasonCodeId(), reasonCode);
+			}
+		}
+		return reasonCodeMap;
+	}
+	
 }

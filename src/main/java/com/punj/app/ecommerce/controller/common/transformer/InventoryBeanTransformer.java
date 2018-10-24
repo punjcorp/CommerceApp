@@ -134,9 +134,12 @@ public class InventoryBeanTransformer {
 
 			List<InvAdjustItemBean> invAdjustItemBeans = new ArrayList<>(stockAdjustmentItems.size());
 			InvAdjustItemBean invAdjustItemBean = null;
+			int count=1;
 			for (StockAdjustmentItem stockAdjustmentItem : stockAdjustmentItems) {
 				invAdjustItemBean = InventoryBeanTransformer.transformStockAdjustmentItem(stockAdjustmentItem);
+				invAdjustItemBean.setSeqNo(count);
 				invAdjustItemBeans.add(invAdjustItemBean);
+				count++;
 			}
 			invAdjustBean.setInvAdjustItems(invAdjustItemBeans);
 			logger.info("The stock adjustment item details has been transformed into inventory adjustment successfully");
@@ -151,6 +154,9 @@ public class InventoryBeanTransformer {
 		invAdjustItemBean.setItemId(stockAdjustmentItem.getItemId());
 		invAdjustItemBean.setItemDesc(stockAdjustmentItem.getItemDesc());
 		invAdjustItemBean.setReasonCodeId(stockAdjustmentItem.getStockReason().getReasonCodeId());
+		
+		invAdjustItemBean.setReasonCode(stockAdjustmentItem.getStockReason().getName());
+		
 		invAdjustItemBean.setQty(stockAdjustmentItem.getQty());
 		logger.info("The stock adjustment item details has been transformed into inventory adjustment successfully");
 

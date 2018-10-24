@@ -101,7 +101,7 @@
 													<a th:if="${invAdjusts.invAdjusts[__${itrStat.index}__].status=='C'}"
 														th:href="@{/admin/delete_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
 														href="../inventory/manage_inv_adjust.html" class="btn btn-danger btn-sm"><span th:text="#{commerce.screen.actions.delete}">Delete</span></a>
-													<a th:href="@{/admin/print_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})}"
+													<a th:href="@{/pdfviewer/web/viewer.html(file=@{/admin/view_inv_adjust(invAdjustId=${invAdjusts.invAdjusts[__${itrStat.index}__].invAdjustId})})}"
 														href="../inventory/inv_adjust.html" class="btn btn-secondary btn-sm" target="_blank"><span
 														th:text="#{commerce.screen.actions.print}">Print</span></a>
 												</div>

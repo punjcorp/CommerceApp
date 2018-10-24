@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `commercedb`.`customer` (
   `name` VARCHAR(80) NOT NULL,
   `email` VARCHAR(80) NULL,
   `phone` VARCHAR(20) NOT NULL,
+  `gst_no` VARCHAR(15) NULL,
   `created_by` VARCHAR(50) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `modified_by` VARCHAR(50) NULL,

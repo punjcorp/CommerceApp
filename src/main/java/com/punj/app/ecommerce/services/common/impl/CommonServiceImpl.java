@@ -660,4 +660,36 @@ public class CommonServiceImpl implements CommonService {
 		return taxGroup;
 	}
 
+	@Override
+	public Map<String, ReasonCode> retrieveReasonCodesMap(String reasonCodeType) {
+		Map<String, ReasonCode> reasonCodeMap=null;
+		ReasonCode criertia=new ReasonCode();
+		criertia.setType(reasonCodeType);
+		List<ReasonCode> reasonCodes=this.retrieveReasonCodes(criertia);
+		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+			logger.info("The reason code details for {} type were retrieved successfully", reasonCodeType);
+			reasonCodeMap=new HashMap<>();
+			for(ReasonCode reasonCode: reasonCodes) {
+				reasonCodeMap.put(reasonCode.getName(), reasonCode);
+			}
+		}
+		return reasonCodeMap;
+	}
+
+	@Override
+	public Map<Integer, ReasonCode> retrieveReasonCodeIdMap(String reasonCodeType) {
+		Map<Integer, ReasonCode> reasonCodeMap=null;
+		ReasonCode criertia=new ReasonCode();
+		criertia.setType(reasonCodeType);
+		List<ReasonCode> reasonCodes=this.retrieveReasonCodes(criertia);
+		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+			logger.info("The reason code details for {} type were retrieved successfully", reasonCodeType);
+			reasonCodeMap=new HashMap<>();
+			for(ReasonCode reasonCode: reasonCodes) {
+				reasonCodeMap.put(reasonCode.getReasonCodeId(), reasonCode);
+			}
+		}
+		return reasonCodeMap;
+	}
+
 }

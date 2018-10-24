@@ -227,6 +227,7 @@ public final class ViewPathConstants {
 
 	public static final String PRINT_INV_ADJUSTS_URL = "/admin/print_inv_adjusts";
 	public static final String PRINT_INV_ADJUST_URL = "/admin/print_inv_adjust";	
+	public static final String VIEW_INV_ADJUST_URL = "/admin/view_inv_adjust";
 	/**
 	 * The inventory adjustment pages section ends
 	 */

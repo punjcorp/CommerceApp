@@ -5,6 +5,7 @@ package com.punj.app.ecommerce.services;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import com.punj.app.ecommerce.domains.inventory.ItemStock;
 import com.punj.app.ecommerce.domains.inventory.ItemStockJournal;
@@ -30,7 +31,7 @@ public interface InventoryService {
 	public StockAdjustment createStockAdjustment(StockAdjustment stockAdjustment);
 
 	public List<StockAdjustment> saveStockAdjustmentsDesc(List<StockAdjustment> stockAdjustments);
-	
+
 	public List<StockAdjustment> approveStockAdjustments(List<StockAdjustment> stockAdjustments);
 
 	public StockAdjustment approveStockAdjustment(StockAdjustment stockAdjustment);
@@ -54,9 +55,11 @@ public interface InventoryService {
 	public StockDTO searchStockAdjustments(String text, Pager pager);
 
 	public ItemStock searchItemStock(BigInteger itemId, Integer locationId);
-	
+
 	public List<ItemStock> searchItemStockBasedOnLocations(BigInteger itemId, Integer locationId);
 
 	public StockReason searchReasonCode(Integer reasonCodeId);
+
+	public Map<Integer, StockReason> reasonCodesMap();
 
 }

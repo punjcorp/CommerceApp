@@ -42,6 +42,8 @@ public class InvAdjustBean {
 
 	private String status;
 
+	private LocationBean locationDetails;
+
 	public InvAdjustBean() {
 		invAdjustItems = new ArrayList<>(1);
 		invAdjustItems.add(new InvAdjustItemBean());
@@ -225,6 +227,21 @@ public class InvAdjustBean {
 	 */
 	public void setModifiedDate(LocalDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	/**
+	 * @return the locationDetails
+	 */
+	public LocationBean getLocationDetails() {
+		return locationDetails;
+	}
+
+	/**
+	 * @param locationDetails
+	 *            the locationDetails to set
+	 */
+	public void setLocationDetails(LocationBean locationDetails) {
+		this.locationDetails = locationDetails;
 	}
 
 }

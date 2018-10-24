@@ -24,25 +24,27 @@ public class CustomerBean {
 
 	private BigInteger customerId;
 	@NotNull
-	@Size(min = 2, max = 80, message = "{commerce.error.string.size}",groups = { ValidationGroup.ValidationGroupTwo.class })
+	@Size(min = 2, max = 80, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupTwo.class })
 	private String name;
 
 	@NotNull(groups = { ValidationGroup.ValidationGroupOne.class })
 	private String customerSearchText;
 	private String customerType;
 	@NotNull
-	@Size(min = 7, max = 10, message = "{commerce.error.int.size}",groups = { ValidationGroup.ValidationGroupTwo.class })
+	@Size(min = 7, max = 10, message = "{commerce.error.int.size}", groups = { ValidationGroup.ValidationGroupTwo.class })
 	private String phone;
 
-	@Size(min = 6, max = 80, message = "{commerce.error.string.size}",groups = { ValidationGroup.ValidationGroupTwo.class })
-	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}",groups = { ValidationGroup.ValidationGroupTwo.class })
+	@Size(min = 6, max = 80, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupTwo.class })
+	@Pattern(regexp = EMAIL_PATTERN, message = "{commerce.error.email}", groups = { ValidationGroup.ValidationGroupTwo.class })
 	private String email;
+
+	private String gstNo;
 
 	private String createdBy;
 	private LocalDateTime createdDate;
 	private String modifiedBy;
 	private LocalDateTime modifiedDate;
-	
+
 	private Boolean searchAccount;
 	private List<AccountHeadBean> customerAccounts;
 
@@ -210,6 +212,21 @@ public class CustomerBean {
 
 	public void setSearchAccount(Boolean searchAccount) {
 		this.searchAccount = searchAccount;
+	}
+
+	/**
+	 * @return the gstNo
+	 */
+	public String getGstNo() {
+		return gstNo;
+	}
+
+	/**
+	 * @param gstNo
+	 *            the gstNo to set
+	 */
+	public void setGstNo(String gstNo) {
+		this.gstNo = gstNo;
 	}
 
 }
