@@ -51,8 +51,10 @@ $(function() {
 		source : function(request, response) {
 			$('#itemErrorMsg').hide();
 			$('#itemSearchBusy').removeClass('d-none');
+			updateGSTCalculationFlag();
 			var searchData=new SearchBean();
 			searchData.locationId=txn_locationId;
+			searchData.gstFlag=isGSTFlag;
 			searchData.searchText=$("#searchText").val();
 			var formData=JSON.stringify(searchData);
 			

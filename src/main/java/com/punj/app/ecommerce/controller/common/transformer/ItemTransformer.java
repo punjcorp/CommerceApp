@@ -715,13 +715,13 @@ public class ItemTransformer {
 		return attrCodeList;
 	}
 
-	public static List<SaleItem> transformSKUDetails(List<LocSKUDetails> skuDetails) {
+	public static List<SaleItem> transformSKUDetails(List<LocSKUDetails> skuDetails, String gstFlag) {
 		List<SaleItem> saleItems = new ArrayList<>();
 		SaleItem saleItem = null;
 		try {
 			for (LocSKUDetails locSKU : skuDetails) {
 
-				saleItem = ItemTransformer.transformSKUDetail(locSKU);
+				saleItem = ItemTransformer.transformSKUDetail(locSKU, gstFlag);
 				saleItems.add(saleItem);
 
 			}
@@ -733,7 +733,7 @@ public class ItemTransformer {
 		return saleItems;
 	}
 
-	public static SaleItem transformSKUDetail(LocSKUDetails skuDetail) throws UnsupportedEncodingException {
+	public static SaleItem transformSKUDetail(LocSKUDetails skuDetail, String gstFlag) throws UnsupportedEncodingException {
 		SaleItem saleItem = new SaleItem();
 
 		saleItem.setItemId(skuDetail.getItemId());
@@ -759,7 +759,7 @@ public class ItemTransformer {
 		saleItem.setQty(1.0);
 		saleItem.setSuggestedPrice(skuDetail.getSuggestedPrice());
 
-		BigDecimal totalTaxAmt = ItemTransformer.updateSKUTax(skuDetail, saleItem);
+		BigDecimal totalTaxAmt = ItemTransformer.updateSKUTax(skuDetail, saleItem, gstFlag);
 
 		saleItem.setTaxAmt(totalTaxAmt);
 		saleItem.setTotalAmt(saleItem.getPriceAmt().add(totalTaxAmt));
@@ -768,63 +768,68 @@ public class ItemTransformer {
 		return saleItem;
 	}
 
-	private static BigDecimal updateSKUTax(LocSKUDetails skuDetail, SaleItem saleItem) {
+	private static BigDecimal updateSKUTax(LocSKUDetails skuDetail, SaleItem saleItem, String gstFlag) {
 		SaleItemTax saleItemTax = null;
 		BigDecimal taxAmount = null;
 		BigDecimal totalTaxAmount = BigDecimal.ZERO;
 
-		saleItemTax = new SaleItemTax();
-		taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getIgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+		if(StringUtils.isNotBlank(gstFlag) && gstFlag.equals("I")) {
+			saleItemTax = new SaleItemTax();
+			taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getIgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
 
-		saleItemTax.setAmount(taxAmount);
-		saleItemTax.setLocationId(skuDetail.getLocationId());
-		saleItemTax.setPercentage(skuDetail.getIgstRate());
-		saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
-		saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
-		saleItemTax.setTaxGroupRateName(skuDetail.getIgstCode());
-		saleItemTax.setTaxRuleRateId(skuDetail.getIgstRateRuleId());
-		saleItemTax.setTaxRuleRateName(skuDetail.getIgstCode());
-		saleItemTax.setTypeCode(skuDetail.getIgstCode());
+			saleItemTax.setAmount(taxAmount);
+			saleItemTax.setLocationId(skuDetail.getLocationId());
+			saleItemTax.setPercentage(skuDetail.getIgstRate());
+			saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+			saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+			saleItemTax.setTaxGroupRateName(skuDetail.getIgstCode());
+			saleItemTax.setTaxRuleRateId(skuDetail.getIgstRateRuleId());
+			saleItemTax.setTaxRuleRateName(skuDetail.getIgstCode());
+			saleItemTax.setTypeCode(skuDetail.getIgstCode());
 
-		saleItem.setIgstTax(saleItemTax);
-		totalTaxAmount = totalTaxAmount.add(taxAmount);
+			saleItem.setIgstTax(saleItemTax);
+			totalTaxAmount = totalTaxAmount.add(taxAmount);
+			
+			logger.info("The sale item IGST tax details has been updated successfully");
+			
+		} else if(StringUtils.isNotBlank(gstFlag) && gstFlag.equals("S")) {
+			saleItemTax = new SaleItemTax();
+			taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getSgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
 
-		logger.info("The sale item IGST tax details has been updated successfully");
+			saleItemTax.setAmount(taxAmount);
+			saleItemTax.setLocationId(skuDetail.getLocationId());
+			saleItemTax.setPercentage(skuDetail.getSgstRate());
+			saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+			saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+			saleItemTax.setTaxGroupRateName(skuDetail.getSgstCode());
+			saleItemTax.setTaxRuleRateId(skuDetail.getSgstRateRuleId());
+			saleItemTax.setTaxRuleRateName(skuDetail.getSgstCode());
+			saleItemTax.setTypeCode(skuDetail.getSgstCode());
 
-		saleItemTax = new SaleItemTax();
-		taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getSgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+			saleItem.setSgstTax(saleItemTax);
+			totalTaxAmount = totalTaxAmount.add(taxAmount);
+			logger.info("The sale item SGST tax details has been updated successfully");
 
-		saleItemTax.setAmount(taxAmount);
-		saleItemTax.setLocationId(skuDetail.getLocationId());
-		saleItemTax.setPercentage(skuDetail.getSgstRate());
-		saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
-		saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
-		saleItemTax.setTaxGroupRateName(skuDetail.getSgstCode());
-		saleItemTax.setTaxRuleRateId(skuDetail.getSgstRateRuleId());
-		saleItemTax.setTaxRuleRateName(skuDetail.getSgstCode());
-		saleItemTax.setTypeCode(skuDetail.getSgstCode());
+			saleItemTax = new SaleItemTax();
+			taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getCgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
 
-		saleItem.setSgstTax(saleItemTax);
-		totalTaxAmount = totalTaxAmount.add(taxAmount);
-		logger.info("The sale item SGST tax details has been updated successfully");
+			saleItemTax.setAmount(taxAmount);
+			saleItemTax.setLocationId(skuDetail.getLocationId());
+			saleItemTax.setPercentage(skuDetail.getCgstRate());
+			saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+			saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+			saleItemTax.setTaxGroupRateName(skuDetail.getCgstCode());
+			saleItemTax.setTaxRuleRateId(skuDetail.getCgstRateRuleId());
+			saleItemTax.setTaxRuleRateName(skuDetail.getCgstCode());
+			saleItemTax.setTypeCode(skuDetail.getCgstCode());
 
-		saleItemTax = new SaleItemTax();
-		taxAmount = skuDetail.getItemPrice().multiply(skuDetail.getCgstRate()).divide(new BigDecimal("100"), RoundingMode.HALF_UP);
+			saleItem.setCgstTax(saleItemTax);
+			totalTaxAmount = totalTaxAmount.add(taxAmount);
+			logger.info("The sale item CGST tax details has been updated successfully");
 
-		saleItemTax.setAmount(taxAmount);
-		saleItemTax.setLocationId(skuDetail.getLocationId());
-		saleItemTax.setPercentage(skuDetail.getCgstRate());
-		saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
-		saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
-		saleItemTax.setTaxGroupRateName(skuDetail.getCgstCode());
-		saleItemTax.setTaxRuleRateId(skuDetail.getCgstRateRuleId());
-		saleItemTax.setTaxRuleRateName(skuDetail.getCgstCode());
-		saleItemTax.setTypeCode(skuDetail.getCgstCode());
+		}
 
-		saleItem.setCgstTax(saleItemTax);
-		totalTaxAmount = totalTaxAmount.add(taxAmount);
-		logger.info("The sale item CGST tax details has been updated successfully");
-
+		
 		return totalTaxAmount;
 
 	}

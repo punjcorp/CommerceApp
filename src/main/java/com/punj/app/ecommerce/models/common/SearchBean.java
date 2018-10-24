@@ -19,7 +19,9 @@ public class SearchBean implements Serializable {
 	@NotBlank(message = "{commerce.error.string.empty}")
 	private String searchText;
 	private Integer locationId;
+	private String gstFlag;
 	private Integer page;
+	
 	private Pager pager;
 
 	/**
@@ -80,6 +82,20 @@ public class SearchBean implements Serializable {
 	 */
 	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
+	}
+
+	/**
+	 * @return the gstFlag
+	 */
+	public String getGstFlag() {
+		return gstFlag;
+	}
+
+	/**
+	 * @param gstFlag the gstFlag to set
+	 */
+	public void setGstFlag(String gstFlag) {
+		this.gstFlag = gstFlag;
 	}
 
 	/*

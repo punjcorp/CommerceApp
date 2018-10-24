@@ -149,4 +149,23 @@ public class ItemSearchRepository {
 		return skuDTO;
 	} // method search
 
+	/**
+	 * This method will return only the SKUs from the database
+	 * 
+	 * @param text
+	 * @param pager
+	 * @return
+	 * @throws InterruptedException 
+	 */
+	public void updateItemIndexes() throws InterruptedException {
+
+		SKUDtlDTO skuDTO = new SKUDtlDTO();
+		// get the full text entity manager
+		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
+		fullTextEntityManager.createIndexer( LocSKUDetails.class ).startAndWait();
+		fullTextEntityManager.createIndexer( Item.class ).startAndWait();
+		
+	} // method search
+	
+	
 }

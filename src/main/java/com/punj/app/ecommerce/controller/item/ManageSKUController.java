@@ -305,7 +305,7 @@ public class ManageSKUController {
 					nextLevelCreated = Boolean.TRUE;
 				skuList = this.itemService.createSKUs(skuList, userDetails.getUsername(), nextLevelCreated);
 				if (skuList != null && !skuList.isEmpty()) {
-
+					this.itemService.updateItemIndexes();
 					List<ItemBean> skuBeanList = ItemTransformer.transformItems(skuList);
 					itemBean.setSkus(skuBeanList);
 
@@ -453,7 +453,7 @@ public class ManageSKUController {
 			if (skuList != null && !skuList.isEmpty()) {
 				List<Item> updatedSKUs = ItemTransformer.updateSKUs(skuList, itemBean, userDetails.getUsername());
 				updatedSKUs = this.itemService.updateSKUs(updatedSKUs);
-
+				this.itemService.updateItemIndexes();
 				List<ItemBean> skuBeanList = ItemTransformer.transformItems(updatedSKUs);
 				itemBean.setSkus(skuBeanList);
 				

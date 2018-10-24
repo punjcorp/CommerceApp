@@ -9,6 +9,7 @@ var isGSTFlag='';
 var SearchBean= function() {
 	this.searchText;
 	this.locationId;
+	this.gstFlag;
 	this.pager;
 }
 
@@ -373,7 +374,7 @@ $.extend(SaleLineItem.prototype, {
 		else{
 			if(isGSTFlag=='S'){
 				totalItemPrice = this.price - this.discount + this.sgstTax + this.cgstTax;
-			}else if(isGSTFlag=='i'){
+			}else if(isGSTFlag=='I'){
 				totalItemPrice = this.price - this.discount + this.igstTax;
 			}else{
 				totalItemPrice = this.price - this.discount;
@@ -836,7 +837,7 @@ $.extend(SaleLineItem.prototype, {
 		var total = '<div class="col-2 form-group padding-sm text-center">';
 		total += '<label><small> <span>' + i18next.t('sale_txn_lbl_item_total') + '</span></small> </label><br />';
 		total += '<h5><span id="li_itemTotal' + saleLineItem.itemId + '">';
-		total += i18next.t('common_currency_sign_inr') + ' ' + saleLineItem.itemTotal.toFixed(2);
+		total += i18next.t('common_currency_sign_inr') + ' ' + Math.round(saleLineItem.itemTotal).toFixed(2);
 		total += '</span><button type="button" title="'+ i18next.t('tooltip_btn_delete_sale_line_item') +'"  id="btnDeleteSLI'+saleLineItem.itemId+'"';
 		total += 'onClick="deleteSaleItem(' + saleLineItem.itemId;
 		total += ')" ';

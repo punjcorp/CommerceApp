@@ -98,8 +98,10 @@ DROP TABLE IF EXISTS `pi_pos_industry`.`v_gstr_one_hsn`;
 
 create view pi_pos_industry.v_gstr_one_hsn as 
 SELECT 
-    location_id, business_date, hsn_no, name, sum(qty) qty, sum(extended_amount) extended_amount, sum(discount_amount) discount_amount, sum(tax_amount) tax_amount, sum(gross_amount) gross_amount,
-    sum(SGST_amount) SGST_amount,sum(CGST_amount) CGST_amount,sum(IGST_amount) IGST_amount
+    location_id, business_date, hsn_no, name, sum(qty) qty, sum(extended_amount) extended_amount, 
+    sum(discount_amount) discount_amount, (SUM(`v_receipt_li_item`.`extended_amount`) - SUM(`v_receipt_li_item`.`discount_amount`)) AS `taxable_amount`,
+    sum(tax_amount) tax_amount, sum(gross_amount) gross_amount, sum(SGST_amount) SGST_amount,sum(CGST_amount) CGST_amount,
+    sum(IGST_amount) IGST_amount
 FROM
     pi_pos_industry.v_receipt_li_item
         group by location_id, business_date, hsn_no, name

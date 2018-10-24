@@ -840,7 +840,7 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	@Transactional
-	public List<Item> createSKUs(List<Item> skuList, String username, Boolean isSKUExisting) {
+	public List<Item> createSKUs(List<Item> skuList, String username, Boolean isSKUExisting){
 		List<Item> finalSKUs = null;
 		if (skuList != null && !skuList.isEmpty()) {
 
@@ -892,7 +892,7 @@ public class ItemServiceImpl implements ItemService {
 			}
 
 		}
-
+		
 		return finalSKUs;
 	}
 
@@ -1008,7 +1008,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public List<Item> updateSKUs(List<Item> skuList) {
+	public List<Item> updateSKUs(List<Item> skuList){
 
 		this.deleteSKUImages(skuList);
 
@@ -1017,6 +1017,7 @@ public class ItemServiceImpl implements ItemService {
 			logger.info("The skus were updated successfully");
 		else
 			logger.error("There was some issue while updating the skus");
+		
 		return updatedSKUs;
 	}
 
@@ -1049,6 +1050,12 @@ public class ItemServiceImpl implements ItemService {
 		logger.info("The searched skus for location {} has been retrieved using keyword successfully", locationId);
 
 		return items;
+	}
+
+	@Override
+	public void updateItemIndexes() throws InterruptedException {
+		this.itemSearchRepository.updateItemIndexes();
+		logger.info("The item indexes has been updated successfully");
 	}
 
 }

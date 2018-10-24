@@ -78,4 +78,6 @@ public interface ItemService {
 
 	public AttributeDTO searchAttributes(String text, Pager pager);
 
+	public void updateItemIndexes()  throws InterruptedException; 
+	
 }

@@ -318,7 +318,7 @@ public class ItemLookupController {
 			SKUDtlDTO itemList = itemService.searchSKUDtls(searchBean.getSearchText(), searchBean.getLocationId(), pager);
 			if (itemList != null && itemList.getSkus() != null && !itemList.getSkus().isEmpty()) {
 				List<LocSKUDetails> itemsList = itemList.getSkus();
-				skuDtls = ItemTransformer.transformSKUDetails(itemsList);
+				skuDtls = ItemTransformer.transformSKUDetails(itemsList, searchBean.getGstFlag());
 				logger.info("The item list based on the keyword has been retrieved");
 			}else {
 				logger.info("There was no match found");
