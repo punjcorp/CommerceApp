@@ -120,6 +120,8 @@ public final class MVCConstants {
 	public static final String REASON_TYPE_PO_RETURN="POR";
 
 	
+	public static final String FLAG_FALSE="F";
+	public static final String FLAG_TRUE="T";
 	public static final String AJAX_STATUS_FAILURE="F";
 	public static final String AJAX_STATUS_SUCCESS="S";
 	public static final String AJAX_STATUS_PROGRESS="P";
@@ -360,6 +362,7 @@ public final class MVCConstants {
 	
 	
 	public static final String SAVE_CUSTOMER_PARAM= "saveCustomer";
+	public static final String SAVE_SHORT_CUSTOMER_PARAM= "saveShortCustomer";
 	public static final String CUSTOMER_ID_PARAM="customerId";
 	public static final String SAVE_CUSTOMERS_PARAM= "saveCustomers";
 	public static final String DELETE_CUSTOMERS_PARAM="deleteCustomers";

@@ -154,3 +154,6 @@ function showCustomerDetails(event, ui){
 	$('#div_customerActions').removeClass('d-none');
 	
 }
+
+
+

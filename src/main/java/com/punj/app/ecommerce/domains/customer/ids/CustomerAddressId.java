@@ -6,8 +6,13 @@ package com.punj.app.ecommerce.domains.customer.ids;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.punj.app.ecommerce.domains.user.Address;
 
 /**
  * @author admin
@@ -17,12 +22,14 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class CustomerAddressId implements Serializable {
 
-	private static final long serialVersionUID = -5880870734951569492L;
+	private static final long serialVersionUID = 2082718906978987119L;
 
 	@Column(name = "customer_id")
 	private BigInteger customerId;
-	@Column(name = "address_id")
-	private BigInteger addressId;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "address_id")
+	private Address address;
 
 	/**
 	 * @return the customerId
@@ -40,18 +47,18 @@ public class CustomerAddressId implements Serializable {
 	}
 
 	/**
-	 * @return the addressId
+	 * @return the address
 	 */
-	public BigInteger getAddressId() {
-		return addressId;
+	public Address getAddress() {
+		return address;
 	}
 
 	/**
-	 * @param addressId
-	 *            the addressId to set
+	 * @param address
+	 *            the address to set
 	 */
-	public void setAddressId(BigInteger addressId) {
-		this.addressId = addressId;
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 
 }

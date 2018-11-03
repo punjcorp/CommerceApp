@@ -19,10 +19,18 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 
 import com.punj.app.ecommerce.domains.user.Address;
 
@@ -30,6 +38,10 @@ import com.punj.app.ecommerce.domains.user.Address;
  * @author admin
  *
  */
+@AnalyzerDef(name = "customerEdgeNgram", tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class), filters = {
+		@TokenFilterDef(factory = LowerCaseFilterFactory.class), // Lowercase all characters
+		@TokenFilterDef(factory = EdgeNGramFilterFactory.class, // Generate prefix tokens
+				params = { @Parameter(name = "minGramSize", value = "1"), @Parameter(name = "maxGramSize", value = "10") }) })
 @Indexed
 @Entity
 @Table(name = "customer")
@@ -42,17 +54,21 @@ public class Customer implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "customer_id", updatable = false, nullable = false)
 	private BigInteger customerId;
-	@Field
+	@Field(analyzer = @Analyzer(definition = "customerEdgeNgram"))
 	private String name;
 	@Field
 	private String phone;
 	@Field
+	private String phone2;
+	@Field
 	private String email;
-
 	@Field
 	@Column(name = "gst_no")
 	private String gstNo;
-
+	@Field
+	@Column(name = "pan_no")
+	private String panNo;
+	@Field
 	@Column(name = "created_by")
 	private String createdBy;
 	@Column(name = "created_date")
@@ -204,6 +220,21 @@ public class Customer implements Serializable {
 	}
 
 	/**
+	 * @return the phone2
+	 */
+	public String getPhone2() {
+		return phone2;
+	}
+
+	/**
+	 * @param phone2
+	 *            the phone2 to set
+	 */
+	public void setPhone2(String phone2) {
+		this.phone2 = phone2;
+	}
+
+	/**
 	 * @return the gstNo
 	 */
 	public String getGstNo() {
@@ -216,6 +247,21 @@ public class Customer implements Serializable {
 	 */
 	public void setGstNo(String gstNo) {
 		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the panNo
+	 */
+	public String getPanNo() {
+		return panNo;
+	}
+
+	/**
+	 * @param panNo
+	 *            the panNo to set
+	 */
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
 	}
 
 }

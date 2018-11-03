@@ -33,8 +33,10 @@ public class Address implements Serializable {
 	private String address2;
 	@Field
 	private String city;
+	@Field
 	private String state;
 	private String country;
+	@Field
 	private String pincode;
 
 	/**

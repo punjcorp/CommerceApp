@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.customer.Customer;
 import com.punj.app.ecommerce.domains.customer.CustomerDTO;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
+import com.punj.app.ecommerce.domains.user.Address;
+import com.punj.app.ecommerce.models.common.CustomerAddressBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.customer.CustomerBeanDTO;
 import com.punj.app.ecommerce.models.financials.AccountHeadBean;
@@ -62,13 +66,75 @@ public class CustomerTransformer {
 		customerBean.setEmail(customer.getEmail());
 		customerBean.setPhone(customer.getPhone());
 
+		if (StringUtils.isBlank(customer.getGstNo())) {
+			customerBean.setShortFlag(MVCConstants.FLAG_TRUE);
+		}
+		else {
+			customerBean.setShortFlag(MVCConstants.FLAG_FALSE);
+			customerBean.setPhone2(customer.getPhone2());
+			customerBean.setGstNo(customer.getGstNo());
+			customerBean.setPanNo(customer.getPanNo());
+		}
+		if (StringUtils.isNotBlank(customer.getGstNo()) && customer.getGstNo().length() == 15) {
+			customerBean.setStateCode(customer.getGstNo().substring(0, 2));
+		}
+
 		customerBean.setCreatedBy(customer.getCreatedBy());
 		customerBean.setCreatedDate(customer.getCreatedDate());
 		customerBean.setModifiedBy(customer.getModifiedBy());
 		customerBean.setModifiedDate(customer.getModifiedDate());
 
+		if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
+			List<CustomerAddressBean> customerAddresses = CustomerTransformer.transformAddresses(customer.getAddresses());
+			customerBean.setAddresses(customerAddresses);
+
+			customerBean.setPrimaryAddressIndex(CustomerTransformer.getPrimaryAddressIndex(customerBean.getAddresses()));
+			if (customerBean.getPrimaryAddressIndex() > -1)
+				customerBean.setPrimaryAddress(CommonMVCTransformer.getPrimaryAddress(customer.getAddresses()));
+		}
+
 		logger.info("The customer details has been updated in bean object now");
 		return customerBean;
+	}
+
+	public static int getPrimaryAddressIndex(List<CustomerAddressBean> addressBeanList) {
+		int result = -1;
+		for (int i = 0; i < addressBeanList.size(); i++) {
+			if ("Y".equals(addressBeanList.get(i).getPrimary())) {
+				result = i;
+			}
+		}
+		return result;
+
+	}
+
+	public static List<CustomerAddressBean> transformAddresses(List<Address> addressList) {
+		List<CustomerAddressBean> addressBeanList = new ArrayList<>(addressList.size());
+		CustomerAddressBean addressBean;
+		for (Address address : addressList) {
+			addressBean = CustomerTransformer.transformAddress(address);
+			addressBeanList.add(addressBean);
+		}
+
+		logger.info("The address list has been transformed into address bean list successfully");
+		return addressBeanList;
+	}
+
+	public static CustomerAddressBean transformAddress(Address address) {
+		CustomerAddressBean addressBean = new CustomerAddressBean();
+
+		addressBean.setAddressId(address.getAddressId());
+		addressBean.setPrimary(address.getPrimary());
+		addressBean.setAddress1(address.getAddress1());
+		addressBean.setAddress2(address.getAddress2());
+		addressBean.setCity(address.getCity());
+		addressBean.setState(address.getState());
+		addressBean.setCountry(address.getCountry());
+		addressBean.setPincode(address.getPincode());
+		addressBean.setAddressType(address.getAddressType());
+
+		logger.info("The address has been transformed into address bean successfully");
+		return addressBean;
 	}
 
 	public static Customer transformCustomerBean(CustomerBean customerBean) {
@@ -78,12 +144,59 @@ public class CustomerTransformer {
 		customer.setName(customerBean.getName());
 		customer.setEmail(customerBean.getEmail());
 		customer.setPhone(customerBean.getPhone());
+		if(StringUtils.isNotBlank(customerBean.getShortFlag()) && customerBean.getShortFlag().equals(MVCConstants.FLAG_FALSE)) {
+			customer.setPhone2(customerBean.getPhone2());
+			customer.setGstNo(customerBean.getGstNo());
+			customer.setPanNo(customerBean.getPanNo());
+			
+			List<CustomerAddressBean> customerAddresses = customerBean.getAddresses();
+			if (customerAddresses != null && !customerAddresses.isEmpty()) {
+				CustomerAddressBean primaryAddress = customerAddresses.get(customerBean.getPrimaryAddressIndex());
+				primaryAddress.setPrimary("Y");
+
+				List<Address> customerAddressList = CustomerTransformer.transformAddressList(customerAddresses);
+				customer.setAddresses(customerAddressList);
+			}
+			
+		}
+		
 
 		customer.setCreatedBy(customerBean.getCreatedBy());
 		customer.setCreatedDate(customerBean.getCreatedDate());
-
+		customer.setModifiedBy(customerBean.getModifiedBy());
+		customer.setModifiedDate(customerBean.getModifiedDate());
+		
 		logger.info("The customer details has been updated in domain object now");
 		return customer;
+	}
+
+	public static Address transformAddress(CustomerAddressBean addressBean) {
+		Address address = new Address();
+
+		address.setPrimary(addressBean.getPrimary());
+		address.setAddressId(addressBean.getAddressId());
+		address.setAddress1(addressBean.getAddress1());
+		address.setAddress2(addressBean.getAddress2());
+		address.setCity(addressBean.getCity());
+		address.setState(addressBean.getState());
+		address.setCountry(addressBean.getCountry());
+		address.setPincode(addressBean.getPincode());
+		address.setAddressType(addressBean.getAddressType());
+
+		logger.info("The address bean has been transformed into address object successfully");
+		return address;
+	}
+
+	public static List<Address> transformAddressList(List<CustomerAddressBean> addressBeanList) {
+		List<Address> addressList = new ArrayList<>(addressBeanList.size());
+		Address address;
+		for (CustomerAddressBean addressBean : addressBeanList) {
+			address = CustomerTransformer.transformAddress(addressBean);
+			addressList.add(address);
+		}
+
+		logger.info("The address beans list has been transformed into address list successfully");
+		return addressList;
 	}
 
 	public static List<CustomerBean> transformCustomers(List<Customer> customerList, Map<BigInteger, List<AccountHead>> customerAccounts) {

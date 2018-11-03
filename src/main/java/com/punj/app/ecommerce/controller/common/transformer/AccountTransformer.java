@@ -228,7 +228,7 @@ public class AccountTransformer {
 		logger.info("The account password bean details has been transformed to user password successfully");
 		return passwords;
 	}
-	
+
 	public static List<Password> transformAccountPasswordWithoutEncoding(AccountBean accountBean) {
 
 		List<Password> passwords = new ArrayList<>();
@@ -246,7 +246,6 @@ public class AccountTransformer {
 		logger.info("The account password bean details has been transformed to user password successfully");
 		return passwords;
 	}
-	
 
 	public static AccountBeanDTO transformUserDTO(UserDTO userDTO) throws IOException {
 		AccountBeanDTO accountBeanDTO = null;
@@ -347,9 +346,20 @@ public class AccountTransformer {
 		for (Customer customer : customers) {
 			customerBean = AccountTransformer.transformCustomer(customer);
 			customerAccounts = accounts.get(customerBean.getCustomerId());
-			customerAccountBeans=SupplierTransformer.transformAccountHeads(customerAccounts, customerBean.getName());
+			customerAccountBeans = SupplierTransformer.transformAccountHeads(customerAccounts, customerBean.getName());
 			customerBean.setCustomerAccounts(customerAccountBeans);
 
+			customerBeanList.add(customerBean);
+		}
+		logger.info("The customer details list has been transformed to customer bean list successfully");
+		return customerBeanList;
+	}
+
+	public static List<CustomerBean> transformGSTCustomers(List<Customer> customers) {
+		List<CustomerBean> customerBeanList = new ArrayList<>(customers.size());
+		CustomerBean customerBean = null;
+		for (Customer customer : customers) {
+			customerBean = CustomerTransformer.transformCustomer(customer);
 			customerBeanList.add(customerBean);
 		}
 		logger.info("The customer details list has been transformed to customer bean list successfully");
@@ -377,6 +387,10 @@ public class AccountTransformer {
 		customerBean.setEmail(customer.getEmail());
 		customerBean.setName(customer.getName());
 		customerBean.setPhone(customer.getPhone());
+		customerBean.setPhone2(customer.getPhone2());
+		customerBean.setGstNo(customer.getGstNo());
+		customerBean.setPanNo(customer.getPanNo());
+		
 
 		logger.info("The customer details has been transformed to customer bean successfully");
 		return customerBean;

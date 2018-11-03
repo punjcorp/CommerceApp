@@ -133,6 +133,8 @@ $(function() {
 								phone : item.phone,
 								email : item.email,
 								name : item.name,
+								gstNo : item.gstNo,
+								panNo : item.panNo,
 								customerId : item.customerId
 								
 							}
@@ -347,15 +349,25 @@ $(function() {
 $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 	
 	if (this.element[0].id.indexOf('customerSearchText') > -1) {
+		var gstHtml='';
+		if(typeof(item.gstNo)!=='undefined' && item.gstNo!=undefined){
+			gstHtml='<br>';
+			gstHtml += 'GST# : ';
+			gstHtml += item.gstNo;
+			gstHtml +='<br>';
+			gstHtml +='<hr>';
+		}else{
+			gstHtml +='<hr>';
+		}
 		
 		return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
 			'class' : 'row'
 		}).append($('<div/>', {
 			'class' : 'col'
 		}).append($('<div/>', {
-			'class' : 'card-text'
+			'class' : 'card-text mx-4'
 		}).append($('<span/>', {
-			html : "<b>" + item.label + "</b><br/>" + item.desc
+			html : "<b>" + item.label + "</b><br/>" + item.desc+ gstHtml
 		}))))).appendTo(ul);
 		
 	}else{

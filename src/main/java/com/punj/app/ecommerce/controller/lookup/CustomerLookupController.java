@@ -65,9 +65,10 @@ public class CustomerLookupController {
 	private PaymentAccountService paymentAccountService;
 	private CommonService commonService;
 	private CommerceContext commerceContext;
-	
+
 	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
+
 	/**
 	 * @param accountService
 	 *            the accountService to set
@@ -217,7 +218,7 @@ public class CustomerLookupController {
 						}
 						List<AccountJournal> accountJournals = this.paymentAccountService.retrievePaymentAccountJournals(accountIds);
 						if (accountJournals != null && !accountJournals.isEmpty()) {
-							if(this.defaultLocation==null) {
+							if (this.defaultLocation == null) {
 								this.defaultLocation = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 							}
 							Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(this.defaultLocation);

@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.models.common.AddressBean;
-import com.punj.app.ecommerce.models.common.CustomerAddressBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.financials.AccountHeadBean;
 
@@ -23,29 +22,27 @@ import com.punj.app.ecommerce.models.financials.AccountHeadBean;
  * @author admin
  *
  */
-public class CustomerBean {
+public class CustomerGSTBean {
 
-	// private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	@NotNull(groups = { ValidationGroup.ValidationGroupOne.class })
 	private String customerSearchText;
 	private String customerType;
 
 	private BigInteger customerId;
-	@NotNull(groups = { ValidationGroup.ValidationGroupTwo.class, ValidationGroup.ValidationGroupThree.class })
-	@Size(min = 2, max = 80, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupTwo.class, ValidationGroup.ValidationGroupThree.class })
+	@NotNull
+	@Size(min = 2, max = 80, message = "{commerce.error.string.size}")
 	private String name;
 
-	@NotNull(groups = { ValidationGroup.ValidationGroupTwo.class, ValidationGroup.ValidationGroupThree.class })
-	@Size(min = 7, max = 15, message = "{commerce.error.int.size}", groups = { ValidationGroup.ValidationGroupTwo.class, ValidationGroup.ValidationGroupThree.class })
+	@NotNull
+	@Size(min = 7, max = 15, message = "{commerce.error.int.size}")
 	private String phone;
 
 	private String phone2;
 
 	private String shortFlag = MVCConstants.FLAG_FALSE;
 
-	@NotNull(groups = { ValidationGroup.ValidationGroupThree.class })
-	@Size(min = 15, max = 15, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupThree.class })
 	private String gstNo;
 	private String panNo;
 	private String stateCode;
@@ -63,15 +60,15 @@ public class CustomerBean {
 	private List<AccountHeadBean> customerAccounts;
 
 	@Valid
-	@NotEmpty(message = "{commerce.error.no.address}", groups = { ValidationGroup.ValidationGroupThree.class })
-	private List<CustomerAddressBean> addresses;
+	@NotEmpty(message = "{commerce.error.no.address}")
+	private List<AddressBean> addresses;
 	private AddressBean primaryAddress;
 	private AddressBean shippingAddress;
 
 	private BigInteger billingAddressId;
 	private BigInteger shippingAddressId;
 
-	@NotNull(message = "{commerce.error.select.empty}", groups = { ValidationGroup.ValidationGroupThree.class })
+	@NotNull(message = "{commerce.error.select.empty}")
 	private Integer primaryAddressIndex;
 
 	/**
@@ -258,7 +255,7 @@ public class CustomerBean {
 	/**
 	 * @return the addresses
 	 */
-	public List<CustomerAddressBean> getAddresses() {
+	public List<AddressBean> getAddresses() {
 		return addresses;
 	}
 
@@ -266,7 +263,7 @@ public class CustomerBean {
 	 * @param addresses
 	 *            the addresses to set
 	 */
-	public void setAddresses(List<CustomerAddressBean> addresses) {
+	public void setAddresses(List<AddressBean> addresses) {
 		this.addresses = addresses;
 	}
 

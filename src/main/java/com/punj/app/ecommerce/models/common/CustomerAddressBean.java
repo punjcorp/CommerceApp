@@ -8,33 +8,35 @@ import java.math.BigInteger;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
+
 /**
  * @author admin
  *
  */
-public class AddressBean {
+public class CustomerAddressBean {
 
 	private BigInteger addressId;
-	@NotNull
+	@NotNull(groups = { ValidationGroup.ValidationGroupThree.class })
 	private String addressType;
-	private String primary="N";
-	@NotNull
-	@Size(min = 5, max = 150, message = "{commerce.error.string.size}")	
+	private String primary = "N";
+	@NotNull(groups = { ValidationGroup.ValidationGroupThree.class })
+	@Size(min = 5, max = 150, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupThree.class })
 	private String address1;
 	private String address2;
 	private String landmark;
-	@NotNull
-	@Size(min = 2, max = 30, message = "{commerce.error.string.size}")		
+	@NotNull(groups = { ValidationGroup.ValidationGroupThree.class })
+	@Size(min = 2, max = 30, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupThree.class })
 	private String city;
-	@NotNull(message = "{commerce.error.option.empty}")
-	@Size(min = 2, max = 45, message = "{commerce.error.string.size}")		
+	@NotNull(message = "{commerce.error.option.empty}", groups = { ValidationGroup.ValidationGroupThree.class })
+	@Size(min = 2, max = 45, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupThree.class })
 	private String state;
 	private String district;
-	@NotNull
-	@Size(min = 2, max = 45, message = "{commerce.error.string.size}")		
+	@NotNull(groups = { ValidationGroup.ValidationGroupThree.class })
+	@Size(min = 2, max = 45, message = "{commerce.error.string.size}", groups = { ValidationGroup.ValidationGroupThree.class })
 	private String country;
-	@NotNull
-	@Size(min = 6, max = 6, message = "{commerce.error.int.size}")		
+	@NotNull(groups = { ValidationGroup.ValidationGroupThree.class })
+	@Size(min = 6, max = 6, message = "{commerce.error.int.size}", groups = { ValidationGroup.ValidationGroupThree.class })
 	private String pincode;
 
 	/**
@@ -180,7 +182,8 @@ public class AddressBean {
 	}
 
 	/**
-	 * @param landmark the landmark to set
+	 * @param landmark
+	 *            the landmark to set
 	 */
 	public void setLandmark(String landmark) {
 		this.landmark = landmark;
@@ -194,7 +197,8 @@ public class AddressBean {
 	}
 
 	/**
-	 * @param district the district to set
+	 * @param district
+	 *            the district to set
 	 */
 	public void setDistrict(String district) {
 		this.district = district;
