@@ -257,7 +257,9 @@ public final class MVCConstants {
 	public static final String SUPPLIER_DATA_PARAM="SUPPLIER_DATA";
 	public static final String DELIVERY_LOCATION_DATA_PARAM="DELIVERY_LOCATION_DATA";
 	
-	
+	public static final String TAX_WITHIN_STATE_FLAG="S";
+	public static final String TAX_OUTSIDE_STATE_FLAG="I";
+	public static final String NO_TAX_FLAG="N";
 	public static final String TAX_SGST="SGST";
 	public static final String TAX_CGST="CGST";
 	public static final String TAX_IGST="IGST";
@@ -296,6 +298,7 @@ public final class MVCConstants {
 	
 	public static final String DAILY_DEED_BEAN= "dailyDeedBean";
 	public static final String DAILY_TOTALS_BEAN= "dailyTotalsBean";
+	public static final String OPEN_LOC_DTL_BEAN= "openLocDtl";
 	public static final String SALE_HEADER_BEAN= "saleHeaderBean";
 	public static final String CUSTOMER_OR_BEAN= "customerORBean";
 	public static final String SHIPMENT_BEAN= "shipmentBean";

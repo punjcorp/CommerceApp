@@ -321,6 +321,7 @@ public class LocationClosureController {
 					txnReceipt = this.generateClosingReport(storeTotalsDTO, session, userDetails.getUsername(), locale);
 
 					commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, null);
+					commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_DTL, null);
 					commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_NAME, null);
 					commerceContext.setStoreSettings(CommerceConstants.OPEN_BUSINESS_DATE, null);
 					commerceContext.setStoreSettings(CommerceConstants.LOC_DEFAULT_TENDER, null);

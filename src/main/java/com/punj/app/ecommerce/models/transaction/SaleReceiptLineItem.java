@@ -45,6 +45,9 @@ public class SaleReceiptLineItem {
 	
 	private BigDecimal igstTaxRate;
 	private BigDecimal igstTaxAmount;
+
+	private String applicableTax;
+
 	/**
 	 * @return the seqNo
 	 */
@@ -296,7 +299,21 @@ public class SaleReceiptLineItem {
 	 */
 	public void setIgstTaxAmount(BigDecimal igstTaxAmount) {
 		this.igstTaxAmount = igstTaxAmount;
-	}	
-	
+	}
+
+	/**
+	 * @return the applicableTax
+	 */
+	public String getApplicableTax() {
+		return applicableTax;
+	}
+
+	/**
+	 * @param applicableTax
+	 *            the applicableTax to set
+	 */
+	public void setApplicableTax(String applicableTax) {
+		this.applicableTax = applicableTax;
+	}
 
 }

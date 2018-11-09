@@ -51,6 +51,7 @@ import com.punj.app.ecommerce.models.financials.AccountJournalBean;
 import com.punj.app.ecommerce.services.AccountService;
 import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ConfigService;
 import com.punj.app.ecommerce.utils.Pager;
 
 /**
@@ -65,9 +66,19 @@ public class CustomerLookupController {
 	private PaymentAccountService paymentAccountService;
 	private CommonService commonService;
 	private CommerceContext commerceContext;
+	private ConfigService configService;
 
 	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
+
+	/**
+	 * @param configService
+	 *            the configService to set
+	 */
+	@Autowired
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
 
 	/**
 	 * @param accountService
@@ -218,6 +229,8 @@ public class CustomerLookupController {
 						}
 						List<AccountJournal> accountJournals = this.paymentAccountService.retrievePaymentAccountJournals(accountIds);
 						if (accountJournals != null && !accountJournals.isEmpty()) {
+							String locationIdStr = this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
+							this.defaultLocation = new Integer(locationIdStr);
 							if (this.defaultLocation == null) {
 								this.defaultLocation = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 							}

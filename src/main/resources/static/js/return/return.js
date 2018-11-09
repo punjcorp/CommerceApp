@@ -43,6 +43,7 @@ $(function() {
 				url : "/sku_lookup",
 				data : $('form[id=autoCompleteForm]').serialize(),
 				success : function(data) {
+					txnAction.calculateGSTFlag();
 					$('#itemSearchBusy').addClass('d-none');
 					if(!data.length){
 						$('#searchText').val('');						
@@ -129,6 +130,8 @@ $(function() {
 								phone : item.phone,
 								email : item.email,
 								name : item.name,
+								gstNo : item.gstNo,
+								panNo : item.panNo,
 								customerId : item.customerId
 								
 							}
@@ -346,7 +349,17 @@ $(function() {
 $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 	
 	if (this.element[0].id.indexOf('customerSearchText') > -1) {
-	
+		var gstHtml='';
+		if(typeof(item.gstNo)!=='undefined' && item.gstNo!=undefined){
+			gstHtml='<br>';
+			gstHtml += 'GST# : ';
+			gstHtml += item.gstNo;
+			gstHtml +='<br>';
+			gstHtml +='<hr>';
+		}else{
+			gstHtml +='<hr>';
+		}
+		
 		return $("<li></li>").data("item.autocomplete", item).html($('<div/>', {
 			'class' : 'row'
 		}).append($('<div/>', {
@@ -354,7 +367,7 @@ $["ui"]["autocomplete"].prototype["_renderItem"] = function(ul, item) {
 		}).append($('<div/>', {
 			'class' : 'card-text'
 		}).append($('<span/>', {
-			html : "<b>" + item.label + "</b><br/>" + item.desc
+			html : "<b>" + item.label + "</b><br/>" + item.desc+ gstHtml
 		}))))).appendTo(ul);
 		
 	}else{
@@ -388,7 +401,8 @@ function getItemDetails(event, ui) {
 
 	$.get("/sale_item_lookup", {
 		itemId : ui.item.value,
-		locationId : txn_locationId
+		locationId : txn_locationId,
+		gstFlag : isGSTFlag
 	}, function(data, status) {
 
 		txnAction.showSaleLineItem(data);

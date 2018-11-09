@@ -37,6 +37,7 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.common.Denomination;
+import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
@@ -49,7 +50,6 @@ import com.punj.app.ecommerce.services.DailyDeedService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ConfigService;
-import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
 
@@ -72,7 +72,6 @@ public class LocationOpeningController {
 	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
 
-	
 	/**
 	 * @param configService
 	 *            the configService to set
@@ -81,7 +80,7 @@ public class LocationOpeningController {
 	public void setConfigService(ConfigService configService) {
 		this.configService = configService;
 	}
-	
+
 	/**
 	 * @param registerOpenValidator
 	 *            the registerOpenValidator to set
@@ -155,9 +154,8 @@ public class LocationOpeningController {
 			if (StringUtils.isNotBlank(referrerURL))
 				dailyDeedBean.setReferrerURL(referrerURL);
 
-			
-			String locationIdStr=this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
-			this.defaultLocation=new Integer(locationIdStr);
+			String locationIdStr = this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
+			this.defaultLocation = new Integer(locationIdStr);
 			// Change this later on and make it an ajax call based on store selected from store open screen
 			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(this.defaultLocation);
 			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
@@ -220,6 +218,11 @@ public class LocationOpeningController {
 	private void updateCommerceContext(DailyDeedBean dailyDeedBean) {
 		Integer locationId = dailyDeedBean.getLocationId();
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
+		Location location = this.commonService.retrieveLocationDetails(locationId);
+		LocationBean locationBean = null;
+		if (location != null)
+			locationBean = CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
+		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_DTL, locationBean);
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_GST_NO, dailyDeedBean.getGstNo());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());

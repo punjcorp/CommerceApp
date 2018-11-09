@@ -29,6 +29,7 @@ import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.SearchBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.sale.SaleHeaderBean;
@@ -135,7 +136,8 @@ public class ReturnTransactionController {
 			if (registerId != null) {
 
 				if (this.validateRegister(openLocId, registerId)) {
-
+					LocationBean openLocation = (LocationBean) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_DTL);
+					model.addAttribute(MVCConstants.OPEN_LOC_DTL_BEAN, openLocation);
 					Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
 					Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
 					Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);

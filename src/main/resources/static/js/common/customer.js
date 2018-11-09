@@ -5,6 +5,7 @@
 function associateCustomerToTxn(){
 	var customerType='CUSTOMER';
 	var customerId=$('#h_customerId').val();
+	var customerGstNo=$('#h_customerGstNo').val();
 	
 	var customerName='undefined';
 	var customerPhone='undefined';
@@ -27,7 +28,7 @@ function associateCustomerToTxn(){
 	}	
 	
 	// Assign data to JS class
-	txnAction.associateCustomer(customerId,customerType,customerName,customerPhone,customerEmail);
+	txnAction.associateCustomer(customerId,customerType,customerName,customerPhone,customerEmail, customerGstNo);
 	$('#txnCustomerModal').modal('hide');
 	
 	btnLabels = [ i18next.t('alert_btn_ok'), '' ];
@@ -117,9 +118,16 @@ function showCustomerDetails(event, ui){
 	customerName +='<div class="col text-left">';
 	customerName +='<label for="name"><small><span class="pos-mandatory">Customer Name</span></small></label>';
 	customerName +='<div class="input-group text-left">';
-	customerName +='<h5><span>'+ui.item.customerId+' - '+ui.item.name+'</span></h5>';
+	if(typeof(ui.item.gstNo)!=='undefined' && ui.item.gstNo!=undefined && ui.item.gstNo!='' && ui.item.gstNo!='null'){
+		customerName +='<h5><span>'+ui.item.customerId+' - '+ui.item.name+' - '+ui.item.gstNo+'</span></h5>';
+		customerName +='<input type="hidden" id="h_customerGstNo" value="'+ui.item.gstNo+'"></input>';
+	}
+	else{
+		customerName +='<h5><span>'+ui.item.customerId+' - '+ui.item.name+'</span></h5>';
+	}
 	customerName +='<input type="hidden" id="h_customerId" value="'+ui.item.customerId+'"></input>';
 	customerName +='<input type="hidden" id="h_customerName" value="'+ui.item.name+'"></input>';
+	
 	customerName +='</div>';
 	customerName +='</div>';
 	customerName +='</div>';

@@ -31,6 +31,7 @@ var Customer = function() {
 	this.gstNo;
 	this.panNo;
 	this.addresses = [];
+	this.primaryAddress=new Address();
 }
 
 $.extend(Customer.prototype, {
@@ -46,6 +47,7 @@ var Address = function() {
 	this.city;
 	this.district;
 	this.state;
+	this.stateName;
 	this.country;
 	this.pincode;
 	this.isPrimary;
@@ -62,6 +64,7 @@ $.extend(Address.prototype, {
 		this.city=customer_address.city;
 		this.district=customer_address.district;
 		this.state=customer_address.state;
+		this.stateName=customer_address.stateName;
 		this.country=customer_address.country;
 		this.pincode=customer_address.pincode;
 		this.isPrimary=customer_address.primary;

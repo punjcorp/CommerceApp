@@ -36,6 +36,15 @@
 	<field name="customer" class="com.punj.app.ecommerce.models.customer.CustomerBean">
 		<fieldDescription><![CDATA[customer]]></fieldDescription>
 	</field>
+	<field name="applicableTax" class="java.lang.String">
+		<fieldDescription><![CDATA[applicableTax]]></fieldDescription>
+	</field>
+	<field name="receiptMsg" class="java.lang.String">
+		<fieldDescription><![CDATA[receiptMsg]]></fieldDescription>
+	</field>
+	<field name="receiptType" class="java.lang.String">
+		<fieldDescription><![CDATA[receiptType]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -145,25 +154,11 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="470" y="3" width="40" height="14" uuid="94204461-c9c2-4da5-9944-953800076bab"/>
-				<textElement>
-					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[CGST]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="511" y="3" width="74" height="14" uuid="6a097988-d57a-4290-9383-44a0bf03c733"/>
 				<textElement>
 					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="430" y="3" width="40" height="14" uuid="341fb749-032d-431d-a3f3-7843886b4989"/>
-				<textElement>
-					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[SGST]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="371" y="3" width="58" height="14" uuid="31013ccb-dff6-425d-a073-6079f1bed49a"/>
@@ -207,24 +202,45 @@
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="470" y="3" width="40" height="14" uuid="3177093f-95a0-4b90-8a0d-44602909da5f"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{applicableTax}!=null && $F{applicableTax}=="S"?"CGST":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="430" y="3" width="40" height="14" uuid="e9bfa4e1-5a68-48b5-9514-2e8d0e12d33f"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{applicableTax}!=null && $F{applicableTax}=="S"?"SGST":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="430" y="3" width="80" height="14" uuid="e42efcdb-ff3f-42d1-80f2-e5b2c4ed3668"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{applicableTax}!=null && $F{applicableTax}=="I"?"IGST":""]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="640" splitType="Stretch">
+		<band height="628" splitType="Stretch">
 			<subreport>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="575" height="640" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="575" height="628" uuid="00a8373e-6970-40b5-8f18-c24bf43b5df2"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{txnSaleLineItems})]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement x="-10" y="639" width="595" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
+				<reportElement x="-10" y="627" width="595" height="1" uuid="0a42ea9c-3241-456c-85c9-e6a34cde74d7"/>
 			</line>
 		</band>
 	</detail>
 	<summary>
-		<band height="80" splitType="Stretch">
+		<band height="92" splitType="Stretch">
 			<rectangle radius="7">
-				<reportElement x="369" y="1" width="193" height="79" backcolor="#ACDBFC" uuid="b1e38d50-0d89-4c46-bd67-ae85df78f022"/>
+				<reportElement x="369" y="1" width="193" height="91" backcolor="#ACDBFC" uuid="b1e38d50-0d89-4c46-bd67-ae85df78f022"/>
 				<graphicElement>
 					<pen lineStyle="Solid"/>
 				</graphicElement>
@@ -255,17 +271,17 @@
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalSGSTTaxAmt()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{applicableTax}!=null && $F{applicableTax}=="S"?$F{transactionHeader}.getTotalSGSTTaxAmt():"N/A"]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#" isBlankWhenNull="true">
 				<reportElement x="499" y="50" width="54" height="11" uuid="20bb673f-b67f-4f9a-a2bc-d9b55d142263"/>
 				<textElement textAlignment="Right">
 					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalCGSTTaxAmt()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{applicableTax}!=null && $F{applicableTax}=="S"?$F{transactionHeader}.getTotalCGSTTaxAmt():"N/A"]]></textFieldExpression>
 			</textField>
 			<textField pattern="Rs #0.00#">
-				<reportElement x="489" y="62" width="64" height="11" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
+				<reportElement x="489" y="74" width="64" height="11" uuid="8f203d4a-5fb7-46a5-9ce3-99145a84d45b"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
@@ -307,7 +323,7 @@
 				<text><![CDATA[Total CGST :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ContainerBottom" x="369" y="62" width="100" height="11" uuid="78673dc5-a755-4eea-b067-ab9ba4477a29"/>
+				<reportElement stretchType="ContainerBottom" x="369" y="74" width="100" height="11" uuid="78673dc5-a755-4eea-b067-ab9ba4477a29"/>
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
@@ -341,6 +357,20 @@
 				</textElement>
 				<text><![CDATA[Amount in words:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="379" y="62" width="90" height="11" uuid="04efb963-79f5-4445-887f-e5df40a1201c"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Total IGST :]]></text>
+			</staticText>
+			<textField pattern="Rs #0.00#" isBlankWhenNull="true">
+				<reportElement x="499" y="62" width="54" height="11" uuid="0d6460db-66ea-416b-a206-3970296028b0"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{applicableTax}!=null && $F{applicableTax}=="I"?$F{transactionHeader}.getTotalIGSTTaxAmt():"N/A"]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

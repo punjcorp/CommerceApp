@@ -15,6 +15,8 @@
 <script src="../../static/js/moment.js" th:src="@{/js/moment.js}"></script>
 <script src="../../static/js/mousetrap.min.js" th:src="@{/js/mousetrap.min.js}"></script>
 <script src="../../static/js/utils/mousetrap-global-bind.min.js" th:src="@{/js/utils/mousetrap-global-bind.min.js}"></script>
+
+<script src="../../static/js/customer/customer_classes.js" th:src="@{/js/customer/customer_classes.js}"></script>
 <script src="../../static/js/transaction/txn_classes.js" th:src="@{/js/transaction/txn_classes.js}"></script>
 <script src="../../static/js/common/customer.js" th:src="@{/js/common/customer.js}"></script>
 <script src="../../static/js/return/return_txn.js" th:src="@{/js/return/return_txn.js}"></script>
@@ -106,8 +108,12 @@
 									<div class="input-group text-left">
 										<label><h5>
 												<input type="hidden" th:field="${txnHeaderBean.locationId}"></input> <input type="hidden" th:field="${txnHeaderBean.locationName}"></input>
+												<input type="hidden" th:field="${openLocDtl.gstNo}"></input>
 												<span th:text="${txnHeaderBean.locationId}">Location Id</span> - <span th:text="${txnHeaderBean.locationName}"></span>
-											</h5></label>
+											</h5>
+											
+											<h6  th:if="${openLocDtl.gstNo!=null and openLocDtl.gstNo!=''}">( <span th:text="${openLocDtl.gstNo}">GST No</span> )</h6>
+											</label>
 									</div>
 								</div>
 							</div>

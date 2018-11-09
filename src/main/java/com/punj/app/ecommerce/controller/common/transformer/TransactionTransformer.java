@@ -6,6 +6,7 @@ package com.punj.app.ecommerce.controller.common.transformer;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +38,6 @@ import com.punj.app.ecommerce.domains.transaction.ids.TransactionCustomerId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionLineItemId;
 import com.punj.app.ecommerce.domains.transaction.ids.TransactionReceiptId;
-import com.punj.app.ecommerce.models.common.AddressBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.customer.CustomerBean;
 import com.punj.app.ecommerce.models.transaction.SaleReceiptLineItem;
@@ -146,11 +146,22 @@ public class TransactionTransformer {
 		txn.setSubTotalAmt(txnHeader.getSubTotalAmt());
 		txn.setDiscountTotalAmt(txnHeader.getTotalDiscountAmt());
 
-		txn.setTaxTotalAmt(txnHeader.getTotalCGSTTaxAmt().add(txnHeader.getTotalSGSTTaxAmt()));
+		if (StringUtils.isNotBlank(txnHeader.getApplicableTax()) && txnHeader.getApplicableTax().contentEquals("S"))
+			txn.setTaxTotalAmt(txnHeader.getTotalCGSTTaxAmt().add(txnHeader.getTotalSGSTTaxAmt()));
+		else if (StringUtils.isNotBlank(txnHeader.getApplicableTax()) && txnHeader.getApplicableTax().contentEquals("I"))
+			txn.setTaxTotalAmt(txnHeader.getTotalIGSTTaxAmt());
+		else if (StringUtils.isNotBlank(txnHeader.getApplicableTax()) && txnHeader.getApplicableTax().contentEquals("N"))
+			txn.setTaxTotalAmt(BigDecimal.ZERO);
 		if (MVCConstants.TXN_RETURN_PARAM.equals(txnType)) {
-			txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).add(txn.getDiscountTotalAmt()));
+			BigDecimal totalAmountValue = txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).add(txn.getDiscountTotalAmt());
+			BigDecimal roundedTotalAmountValue = totalAmountValue.setScale(0, RoundingMode.HALF_UP);
+			txn.setTotalAmt(roundedTotalAmountValue);
+			txn.setRoundTotalAmt(roundedTotalAmountValue.subtract(totalAmountValue));
 		} else {
-			txn.setTotalAmt(txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).subtract(txn.getDiscountTotalAmt()));
+			BigDecimal totalAmountValue = txn.getSubTotalAmt().add(txn.getTaxTotalAmt()).subtract(txn.getDiscountTotalAmt());
+			BigDecimal roundedTotalAmountValue = totalAmountValue.setScale(0, RoundingMode.HALF_UP);
+			txn.setTotalAmt(roundedTotalAmountValue);
+			txn.setRoundTotalAmt(roundedTotalAmountValue.subtract(totalAmountValue));
 		}
 
 		txn.setTxnType(txnType);
@@ -323,7 +334,10 @@ public class TransactionTransformer {
 		}
 
 		saleLI.setNetAmt(saleLI.getExtendedAmt());
-		saleLI.setGrossAmt(saleLI.getExtendedAmt().add(saleLI.getTaxAmt()));
+		
+		BigDecimal itemGrossAmount=saleLI.getExtendedAmt().add(saleLI.getTaxAmt());
+		BigDecimal roundedGrossAmountValue = itemGrossAmount.setScale(0, RoundingMode.HALF_UP);
+		saleLI.setGrossAmt(roundedGrossAmountValue);
 
 		saleLI.setEntryMethod(MVCConstants.MANUAL);
 		saleLI.setExcludeFlag(Boolean.FALSE);
@@ -484,6 +498,8 @@ public class TransactionTransformer {
 		txnCustomerId.setTransactionSeq(txnId.getTransactionSeq());
 
 		txnCustomer.setTransactionCustomerId(txnCustomerId);
+		if (StringUtils.isNotBlank(customerBean.getGstNo()) && customerBean.getGstNo().length() == 15)
+			customerBean.setStateCode(customerBean.getGstNo().substring(0, 2));
 
 		logger.info("The customer details has been transformed");
 		return txnCustomer;
@@ -507,21 +523,33 @@ public class TransactionTransformer {
 
 		SaleTransactionReceipt txnReceipt = new SaleTransactionReceipt();
 
+		
+		
 		TransactionHeader txnHeader = TransactionTransformer.transformTxnDetails(receiptDetails.getTxn());
 		txnHeader.setPrintedBy(username);
-		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems(), txnHeader);
-
+		
+		CustomerBean customerBean = null;
 		if (receiptDetails.getTxnCustomer() != null) {
-			CustomerBean customerBean = TransactionTransformer.tranformTransactionCustomer(receiptDetails.getTxnCustomer(), receiptDetails.getCustomerDetails(),
+			customerBean = TransactionTransformer.tranformTransactionCustomer(receiptDetails.getTxnCustomer(), receiptDetails.getCustomerDetails(),
 					receiptDetails.getSupplierDetails());
 			txnReceipt.setCustomer(customerBean);
 		}
+		
+		LocationBean locationBean = CommonMVCTransformer.transformLocationDomainPartially(receiptDetails.getLocation(), Boolean.FALSE);
+		txnReceipt.setLocationDetails(locationBean);
+		
+		String taxType = null;
+		if (customerBean != null) {
+			taxType = TransactionTransformer.getTaxType(locationBean, customerBean);
+			txnReceipt.setApplicableTax(taxType);
+		} else {
+			taxType = "S";
+		}
+		
+		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems(), txnHeader, taxType);
 
 		txnReceipt.setTransactionHeader(txnHeader);
 		txnReceipt.setTxnSaleLineItems(receiptItemList);
-
-		LocationBean locationBean = CommonMVCTransformer.transformLocationDomainPartially(receiptDetails.getLocation(), Boolean.FALSE);
-		txnReceipt.setLocationDetails(locationBean);
 
 		logger.info("All the tender line items has been transformed now");
 		return txnReceipt;
@@ -550,7 +578,7 @@ public class TransactionTransformer {
 
 	}
 
-	public static List<SaleReceiptLineItem> transformTxnItemDetails(List<ReceiptItemTax> receiptItemTaxList, TransactionHeader txnHeader) {
+	public static List<SaleReceiptLineItem> transformTxnItemDetails(List<ReceiptItemTax> receiptItemTaxList, TransactionHeader txnHeader, String applicableTax) {
 
 		List<SaleReceiptLineItem> receiptItemList = new ArrayList<>(receiptItemTaxList.size());
 		SaleReceiptLineItem receiptItem;
@@ -587,6 +615,7 @@ public class TransactionTransformer {
 			receiptItem.setLongDesc(receiptItemTax.getLongDesc());
 			receiptItem.setNetAmount(receiptItemTax.getGrossAmount());
 			receiptItem.setQty(receiptItemTax.getQty());
+			receiptItem.setApplicableTax(applicableTax);
 			receiptItem.setSeqNo(seqCount);
 			seqCount++;
 			receiptItem.setTaxAmount(receiptItemTax.getTaxAmount());
@@ -664,7 +693,13 @@ public class TransactionTransformer {
 		if (customer != null) {
 			customerBean.setEmail(customer.getEmail());
 			customerBean.setName(customer.getName());
+			customerBean.setEmail(customer.getEmail());
 			customerBean.setPhone(customer.getPhone());
+			customerBean.setPhone2(customer.getPhone2());
+			customerBean.setGstNo(customer.getGstNo());
+			customerBean.setPanNo(customer.getPanNo());
+			if (StringUtils.isNotBlank(customer.getGstNo()) && customer.getGstNo().length() == 15)
+				customerBean.setStateCode(customer.getGstNo().substring(0, 2));
 		} else if (supplier != null) {
 			customerBean.setEmail(supplier.getEmail());
 			customerBean.setName(supplier.getName());
@@ -673,6 +708,26 @@ public class TransactionTransformer {
 
 		logger.info("The customer details has been transformed successfully");
 		return customerBean;
+	}
+
+	public static String getTaxType(LocationBean locationBean, CustomerBean customerBean) {
+		String resultTax = "S";
+
+		String storeStateCode = locationBean.getStateCode();
+		String billingStateCode = customerBean.getStateCode();
+
+		if (storeStateCode != null && billingStateCode != null) {
+			if (storeStateCode.equals(billingStateCode))
+				resultTax = "S";
+			else
+				resultTax = "I";
+		} else if (storeStateCode != null && billingStateCode == null) {
+			resultTax = "S";
+		} else if (storeStateCode != null && billingStateCode == null) {
+			resultTax = "N";
+		}
+
+		return resultTax;
 	}
 
 	public static List<TxnBean> transformTxnLookupList(List<TransactionLookup> txnLookupDetails) {
@@ -743,6 +798,7 @@ public class TransactionTransformer {
 		TransactionHeader txnHead = new TransactionHeader();
 
 		txnHead.setCancelReason(txn.getCancelReason());
+		txnHead.setComments(txn.getComments());
 		txnHead.setCreatedBy(txn.getCreatedBy());
 		txnHead.setCreatedDate(txn.getCreatedDate());
 		txnHead.setTotalDiscountAmt(txn.getDiscountTotalAmt());

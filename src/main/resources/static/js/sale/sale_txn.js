@@ -90,15 +90,16 @@ $.extend(TxnAction.prototype, {
 		}
 
 	},
-	associateCustomer : function(customerId, customerType, customerName, customerPhone, customerEmail) {
+	associateCustomer : function(customerId, customerType, customerName, customerPhone, customerEmail, customerGstNo) {
 		this.customer.customerId = customerId;
 		this.customer.name = customerName;
 		this.customer.phone = customerPhone;
 		this.customer.email = customerEmail;
+		this.customer.gstNo = customerGstNo;
 		this.customer.customerType = customerType;
 
 		if (customerName != 'undefined' && customerName != '') {
-			$('#salesHeaderCustomer').text(customerName);
+			$('#salesHeaderCustomer').html(customerName+'<br><h6>( '+ customerGstNo+' )</h6>');
 			$('#customerHeader').removeClass('d-none');
 		}
 
@@ -136,8 +137,11 @@ $.extend(TxnAction.prototype, {
 			}
 		});
 
-		totalTax = totalSGSTTax + totalCGSTTax;
-
+		if(isGSTFlag=='S')
+			totalTax = totalSGSTTax + totalCGSTTax;
+		else if(isGSTFlag=='I')
+			totalTax = totalIGSTTax;
+		
 		$('#salesHeaderSubTotalAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalPrice.toFixed(2));
 		$('#salesHeaderDiscountAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalDiscount.toFixed(2));
 		$('#salesHeaderTaxAmt').text(i18next.t('common_currency_sign_inr') + '  ' + totalTax.toFixed(2));
@@ -174,6 +178,14 @@ $.extend(TxnAction.prototype, {
 		this.txnHeader.totalTaxAmt = totalTax;
 		this.txnHeader.totalDueAmt = totalAmt;
 
+	},
+	renderAllTenderLineItems : function(){
+		
+		$.each(this.tenderLineItems, function(index) {
+			this.updateTenderIndex(index);
+			this.render();
+		});
+		
 	},
 	showTender : function(amount, tenderId) {
 		var tenderLineItem = this.addTenderItem(amount, tenderId);
@@ -415,6 +427,41 @@ $.extend(TxnAction.prototype, {
 			}else{
 				$('#dueAmt').focus();
 			}
+
+	}, 
+	calculateGSTFlag : function(){
+
+			var openLocGST=$('#gstNo').val();
+			var billingLocGST=this.customer.gstNo;
+			
+			var billingState=this.customer.primaryAddress.state;
+			var openLocState='';
+			var billingLocState='';
+			
+			if(typeof(openLocGST)!=='undefined' && openLocGST!=undefined && openLocGST!=''){
+				openLocState=openLocGST.substr(0,2);
+			}
+			if(typeof(billingLocGST)!=='undefined' && billingLocGST!=undefined && billingLocGST!=''){
+				billingLocState=billingLocGST.substr(0,2);
+			}else if(typeof(billingState)!=='undefined' && billingState!=undefined && billingState!=''){
+				// put the billing address state check here
+				billingLocState=billingState;
+			}
+			
+			if(openLocState!='' && billingLocState!=''){
+				if(openLocState==billingLocState){
+					isGSTFlag='S';
+				}else{
+					isGSTFlag='I';
+				}
+			}else if(openLocState!='' && billingLocState==''){
+				isGSTFlag='S';
+			}else{
+				// All cases where openLocState is empty or null or not defined
+				isGSTFlag='N';
+			}
+			txnAction.txnHeader.applicableTax=isGSTFlag;
+			
 
 	}
 

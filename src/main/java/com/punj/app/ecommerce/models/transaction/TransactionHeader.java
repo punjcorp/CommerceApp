@@ -56,7 +56,11 @@ public class TransactionHeader {
 	private BigDecimal totalDueAmt;
 	private BigDecimal roundedTotalAmt;
 
+	private String applicableTax;
+
 	private String totalDueAmtWords;
+
+	private String comments;
 
 	/**
 	 * @return the locationId
@@ -461,6 +465,36 @@ public class TransactionHeader {
 	 */
 	public void setPdfbytes(byte[] pdfbytes) {
 		this.pdfbytes = pdfbytes;
+	}
+
+	/**
+	 * @return the applicableTax
+	 */
+	public String getApplicableTax() {
+		return applicableTax;
+	}
+
+	/**
+	 * @param applicableTax
+	 *            the applicableTax to set
+	 */
+	public void setApplicableTax(String applicableTax) {
+		this.applicableTax = applicableTax;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 	/**

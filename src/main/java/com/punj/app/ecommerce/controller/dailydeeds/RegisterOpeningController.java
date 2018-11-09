@@ -36,9 +36,11 @@ import com.punj.app.ecommerce.controller.common.ViewPathConstants;
 import com.punj.app.ecommerce.controller.common.transformer.CommonMVCTransformer;
 import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer;
 import com.punj.app.ecommerce.domains.common.Denomination;
+import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.common.Register;
 import com.punj.app.ecommerce.domains.transaction.tender.TenderCount;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
+import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.RegisterBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
 import com.punj.app.ecommerce.models.dailydeeds.DailyDeedBean;
@@ -319,6 +321,11 @@ public class RegisterOpeningController {
 	private void updateCommerceContext(DailyDeedBean dailyDeedBean) {
 		Integer locationId = dailyDeedBean.getLocationId();
 		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_ID, locationId);
+		Location location = this.commonService.retrieveLocationDetails(locationId);
+		LocationBean locationBean = null;
+		if(location!=null)
+			locationBean=CommonMVCTransformer.transformLocationDomainPartially(location, Boolean.FALSE);
+		commerceContext.setStoreSettings(CommerceConstants.OPEN_LOC_DTL, locationBean);
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_NAME, dailyDeedBean.getLocationName());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_LOC_GST_NO, dailyDeedBean.getGstNo());
 		commerceContext.setStoreSettings(locationId + "-" + CommerceConstants.OPEN_BUSINESS_DATE, dailyDeedBean.getBusinessDate());

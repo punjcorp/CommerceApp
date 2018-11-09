@@ -323,7 +323,7 @@ public final class ViewPathConstants {
 	public static final String POS_URL="/pos/sale";
 	public static final String SALES_URL="/pos/sale";
 	public static final String SALES_PAGE="sale/sales";
-	public static final String AUTO_ITEM_PAGE="sale/sale_txn";
+	public static final String SALE_TXN_PAGE="sale/sale_txn";
 	
 	public static final String RETURN_TXN_URL="/pos/return_txn";
 	public static final String RETURN_TXN_PAGE="return/return_txn";

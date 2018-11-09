@@ -45,6 +45,7 @@ $(function() {
 				url : "/sku_lookup",
 				data : $('form[id=autoCompleteForm]').serialize(),
 				success : function(data) {
+					txnAction.calculateGSTFlag();
 					$('#itemSearchBusy').addClass('d-none');
 					if(!data.length){
 						$('#searchText').val('');						
@@ -401,7 +402,8 @@ function getItemDetails(event, ui) {
 
 	$.get("/sale_item_lookup", {
 		itemId : ui.item.value,
-		locationId : txn_locationId
+		locationId : txn_locationId,
+		gstFlag : isGSTFlag
 	}, function(data, status) {
 
 		txnAction.showSaleLineItem(data);
@@ -506,6 +508,5 @@ function printLastxn(){
 	txnWindow.document.title=i18next.t('last_txn_title');
 	return false;
 }
-
 
 

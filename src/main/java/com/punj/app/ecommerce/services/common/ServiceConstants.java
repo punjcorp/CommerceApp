@@ -14,7 +14,7 @@ public final class ServiceConstants {
 	}
 
 	public static final Integer REGISTER_ONE = 1;
-
+	public static final String REGISTER_ONE_NAME = "Register One";
 	public static final String TABLE_SALES_INVOICE="sale_txn_invoices";
 	 
 	public static final String RCPT_SALE_STORE="Sale Store Copy";
@@ -95,6 +95,9 @@ public final class ServiceConstants {
 
 	public static final String TAX_WITHIN_STATE = "I";
 	public static final String TAX_OTHER_STATE = "O";
+	public static final String TAX_GST_FLAG_SGST = "S";
+	public static final String TAX_GST_FLAG_IGST = "I";
+	public static final String TAX_NO_GST_FLAG = "N";
 	public static final String TAX_SGST = "SGST";
 	public static final String TAX_CGST = "CGST";
 	public static final String TAX_IGST = "IGST";

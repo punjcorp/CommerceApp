@@ -330,11 +330,11 @@ public class ItemLookupController {
 
 	@GetMapping(value = ViewPathConstants.SALEITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
-	public SaleItem lookupSaleItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId) {
+	public SaleItem lookupSaleItem(@RequestParam("itemId") BigInteger itemId, @RequestParam("locationId") Integer locationId, @RequestParam("gstFlag") String gstFlag) {
 		SaleItem saleItem = null;
 		try {
 
-			saleItem = this.saleItemService.getItem(itemId, locationId);
+			saleItem = this.saleItemService.getItem(itemId, locationId, gstFlag);
 
 			logger.info("the {} item details for sale item has been retrieved successfully", itemId);
 
