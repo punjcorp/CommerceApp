@@ -365,7 +365,7 @@ $.extend(SaleLineItem.prototype, {
 		if(txn_type == 'R'){
 			if(isGSTFlag=='S'){
 				totalItemPrice = this.price + this.discount + this.sgstTax + this.cgstTax;
-			}else if(isGSTFlag=='i'){
+			}else if(isGSTFlag=='I'){
 				totalItemPrice = this.price + this.discount + this.igstTax;
 			}else{
 				totalItemPrice = this.price + this.discount;
