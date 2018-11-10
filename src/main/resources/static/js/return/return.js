@@ -205,6 +205,8 @@ $(function() {
 	$('#btnSaveCustomer').click(function() {
 		
 		associateCustomerToTxn();
+		txnAction.reCheckGSTCalculation();
+		txnAction.renderAll();
 		
 	});
 	$('[id^=btnDeleteTLI]').focus(function() {

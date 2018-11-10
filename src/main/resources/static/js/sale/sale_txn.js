@@ -36,11 +36,23 @@ $.extend(TxnAction.prototype, {
 
 		$.each(this.saleItemList, function(itrIndex, itrSaleLineItem) {
 
-			itrSaleLineItem.renderSaleLineItem(itrSaleLineItem, viewType);
+			itrSaleLineItem.renderSaleLineItem(itrSaleLineItem, viewType, isGSTFlag);
 
 		});
 		this.renderHeaderTotals();
 
+	},
+	reCheckGSTCalculation : function(){
+		this.calculateGSTFlag();
+		$.each(this.saleItemList, function(itrIndex, itrSaleLineItem) {
+
+			if(isGSTFlag=='S'){
+				itrSaleLineItem.taxLineItems=itrSaleLineItem.sTaxLineItems;
+			}else if(isGSTFlag=='I'){
+				itrSaleLineItem.taxLineItems=itrSaleLineItem.iTaxLineItems;
+			}
+
+		});
 	},
 	showSaleLineItem : function(data) {
 		var actualSaleItem = this.saleLineItem.parseSaleLineItem(data);
@@ -50,7 +62,7 @@ $.extend(TxnAction.prototype, {
 			alertUtil.renderAlert('SIMPLE', i18next.t('error_simple_alert_header'), i18next.t('sale_txn_validate_item'), btnLabels);
 
 		} else {
-			this.saleLineItem.renderSaleLineItem(actualSaleItem, viewType);
+			this.saleLineItem.renderSaleLineItem(actualSaleItem, viewType, isGSTFlag);
 			// Check when we need to add this to list it should be after successful render as per my understanding
 			this.saleItemList.push(actualSaleItem);
 			this.renderHeaderTotals();

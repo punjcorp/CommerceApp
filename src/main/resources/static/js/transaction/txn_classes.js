@@ -104,6 +104,8 @@ var SaleLineItem = function(itemId, hsnNo, itemName, itemDesc, qty, price, unitP
 	this.seqNo;
 	this.discountPct;
 	this.taxLineItems = new Array();
+	this.iTaxLineItems = new Array();
+	this.sTaxLineItems = new Array();
 }
 
 $.extend(SaleLineItem.prototype, {
@@ -343,13 +345,12 @@ $.extend(SaleLineItem.prototype, {
 		var cgstTaxAmt = 0;
 		var igstTaxAmt = 0;
 
-		if (isGSTFlag == 'S') {
+		if (isGSTFlag == 'S' || isGSTFlag == 'I') {
 			var sgstUnitTax = +$('#li_uh_sgstRate' + itemId).val();
 			if (txn_type == 'R')
 				sgstTaxAmt = (itemPrice + discountAmt) * sgstUnitTax / 100;
 			else
 				sgstTaxAmt = (itemPrice - discountAmt) * sgstUnitTax / 100;
-
 			sgstTaxAmt = sgstTaxAmt.toFixed(2);
 
 			var cgstUnitTax = $('#li_uh_cgstRate' + itemId).val();
@@ -357,35 +358,36 @@ $.extend(SaleLineItem.prototype, {
 				cgstTaxAmt = (itemPrice + discountAmt) * cgstUnitTax / 100;
 			else
 				cgstTaxAmt = (itemPrice - discountAmt) * cgstUnitTax / 100;
-
 			cgstTaxAmt = cgstTaxAmt.toFixed(2);
-		} else if (isGSTFlag == 'I') {
-			var igstUnitTax = +$('#li_uh_igstRate' + itemId).val();
 
+			var igstUnitTax = +$('#li_uh_igstRate' + itemId).val();
 			if (txn_type == 'R')
 				igstTaxAmt = (itemPrice + discountAmt) * igstUnitTax / 100;
 			else
 				igstTaxAmt = (itemPrice - discountAmt) * igstUnitTax / 100;
-
 			igstTaxAmt = igstTaxAmt.toFixed(2);
 
 		}
 
 		if (viewType == 'COMPACT') {
-			if (isGSTFlag == 'S') {
+			if (isGSTFlag == 'S' || isGSTFlag == 'I') {
 				$('#li_uh_sgstAmt' + itemId).val(sgstTaxAmt);
 				$('#li_uh_cgstAmt' + itemId).val(cgstTaxAmt);
-			} else if (isGSTFlag == 'I') {
 				$('#li_uh_igstAmt' + itemId).val(igstTaxAmt);
 			}
 
 		} else if (viewType == 'DETAILED') {
-			if (isGSTFlag == 'S') {
+			if (isGSTFlag == 'S' || isGSTFlag == 'I') {
 				$('#li_sgstAmt' + itemId).text(sgstTaxAmt);
 				$('#li_uh_sgstAmt' + itemId).val(sgstTaxAmt);
 				$('#li_cgstAmt' + itemId).text(cgstTaxAmt);
 				$('#li_uh_cgstAmt' + itemId).val(cgstTaxAmt);
+				$('#li_uh_igstAmt' + itemId).val(igstTaxAmt);
+				
 			} else if (isGSTFlag == 'I') {
+				$('#li_uh_sgstAmt' + itemId).val(sgstTaxAmt);
+				$('#li_uh_cgstAmt' + itemId).val(cgstTaxAmt);
+				
 				$('#li_igstAmt' + itemId).text(igstTaxAmt);
 				$('#li_uh_igstAmt' + itemId).val(igstTaxAmt);
 			}
@@ -612,6 +614,13 @@ $.extend(SaleLineItem.prototype, {
 			compactCgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			compactCgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
 			compactCgstTaxAmt += '"></input>';
+			
+			compactCgstTaxAmt += '<input id="li_uh_igstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			compactCgstTaxAmt += saleLineItem.igstTaxRate.toFixed(2);
+			compactCgstTaxAmt += '"></input>';
+			compactCgstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			compactCgstTaxAmt += saleLineItem.igstTax.toFixed(2);
+			compactCgstTaxAmt += '"></input>';
 
 			sgstTaxAmt = '<div class="col-1 padding-sm text-center">';
 			sgstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_sgst') + '</span></small> </label><br />';
@@ -640,6 +649,14 @@ $.extend(SaleLineItem.prototype, {
 			cgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
 			cgstTaxAmt += '"></input>';
+			
+
+			cgstTaxAmt += '<input id="li_uh_igstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			cgstTaxAmt += saleLineItem.igstTaxRate.toFixed(2);
+			cgstTaxAmt += '"></input>';
+			cgstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			cgstTaxAmt += saleLineItem.igstTax.toFixed(2);
+			cgstTaxAmt += '"></input>';
 
 			totalTaxRateVal = saleLineItem.sgstTaxRate + saleLineItem.cgstTaxRate;
 			// totalTaxAmtVal = saleLineItem.sgstTax + saleLineItem.cgstTax;
@@ -663,6 +680,21 @@ $.extend(SaleLineItem.prototype, {
 			compactIgstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			compactIgstTaxAmt += saleLineItem.igstTax.toFixed(2);
 			compactIgstTaxAmt += '"></input>';
+			
+			compactIgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
+			compactIgstTaxAmt += '<input id="li_uh_sgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
+			
+			
+			compactIgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
+			compactIgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
 
 			igstTaxAmt = '<div class="col-1 padding-sm text-center">';
 			igstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_igst') + '</span></small> </label><br />';
@@ -676,6 +708,21 @@ $.extend(SaleLineItem.prototype, {
 			igstTaxAmt += '"></input>';
 			igstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			igstTaxAmt += saleLineItem.igstTax.toFixed(2);
+			igstTaxAmt += '"></input>';
+			
+			igstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+			igstTaxAmt += '"></input>';
+			igstTaxAmt += '<input id="li_uh_sgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+			igstTaxAmt += '"></input>';
+			
+			
+			igstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+			igstTaxAmt += '"></input>';
+			igstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.cgstTax.toFixed(2);
 			igstTaxAmt += '"></input>';
 
 			totalTaxRateVal = saleLineItem.igstTaxRate;
@@ -967,6 +1014,13 @@ $.extend(SaleLineItem.prototype, {
 			compactCgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			compactCgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
 			compactCgstTaxAmt += '"></input>';
+			
+			compactCgstTaxAmt += '<input id="li_uh_igstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			compactCgstTaxAmt += saleLineItem.igstTaxRate.toFixed(2);
+			compactCgstTaxAmt += '"></input>';
+			compactCgstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			compactCgstTaxAmt += saleLineItem.igstTax.toFixed(2);
+			compactCgstTaxAmt += '"></input>';
 
 			sgstTaxAmt = '<div class="col-1 padding-sm text-center">';
 			sgstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_sgst') + '</span></small> </label><br />';
@@ -995,6 +1049,13 @@ $.extend(SaleLineItem.prototype, {
 			cgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			cgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
 			cgstTaxAmt += '"></input>';
+			
+			cgstTaxAmt += '<input id="li_uh_igstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			cgstTaxAmt += saleLineItem.igstTaxRate.toFixed(2);
+			cgstTaxAmt += '"></input>';
+			cgstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			cgstTaxAmt += saleLineItem.igstTax.toFixed(2);
+			cgstTaxAmt += '"></input>';
 
 			totalTaxRateVal = saleLineItem.sgstTaxRate + saleLineItem.cgstTaxRate;
 			// totalTaxAmtVal = saleLineItem.sgstTax + saleLineItem.cgstTax;
@@ -1017,6 +1078,20 @@ $.extend(SaleLineItem.prototype, {
 			compactIgstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			compactIgstTaxAmt += saleLineItem.igstTax.toFixed(2);
 			compactIgstTaxAmt += '"></input>';
+			
+			compactIgstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
+			compactIgstTaxAmt += '<input id="li_uh_sgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
+			
+			compactIgstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
+			compactIgstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			compactIgstTaxAmt += saleLineItem.cgstTax.toFixed(2);
+			compactIgstTaxAmt += '"></input>';
 
 			igstTaxAmt = '<div class="col-1 padding-sm text-center">';
 			igstTaxAmt += '<label><small> <span>' + i18next.t('sale_txn_lbl_igst') + '</span></small> </label><br />';
@@ -1030,6 +1105,20 @@ $.extend(SaleLineItem.prototype, {
 			igstTaxAmt += '"></input>';
 			igstTaxAmt += '<input id="li_uh_igstAmt' + saleLineItem.itemId + '" type="hidden" value="';
 			igstTaxAmt += saleLineItem.igstTax.toFixed(2);
+			igstTaxAmt += '"></input>';
+			
+			igstTaxAmt += '<input id="li_uh_sgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.sgstTaxRate.toFixed(2);
+			igstTaxAmt += '"></input>';
+			igstTaxAmt += '<input id="li_uh_sgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.sgstTax.toFixed(2);
+			igstTaxAmt += '"></input>';
+			
+			igstTaxAmt += '<input id="li_uh_cgstRate' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.cgstTaxRate.toFixed(2);
+			igstTaxAmt += '"></input>';
+			igstTaxAmt += '<input id="li_uh_cgstAmt' + saleLineItem.itemId + '" type="hidden" value="';
+			igstTaxAmt += saleLineItem.cgstTax.toFixed(2);
 			igstTaxAmt += '"></input>';
 
 			totalTaxRateVal = saleLineItem.igstTaxRate;
@@ -1120,6 +1209,10 @@ $.extend(SaleLineItem.prototype, {
 		if (returnLineItem.cgstTax > 0) {
 			returnLineItem.cgstTax = returnLineItem.cgstTax * -1;
 		}
+		
+		if (returnLineItem.igstTax > 0) {
+			returnLineItem.igstTax = returnLineItem.igstTax * -1;
+		}
 
 		if (returnLineItem.itemTotal > 0) {
 			returnLineItem.itemTotal = returnLineItem.itemTotal * -1;
@@ -1161,13 +1254,14 @@ $.extend(SaleLineItem.prototype, {
 		var cgstTaxLineItem;
 
 		// Retrieve tax and check for tax types
-		if (isGSTFlag == 'I') {
+		if (isGSTFlag == 'I' || isGSTFlag == 'S') {
 			igstTax = data.igstTax.amount;
 			igstTaxRate = data.igstTax.percentage;
 			igstCode = data.igstTax.typeCode;
 
 			igstTaxLineItem = new TaxLineItem(data.itemId, data.igstTax.taxGroupId, data.igstTax.taxRuleRateId, igstTax, igstTaxRate, igstCode);
-		} else if (isGSTFlag == 'S') {
+
+			
 			cgstTax = data.cgstTax.amount;
 			cgstTaxRate = data.cgstTax.percentage;
 			cgstCode = data.cgstTax.typeCode;
@@ -1185,6 +1279,10 @@ $.extend(SaleLineItem.prototype, {
 		var saleLineItem = new SaleLineItem(itemId, hsnNo, itemName, itemDesc, qty, unitPrice, price, suggestedPrice, maxRetailPrice, discount, cgstCode,
 				sgstCode, igstCode, cgstTax, sgstTax, igstTax, cgstTaxRate, sgstTaxRate, igstTaxRate, itemTotal, itemImage);
 
+		saleLineItem.iTaxLineItems.push(igstTaxLineItem);
+		saleLineItem.sTaxLineItems.push(sgstTaxLineItem);
+		saleLineItem.sTaxLineItems.push(cgstTaxLineItem);
+		
 		/**
 		 * Update the tax line items in the sale item
 		 */
@@ -1194,6 +1292,7 @@ $.extend(SaleLineItem.prototype, {
 			saleLineItem.taxLineItems.push(sgstTaxLineItem);
 			saleLineItem.taxLineItems.push(cgstTaxLineItem);
 		}
+		
 
 		return saleLineItem;
 

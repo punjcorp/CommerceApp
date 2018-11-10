@@ -541,10 +541,10 @@ public class TransactionTransformer {
 		String taxType = null;
 		if (customerBean != null) {
 			taxType = TransactionTransformer.getTaxType(locationBean, customerBean);
-			txnReceipt.setApplicableTax(taxType);
 		} else {
 			taxType = "S";
 		}
+		txnReceipt.setApplicableTax(taxType);
 		
 		List<SaleReceiptLineItem> receiptItemList = TransactionTransformer.transformTxnItemDetails(receiptDetails.getTxnLineItems(), txnHeader, taxType);
 

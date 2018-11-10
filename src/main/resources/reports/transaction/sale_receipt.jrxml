@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sale_receipt" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="5" uuid="2d499e06-657f-492d-a3f7-d69da826fe08">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PI-POS-DS"/>
@@ -330,14 +330,14 @@
 				<text><![CDATA[Total Due :]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="53" width="255" height="22" uuid="a48a9096-2109-466e-9b8f-ad05ebca9dad"/>
+				<reportElement x="0" y="50" width="255" height="36" uuid="a48a9096-2109-466e-9b8f-ad05ebca9dad"/>
 				<textElement>
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getTotalDueAmtWords()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="50" width="60" height="11" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
+				<reportElement x="280" y="14" width="60" height="11" uuid="29bee616-7cd9-460c-8b8a-0e4ce54e3d91"/>
 				<textElement textAlignment="Center">
 					<font fontName="SansSerif" size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
@@ -351,7 +351,7 @@
 				<textFieldExpression><![CDATA[$F{transactionHeader}.getPrintedBy()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="41" width="152" height="11" uuid="516532e1-5bad-4069-b93d-4ad96dfdc683"/>
+				<reportElement x="0" y="36" width="152" height="11" uuid="516532e1-5bad-4069-b93d-4ad96dfdc683"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>

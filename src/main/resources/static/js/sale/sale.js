@@ -204,6 +204,8 @@ $(function() {
 	
 	$('#btnSaveCustomer').click(function() {
 		associateCustomerToTxn();
+		txnAction.reCheckGSTCalculation();
+		txnAction.renderAll();
 	});
 	
 	$('#btnCloseRegister').click(function() {

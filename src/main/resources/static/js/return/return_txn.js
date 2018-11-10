@@ -43,6 +43,18 @@ $.extend(TxnAction.prototype, {
 		this.renderHeaderTotals();
 
 	},
+	reCheckGSTCalculation : function(){
+		this.calculateGSTFlag();
+		$.each(this.saleItemList, function(itrIndex, itrSaleLineItem) {
+
+			if(isGSTFlag=='S'){
+				itrSaleLineItem.taxLineItems=itrSaleLineItem.sTaxLineItems;
+			}else if(isGSTFlag=='I'){
+				itrSaleLineItem.taxLineItems=itrSaleLineItem.iTaxLineItems;
+			}
+
+		});
+	},
 	showSaleLineItem : function(data) {
 		var actualSaleItem = this.saleLineItem.parseReturnLineItem(data);
 		if (this.isDuplicateSaleLineItem(actualSaleItem.itemId)) {
