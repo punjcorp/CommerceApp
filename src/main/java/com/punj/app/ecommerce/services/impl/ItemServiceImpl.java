@@ -40,6 +40,7 @@ import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemLocationTax;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
 import com.punj.app.ecommerce.domains.item.SKUCounter;
+import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.domains.item.StyleCounter;
 import com.punj.app.ecommerce.domains.item.comparators.AttributeComparator;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
@@ -99,8 +100,7 @@ public class ItemServiceImpl implements ItemService {
 	private Integer maxPageBtns;
 
 	/**
-	 * @param locationTaxRepository
-	 *            the locationTaxRepository to set
+	 * @param locationTaxRepository the locationTaxRepository to set
 	 */
 	@Autowired
 	public void setLocationTaxRepository(LocationTaxRepository locationTaxRepository) {
@@ -108,8 +108,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param itemImageRepository
-	 *            the itemImageRepository to set
+	 * @param itemImageRepository the itemImageRepository to set
 	 */
 	@Autowired
 	public void setItemImageRepository(ItemImageRepository itemImageRepository) {
@@ -124,8 +123,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param priceService
-	 *            the priceService to set
+	 * @param priceService the priceService to set
 	 */
 	@Autowired
 	public void setPriceService(PriceService priceService) {
@@ -133,8 +131,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param inventoryService
-	 *            the inventoryService to set
+	 * @param inventoryService the inventoryService to set
 	 */
 	@Autowired
 	public void setInventoryService(InventoryService inventoryService) {
@@ -142,8 +139,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param attributeSearchRepository
-	 *            the attributeSearchRepository to set
+	 * @param attributeSearchRepository the attributeSearchRepository to set
 	 */
 	@Autowired
 	public void setAttributeSearchRepository(AttributeSearchRepository attributeSearchRepository) {
@@ -158,8 +154,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param commonService
-	 *            the commonService to set
+	 * @param commonService the commonService to set
 	 */
 	@Autowired
 	public void setCommonService(CommonService commonService) {
@@ -167,8 +162,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param itemRepository
-	 *            the itemRepository to set
+	 * @param itemRepository the itemRepository to set
 	 */
 	@Autowired
 	public void setItemRepository(ItemRepository itemRepository) {
@@ -183,8 +177,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param itemRepository
-	 *            the itemRepository to set
+	 * @param itemRepository the itemRepository to set
 	 */
 	@Autowired
 	public void setItemSearchRepository(ItemSearchRepository itemSearchRepository) {
@@ -206,8 +199,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param hierarchyRepository
-	 *            the hierarchyRepository to set
+	 * @param hierarchyRepository the hierarchyRepository to set
 	 */
 	@Autowired
 	public void setHierarchyRepository(HierarchyRepository hierarchyRepository) {
@@ -222,8 +214,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param styleRepository
-	 *            the styleRepository to set
+	 * @param styleRepository the styleRepository to set
 	 */
 	@Autowired
 	public void setStyleRepository(StyleCounterRepository styleRepository) {
@@ -238,8 +229,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param skuRepository
-	 *            the skuRepository to set
+	 * @param skuRepository the skuRepository to set
 	 */
 	@Autowired
 	public void setSkuRepository(SKUCounterRepository skuRepository) {
@@ -247,8 +237,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param attributeRepository
-	 *            the attributeRepository to set
+	 * @param attributeRepository the attributeRepository to set
 	 */
 	@Autowired
 	public void setAttributeRepository(AttributeRepository attributeRepository) {
@@ -263,8 +252,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param itemOptionsRepository
-	 *            the itemOptionsRepository to set
+	 * @param itemOptionsRepository the itemOptionsRepository to set
 	 */
 	@Autowired
 	public void setItemOptionsRepository(ItemOptionsRepository itemOptionsRepository) {
@@ -279,8 +267,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	/**
-	 * @param itemAttributeRepository
-	 *            the itemAttributeRepository to set
+	 * @param itemAttributeRepository the itemAttributeRepository to set
 	 */
 	@Autowired
 	public void setItemAttributeRepository(ItemAttributeRepository itemAttributeRepository) {
@@ -357,7 +344,8 @@ public class ItemServiceImpl implements ItemService {
 
 		List<Attribute> attributeList = attributeRepository.findAll();
 
-		logger.info("All the attributes-{} for a new style creation has been retrieved successfully", attributeList.size());
+		logger.info("All the attributes-{} for a new style creation has been retrieved successfully",
+				attributeList.size());
 
 		return attributeList;
 	}
@@ -380,7 +368,8 @@ public class ItemServiceImpl implements ItemService {
 			finalList.add(itemAttr.getItemAttributeId().getAttribute());
 		}
 
-		logger.info("All the attributes-{} for a new style creation has been retrieved successfully", attributeList.size());
+		logger.info("All the attributes-{} for a new style creation has been retrieved successfully",
+				attributeList.size());
 
 		return finalList;
 	}
@@ -574,7 +563,8 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 
-	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId, Boolean outOfStateFlag) {
+	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId,
+			Boolean outOfStateFlag) {
 
 		ItemLocationTax itemLocTax = this.commonService.retrieveItemDetails(locationId, supplierId, itemId);
 		SaleItem saleItem = null;
@@ -630,11 +620,14 @@ public class ItemServiceImpl implements ItemService {
 		saleItem.setIgstTax(saleItemTax);
 
 		if (outOfStateFlag) {
-			saleItem.getIgstTax().setAmount(saleItem.getUnitCostAmt().multiply(saleItem.getIgstTax().getPercentage().divide(new BigDecimal(100))));
+			saleItem.getIgstTax().setAmount(saleItem.getUnitCostAmt()
+					.multiply(saleItem.getIgstTax().getPercentage().divide(new BigDecimal(100))));
 			saleItem.setTaxAmt(saleItem.getIgstTax().getAmount());
 		} else {
-			saleItem.getSgstTax().setAmount(saleItem.getUnitCostAmt().multiply(saleItem.getSgstTax().getPercentage().divide(new BigDecimal(100))));
-			saleItem.getCgstTax().setAmount(saleItem.getUnitCostAmt().multiply(saleItem.getCgstTax().getPercentage().divide(new BigDecimal(100))));
+			saleItem.getSgstTax().setAmount(saleItem.getUnitCostAmt()
+					.multiply(saleItem.getSgstTax().getPercentage().divide(new BigDecimal(100))));
+			saleItem.getCgstTax().setAmount(saleItem.getUnitCostAmt()
+					.multiply(saleItem.getCgstTax().getPercentage().divide(new BigDecimal(100))));
 
 			saleItem.setTaxAmt(saleItem.getCgstTax().getAmount().add(saleItem.getSgstTax().getAmount()));
 		}
@@ -657,7 +650,8 @@ public class ItemServiceImpl implements ItemService {
 
 		AttributeDTO attributeDTO = this.attributeSearchRepository.searchAttribute(searchText, pager);
 		if (attributeDTO != null && attributeDTO.getAttributes() != null && !attributeDTO.getAttributes().isEmpty()) {
-			List<Attribute> distinctAttributes = AttributeConverter.convertDistinctAttributes(attributeDTO.getAttributes());
+			List<Attribute> distinctAttributes = AttributeConverter
+					.convertDistinctAttributes(attributeDTO.getAttributes());
 			attributeDTO.setAttributes(distinctAttributes);
 			logger.info("The item hierarchy has been retrieved based on searched keyword");
 		} else {
@@ -676,7 +670,8 @@ public class ItemServiceImpl implements ItemService {
 		List<Attribute> attributeValueList = this.attributeRepository.findAll(Example.of(attribute), sort);
 
 		if (attributeValueList != null && !attributeValueList.isEmpty())
-			logger.info("The {} values for attribute {} has been retrieved successfully", attributeValueList.size(), attributeCode);
+			logger.info("The {} values for attribute {} has been retrieved successfully", attributeValueList.size(),
+					attributeCode);
 		else
 			logger.info("There was no attribute values found for {} attribute", attributeCode);
 
@@ -743,11 +738,10 @@ public class ItemServiceImpl implements ItemService {
 
 		logger.info("The price information will be updated in price records now.");
 
-		if(item.getItemLevel()!=null && ServiceConstants.ITEM_LEVEL.equals(item.getItemLevel())) {
+		if (item.getItemLevel() != null && ServiceConstants.ITEM_LEVEL.equals(item.getItemLevel())) {
 			List<Location> locations = this.commonService.retrieveAllLocations();
 			this.updateItemPrices(locations, item, item.getModifiedBy());
 		}
-		
 
 		return item;
 
@@ -759,13 +753,15 @@ public class ItemServiceImpl implements ItemService {
 		List<LocationTax> taxList = null;
 		List<ItemPrice> itemPriceList = null;
 		if (locations != null && !locations.isEmpty()) {
-			taxList = this.retrieveTax(locations.get(0).getLocationId(), item.getItemOptions().getTaxGroupId(), ServiceConstants.TAX_OTHER_STATE);
+			taxList = this.retrieveTax(locations.get(0).getLocationId(), item.getItemOptions().getTaxGroupId(),
+					ServiceConstants.TAX_OTHER_STATE);
 
 			if (taxList != null && !taxList.isEmpty()) {
 
 				LocationTax taxItem = taxList.get(0);
 
-				itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations, taxItem.getPercentage());
+				itemPriceList = ItemConverter.convertToItemPriceForAll(item, username, locations,
+						taxItem.getPercentage());
 				itemPriceList = this.priceService.saveItemPriceList(itemPriceList);
 				if (itemPriceList != null && !itemPriceList.isEmpty())
 					logger.info("The item price records were created successfully");
@@ -798,7 +794,8 @@ public class ItemServiceImpl implements ItemService {
 
 		List<LocationTax> taxList = this.locationTaxRepository.findAll(Example.of(taxCriteria));
 
-		logger.info("The taxes for the tax group {} and location {} has been retrieved successfully", taxGroupId, locationId);
+		logger.info("The taxes for the tax group {} and location {} has been retrieved successfully", taxGroupId,
+				locationId);
 
 		return taxList;
 	}
@@ -1084,6 +1081,19 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
+	public SKUDtlDTO searchSKUDtls(String text, Integer locationId, Pager pager) {
+		int startCount = (pager.getCurrentPageNo() - 1) * maxResultPerPage;
+		pager.setPageSize(maxResultPerPage);
+		pager.setStartCount(startCount);
+		pager.setMaxDisplayPage(maxPageBtns);
+
+		SKUDtlDTO items = this.itemSearchRepository.searchLocationSKUDetails(text, locationId, pager);
+		logger.info("The searched skus for location {} has been retrieved using keyword successfully", locationId);
+
+		return items;
+	}
+
+	@Override
 	public Item retrieveItem(BigInteger itemId) {
 		Item item = this.itemRepository.findOne(itemId);
 		if (item != null)
@@ -1169,19 +1179,26 @@ public class ItemServiceImpl implements ItemService {
 			logger.info("The attribute value details has been saved successfully");
 		} else {
 			attribute = null;
-			logger.error("The provided attribute value details were not as expected, hence the attribute value was not saved!!");
+			logger.error(
+					"The provided attribute value details were not as expected, hence the attribute value was not saved!!");
 		}
 		return attribute;
 	}
 
 	@Override
+	public void updateItemIndexes() throws InterruptedException {
+		this.itemSearchRepository.updateItemIndexes();
+		logger.info("The item indexes has been updated successfully");
+	}
+
+	@Override
 	public Boolean isAttrValueAssignedToItem(Attribute attr) {
 
-		List<ItemAttribute> itemAttrs= this.itemAttributeRepository.getItemAttrsByAttrId(attr.getAttributeId());
-		if(itemAttrs!=null && !itemAttrs.isEmpty()) {
+		List<ItemAttribute> itemAttrs = this.itemAttributeRepository.getItemAttrsByAttrId(attr.getAttributeId());
+		if (itemAttrs != null && !itemAttrs.isEmpty()) {
 			logger.info("The attribute value has already been used in some item records");
 			return Boolean.TRUE;
-		}else {
+		} else {
 			logger.info("The attribute value is not used in any item so far and can be deleted");
 			return Boolean.FALSE;
 		}

@@ -3,6 +3,17 @@
  */
 
 var isGSTFlag = 'N';
+var SearchBean= function() {
+	this.searchText;
+	this.locationId;
+	this.gstFlag;
+	this.pager;
+}
+
+$.extend(SearchBean.prototype, {
+
+	
+});
 
 /**
  * Class definition for Transaction Id Starts

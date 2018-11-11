@@ -4,7 +4,10 @@
 package com.punj.app.ecommerce.controller.common.transformer;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
+import com.punj.app.ecommerce.domains.item.LocSKUDetails;
 import com.punj.app.ecommerce.domains.item.ids.ItemAttributeId;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.CommerceMultipartFile;
@@ -35,6 +39,8 @@ import com.punj.app.ecommerce.models.item.ItemBeanDTO;
 import com.punj.app.ecommerce.models.item.ItemImageBean;
 import com.punj.app.ecommerce.models.item.ItemOptionsBean;
 import com.punj.app.ecommerce.models.lookup.ItemLookupBean;
+import com.punj.app.ecommerce.services.dtos.SaleItem;
+import com.punj.app.ecommerce.services.dtos.SaleItemTax;
 
 /**
  * @author admin
@@ -75,9 +81,10 @@ public class ItemTransformer {
 		logger.info("The item base data has been transformed to bean successfully.");
 
 		if (item.getItemOptions() != null) {
-			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions(),taxGroups);
+			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions(), taxGroups);
 			itemLookupBean.setItemOptions(itemOptionsBean);
-			logger.info("The item options details has been transformed in item details lookup item options bean successfully.");
+			logger.info(
+					"The item options details has been transformed in item details lookup item options bean successfully.");
 		}
 
 		if (item.getHierarchy() != null) {
@@ -141,7 +148,7 @@ public class ItemTransformer {
 		logger.info("The item base data has been transformed to bean successfully.");
 
 		if (item.getItemOptions() != null) {
-			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions(),null);
+			ItemOptionsBean itemOptionsBean = ItemTransformer.transformItemOptions(item.getItemOptions(), null);
 			itemBean.setItemOptions(itemOptionsBean);
 			logger.info("The item options details has been transformed in item options bean successfully.");
 		}
@@ -173,7 +180,8 @@ public class ItemTransformer {
 		return itemBean;
 	}
 
-	public static Item transformItemBean(ItemBean itemBean, String username, String action, String functionality) throws IOException {
+	public static Item transformItemBean(ItemBean itemBean, String username, String action, String functionality)
+			throws IOException {
 		Item item = new Item();
 
 		item.setItemId(itemBean.getItemId());
@@ -182,18 +190,22 @@ public class ItemTransformer {
 		item.setItemType(itemBean.getItemType());
 		item.setName(itemBean.getName());
 		item.setParentItemId(itemBean.getParentItemId());
-		if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM) && action.equals(MVCConstants.ACTION_NEW)) {
+		if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM)
+				&& action.equals(MVCConstants.ACTION_NEW)) {
 			item.setItemLevel(MVCConstants.STYLE_LEVEL);
-		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM) && action.equals(MVCConstants.ACTION_EDIT)) {
+		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_STYLE_PARAM)
+				&& action.equals(MVCConstants.ACTION_EDIT)) {
 			item.setItemLevel(itemBean.getItemLevel());
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_STYLE_PARAM)) {
 			if (itemBean.getItemLevel() != null && StringUtils.isNotEmpty(itemBean.getItemLevel().toString()))
 				item.setItemLevel(itemBean.getItemLevel());
 			else
 				item.setItemLevel(MVCConstants.STYLE_LEVEL);
-		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_ITEM_PARAM) && action.equals(MVCConstants.ACTION_NEW)) {
+		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_NEW_ITEM_PARAM)
+				&& action.equals(MVCConstants.ACTION_NEW)) {
 			item.setItemLevel(MVCConstants.ITEM_LEVEL);
-		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_ITEM_PARAM) && action.equals(MVCConstants.ACTION_EDIT)) {
+		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_ITEM_PARAM)
+				&& action.equals(MVCConstants.ACTION_EDIT)) {
 			item.setItemLevel(itemBean.getItemLevel());
 		} else if (functionality.equals(MVCConstants.FUNCTIONALITY_APPROVE_ITEM_PARAM)) {
 			if (itemBean.getItemLevel() != null && StringUtils.isNotEmpty(itemBean.getItemLevel().toString()))
@@ -230,7 +242,8 @@ public class ItemTransformer {
 		return item;
 	}
 
-	private static void updateActionSpecificFields(String action, Item item, ItemBean itemBean, String username, String functionality) {
+	private static void updateActionSpecificFields(String action, Item item, ItemBean itemBean, String username,
+			String functionality) {
 		if (MVCConstants.ACTION_NEW.equals(action)) {
 			item.setStatus(MVCConstants.STATUS_CREATED);
 			item.setCreatedBy(username);
@@ -263,15 +276,15 @@ public class ItemTransformer {
 		itemOptionsBean.setRestockingFee(itemOptions.getRestockingFee());
 
 		itemOptionsBean.setTaxGroupId(itemOptions.getTaxGroupId());
-		if(taxGroups!=null && !taxGroups.isEmpty()) {
-			for(TaxGroup taxGroup:taxGroups) {
-				if(taxGroup.getTaxGroupId().equals(itemOptions.getTaxGroupId())) {
+		if (taxGroups != null && !taxGroups.isEmpty()) {
+			for (TaxGroup taxGroup : taxGroups) {
+				if (taxGroup.getTaxGroupId().equals(itemOptions.getTaxGroupId())) {
 					itemOptionsBean.setTaxGroupName(taxGroup.getName());
 					break;
 				}
 			}
 		}
-		
+
 		itemOptionsBean.setUom(itemOptions.getUom());
 
 		itemOptionsBean.setCompareAtPrice(itemOptions.getCompareAtPrice());
@@ -322,9 +335,11 @@ public class ItemTransformer {
 		itemOptions.setSuggestedPrice(itemOptionsBean.getSuggestedPrice());
 		itemOptions.setUnitCost(itemOptionsBean.getUnitCost());
 
-		if (StringUtils.isNotBlank(itemOptionsBean.getTaxInclusive()) && MVCConstants.TAX_EXCLUSIVE_PARAM.equals(itemOptionsBean.getTaxInclusive()))
+		if (StringUtils.isNotBlank(itemOptionsBean.getTaxInclusive())
+				&& MVCConstants.TAX_EXCLUSIVE_PARAM.equals(itemOptionsBean.getTaxInclusive()))
 			itemOptions.setTaxInclusiveFlag(Boolean.FALSE);
-		else if (StringUtils.isNotBlank(itemOptionsBean.getTaxInclusive()) && MVCConstants.TAX_INCLUSIVE_PARAM.equals(itemOptionsBean.getTaxInclusive())) {
+		else if (StringUtils.isNotBlank(itemOptionsBean.getTaxInclusive())
+				&& MVCConstants.TAX_INCLUSIVE_PARAM.equals(itemOptionsBean.getTaxInclusive())) {
 			itemOptions.setTaxInclusiveFlag(Boolean.TRUE);
 		}
 
@@ -416,7 +431,8 @@ public class ItemTransformer {
 		itemImageBean.setItemImageId(itemImage.getItemImageId());
 		itemImageBean.setName(itemImage.getName());
 
-		MultipartFile multipartFile = new CommerceMultipartFile(itemImage.getImageData(), itemImage.getImageURL(), itemImage.getImageType());
+		MultipartFile multipartFile = new CommerceMultipartFile(itemImage.getImageData(), itemImage.getImageURL(),
+				itemImage.getImageType());
 
 		itemImageBean.setImageData(multipartFile);
 		ItemTransformer.setItemImageForDisplay(itemImageBean);
@@ -435,14 +451,16 @@ public class ItemTransformer {
 		logger.info("The item image bean has been updated with data to display on screen");
 	}
 
-	public static List<ItemImage> transformItemImageBeans(List<ItemImageBean> itemImageBeans, String username, Item item) throws IOException {
+	public static List<ItemImage> transformItemImageBeans(List<ItemImageBean> itemImageBeans, String username,
+			Item item) throws IOException {
 
 		List<ItemImage> itemImages = new ArrayList<>();
 		ItemImage itemImage;
 		if (itemImageBeans != null && !itemImageBeans.isEmpty()) {
 
 			for (ItemImageBean itemImageBean : itemImageBeans) {
-				if (itemImageBean.getImageData() != null && StringUtils.isNotEmpty(itemImageBean.getImageData().getOriginalFilename())) {
+				if (itemImageBean.getImageData() != null
+						&& StringUtils.isNotEmpty(itemImageBean.getImageData().getOriginalFilename())) {
 					itemImage = ItemTransformer.transformItemImageBean(itemImageBean, username, item);
 					itemImages.add(itemImage);
 				}
@@ -452,7 +470,8 @@ public class ItemTransformer {
 		return itemImages;
 	}
 
-	public static ItemImage transformItemImageBean(ItemImageBean itemImageBean, String username, Item item) throws IOException {
+	public static ItemImage transformItemImageBean(ItemImageBean itemImageBean, String username, Item item)
+			throws IOException {
 		ItemImage itemImage = new ItemImage();
 
 		itemImage.setCreatedBy(username);
@@ -563,7 +582,8 @@ public class ItemTransformer {
 		return itemAttribute;
 	}
 
-	public static List<Item> updateSKUs(List<Item> existingSKUs, ItemBeanDTO itemDTO, String username, Boolean isApproved) throws IOException {
+	public static List<Item> updateSKUs(List<Item> existingSKUs, ItemBeanDTO itemDTO, String username,
+			Boolean isApproved) throws IOException {
 		Map<BigInteger, Item> existingSKUMap = new HashMap<>(existingSKUs.size());
 		List<Item> updatedSKUs = new ArrayList<>(existingSKUs.size());
 		for (Item sku : existingSKUs) {
@@ -574,7 +594,8 @@ public class ItemTransformer {
 		for (ItemBean skuBean : itemDTO.getSkus()) {
 			sku = existingSKUMap.get(skuBean.getItemId());
 			sku.setName(skuBean.getName());
-			if (StringUtils.isNotBlank(skuBean.getIsImageUpdated()) && skuBean.getIsImageUpdated().equals(MVCConstants.YES)) {
+			if (StringUtils.isNotBlank(skuBean.getIsImageUpdated())
+					&& skuBean.getIsImageUpdated().equals(MVCConstants.YES)) {
 				itemImages = ItemTransformer.transformItemImageBeans(skuBean.getItemImages(), username, sku);
 				sku.setImages(itemImages);
 			}
@@ -719,6 +740,135 @@ public class ItemTransformer {
 
 		logger.info("The attribute code list has been successfully retrieved");
 		return attrCodeList;
+	}
+
+	public static List<SaleItem> transformSKUDetails(List<LocSKUDetails> skuDetails, String gstFlag) {
+		List<SaleItem> saleItems = new ArrayList<>();
+		SaleItem saleItem = null;
+		try {
+			for (LocSKUDetails locSKU : skuDetails) {
+
+				saleItem = ItemTransformer.transformSKUDetail(locSKU, gstFlag);
+				saleItems.add(saleItem);
+
+			}
+		} catch (UnsupportedEncodingException e) {
+			logger.error("There is some error transforming sku details", e);
+		}
+
+		logger.info("The sku details has been transformed to sale item details successfully");
+		return saleItems;
+	}
+
+	public static SaleItem transformSKUDetail(LocSKUDetails skuDetail, String gstFlag)
+			throws UnsupportedEncodingException {
+		SaleItem saleItem = new SaleItem();
+
+		saleItem.setItemId(skuDetail.getItemId());
+		saleItem.setDiscountAmt(BigDecimal.ZERO);
+		saleItem.setHsnNo(skuDetail.getHsnNo());
+
+		byte[] imageData = skuDetail.getImageData();
+		if (imageData != null) {
+			byte[] encodeBase64 = Base64.encodeBase64(imageData);
+			String base64Encoded = new String(encodeBase64, "UTF-8");
+
+			saleItem.setImageData(base64Encoded);
+		}
+
+		saleItem.setImageType(skuDetail.getImageType());
+		saleItem.setImagePath(skuDetail.getImageURL());
+
+		saleItem.setLongDesc(skuDetail.getDescription());
+		saleItem.setMaxRetailPrice(skuDetail.getMaxRetailPrice());
+		saleItem.setName(skuDetail.getName());
+		saleItem.setUnitCostAmt(skuDetail.getItemPrice());
+		saleItem.setPriceAmt(skuDetail.getItemPrice());
+		saleItem.setQty(1.0);
+		saleItem.setSuggestedPrice(skuDetail.getSuggestedPrice());
+
+		BigDecimal totalTaxAmt = ItemTransformer.updateSKUTax(skuDetail, saleItem, gstFlag);
+
+		saleItem.setTaxAmt(totalTaxAmt);
+		saleItem.setTotalAmt(saleItem.getPriceAmt().add(totalTaxAmt));
+
+		logger.info("The sku detail has been transformed to sale item detail successfully");
+		return saleItem;
+	}
+
+	private static BigDecimal updateSKUTax(LocSKUDetails skuDetail, SaleItem saleItem, String gstFlag) {
+		SaleItemTax saleItemTax = null;
+		BigDecimal sgstTaxAmount = null;
+		BigDecimal cgstTaxAmount = null;
+		BigDecimal igstTaxAmount = null;
+		BigDecimal totalTaxAmount = BigDecimal.ZERO;
+
+		if (StringUtils.isNotBlank(gstFlag) && (gstFlag.equals("I") || gstFlag.equals("S"))) {
+			saleItemTax = new SaleItemTax();
+			igstTaxAmount = skuDetail.getItemPrice().multiply(skuDetail.getIgstRate()).divide(new BigDecimal("100"),
+					RoundingMode.HALF_UP);
+
+			saleItemTax.setAmount(igstTaxAmount);
+			saleItemTax.setLocationId(skuDetail.getLocationId());
+			saleItemTax.setPercentage(skuDetail.getIgstRate());
+			saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+			saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+			saleItemTax.setTaxGroupRateName(skuDetail.getIgstCode());
+			saleItemTax.setTaxRuleRateId(skuDetail.getIgstRateRuleId());
+			saleItemTax.setTaxRuleRateName(skuDetail.getIgstCode());
+			saleItemTax.setTypeCode(skuDetail.getIgstCode());
+
+			saleItem.setIgstTax(saleItemTax);
+			
+
+			logger.info("The sale item IGST tax details has been updated successfully");
+
+			saleItemTax = new SaleItemTax();
+			sgstTaxAmount = skuDetail.getItemPrice().multiply(skuDetail.getSgstRate()).divide(new BigDecimal("100"),
+					RoundingMode.HALF_UP);
+
+			saleItemTax.setAmount(sgstTaxAmount);
+			saleItemTax.setLocationId(skuDetail.getLocationId());
+			saleItemTax.setPercentage(skuDetail.getSgstRate());
+			saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+			saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+			saleItemTax.setTaxGroupRateName(skuDetail.getSgstCode());
+			saleItemTax.setTaxRuleRateId(skuDetail.getSgstRateRuleId());
+			saleItemTax.setTaxRuleRateName(skuDetail.getSgstCode());
+			saleItemTax.setTypeCode(skuDetail.getSgstCode());
+
+			saleItem.setSgstTax(saleItemTax);
+			
+			logger.info("The sale item SGST tax details has been updated successfully");
+
+			saleItemTax = new SaleItemTax();
+			cgstTaxAmount = skuDetail.getItemPrice().multiply(skuDetail.getCgstRate()).divide(new BigDecimal("100"),
+					RoundingMode.HALF_UP);
+
+			saleItemTax.setAmount(cgstTaxAmount);
+			saleItemTax.setLocationId(skuDetail.getLocationId());
+			saleItemTax.setPercentage(skuDetail.getCgstRate());
+			saleItemTax.setTaxGroupId(skuDetail.getTaxGroupId());
+			saleItemTax.setTaxGroupName(skuDetail.getTaxGroupName());
+			saleItemTax.setTaxGroupRateName(skuDetail.getCgstCode());
+			saleItemTax.setTaxRuleRateId(skuDetail.getCgstRateRuleId());
+			saleItemTax.setTaxRuleRateName(skuDetail.getCgstCode());
+			saleItemTax.setTypeCode(skuDetail.getCgstCode());
+
+			saleItem.setCgstTax(saleItemTax);
+			logger.info("The sale item CGST tax details has been updated successfully");
+
+		}
+		
+		if (StringUtils.isNotBlank(gstFlag) && gstFlag.equals("I")) {
+			totalTaxAmount = totalTaxAmount.add(igstTaxAmount);
+		}else if (StringUtils.isNotBlank(gstFlag) && gstFlag.equals("S")) {
+			totalTaxAmount = totalTaxAmount.add(sgstTaxAmount);
+			totalTaxAmount = totalTaxAmount.add(cgstTaxAmount);
+		}
+
+		return totalTaxAmount;
+
 	}
 
 }

@@ -93,7 +93,7 @@ public class CommonController {
 		return reasonCodes;
 	}
 
-	@PostMapping(value = ViewPathConstants.DISABLE_AUT0_TOUR_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@PostMapping(value = ViewPathConstants.DISABLE_AUTO_TOUR_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
 	@ResponseBody
 	public AJAXResponseBean disableAutoTour(@RequestBody ConfigBean configBean, BindingResult bindingResult,
 			Model model) {

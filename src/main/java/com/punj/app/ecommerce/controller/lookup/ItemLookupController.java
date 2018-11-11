@@ -47,6 +47,8 @@ import com.punj.app.ecommerce.domains.item.Hierarchy;
 import com.punj.app.ecommerce.domains.item.Item;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
+import com.punj.app.ecommerce.domains.item.LocSKUDetails;
+import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.domains.price.ItemPrice;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.models.common.SearchBean;
@@ -319,6 +321,33 @@ public class ItemLookupController {
 			return null;
 		}
 		return items.getItems();
+	}
+
+	@PostMapping(value = ViewPathConstants.LOC_SKU_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public List<SaleItem> lookupLocSKU(@RequestBody @Valid SearchBean searchBean, BindingResult bindingResult, Model model, HttpSession session) {
+		List<SaleItem> skuDtls = null;
+		if (bindingResult.hasErrors())
+			return skuDtls;
+		try {
+
+			Pager pager = new Pager();
+			pager.setCurrentPageNo(1);
+
+			SKUDtlDTO itemList = itemService.searchSKUDtls(searchBean.getSearchText(), searchBean.getLocationId(), pager);
+			if (itemList != null && itemList.getSkus() != null && !itemList.getSkus().isEmpty()) {
+				List<LocSKUDetails> itemsList = itemList.getSkus();
+				skuDtls = ItemTransformer.transformSKUDetails(itemsList, searchBean.getGstFlag());
+				logger.info("The item list based on the keyword has been retrieved");
+			}else {
+				logger.info("There was no match found");
+			}
+
+		} catch (Exception e) {
+			logger.error("There is an error while retrieving skus for sku lookup screen", e);
+			return null;
+		}
+		return skuDtls;
 	}
 
 	@PostMapping(value = ViewPathConstants.ORDER_ITEM_LOOKUP_URL, produces = { MediaType.APPLICATION_JSON_VALUE })

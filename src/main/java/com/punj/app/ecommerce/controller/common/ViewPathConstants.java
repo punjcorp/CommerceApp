@@ -330,9 +330,10 @@ public final class ViewPathConstants {
 	
 	
 	public static final String SKU_LOOKUP_URL="/sku_lookup";
+	public static final String LOC_SKU_LOOKUP_URL="/loc_sku_lookup";
 	public static final String SALEITEM_LOOKUP_URL="/sale_item_lookup";
 	
-	public static final String DISABLE_AUT0_TOUR_URL="/disable_global_config";
+	public static final String DISABLE_AUTO_TOUR_URL="/disable_global_config";
 	
 	/**
 	 * The sale screen section ends

@@ -16,6 +16,7 @@ import com.punj.app.ecommerce.domains.item.ItemAttribute;
 import com.punj.app.ecommerce.domains.item.ItemDTO;
 import com.punj.app.ecommerce.domains.item.ItemImage;
 import com.punj.app.ecommerce.domains.item.ItemOptions;
+import com.punj.app.ecommerce.domains.item.SKUDtlDTO;
 import com.punj.app.ecommerce.services.dtos.SaleItem;
 import com.punj.app.ecommerce.utils.Pager;
 
@@ -75,24 +76,29 @@ public interface ItemService {
 
 	public ItemDTO searchSKUs(String text, Pager pager);
 
+	public SKUDtlDTO searchSKUDtls(String text, Integer locationId, Pager pager);
+
 	public ItemDTO listItems(Item itemCriteria, Pager pager);
 
-	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId, Boolean outOfStateFlag);
+	public SaleItem retrieveItemDetails(Integer locationId, Integer supplierId, BigInteger itemId,
+			Boolean outOfStateFlag);
 
 	public AttributeDTO searchAttributes(String text, Pager pager);
 
 	public List<Attribute> updateAttributeOrder(List<Attribute> attrOrderList);
 
 	public Attribute saveAttribute(Attribute attribute);
-	
+
 	public Attribute saveAttributeValue(Attribute attribute);
-	
+
 	public Boolean isAttrValueAssignedToItem(Attribute attr);
-	
+
+	public void updateItemIndexes() throws InterruptedException;
+
 	public void deleteAttributeValue(BigInteger attrId);
-	
+
 	public Set<String> findUniqueAttrCodes();
-	
+
 	public Set<String> findUniqueAttrValCodes();
 
 }
