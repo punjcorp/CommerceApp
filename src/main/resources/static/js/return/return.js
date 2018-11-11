@@ -23,8 +23,6 @@ var viewType='COMPACT';
  */
 $(function() {
 	
-	introJs().start();
-	
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
 
 	$(window).keydown(function(event){

@@ -5,6 +5,64 @@
 var tli_index = 0;
 var tenderLineItems = new Array();
 
+var ConfigBean= function() {
+	this.configKey;
+	this.configValue;
+}
+
+$.extend(ConfigBean.prototype, {
+	updateConfig : function(configKey, configValue) {
+		this.configKey=configKey;
+		this.configValue=configValue;
+	}
+});
+
+
+var TourHelp= function() {
+
+}
+
+$.extend(TourHelp.prototype, {
+	checkTourFlag : function() {
+		if(typeof(tour_help_flag)!=='undefined' && tour_help_flag!=undefined && tour_help_flag=='true')
+			return true;
+		/*else if(typeof(tour_help_flag)==='undefined' || tour_help_flag==undefined )
+			return true;*/
+		else
+			return false;
+	},
+	disableTourFlag : function(){
+		var configBean=new ConfigBean();
+		configBean.updateConfig('app.tour.flag', 'false');
+		var formdata= JSON.stringify(configBean);
+		
+		if(typeof(token)!=='undefined' && token!=undefined && token!=''){
+			$.ajax({
+				url : '/disable_global_config',
+				type : 'POST',
+				cache : false,
+				data : formdata,
+				contentType : "application/json; charset=utf-8",
+				dataType : "json",
+				success : function(data) {
+					
+					if(typeof(data)!=='undefined' && data!=undefined && data.status=='S')
+						console.log('The auto tour help has been disabled now!');
+					
+				},				
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader('X-CSRF-TOKEN', token)
+				}
+			});		
+		}else{
+			console.log('There is no token existing for AJAX POST call');
+		}
+		
+		
+	}
+});
+
+
 var TenderLineItem = function() {
 	this.tenderId;
 	this.index;

@@ -41,6 +41,7 @@ INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Default Receipt Copies Count','app.default.receipt.copies.count','2');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Default Receipt Copies Name','app.default.receipt.copies.name','Original, Duplicate');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Default Location','app.default.location','');
+INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Tour Indicator','app.tour.flag','true');
 commit;
 
 -- -----------------------------------------------------

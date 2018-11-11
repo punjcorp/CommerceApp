@@ -17,15 +17,13 @@ var txnEndTime;
 var viewType='COMPACT';
 
 /**
- * This function will ensure the item auto complete functionality is executed when at least 3 letters has been typed in the item category
+ * This function will ensure the item auto complete functionality is executed
+ * when at least 3 letters has been typed in the item category
  * 
  * @returns
  */
 $(function() {
-	
-	introJs().start();
-	
-	
+		
 	txnStartTime = moment().format("DD-MMM-YY hh:mm:ss");
 	
 	$(window).keydown(function(event){
@@ -275,7 +273,8 @@ $(function() {
 	
 	
     /*
-	 * This section will register the shortcut keys for various functions on sale screen
+	 * This section will register the shortcut keys for various functions on
+	 * sale screen
 	 */
     
     

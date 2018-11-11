@@ -4,8 +4,22 @@
 
 var commonUtil = new Utils();
 var logout_url = '/logout';
+var tourHelp=new TourHelp();
+var introTour;
+
 
 $(function() {
+	introTour=introJs();
+	if(tourHelp.checkTourFlag())
+		introTour.start();
+	
+	introTour.oncomplete(function() {
+		tourHelp.disableTourFlag();
+		});
+
+	introTour.onexit(function() {
+		  tourHelp.disableTourFlag();
+		});
 
 	// use plugins and options as needed, for options, detail see
 	// http://i18next.com/docs/
@@ -360,4 +374,8 @@ function resizeModal(reportModalId, reportFrameId){
 	var pdfHeight=modalHeight-230;
 	$('#'+reportFrameId).height(pdfHeight+'px');
 	
+}
+
+function startTourHelp(){
+		introTour.start();
 }

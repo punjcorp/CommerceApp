@@ -358,6 +358,7 @@ public final class MVCConstants {
 	public static final String GSTR_FIN_YEARS_LIST= "financialYears";
 	public static final String GSTR_FIN_MONTHS_LIST= "financialMonths";
 	public static final String GSTR_SEARCH_BEAN= "gstrSearchBean";
+	public static final String TOUR_FLAG= "tourFlag";
 	
 	public static final String UTILS_RECEIPT_BEAN= "receiptBean";
 	
@@ -462,6 +463,7 @@ public final class MVCConstants {
 	public static final String PO_REPORT_SUPPLIER= "SUPPLIER";
 
 	
+	public static final String APP_CONF_TOUR_FLAG= "app.tour.flag";
 	public static final String APP_CONF_DEFAULT_HIERARCHY= "app.item.default.hierarchy";
 	public static final String APP_CONF_DEFAULT_TYPE= "app.item.default.item.type";
 	public static final String APP_CONF_DEFAULT_UOM= "app.item.default.uom";
