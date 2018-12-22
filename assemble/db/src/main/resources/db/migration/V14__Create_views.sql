@@ -354,33 +354,70 @@ USE `commercedb`;
             
 CREATE 
 VIEW `commercedb`.`v_txn_lookup` AS
-    SELECT 
-		
-        CONCAT(CONVERT( LPAD(`txn_ma`.`location_id`, 4, '0') USING UTF8),
-                CONVERT( LPAD(`txn_ma`.`register`, 3, '0') USING UTF8),
-                CONVERT( LPAD(`txn_ma`.`txn_no`, 5, '0') USING UTF8),
-                DATE_FORMAT(`txn_ma`.`business_date`, '%d%m%y')) AS `unique_txn`,
-		`txn_ma`.location_id,
-        `txn_ma`.txn_no,
-        `txn_ma`.register,
-        `txn_ma`.`business_date` AS `business_date`,
-        `txn_ma`.`txn_type` AS `txn_type`,
-        `cust`.`name` AS `customer_name`,
-        `txn_ma`.`business_date` AS `created_date`,
-        `txn_ma`.`created_by` AS `created_by`,
-        `txn_ma`.`tax_total` AS `tax_total`,
-        `txn_ma`.`total` AS `total_amount`
-    FROM
-        `commercedb`.`txn_master` `txn_ma` left join
-        `commercedb`.`txn_customer` `txn_cust` on
-        `txn_ma`.`location_id` = `txn_cust`.`location_id`
-            AND (`txn_ma`.`business_date` = `txn_cust`.`business_date`)
-            AND (`txn_ma`.`register` = `txn_cust`.`register`)
-            AND (`txn_ma`.`txn_no` = `txn_cust`.`txn_no`)
-		left join `commercedb`.`customer` `cust` on
-            (`txn_cust`.`customer_id` = `cust`.`customer_id`)
-            AND (`txn_cust`.`customer_type` = 'CUSTOMER')
-            where `txn_ma`.txn_Type in ('SALE','RETURN');            
+SELECT 
+    CONCAT(CONVERT( LPAD(`txn_ma`.`location_id`, 4, '0') USING UTF8),
+            CONVERT( LPAD(`txn_ma`.`register`, 3, '0') USING UTF8),
+            CONVERT( LPAD(`txn_ma`.`txn_no`, 5, '0') USING UTF8),
+            CONVERT( DATE_FORMAT(`txn_ma`.`business_date`, '%d%m%y') USING UTF8)) AS `unique_txn`,
+    `txn_ma`.`location_id` AS `location_id`,
+    `txn_ma`.`txn_no` AS `txn_no`,
+    `txn_ma`.`register` AS `register`,
+    `txn_ma`.`business_date` AS `business_date`,
+    `txn_ma`.`txn_type` AS `txn_type`,
+    `cust`.`name` AS `customer_name`,
+    `txn_ma`.`business_date` AS `created_date`,
+    `txn_ma`.`created_by` AS `created_by`,
+    `txn_ma`.`tax_total` AS `tax_total`,
+    `txn_ma`.`total` AS `total_amount`,
+    `txn_ns`.`reason_code_id` AS `reason_code`,
+    `reason`.`reason_name` AS `reason_name`,
+    `txn_ns`.`type` AS `reason_type`
+FROM
+    ((`txn_master` `txn_ma`
+    LEFT JOIN `txn_customer` `txn_cust` ON (((`txn_ma`.`location_id` = `txn_cust`.`location_id`)
+        AND (`txn_ma`.`business_date` = `txn_cust`.`business_date`)
+        AND (`txn_ma`.`register` = `txn_cust`.`register`)
+        AND (`txn_ma`.`txn_no` = `txn_cust`.`txn_no`))))
+    LEFT JOIN `customer` `cust` ON (((`txn_cust`.`customer_id` = `cust`.`customer_id`)
+        AND (`txn_cust`.`customer_type` = 'CUSTOMER')))
+    LEFT JOIN `txn_no_sale` `txn_ns` ON (((`txn_ma`.`location_id` = `txn_ns`.`location_id`)
+        AND (`txn_ma`.`business_date` = `txn_ns`.`business_date`)
+        AND (`txn_ma`.`register` = `txn_ns`.`register`)
+        AND (`txn_ma`.`txn_no` = `txn_ns`.`txn_no`))))
+        LEFT JOIN
+    `reason_codes` `reason` ON `txn_ns`.`reason_code_id` = `reason`.`reason_code_id`
+WHERE
+    (`txn_ma`.`txn_type` IN ('SALE' , 'RETURN', 'NOSALE')) 
+UNION ALL SELECT 
+    CONCAT(CONVERT( LPAD(`ah`.`location_id`, 4, '0') USING UTF8),
+            CONVERT( LPAD('1', 3, '0') USING UTF8),
+            CONVERT( LPAD(`aj`.`journal_id`, 5, '0') USING UTF8),
+            CONVERT( DATE_FORMAT(`aj`.`created_date`, '%d%m%y') USING UTF8)) AS `unique_txn`,
+    ah.location_id,
+    aj.journal_id AS txn_no,
+    '1' AS register,
+    aj.created_date AS business_date,
+    IF(ah.entity_type = 'CUSTOMER',
+        'CUSTOMER_PAYMENT',
+        IF(ah.entity_type = 'SUPPLIER',
+            'SUPPLIER_PAYMENT',
+            '')) AS txn_type,
+    NULL AS customer_name,
+    aj.created_date,
+    aj.created_by,
+    0 AS tax_total,
+    aj.amount AS total_amount,
+    NULL AS reason_code,
+    NULL AS reason_name,
+    NULL AS reason_type
+FROM
+    commercedb.account_journal aj,
+    commercedb.account_head ah
+WHERE
+    aj.account_id = ah.account_id
+        AND aj.journal_type NOT IN ('customer_credit' , 'payment_due');
+        
+        
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

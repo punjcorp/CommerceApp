@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.punj.app.ecommerce.controller.common.MVCConstants;
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.IdGenerator;
 import com.punj.app.ecommerce.domains.common.Location;
@@ -38,6 +40,7 @@ import com.punj.app.ecommerce.domains.supplier.ids.SupplierItemId;
 import com.punj.app.ecommerce.domains.tax.TaxGroup;
 import com.punj.app.ecommerce.domains.tender.Tender;
 import com.punj.app.ecommerce.domains.transaction.Transaction;
+import com.punj.app.ecommerce.domains.transaction.storeopen.LocationStatus;
 import com.punj.app.ecommerce.repositories.common.DenominationRepository;
 import com.punj.app.ecommerce.repositories.common.IdGeneratorRepository;
 import com.punj.app.ecommerce.repositories.common.LocationRepository;
@@ -52,9 +55,11 @@ import com.punj.app.ecommerce.repositories.item.ItemLocTaxRepository;
 import com.punj.app.ecommerce.repositories.supplier.SupplierItemRepository;
 import com.punj.app.ecommerce.repositories.tax.TaxGroupRepository;
 import com.punj.app.ecommerce.repositories.tender.TenderRepository;
+import com.punj.app.ecommerce.repositories.transaction.storeopen.LocationStatusRepository;
 import com.punj.app.ecommerce.services.FinanceService;
 import com.punj.app.ecommerce.services.TransactionService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ConfigService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.common.dtos.ReasonDTO;
@@ -85,6 +90,8 @@ public class CommonServiceImpl implements CommonService {
 	private FinanceService financeService;
 	private DenominationRepository denominationRepository;
 	private StateRepository stateRepository;
+	private LocationStatusRepository locationStatusRepository;
+	private ConfigService configService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
@@ -94,6 +101,24 @@ public class CommonServiceImpl implements CommonService {
 
 	@Value("${app.default.currency.code}")
 	private String defaultCurrencyCode;
+
+	/**
+	 * @param configService
+	 *            the configService to set
+	 */
+	@Autowired
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
+
+	/**
+	 * @param locationStatusRepository
+	 *            the locationStatusRepository to set
+	 */
+	@Autowired
+	public void setLocationStatusRepository(LocationStatusRepository locationStatusRepository) {
+		this.locationStatusRepository = locationStatusRepository;
+	}
 
 	/**
 	 * @param stateRepository
@@ -259,6 +284,8 @@ public class CommonServiceImpl implements CommonService {
 		List<Location> locations = this.retrieveAllLocations();
 		locationDTO.setLocations(locations);
 		locationDTO.setLastTxnStatus(this.retrieveLocationsStoreTxnStatus(locations));
+		locationDTO.setLastSaleBDate(this.retrieveLocationsLastSalesDate(locations));
+		locationDTO.setMinDateForOpening(this.retrieveMinSalesDate(locations));
 		logger.info("All the location details with daily status has been retrieved successfully");
 		return locationDTO;
 	}
@@ -277,6 +304,81 @@ public class CommonServiceImpl implements CommonService {
 		}
 		logger.info("The last daily deed txn status for all location has been retrieved successfully");
 		return locationLastTxnMap;
+	}
+
+	private Map<Integer, LocalDateTime> retrieveLocationsLastSalesDate(List<Location> locations) {
+		Map<Integer, LocalDateTime> locationLastDateMap = new HashMap<>();
+		Set<String> txnTypes = new HashSet<>();
+		txnTypes.add(ServiceConstants.TXN_SALE);
+		txnTypes.add(ServiceConstants.TXN_RETURN);
+		Transaction txnDetails;
+		Integer locationId;
+		for (Location location : locations) {
+			locationId = location.getLocationId();
+			txnDetails = this.txnService.searchTxnByCriteria(locationId, txnTypes);
+			if (txnDetails != null)
+				locationLastDateMap.put(locationId, txnDetails.getTransactionId().getBusinessDate());
+			else
+				locationLastDateMap.put(locationId, null);
+		}
+		logger.info("The last sales/return txn dates for all location has been retrieved successfully");
+		return locationLastDateMap;
+	}
+
+	private Map<Integer, LocalDateTime> retrieveMinSalesDate(List<Location> locations) {
+		Map<Integer, LocalDateTime> locationMinDateMap = new HashMap<>();
+		Transaction txnDetails = new Transaction();
+		Integer locationId;
+		LocalDateTime minBusinessDate;
+		Boolean skipOpeningProcess = Boolean.FALSE;
+		String skipStoreOpen = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_SKIP_STORE_OPEN);
+		if (StringUtils.isNotBlank(skipStoreOpen))
+			skipOpeningProcess = new Boolean(skipStoreOpen);
+		if (skipOpeningProcess) {
+			for (Location location : locations) {
+				locationId = location.getLocationId();
+				List<LocationStatus> locStatusList = this.locationStatusRepository.getLocationStatusForMinDate(locationId);
+				if (locStatusList != null && !locStatusList.isEmpty()) {
+					for(LocationStatus locStatus: locStatusList) {
+						if(locStatus.getSaleExists()) {
+							minBusinessDate=locStatus.getLocationStatusId().getBusinessDate();
+							locationMinDateMap.put(locationId, minBusinessDate);
+							break;
+						}
+					}
+					
+				} else {
+					locationMinDateMap.put(locationId, null);
+				}
+
+			}
+		}else {
+			for (Location location : locations) {
+				locationId = location.getLocationId();
+				List<LocationStatus> locStatusList = this.locationStatusRepository.getLocationStatusForMinDate(locationId);
+				if (locStatusList != null && !locStatusList.isEmpty()) {
+					for(LocationStatus locStatus: locStatusList) {
+						if(locStatus.getStoreCloseExists()) {
+							minBusinessDate=locStatus.getLocationStatusId().getBusinessDate().plusDays(1);
+						}else {
+							if(locStatus.getStoreOpenExists()) {
+								minBusinessDate=locStatus.getLocationStatusId().getBusinessDate();
+							}else {
+								minBusinessDate=null;
+							}
+						}
+						locationMinDateMap.put(locationId, minBusinessDate);
+						break;
+					}
+					
+				} else {
+					locationMinDateMap.put(locationId, null);
+				}
+
+			}
+		}
+		logger.info("The minimum business dates for all location has been retrieved successfully");
+		return locationMinDateMap;
 	}
 
 	@Override
@@ -599,10 +701,10 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public List<ReasonCode> retrieveReasonCodes(ReasonCode reasonCodeCriteria) {
-		List<ReasonCode> reasonCodes=this.reasonCodeRepository.findAll(Example.of(reasonCodeCriteria));
-		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+		List<ReasonCode> reasonCodes = this.reasonCodeRepository.findAll(Example.of(reasonCodeCriteria));
+		if (reasonCodes != null && !reasonCodes.isEmpty()) {
 			logger.info("The requested reason codes has been retrieved successfully");
-		}else {
+		} else {
 			logger.info("The requested reason codes were not found");
 		}
 		return reasonCodes;
@@ -650,8 +752,9 @@ public class CommonServiceImpl implements CommonService {
 		}
 		return states;
 	}
+
 	public TaxGroup retrieveTaxGroup(Integer taxGroupId) {
-		TaxGroup taxGroup=this.taxGroupRepository.findOne(taxGroupId);
+		TaxGroup taxGroup = this.taxGroupRepository.findOne(taxGroupId);
 
 		if (taxGroup != null)
 			logger.info("The tax group details were retrieved successfully");
@@ -662,14 +765,14 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public Map<String, ReasonCode> retrieveReasonCodesMap(String reasonCodeType) {
-		Map<String, ReasonCode> reasonCodeMap=null;
-		ReasonCode criertia=new ReasonCode();
+		Map<String, ReasonCode> reasonCodeMap = null;
+		ReasonCode criertia = new ReasonCode();
 		criertia.setType(reasonCodeType);
-		List<ReasonCode> reasonCodes=this.retrieveReasonCodes(criertia);
-		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+		List<ReasonCode> reasonCodes = this.retrieveReasonCodes(criertia);
+		if (reasonCodes != null && !reasonCodes.isEmpty()) {
 			logger.info("The reason code details for {} type were retrieved successfully", reasonCodeType);
-			reasonCodeMap=new HashMap<>();
-			for(ReasonCode reasonCode: reasonCodes) {
+			reasonCodeMap = new HashMap<>();
+			for (ReasonCode reasonCode : reasonCodes) {
 				reasonCodeMap.put(reasonCode.getName(), reasonCode);
 			}
 		}
@@ -678,14 +781,14 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public Map<Integer, ReasonCode> retrieveReasonCodeIdMap(String reasonCodeType) {
-		Map<Integer, ReasonCode> reasonCodeMap=null;
-		ReasonCode criertia=new ReasonCode();
+		Map<Integer, ReasonCode> reasonCodeMap = null;
+		ReasonCode criertia = new ReasonCode();
 		criertia.setType(reasonCodeType);
-		List<ReasonCode> reasonCodes=this.retrieveReasonCodes(criertia);
-		if(reasonCodes!=null && !reasonCodes.isEmpty()) {
+		List<ReasonCode> reasonCodes = this.retrieveReasonCodes(criertia);
+		if (reasonCodes != null && !reasonCodes.isEmpty()) {
 			logger.info("The reason code details for {} type were retrieved successfully", reasonCodeType);
-			reasonCodeMap=new HashMap<>();
-			for(ReasonCode reasonCode: reasonCodes) {
+			reasonCodeMap = new HashMap<>();
+			for (ReasonCode reasonCode : reasonCodes) {
 				reasonCodeMap.put(reasonCode.getReasonCodeId(), reasonCode);
 			}
 		}

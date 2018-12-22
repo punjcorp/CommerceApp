@@ -443,6 +443,18 @@ public final class ViewPathConstants {
 	
 	/**
 	 * The Setup pages section ends
+	 */
+	
+	/**
+	 * The Tally export section starts
+	 */
+	public static final String TALLY_VOUCHER_EXPORT_URL = "/admin/voucher_export";
+	public static final String TALLY_VOUCHER_EXPORT_PAGE = "export/voucher_export";
+	public static final String TXN_VOUCHER_EXPORT_URL = "/admin/export_voucher";
+	public static final String TXN_VOUCHERS_EXPORT_URL = "/admin/export_vouchers";
+	
+	/**
+	 * The Setup pages section ends
 	 */	
 	
 	

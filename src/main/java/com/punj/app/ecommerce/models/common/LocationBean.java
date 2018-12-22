@@ -46,6 +46,8 @@ public class LocationBean {
 	private LocalDateTime lastCreatedDate;
 	private String lastStatus;
 	private Boolean eligibleForStoreOpen = Boolean.TRUE;
+	private LocalDateTime lastSaleBusinessDate;
+	private LocalDateTime locMinDate;
 
 	/**
 	 * @return the locationId
@@ -393,6 +395,21 @@ public class LocationBean {
 	}
 
 	/**
+	 * @return the lastSaleBusinessDate
+	 */
+	public LocalDateTime getLastSaleBusinessDate() {
+		return lastSaleBusinessDate;
+	}
+
+	/**
+	 * @param lastSaleBusinessDate
+	 *            the lastSaleBusinessDate to set
+	 */
+	public void setLastSaleBusinessDate(LocalDateTime lastSaleBusinessDate) {
+		this.lastSaleBusinessDate = lastSaleBusinessDate;
+	}
+
+	/**
 	 * @return the description
 	 */
 	public String getDescription() {
@@ -435,6 +452,21 @@ public class LocationBean {
 	 */
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	/**
+	 * @return the locMinDate
+	 */
+	public LocalDateTime getLocMinDate() {
+		return locMinDate;
+	}
+
+	/**
+	 * @param locMinDate
+	 *            the locMinDate to set
+	 */
+	public void setLocMinDate(LocalDateTime locMinDate) {
+		this.locMinDate = locMinDate;
 	}
 
 }

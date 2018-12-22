@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+          <!-- XML Schema Generated from XML Document on Fri Nov 30 2018 15:00:47 GMT+0530 (India Standard Time) -->
+          <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+       <xs:element name="ENVELOPE">
+              <xs:complexType>
+                     <xs:sequence>
+                            <xs:element name="HEADER">
+                                   <xs:complexType>
+                                          <xs:sequence>
+                                                 <xs:element name="VERSION" type="xs:int"></xs:element>
+                                                 <xs:element name="TALLYREQUEST" type="xs:string"></xs:element>
+                                                 <xs:element name="TYPE" type="xs:string"></xs:element>
+                                                 <xs:element name="ID" type="xs:string"></xs:element>
+                                                 <xs:element name="STATUS" type="xs:int"></xs:element>
+                                             </xs:sequence>
+                                      </xs:complexType>
+                               </xs:element>
+                            <xs:element name="BODY">
+                                   <xs:complexType>
+                                          <xs:sequence>
+                                                 <xs:element name="DESC">
+                                                        <xs:complexType>
+                                                               <xs:sequence>
+                                                                      <xs:element name="STATICVARIABLES">
+                                                                             <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                           <xs:element name="IMPORTDUPS" type="xs:string"></xs:element>
+                                                                                       </xs:sequence>
+                                                                                </xs:complexType>
+                                                                         </xs:element>
+                                                                  </xs:sequence>
+                                                           </xs:complexType>
+                                                    </xs:element>
+                                                 <xs:element name="DATA">
+                                                        <xs:complexType>
+                                                               <xs:sequence>
+                                                                      <xs:element name="IMPORTRESULT">
+                                                                             <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                           <xs:element name="CREATED" type="xs:int"></xs:element>
+                                                                                           <xs:element name="ALTERED" type="xs:int"></xs:element>
+                                                                                           <xs:element name="LASTVCHID" type="xs:int"></xs:element>
+                                                                                           <xs:element name="LASTMID" type="xs:int"></xs:element>
+                                                                                           <xs:element name="COMBINED" type="xs:int"></xs:element>
+                                                                                           <xs:element name="IGNORED" type="xs:int"></xs:element>
+                                                                                           <xs:element name="ERRORS" type="xs:int"></xs:element>
+                                                                                       </xs:sequence>
+                                                                                </xs:complexType>
+                                                                         </xs:element>
+                                                                      <xs:element name="TALLYMESSAGE">
+                                                                             <xs:complexType>
+                                                                                    <xs:sequence>
+                                                                                           <xs:element name="VOUCHER" maxOccurs="unbounded">
+                                                                                                  <xs:complexType>
+                                                                                                         <xs:sequence>
+                                                                                                                <xs:element name="DATE" type="xs:int"></xs:element>
+                                                                                                                <xs:element name="NARRATION" type="xs:string"></xs:element>
+                                                                                                                <xs:element name="VOUCHERTYPENAME" type="xs:string"></xs:element>
+                                                                                                                <xs:element name="VOUCHERNUMBER" type="xs:int"></xs:element>
+                                                                                                                <xs:element name="ALLLEDGERENTRIES.LIST" maxOccurs="unbounded">
+                                                                                                                       <xs:complexType>
+                                                                                                                              <xs:sequence>
+                                                                                                                                     <xs:element name="LEDGERNAME" type="xs:string"></xs:element>
+                                                                                                                                     <xs:element name="ISDEEMEDPOSITIVE" type="xs:string"></xs:element>
+                                                                                                                                     <xs:element name="AMOUNT" type="xs:int"></xs:element>
+                                                                                                                                 </xs:sequence>
+                                                                                                                          </xs:complexType>
+                                                                                                                   </xs:element>
+                                                                                                            </xs:sequence>
+                                                                                                     </xs:complexType>
+                                                                                              </xs:element>
+                                                                                       </xs:sequence>
+                                                                                </xs:complexType>
+                                                                         </xs:element>
+                                                                  </xs:sequence>
+                                                           </xs:complexType>
+                                                    </xs:element>
+                                             </xs:sequence>
+                                      </xs:complexType>
+                               </xs:element>
+                        </xs:sequence>
+                 </xs:complexType>
+          </xs:element>
+   </xs:schema>

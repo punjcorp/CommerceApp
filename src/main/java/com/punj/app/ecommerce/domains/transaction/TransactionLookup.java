@@ -39,6 +39,15 @@ public class TransactionLookup implements Serializable {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
+	@Column(name = "reason_code")
+	private Integer reasonCode;
+
+	@Column(name = "reason_name")
+	private String reasonName;
+
+	@Column(name = "reason_type")
+	private String reasonType;
+
 	/**
 	 * @return the transactionId
 	 */
@@ -157,6 +166,51 @@ public class TransactionLookup implements Serializable {
 	 */
 	public void setUniqueTxnNo(String uniqueTxnNo) {
 		this.uniqueTxnNo = uniqueTxnNo;
+	}
+
+	/**
+	 * @return the reasonCode
+	 */
+	public Integer getReasonCode() {
+		return reasonCode;
+	}
+
+	/**
+	 * @param reasonCode
+	 *            the reasonCode to set
+	 */
+	public void setReasonCode(Integer reasonCode) {
+		this.reasonCode = reasonCode;
+	}
+
+	/**
+	 * @return the reasonName
+	 */
+	public String getReasonName() {
+		return reasonName;
+	}
+
+	/**
+	 * @param reasonName
+	 *            the reasonName to set
+	 */
+	public void setReasonName(String reasonName) {
+		this.reasonName = reasonName;
+	}
+
+	/**
+	 * @return the reasonType
+	 */
+	public String getReasonType() {
+		return reasonType;
+	}
+
+	/**
+	 * @param reasonType
+	 *            the reasonType to set
+	 */
+	public void setReasonType(String reasonType) {
+		this.reasonType = reasonType;
 	}
 
 }

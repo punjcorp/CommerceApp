@@ -13,7 +13,7 @@ AppPublisher=Consult for IT Solutions
 AppPublisherURL=http://consultforit.com
 AppSupportURL=http://consultforit.com
 AppUpdatesURL=http://consultforit.com
-DefaultDirName=D:\repos\inno_setup\PI-POS-INSTALLED
+DefaultDirName=c:\user\repos\inno_setup\PI-POS-INSTALLED
 
 DisableWelcomePage=no
 DisableDirPage=no
@@ -25,16 +25,16 @@ AllowNoIcons=yes
 OutputBaseFilename=PI-POS-Setup
 Compression=lzma
 SolidCompression=yes
-OutputDir=D:\repos\inno_setup\dist\
+OutputDir=c:\user\repos\inno_setup\dist\
 
 [Files]
 ;unzip the zipped distribution in dist directory and include all 
 ;files in root directory of the application.
-Source: "D:\repos\inno_setup\installables\64-bit\*"; DestDir: {app}\utils\; Flags: ignoreversion recursesubdirs
-Source: "D:\repos\inno_setup\installables\pi_pos_app\*"; DestDir: {app}\pi_pos_app\; Flags: ignoreversion recursesubdirs
-Source: "D:\repos\inno_setup\installables\db\*"; DestDir: {app}\tmp\db_schema\; Flags: ignoreversion recursesubdirs
-Source: "D:\repos\inno_setup\installables\maven\*"; DestDir: {app}\tmp\maven\; Flags: ignoreversion recursesubdirs
-Source: "D:\repos\inno_setup\installables\confs\*"; DestDir: {app}\confs\; Flags: ignoreversion recursesubdirs
+Source: "c:\user\repos\inno_setup\installables\64-bit\*"; DestDir: {app}\utils\; Flags: ignoreversion recursesubdirs
+Source: "c:\user\repos\inno_setup\installables\pi_pos_app\*"; DestDir: {app}\pi_pos_app\; Flags: ignoreversion recursesubdirs
+Source: "c:\user\repos\inno_setup\installables\db\*"; DestDir: {app}\tmp\db_schema\; Flags: ignoreversion recursesubdirs
+Source: "c:\user\repos\inno_setup\installables\maven\*"; DestDir: {app}\tmp\maven\; Flags: ignoreversion recursesubdirs
+Source: "c:\user\repos\inno_setup\installables\confs\*"; DestDir: {app}\confs\; Flags: ignoreversion recursesubdirs
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -68,7 +68,7 @@ begin
   { assign default directories for the items from the previously stored data; if }
   { there are no data stored from the previous installation, use default folders }
   { of your choice }
-   DirPage.Values[0] := GetPreviousData('Directory1', ExpandConstant('D:\repos\inno_setup\PI-POS-INSTALLED\'));
+   DirPage.Values[0] := GetPreviousData('Directory1', ExpandConstant('c:\user\repos\inno_setup\PI-POS-INSTALLED\'));
 end;
 
 procedure RegisterPreviousData(PreviousDataKey: Integer);

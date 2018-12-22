@@ -30,7 +30,7 @@ INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Tax Applicable Flag','app.item.default.tax.flag','true');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Ask Quantity Flag','app.item.default.ask.qty.flag','true');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Price Change Allowed Flag','app.item.default.price.change.flag','true');
-INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Application License','app.license.key','0onKTpdIL9gkJ4LZRmoC6J7wxBm0871iras7rp10TFLH4AxsMF1MEDHErSxvfUK8KMQgot6AtK5ixonTLkJy9RDuNgmcK4JBPkV0gBt2qXUUE4ibhTsyi00u52018zSB78dx6LqJQ0V0l2QLAF');
+INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Application License','app.license.key','0onKTpdIL9gkJ4LZRmoC6J7wxBm0871iras7rp10TFLH4AxsMF1MEDHErSxvfUK8KMQgot6AtK5ixonTLkJy9RDuNgmcK4JBPkV0gBt2qXUUE4ibhTsyi00u52019zSB78dx6LqJQ0V0l2QLAF');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Default Currency','app.default.currency.code','INR');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Store Open Process Skip Flag','app.skip.opening.closing.process','false');
 INSERT INTO `commercedb`.`global_config` (`name`,`conf_key`,`conf_value`) VALUES ('Default List Screen Page Size','app.screen.default.page.size','8');

@@ -125,6 +125,7 @@ $(function() {
 									error_register_already_closed_today: 'This register has been closed for current business date!!<br><br> Please open another register if you want to perform transactions with current business date',
 									error_past_date_edit_future_sale_exists: 'The location open is not allowed as there are sale invoices existing with future date',
 									error_store_open_reset_eod_txn_failed: 'The reset operation for the past business date has failed!!<br><br> Please contact administrator!',
+									error_store_not_closed: 'The store has not been closed for previous business date!!<br><br> Please close the previous Business date before opening for a new Business Date!',
 									error_store_status_retrieval_failed: 'The location status retrieval has failed!!<br><br> Please contact administrator!',
 									warn_functionality_in_progress :'Development in progress..',
 									warn_txn_eod_reset_confirmation :'This action will reset the Store Status in OPEN and delete any future transactions excluding sales!!<br><br> Please provide your approval for the action.',

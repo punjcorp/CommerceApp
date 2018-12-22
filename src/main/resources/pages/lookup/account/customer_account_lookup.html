@@ -98,9 +98,10 @@
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.date.created}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.location}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.txn.type}"></span></th>
-														<th scope="col"><span th:text="#{commerce.screen.lookup.account.comments}"></span></th>
+														
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.credit}"></span></th>
 														<th scope="col"><span th:text="#{commerce.screen.lookup.account.debit}"></span></th>
+														<th scope="col"><span th:text="#{commerce.screen.lookup.account.comments}"></span></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -109,9 +110,10 @@
 														<td><span th:text="${#temporals.format(journal.createdDate, 'dd-MMM-yyyy HH:mm:ss')}"></span></td>
 														<td><span th:text="${journal.accountHeadBean.locationId}"></span></td>
 														<td><span th:text="${journal.journalTypeDisplay}"></span></td>
-														<td><span th:text="${journal.remarks}"></span></td>
+														
 														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='customer_credit_return' or journal.journalType=='advance' or journal.journalType=='full' or journal.journalType=='part'}"></span></td>
 														<td><span th:text="#{commerce.screen.common.currency.inr.short}+' '+${journal.amount}" th:if="${journal.journalType=='customer_credit'}"></span></td>
+														<td><span th:text="${journal.remarks}"></span></td>
 													</tr>
 												</tbody>
 											</table>

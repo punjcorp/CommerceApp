@@ -90,7 +90,6 @@ public final class ServiceConstants {
 	public static final String TXN_SUPPLIER_PAYMENT= "SUPPLIER_PAYMENT";
 	public static final String TXN_PURCHASE_ORDER_RECEIVED= "SUPPLIER_PO_RECEIVED";
 	public static final String TXN_ORDER_RETURN= "SUPPLIER_ORDER_RETURN";
-	
 	public static final String TXN_CUSTOMER_PAYMENT= "CUSTOMER_PAYMENT";
 
 	public static final String TAX_WITHIN_STATE = "I";

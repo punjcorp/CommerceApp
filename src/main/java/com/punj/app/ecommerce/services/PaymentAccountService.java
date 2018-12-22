@@ -11,6 +11,7 @@ import java.util.Set;
 import com.punj.app.ecommerce.domains.payment.AJReceipt;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
+import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 
 /**
  * @author admin
@@ -32,6 +33,12 @@ public interface PaymentAccountService {
 
 	public AccountJournal savePayment(AccountJournal journalDetails, String username);
 
+	public AccountJournal retrievePayment(BigInteger journalId);
+
+	public AccountJournal retrievePayment(String uniqueTxnNo);
+
+	public TransactionDTO retrievePaymentWithEntity(String uniqueTxnNo);
+
 	public BigInteger savePaymentReceipt(AJReceipt ajReceipt);
 
 	public List<AccountHead> updateAccountsDue(List<AccountHead> accountHead, String username);
@@ -39,8 +46,9 @@ public interface PaymentAccountService {
 	public AccountHead updateAccountDue(AccountHead accountHead, String username);
 
 	public AccountHead recordOrderAmount(AccountJournal journalDetails, BigInteger supplierId, Integer locationId, String username);
-	
+
 	public List<AccountJournal> retrieveSupplierPaymentsForProcessing();
+
 	public List<AccountJournal> retrieveCustomerPaymentsForProcessing();
-	
+
 }

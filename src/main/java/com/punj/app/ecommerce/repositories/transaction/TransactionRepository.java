@@ -43,7 +43,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Transa
 			" AND business_date = ?3 and txn_type in ('SALE','RETURN')", nativeQuery = true)
 	Integer getLastTransactionNo(Integer locationId, Integer registerId, LocalDateTime businessDate);
 
-	@Query(value = "select * from pi_pos_industry.txn_master where location_id=?1 and business_date between ?2 and ?3 order by location_id asc, business_date asc, register asc,txn_no asc, created_date asc", nativeQuery = true)
+	@Query(value = "select * from commercedb.txn_master where location_id=?1 and business_date=?2 and txn_type='CLOSE_STORE'", nativeQuery = true)
+	public Transaction getStoreCloseTxn(Integer locationId, String businessDate);
+	
+	@Query(value = "select * from commercedb.txn_master where location_id=?1 and business_date=?2 and txn_type='CLOSE_REGISTER' order by created_date desc limit 1", nativeQuery = true)
+	public Transaction getLastRegisterCloseTxn(Integer locationId, String businessDate);
+	
+	@Query(value = "select result_data.* from commercedb.txn_master result_data where result_data.location_id=?1 and result_data.business_date>?2 order by created_date desc", nativeQuery = true)
+	public List<Transaction> getFutureTxns(Integer locationId, String businessDate);
+	
+	@Query(value = "select * from commercedb.txn_master where location_id=?1 and business_date between ?2 and ?3 order by location_id asc, business_date asc, register asc,txn_no asc, created_date asc", nativeQuery = true)
 	public List<Transaction> getSaleTxnsByMonth(Integer locationId, String startDate, String endDate);
 
 }

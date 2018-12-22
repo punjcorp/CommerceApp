@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -64,7 +65,8 @@ public class SaleTransactionController {
 	private ConfigService configService;
 
 	/**
-	 * @param configService the configService to set
+	 * @param configService
+	 *            the configService to set
 	 */
 	@Autowired
 	public void setConfigService(ConfigService configService) {
@@ -72,7 +74,8 @@ public class SaleTransactionController {
 	}
 
 	/**
-	 * @param messageSource the messageSource to set
+	 * @param messageSource
+	 *            the messageSource to set
 	 */
 	@Autowired
 	public void setMessageSource(MessageSource messageSource) {
@@ -80,7 +83,8 @@ public class SaleTransactionController {
 	}
 
 	/**
-	 * @param transactionService the transactionService to set
+	 * @param transactionService
+	 *            the transactionService to set
 	 */
 	@Autowired
 	public void setTransactionService(TransactionService transactionService) {
@@ -88,7 +92,8 @@ public class SaleTransactionController {
 	}
 
 	/**
-	 * @param commonService the commonService to set
+	 * @param commonService
+	 *            the commonService to set
 	 */
 	@Autowired
 	public void setCommonService(CommonService commonService) {
@@ -96,16 +101,21 @@ public class SaleTransactionController {
 	}
 
 	/**
-	 * @param commerceContext the commerceContext to set
+	 * @param commerceContext
+	 *            the commerceContext to set
 	 */
 	@Autowired
 	public void setCommerceContext(CommerceContext commerceContext) {
 		this.commerceContext = commerceContext;
 	}
 
+	@PostMapping(ViewPathConstants.POS_URL)
+	public String processSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
+		return this.showSaleScreen(model, session, req, redirectAttrs, locale);
+	}
+
 	@GetMapping(ViewPathConstants.POS_URL)
-	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req,
-			RedirectAttributes redirectAttrs, Locale locale) {
+	public String showSaleScreen(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		try {
 			String forwardURL = this.updateBeans(model, session, req, redirectAttrs, locale);
 			if (StringUtils.isNotEmpty(forwardURL))
@@ -118,18 +128,16 @@ public class SaleTransactionController {
 	}
 
 	/**
-	 * This method is to set all the bean objects in model needed for the return
-	 * screen functionalities
+	 * This method is to set all the bean objects in model needed for the return screen functionalities
 	 * 
 	 */
-	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req,
-			RedirectAttributes redirectAttrs, Locale locale) {
+	private String updateBeans(Model model, final HttpSession session, final HttpServletRequest req, RedirectAttributes redirectAttrs, Locale locale) {
 		SearchBean searchBean = new SearchBean();
 		model.addAttribute(MVCConstants.SEARCH_BEAN, searchBean);
 
-		String tourFlag=this.configService.getAppConfigByKey(MVCConstants.APP_CONF_TOUR_FLAG);
+		String tourFlag = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_TOUR_FLAG);
 		model.addAttribute(MVCConstants.TOUR_FLAG, tourFlag);
-		
+
 		CustomerBean customerBean = new CustomerBean();
 		model.addAttribute(MVCConstants.CUSTOMER_BEAN, customerBean);
 
@@ -157,15 +165,11 @@ public class SaleTransactionController {
 			if (registerId != null) {
 
 				if (this.validateRegister(openLocId, registerId)) {
-					LocationBean openLocation = (LocationBean) commerceContext
-							.getStoreSettings(CommerceConstants.OPEN_LOC_DTL);
+					LocationBean openLocation = (LocationBean) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_DTL);
 					model.addAttribute(MVCConstants.OPEN_LOC_DTL_BEAN, openLocation);
-					Object openLocationName = commerceContext
-							.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
-					Object openBusinessDate = commerceContext
-							.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
-					Object defaultTender = commerceContext
-							.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
+					Object openLocationName = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_LOC_NAME);
+					Object openBusinessDate = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.OPEN_BUSINESS_DATE);
+					Object defaultTender = commerceContext.getStoreSettings(openLocId + "-" + CommerceConstants.LOC_DEFAULT_TENDER);
 					if (openLocationName != null)
 						saleHeaderBean.setLocationName((String) openLocationName);
 					if (openBusinessDate != null)
@@ -184,8 +188,7 @@ public class SaleTransactionController {
 				} else {
 					req.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
 					redirectAttrs.addFlashAttribute(MVCConstants.REFERRER_URL_PARAM, ViewPathConstants.POS_URL);
-					redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource
-							.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
+					redirectAttrs.addFlashAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.transaction.invalid.store.register", null, locale));
 					logger.info("There is no valid store or register provided for the transaction screen");
 					return ViewPathConstants.REDIRECT_URL + ViewPathConstants.STORE_OPEN_URL;
 				}
@@ -208,7 +211,7 @@ public class SaleTransactionController {
 
 	private Boolean validateRegister(Integer locationId, Integer registerId) {
 
-		Boolean result = this.transactionService.isTransactionAlllowed(locationId, registerId);
+		Boolean result = this.transactionService.isTransactionAllowed(locationId, registerId);
 		if (result)
 			logger.info("The provided location and registers are in valid status");
 		else
@@ -224,8 +227,7 @@ public class SaleTransactionController {
 	}
 
 	@GetMapping(ViewPathConstants.LAST_TXN_RCPT_URL)
-	public void printLastTransaction(Model model, final HttpServletRequest req, Locale locale, HttpSession session,
-			HttpServletResponse response) {
+	public void printLastTransaction(Model model, final HttpServletRequest req, Locale locale, HttpSession session, HttpServletResponse response) {
 		try {
 			byte pdfBytes[] = null;
 			String uniqueTxnNo = (String) session.getAttribute(MVCConstants.LAST_TXN_NO);
@@ -240,8 +242,7 @@ public class SaleTransactionController {
 				String DATE_TIME_FORMAT = "dd-MMM-yy HH:mm:ss";
 				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
-				if (StringUtils.isNotBlank(locIdStr) && StringUtils.isNotBlank(regIdStr)
-						&& StringUtils.isNotBlank(bDateStr)) {
+				if (StringUtils.isNotBlank(locIdStr) && StringUtils.isNotBlank(regIdStr) && StringUtils.isNotBlank(bDateStr)) {
 					TransactionId txnIdCriteria = new TransactionId();
 					txnIdCriteria.setBusinessDate(LocalDateTime.parse(bDateStr, dateTimeFormatter));
 					txnIdCriteria.setLocationId(Integer.parseInt(locIdStr));

@@ -25,10 +25,12 @@ public class DailyDeedBean {
 	private String locationName;
 	private String defaultTender;
 
+	private Boolean skipClosingProcess;
+
 	private String locationStatus;
 	private String gstNo;
 
-	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class })
+	@NotNull(message = "{commerce.error.date.empty}", groups = { ValidationGroup.ValidationGroupStoreOpen.class, ValidationGroup.ValidationGroupSkipStoreOpen.class })
 	private LocalDateTime businessDate;
 
 	@NotNull(message = "{commerce.error.register.empty}", groups = { ValidationGroup.ValidationGroupRegOpen.class })
@@ -341,6 +343,21 @@ public class DailyDeedBean {
 	 */
 	public void setGstNo(String gstNo) {
 		this.gstNo = gstNo;
+	}
+
+	/**
+	 * @return the skipClosingProcess
+	 */
+	public Boolean getSkipClosingProcess() {
+		return skipClosingProcess;
+	}
+
+	/**
+	 * @param skipClosingProcess
+	 *            the skipClosingProcess to set
+	 */
+	public void setSkipClosingProcess(Boolean skipClosingProcess) {
+		this.skipClosingProcess = skipClosingProcess;
 	}
 
 }

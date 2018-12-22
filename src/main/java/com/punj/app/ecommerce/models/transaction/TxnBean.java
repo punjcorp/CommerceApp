@@ -23,6 +23,10 @@ public class TxnBean {
 	private BigDecimal totalTaxAmount;
 	private BigDecimal totalAmount;
 
+	private Integer reasonCode;
+	private String reasonName;
+	private String reasonType;
+
 	/**
 	 * @return the invoiceNo
 	 */
@@ -136,10 +140,56 @@ public class TxnBean {
 	}
 
 	/**
-	 * @param uniqueTxnNo the uniqueTxnNo to set
+	 * @param uniqueTxnNo
+	 *            the uniqueTxnNo to set
 	 */
 	public void setUniqueTxnNo(String uniqueTxnNo) {
 		this.uniqueTxnNo = uniqueTxnNo;
+	}
+
+	/**
+	 * @return the reasonCode
+	 */
+	public Integer getReasonCode() {
+		return reasonCode;
+	}
+
+	/**
+	 * @param reasonCode
+	 *            the reasonCode to set
+	 */
+	public void setReasonCode(Integer reasonCode) {
+		this.reasonCode = reasonCode;
+	}
+
+	/**
+	 * @return the reasonName
+	 */
+	public String getReasonName() {
+		return reasonName;
+	}
+
+	/**
+	 * @param reasonName
+	 *            the reasonName to set
+	 */
+	public void setReasonName(String reasonName) {
+		this.reasonName = reasonName;
+	}
+
+	/**
+	 * @return the reasonType
+	 */
+	public String getReasonType() {
+		return reasonType;
+	}
+
+	/**
+	 * @param reasonType
+	 *            the reasonType to set
+	 */
+	public void setReasonType(String reasonType) {
+		this.reasonType = reasonType;
 	}
 
 }

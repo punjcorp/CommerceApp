@@ -3,6 +3,7 @@ package com.punj.app.ecommerce.controller.dailydeeds;
  * 
  */
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -14,10 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -39,6 +42,7 @@ import com.punj.app.ecommerce.controller.common.transformer.DailyDeedTransformer
 import com.punj.app.ecommerce.domains.common.Denomination;
 import com.punj.app.ecommerce.domains.common.Location;
 import com.punj.app.ecommerce.domains.tender.Tender;
+import com.punj.app.ecommerce.models.common.AJAXResponseBean;
 import com.punj.app.ecommerce.models.common.BaseDenominationBean;
 import com.punj.app.ecommerce.models.common.LocationBean;
 import com.punj.app.ecommerce.models.common.validator.ValidationGroup;
@@ -52,6 +56,7 @@ import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ConfigService;
 import com.punj.app.ecommerce.services.common.dtos.LocationDTO;
 import com.punj.app.ecommerce.services.dtos.DailyTransaction;
+import com.punj.app.ecommerce.services.dtos.dailydeeds.LocStatusDTO;
 
 /**
  * @author admin
@@ -69,8 +74,8 @@ public class LocationOpeningController {
 	private RegisterOpenValidator registerOpenValidator;
 	private ConfigService configService;
 
-	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
+	private Boolean skipOpeningProcess;
 
 	/**
 	 * @param configService
@@ -154,12 +159,22 @@ public class LocationOpeningController {
 			if (StringUtils.isNotBlank(referrerURL))
 				dailyDeedBean.setReferrerURL(referrerURL);
 
-			String locationIdStr = this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
-			this.defaultLocation = new Integer(locationIdStr);
-			// Change this later on and make it an ajax call based on store selected from store open screen
-			List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(this.defaultLocation);
-			List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
-			dailyDeedBean.setTenders(tenderBeans);
+			String skipStoreOpen = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_SKIP_STORE_OPEN);
+			if (StringUtils.isNotBlank(skipStoreOpen))
+				this.skipOpeningProcess = new Boolean(skipStoreOpen);
+
+			// Check for skip closing process
+			if (this.skipOpeningProcess) {
+				dailyDeedBean.setSkipClosingProcess(this.skipOpeningProcess);
+			} else {
+				String locationIdStr = this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
+				this.defaultLocation = new Integer(locationIdStr);
+				// Change this later on and make it an ajax call based on store selected from
+				// store open screen
+				List<Tender> tenders = this.commonService.retrieveTendersForReconcilation(this.defaultLocation);
+				List<TenderBean> tenderBeans = CommonMVCTransformer.tranformTenders(tenders);
+				dailyDeedBean.setTenders(tenderBeans);
+			}
 			this.updateBeans(dailyDeedBean, model);
 			logger.info("The Store open screen is ready for display");
 		} catch (Exception e) {
@@ -174,33 +189,35 @@ public class LocationOpeningController {
 
 	private void updateBeans(DailyDeedBean dailyDeedBean, Model model) {
 
-		List<Denomination> denominations = this.commonService.retrieveAllDenominations();
-		if (denominations != null) {
-			List<BaseDenominationBean> denominationBeans = CommonMVCTransformer.transformDenominations(denominations);
-			dailyDeedBean.setDenominationList(denominationBeans);
-			LocationDTO locationDTO = this.commonService.retrieveLocationWithDailyStatus();
-			List<LocationBean> locations = CommonMVCTransformer.transformLocationDTO(locationDTO);
-
-			Integer locationId = dailyDeedBean.getLocationId();
-			if (locationId != null) {
-				for (LocationBean location : locations) {
-					if (location.getLocationId().equals(locationId)) {
-						dailyDeedBean.setLocationName(location.getName());
-						dailyDeedBean.setGstNo(location.getGstNo());
-						dailyDeedBean.setDefaultTender(location.getDefaultTender());
-						break;
-					}
-				}
-				logger.info("The location name has been setup correctly");
+		if (!this.skipOpeningProcess) {
+			List<Denomination> denominations = this.commonService.retrieveAllDenominations();
+			if (denominations != null) {
+				List<BaseDenominationBean> denominationBeans = CommonMVCTransformer.transformDenominations(denominations);
+				dailyDeedBean.setDenominationList(denominationBeans);
+			} else {
+				logger.error("There was some error retrieving denominations for tender");
+				return;
 			}
-
-			model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
-			model.addAttribute(MVCConstants.LOCATION_BEANS, locations);
-			logger.info("All the beans needs for open store screen has been updated in model");
-
-		} else {
-			logger.error("There was some error retrieving denominations for tender");
 		}
+		LocationDTO locationDTO = this.commonService.retrieveLocationWithDailyStatus();
+		List<LocationBean> locations = CommonMVCTransformer.transformLocationDTO(locationDTO);
+
+		Integer locationId = dailyDeedBean.getLocationId();
+		if (locationId != null) {
+			for (LocationBean location : locations) {
+				if (location.getLocationId().equals(locationId)) {
+					dailyDeedBean.setLocationName(location.getName());
+					dailyDeedBean.setGstNo(location.getGstNo());
+					dailyDeedBean.setDefaultTender(location.getDefaultTender());
+					break;
+				}
+			}
+			logger.info("The location name has been setup correctly");
+		}
+
+		model.addAttribute(MVCConstants.DAILY_DEED_BEAN, dailyDeedBean);
+		model.addAttribute(MVCConstants.LOCATION_BEANS, locations);
+		logger.info("All the beans needs for open store screen has been updated in model");
 
 	}
 
@@ -233,28 +250,48 @@ public class LocationOpeningController {
 
 	}
 
-	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
-	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult,
-			Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request, HttpSession session) {
-		logger.info("The show store open screen method has been called");
+	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.SKIP_OPEN_STORE_PARAM })
+	public String processSkipOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupSkipStoreOpen.class) DailyDeedBean dailyDeedBean,
+			BindingResult bindingResult, Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request,
+			HttpSession session) {
+		String skipStoreOpen = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_SKIP_STORE_OPEN);
+		if (StringUtils.isNotBlank(skipStoreOpen))
+			this.skipOpeningProcess = new Boolean(skipStoreOpen);
 		if (bindingResult.hasErrors()) {
 			this.updateBeans(dailyDeedBean, model);
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
+
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Boolean result = null;
 			if (userDetails != null) {
+
 				DailyTransaction storeOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
-				Boolean result = this.dailyDeedService.saveStoreOpenTxn(storeOpenDetails, userDetails.getUsername());
+				if (this.skipOpeningProcess) {
+					result = this.dailyDeedService.skipOpenProcess(storeOpenDetails, userDetails.getUsername());
+					dailyDeedBean.setRegister(MVCConstants.REG_ONE);
+					dailyDeedBean.setRegisterId(dailyDeedBean.getRegister());
+					session.setAttribute(dailyDeedBean.getLocationId() + MVCConstants.REGISTER_ID_PARAM, dailyDeedBean.getRegister());
+					session.setAttribute(dailyDeedBean.getLocationId() + MVCConstants.REG_NAME_PARAM, dailyDeedBean.getRegisterName());
+				} else {
+					result = this.dailyDeedService.saveStoreOpenTxn(storeOpenDetails, userDetails.getUsername());
+				}
+
 				this.updateBeans(dailyDeedBean, model);
 				if (!result) {
-					model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
+					if (this.skipOpeningProcess)
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.skip.process.failure", null, locale));
+					else
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
 					logger.info("The Store open process has failed");
 					return ViewPathConstants.STORE_OPEN_PAGE;
 				} else {
 					Integer locationId = dailyDeedBean.getLocationId();
 					session.removeAttribute(locationId + MVCConstants.REGISTER_ID_PARAM);
 					session.removeAttribute(locationId + MVCConstants.REG_NAME_PARAM);
+					if (this.skipOpeningProcess)
+						this.processSkipProcessTasks(session, dailyDeedBean);
 				}
 				this.updateRedirectBeans(dailyDeedBean, redirectAttrs, request);
 				logger.info("The Store open process has been successful and ready for register open");
@@ -265,8 +302,79 @@ public class LocationOpeningController {
 			this.updateBeans(dailyDeedBean, model);
 			return ViewPathConstants.STORE_OPEN_PAGE;
 		}
+		String finalURL = null;
+		if (StringUtils.isNotBlank(dailyDeedBean.getReferrerURL()))
+			finalURL = dailyDeedBean.getReferrerURL();
+		else
+			finalURL = ViewPathConstants.SALES_URL;
 
-		return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
+		if (this.skipOpeningProcess)
+			return ViewPathConstants.REDIRECT_URL + finalURL;
+		else
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
+	}
+
+	@PostMapping(value = ViewPathConstants.STORE_OPEN_URL, params = { MVCConstants.OPEN_STORE_PARAM })
+	public String processOpenStoreDetails(@ModelAttribute @Validated(ValidationGroup.ValidationGroupStoreOpen.class) DailyDeedBean dailyDeedBean, BindingResult bindingResult,
+			Model model, Locale locale, Authentication authentication, RedirectAttributes redirectAttrs, HttpServletRequest request, HttpSession session) {
+		logger.info("The show store open screen method has been called");
+		String skipStoreOpen = this.configService.getAppConfigByKey(MVCConstants.APP_CONF_SKIP_STORE_OPEN);
+		if (StringUtils.isNotBlank(skipStoreOpen))
+			this.skipOpeningProcess = new Boolean(skipStoreOpen);
+		if (bindingResult.hasErrors()) {
+			this.updateBeans(dailyDeedBean, model);
+			return ViewPathConstants.STORE_OPEN_PAGE;
+		}
+		try {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			Boolean result = null;
+			if (userDetails != null) {
+
+				DailyTransaction storeOpenDetails = DailyDeedTransformer.transformOpenTxnDetails(dailyDeedBean);
+				if (this.skipOpeningProcess) {
+					result = this.dailyDeedService.skipOpenProcess(storeOpenDetails, userDetails.getUsername());
+					dailyDeedBean.setRegister(MVCConstants.REG_ONE);
+					dailyDeedBean.setRegisterId(dailyDeedBean.getRegister());
+					session.setAttribute(dailyDeedBean.getLocationId() + MVCConstants.REGISTER_ID_PARAM, dailyDeedBean.getRegister());
+					session.setAttribute(dailyDeedBean.getLocationId() + MVCConstants.REG_NAME_PARAM, dailyDeedBean.getRegisterName());
+				} else {
+					result = this.dailyDeedService.saveStoreOpenTxn(storeOpenDetails, userDetails.getUsername());
+				}
+
+				this.updateBeans(dailyDeedBean, model);
+				if (!result) {
+					if (this.skipOpeningProcess)
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.skip.process.failure", null, locale));
+					else
+						model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
+					logger.info("The Store open process has failed");
+					return ViewPathConstants.STORE_OPEN_PAGE;
+				} else {
+					Integer locationId = dailyDeedBean.getLocationId();
+					session.removeAttribute(locationId + MVCConstants.REGISTER_ID_PARAM);
+					session.removeAttribute(locationId + MVCConstants.REG_NAME_PARAM);
+					if (this.skipOpeningProcess)
+						this.processSkipProcessTasks(session, dailyDeedBean);
+				}
+				this.updateRedirectBeans(dailyDeedBean, redirectAttrs, request);
+				logger.info("The Store open process has been successful and ready for register open");
+			}
+		} catch (Exception e) {
+			model.addAttribute(MVCConstants.ALERT, this.messageSource.getMessage("commerce.screen.store.open.failure", null, locale));
+			logger.error("There was some error while opening the store", e);
+			this.updateBeans(dailyDeedBean, model);
+			return ViewPathConstants.STORE_OPEN_PAGE;
+		}
+		String finalURL = null;
+		if (StringUtils.isNotBlank(dailyDeedBean.getReferrerURL()))
+			finalURL = dailyDeedBean.getReferrerURL();
+		else
+			finalURL = ViewPathConstants.SALES_URL;
+
+		if (this.skipOpeningProcess)
+			return ViewPathConstants.REDIRECT_URL + finalURL;
+		else
+			return ViewPathConstants.REDIRECT_URL + ViewPathConstants.REGISTER_OPEN_URL;
 
 	}
 
@@ -328,4 +436,39 @@ public class LocationOpeningController {
 
 	}
 
+	@GetMapping(value = ViewPathConstants.RESET_STORE_STATUS_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public AJAXResponseBean resetLocationForOpening(@RequestParam("locationId") Integer locationId, @RequestParam("businessDate") LocalDateTime businessDate) {
+		AJAXResponseBean response = new AJAXResponseBean();
+		response.setStatus(MVCConstants.AJAX_STATUS_FAILURE);
+
+		this.dailyDeedService.resetLocationForBusiness(locationId, businessDate);
+		response.setStatus(MVCConstants.AJAX_STATUS_SUCCESS);
+		logger.info("The location transactions has been reset successfully for {} business date ", businessDate);
+
+		return response;
+	}
+
+	@GetMapping(value = ViewPathConstants.STORE_STATUS_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@ResponseBody
+	public AJAXResponseBean lookupLocationStatus(@RequestParam("locationId") Integer locationId, @RequestParam("businessDate") LocalDateTime businessDate) {
+		AJAXResponseBean response = new AJAXResponseBean();
+
+		LocStatusDTO locStatusDTO = this.dailyDeedService.isLocationOpenAllowed(locationId, businessDate);
+		if (locStatusDTO != null) {
+			response.setStatus(MVCConstants.AJAX_STATUS_SUCCESS);
+			response.setResultObj(locStatusDTO);
+			logger.info("The location status has been retrieved successfully");
+		} else {
+			response.setStatus(MVCConstants.AJAX_STATUS_FAILURE);
+			logger.info("The location status retrieval has failed!!");
+		}
+		return response;
+	}
+
+	private void processSkipProcessTasks(HttpSession session, DailyDeedBean dailyDeedBean) {
+		dailyDeedBean.setRegisterName(MVCConstants.REG_ONE_NAME);
+		session.setAttribute(dailyDeedBean.getLocationId() + MVCConstants.REGISTER_ID_PARAM, dailyDeedBean.getRegister());
+		session.setAttribute(dailyDeedBean.getLocationId() + MVCConstants.REG_NAME_PARAM, dailyDeedBean.getRegisterName());
+	}
 }

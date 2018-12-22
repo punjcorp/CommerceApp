@@ -753,6 +753,10 @@ public class TransactionTransformer {
 		txnBean.setTotalAmount(txnLookupDetail.getTotalAmt());
 		txnBean.setTotalTaxAmount(txnLookupDetail.getTaxTotalAmt());
 		txnBean.setTxnType(txnLookupDetail.getTxnType());
+		
+		txnBean.setReasonCode(txnLookupDetail.getReasonCode());
+		txnBean.setReasonName(txnLookupDetail.getReasonName());
+		txnBean.setReasonType(txnLookupDetail.getReasonType());
 
 		logger.info("The transaction lookup details has been transformed successfully");
 		return txnBean;

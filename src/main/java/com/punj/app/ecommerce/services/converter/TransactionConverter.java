@@ -4,6 +4,7 @@
 package com.punj.app.ecommerce.services.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -148,4 +149,14 @@ public class TransactionConverter {
 
 		return txnId;
 	}
+
+	public static BigInteger convertUniqueTxnToPaymentId(String uniqueTxnNo) {
+		BigInteger journalId=null;
+		if (StringUtils.isNotBlank(uniqueTxnNo) && uniqueTxnNo.trim().length() >= 18) {
+			journalId=new BigInteger(uniqueTxnNo.substring(7, 12));
+			logger.info("The unique transction number has been successfully transformed to journal Id");
+		}
+		return journalId;
+	}
+
 }

@@ -19,6 +19,7 @@ public final class MVCConstants {
 	public static final Boolean LOC_PARTIAL= Boolean.TRUE;
 	public static final Boolean LOC_FULL= Boolean.FALSE;
 	public static final String TNDR_CASH = "CASH";
+	public static final String TNDR_CREDIT = "CREDIT";
 	public static final String SUCCESS = "success";
 	public static final String FAILURE = "failure";
 	public static final String ALERT = "alert";
@@ -85,6 +86,8 @@ public final class MVCConstants {
 	public static final String TXN_SALE_PARAM="SALE";
 	public static final String TXN_RETURN_PARAM="RETURN";
 	public static final String TXN_NOSALE_PARAM="NOSALE";
+	public static final String TXN_SUP_PAYMENT_PARAM="SUPPLIER_PAYMENT";
+	public static final String TXN_CUST_PAYMENT_PARAM="CUSTOMER_PAYMENT";
 
 	public static final Integer STYLE_LEVEL=1;
 	public static final Integer ITEM_LEVEL=2;
@@ -414,6 +417,7 @@ public final class MVCConstants {
 	public static final String INV_ADJUSTMENT_ITEMS_REPORT_PARAM="INV_ADJUSTMENT_ITEMS_REPORT";
 	
 	public static final String OPEN_STORE_PARAM= "openStore";
+	public static final String SKIP_OPEN_STORE_PARAM= "skipOpenStore";
 	public static final String SHOW_OPEN_REGISTER_PARAM= "showOpenRegister";
 	public static final String OPEN_REGISTER_PARAM= "openRegister";
 	public static final String ADD_DENOMINATION_PARAM= "addDenomination";
@@ -482,4 +486,22 @@ public final class MVCConstants {
 	public static final String APP_CONF_ASK_QTY_FLAG= "app.item.default.ask.qty.flag";
 	public static final String APP_CONF_PRICE_CHANGE_FLAG= "app.item.default.price.change.flag";
 	public static final String APP_DEFAULT_LOCATION= "app.default.location";	
+	public static final String APP_CONF_SKIP_STORE_OPEN= "app.skip.opening.closing.process";
+	
+	
+	public static final String TALLY_LEDGER_SALE = "Sale";
+	public static final String TALLY_LEDGER_CASH = "Cash";
+	public static final String TALLY_LEDGER_BANK = "Bank";
+	
+	public static final String TALLY_VOUCHER_SALE="SALE";
+	public static final String TALLY_VOUCHER_GST="GST INVOICE";
+	public static final String TALLY_VOUCHER_DEBIT="DEBIT";
+	public static final String TALLY_VOUCHER_RECEIPT="Receipt";
+	public static final String TALLY_VOUCHER_EXPENSE="EXPENSE";
+	public static final String TALLY_VOUCHER_PAYMENT="Payment";
+	
+	public static final String TALLY_NEGATIVE_AMT_YES = "YES";
+	public static final String TALLY_NEGATIVE_AMT_NO = "NO";
 }
+
+

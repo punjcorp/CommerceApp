@@ -43,7 +43,7 @@ public interface TransactionService {
 
 	public TransactionReceipt retrieveLastTransaction(TransactionId txnIdCriteria);
 
-	public Boolean isTransactionAlllowed(Integer locationId, Integer registerId);
+	public Boolean isTransactionAllowed(Integer locationId, Integer registerId);
 
 	public List<TransactionLookup> searchTxnJournals(String txnType, LocalDateTime startDate, LocalDateTime endDate);
 
@@ -52,4 +52,16 @@ public interface TransactionService {
 	public List<TransactionDTO> searchTransactionDetailsByMonth(Integer locationId, String finMonth);
 
 	public TransactionReceipt searchTransactionReceipt(String uniqueTxnNo, String receiptType);
+
+	public List<Transaction> searchAllFutureTxns(Integer locationId, LocalDateTime businessDate);
+
+	public void deleteAllFutureTxns(Integer locationId, LocalDateTime businessDate);
+
+	public Transaction searchStoreCloseTxn(Integer locationId, LocalDateTime businessDate);
+
+	public Transaction searchLastRegCloseTxn(Integer locationId, LocalDateTime businessDate);
+
+	public void deleteRegCloseTxn(TransactionId txnId);
+
+	public void deleteStoreCloseTxn(TransactionId txnId);
 }

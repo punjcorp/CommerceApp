@@ -6,6 +6,9 @@ package com.punj.app.ecommerce.services.dtos.transaction;
 import java.util.List;
 
 import com.punj.app.ecommerce.domains.customer.Customer;
+import com.punj.app.ecommerce.domains.payment.AccountJournal;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
+import com.punj.app.ecommerce.domains.transaction.NoSaleTransaction;
 import com.punj.app.ecommerce.domains.transaction.SaleLineItem;
 import com.punj.app.ecommerce.domains.transaction.TaxLineItem;
 import com.punj.app.ecommerce.domains.transaction.TenderLineItem;
@@ -25,6 +28,9 @@ public class TransactionDTO {
 	private List<TenderLineItem> tenderLineItems;
 	private TransactionCustomer txnCustomer;
 	private Customer customer;
+	private Supplier supplier;
+	private NoSaleTransaction noSaleTxn;
+	private AccountJournal journalDetails;
 
 	/**
 	 * @return the txn
@@ -124,10 +130,56 @@ public class TransactionDTO {
 	}
 
 	/**
-	 * @param customer the customer to set
+	 * @param customer
+	 *            the customer to set
 	 */
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	/**
+	 * @return the noSaleTxn
+	 */
+	public NoSaleTransaction getNoSaleTxn() {
+		return noSaleTxn;
+	}
+
+	/**
+	 * @param noSaleTxn
+	 *            the noSaleTxn to set
+	 */
+	public void setNoSaleTxn(NoSaleTransaction noSaleTxn) {
+		this.noSaleTxn = noSaleTxn;
+	}
+
+	/**
+	 * @return the journalDetails
+	 */
+	public AccountJournal getJournalDetails() {
+		return journalDetails;
+	}
+
+	/**
+	 * @param journalDetails
+	 *            the journalDetails to set
+	 */
+	public void setJournalDetails(AccountJournal journalDetails) {
+		this.journalDetails = journalDetails;
+	}
+
+	/**
+	 * @return the supplier
+	 */
+	public Supplier getSupplier() {
+		return supplier;
+	}
+
+	/**
+	 * @param supplier
+	 *            the supplier to set
+	 */
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 
 }

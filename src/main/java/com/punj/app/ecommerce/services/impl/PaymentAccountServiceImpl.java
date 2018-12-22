@@ -21,15 +21,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.punj.app.ecommerce.domains.common.Location;
+import com.punj.app.ecommerce.domains.customer.Customer;
 import com.punj.app.ecommerce.domains.payment.AJReceipt;
 import com.punj.app.ecommerce.domains.payment.AccountHead;
 import com.punj.app.ecommerce.domains.payment.AccountJournal;
+import com.punj.app.ecommerce.domains.supplier.Supplier;
 import com.punj.app.ecommerce.repositories.payment.AJReceiptRepository;
 import com.punj.app.ecommerce.repositories.payment.AccountHeadRepository;
 import com.punj.app.ecommerce.repositories.payment.AccountJournalRepository;
+import com.punj.app.ecommerce.services.CustomerService;
 import com.punj.app.ecommerce.services.PaymentAccountService;
+import com.punj.app.ecommerce.services.SupplierService;
 import com.punj.app.ecommerce.services.common.CommonService;
 import com.punj.app.ecommerce.services.common.ServiceConstants;
+import com.punj.app.ecommerce.services.converter.TransactionConverter;
+import com.punj.app.ecommerce.services.dtos.transaction.TransactionDTO;
 
 /**
  * @author admin
@@ -43,12 +49,32 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 	private AccountJournalRepository accountJournalRepository;
 	private AJReceiptRepository aJReceiptRepository;
 	private CommonService commonService;
+	private SupplierService supplierService;
+	private CustomerService customerService;
 
 	@Value("${commerce.list.max.perpage}")
 	private Integer maxResultPerPage;
 
 	@Value("${commerce.list.max.pageno}")
 	private Integer maxPageBtns;
+
+	/**
+	 * @param customerService
+	 *            the customerService to set
+	 */
+	@Autowired
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+
+	/**
+	 * @param supplierService
+	 *            the supplierService to set
+	 */
+	@Autowired
+	public void setSupplierService(SupplierService supplierService) {
+		this.supplierService = supplierService;
+	}
 
 	/**
 	 * @param commonService
@@ -140,7 +166,8 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 			logger.info("The payment journal details has been successfully saved.");
 			if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_ADVANCE) || journalDetails.getJournalType().equals(ServiceConstants.JOURNAL_CREDIT)) {
 				accountHead.setAdvanceAmount(accountHead.getAdvanceAmount().add(journalDetails.getAmount()));
-			} else if (journalDetails.getJournalType().equals(ServiceConstants.CUST_JOURNAL_CREDIT) || journalDetails.getJournalType().equals(ServiceConstants.CUST_JOURNAL_CREDIT_RETURN)) {
+			} else if (journalDetails.getJournalType().equals(ServiceConstants.CUST_JOURNAL_CREDIT)
+					|| journalDetails.getJournalType().equals(ServiceConstants.CUST_JOURNAL_CREDIT_RETURN)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().add(journalDetails.getAmount()));
 			} else if (journalDetails.getJournalType().equals(ServiceConstants.PAYMENT_FULL)) {
 				accountHead.setDueAmount(accountHead.getDueAmount().subtract(journalDetails.getAmount()));
@@ -290,12 +317,12 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 
 		accountJournals = this.accountJournalRepository.retrieveAccountJournals(ServiceConstants.ACCOUNT_TYPE_SUPPLIER);
 
-		if(accountJournals!=null && !accountJournals.isEmpty()) {
+		if (accountJournals != null && !accountJournals.isEmpty()) {
 			logger.info("The {} unprocessed payment records for all the suppliers has been retrieved successfully", accountJournals.size());
-		}else {
+		} else {
 			logger.info("There were no records found for processing related to supplier payments");
 		}
-		
+
 		return accountJournals;
 	}
 
@@ -305,13 +332,71 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
 
 		accountJournals = this.accountJournalRepository.retrieveAccountJournals(ServiceConstants.ACCOUNT_TYPE_CUSTOMER);
 
-		if(accountJournals!=null && !accountJournals.isEmpty()) {
+		if (accountJournals != null && !accountJournals.isEmpty()) {
 			logger.info("The {} unprocessed payment records for all the customers has been retrieved successfully", accountJournals.size());
-		}else {
+		} else {
 			logger.info("There were no records found for processing related to customer payments");
 		}
-		
+
 		return accountJournals;
+	}
+
+	@Override
+	public AccountJournal retrievePayment(BigInteger journalId) {
+		AccountJournal accountJournal = this.accountJournalRepository.findOne(journalId);
+		if (accountJournal != null) {
+			logger.info("The account details has been retrieved successfully");
+		} else {
+			logger.info("There was no account details found based on provided details");
+		}
+		return accountJournal;
+	}
+
+	@Override
+	public AccountJournal retrievePayment(String uniqueTxnNo) {
+		AccountJournal accountJournal = null;
+		BigInteger journalId = TransactionConverter.convertUniqueTxnToPaymentId(uniqueTxnNo);
+		if (journalId != null) {
+			accountJournal = this.accountJournalRepository.findOne(journalId);
+			if (accountJournal != null) {
+				logger.info("The account details has been retrieved successfully");
+			} else {
+				logger.info("There was no account details found based on provided details");
+			}
+		}
+		return accountJournal;
+	}
+
+	@Override
+	public TransactionDTO retrievePaymentWithEntity(String uniqueTxnNo) {
+		TransactionDTO txnDetails = new TransactionDTO();
+		AccountJournal accountJournal = this.retrievePayment(uniqueTxnNo);
+		txnDetails.setJournalDetails(accountJournal);
+		if (accountJournal != null) {
+			AccountHead account = this.accountHeadRepository.findOne(accountJournal.getAccountId());
+			if (account != null) {
+				String entityType = account.getEntityType();
+				BigInteger accountId = account.getEntityId();
+
+				switch (entityType) {
+				case ServiceConstants.CUSTOMER_TYPE_CLIENT:
+					Customer customer= this.customerService.searchCustomerDetails(accountId);
+					txnDetails.setCustomer(customer);
+					logger.info("The customer details has been updated for payment journal successfully");
+					break;
+
+				case ServiceConstants.CUSTOMER_TYPE_SUPPLIER:
+					Supplier supplier = this.supplierService.searchSupplier(accountId.intValue());
+					txnDetails.setSupplier(supplier);
+					logger.info("The supplier details has been updated for payment journal successfully");
+					break;
+				}
+			}
+			logger.info("The account details has been retrieved successfully");
+		} else {
+			logger.info("There was no account details found based on provided details");
+		}
+		return txnDetails;
 	}
 
 }

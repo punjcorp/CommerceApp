@@ -190,7 +190,7 @@ public class ReturnTransactionController {
 
 	private Boolean validateRegister(Integer locationId, Integer registerId) {
 
-		Boolean result = this.transactionService.isTransactionAlllowed(locationId, registerId);
+		Boolean result = this.transactionService.isTransactionAllowed(locationId, registerId);
 		if (result)
 			logger.info("The provided location and registers are in valid status");
 		else

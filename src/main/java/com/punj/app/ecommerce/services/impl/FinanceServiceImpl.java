@@ -474,6 +474,79 @@ public class FinanceServiceImpl implements FinanceService {
 		return null;
 	}
 
+	@Override
+	public void resetRegDailyTotals(DailyTotals dailyTotalCriteria) {
+
+		DailyTotals storeTotalsCriteria = new DailyTotals();
+		storeTotalsCriteria.setBusinessDate(dailyTotalCriteria.getBusinessDate());
+		storeTotalsCriteria.setLocationId(dailyTotalCriteria.getLocationId());
+
+		List<DailyTotals> storeTotalsList = this.dailyTotalsRepository.findAll(Example.of(storeTotalsCriteria));
+
+		DailyTotals storeTotalsActual = null;
+		DailyTotals lastRegTotalsActual = null;
+
+		if (storeTotalsList != null && !storeTotalsList.isEmpty()) {
+			for (DailyTotals dlyTotal : storeTotalsList) {
+				if (dlyTotal.getRegisterId() == null) {
+					storeTotalsActual = dlyTotal;
+				} else if (dlyTotal.getRegisterId().equals(dailyTotalCriteria.getRegisterId())) {
+					lastRegTotalsActual = dlyTotal;
+				}
+			}
+		}
+
+		if (lastRegTotalsActual != null && storeTotalsActual != null) {
+			storeTotalsActual.setEndOfDayAmount(null);
+			this.dailyTotalsRepository.save(storeTotalsActual);
+
+			lastRegTotalsActual.setEndOfDayAmount(null);
+			this.dailyTotalsRepository.save(lastRegTotalsActual);
+
+			logger.info("The last register and store EOD amounts has been updated successfully");
+
+		}
+
+	}
+
+	@Override
+	public void deleteRegDailyTotals(DailyTotals dailyTotalCriteria) {
+		
+		DailyTotals regTotals = this.dailyTotalsRepository.findOne(Example.of(dailyTotalCriteria));
+		if (regTotals != null) {
+			this.dailyTotalsRepository.delete(regTotals);
+			logger.info("The register totals has been deleted successfully");
+		}
+		
+	}
+
+	@Override
+	public void deleteStoreDailyTotals(DailyTotals dailyTotalCriteria) {
+		DailyTotals storeTotalsCriteria = new DailyTotals();
+		storeTotalsCriteria.setBusinessDate(dailyTotalCriteria.getBusinessDate());
+		storeTotalsCriteria.setLocationId(dailyTotalCriteria.getLocationId());
+
+		List<DailyTotals> storeTotalsList = this.dailyTotalsRepository.findAll(Example.of(storeTotalsCriteria));
+
+		DailyTotals storeTotalsActual = null;
+
+		if (storeTotalsList != null && !storeTotalsList.isEmpty()) {
+			for (DailyTotals dlyTotal : storeTotalsList) {
+				if (dlyTotal.getRegisterId() == null) {
+					storeTotalsActual = dlyTotal;
+					break;
+				} 
+			}
+		}
+
+		if (storeTotalsActual != null) {
+			
+			this.dailyTotalsRepository.delete(storeTotalsActual);
+			logger.info("The store totals has been deleted  successfully");
+
+		}
+		
+	}
 	private List<LedgerJournal> createSupplierPaymentLedgers(List<AccountJournal> supplierJournals) {
 		List<LedgerJournal> ledgers = new ArrayList<>();
 

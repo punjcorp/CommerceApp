@@ -29,6 +29,10 @@ public class ValidationGroup {
 
 	}
 
+	public interface ValidationGroupSkipStoreOpen {
+
+	}
+	
 	public interface ValidationGroupStoreOpen {
 
 	}

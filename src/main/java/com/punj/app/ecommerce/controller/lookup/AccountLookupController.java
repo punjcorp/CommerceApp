@@ -38,6 +38,7 @@ import com.punj.app.ecommerce.models.financials.AccountJournalBean;
 import com.punj.app.ecommerce.models.supplier.SupplierLookupDTO;
 import com.punj.app.ecommerce.services.PaymentAccountService;
 import com.punj.app.ecommerce.services.common.CommonService;
+import com.punj.app.ecommerce.services.common.ConfigService;
 
 /**
  * @author admin
@@ -50,10 +51,20 @@ public class AccountLookupController {
 	private PaymentAccountService accountService;
 	private CommonService commonService;
 	private CommerceContext commerceContext;
-	
+	private ConfigService configService;
+
 	@Value("${commerce.default.location}")
 	private Integer defaultLocation;
 
+	/**
+	 * @param configService
+	 *            the configService to set
+	 */
+	@Autowired
+	public void setConfigService(ConfigService configService) {
+		this.configService = configService;
+	}
+	
 	/**
 	 * @param accountService
 	 *            the accountService to set
@@ -123,7 +134,10 @@ public class AccountLookupController {
 						List<AccountJournal> accountJournals = this.accountService.retrievePaymentAccountJournals(accountIds);
 						if(accountJournals!=null && !accountJournals.isEmpty()) {
 							if(this.defaultLocation==null) {
-								this.defaultLocation = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
+								String locationIdStr = this.configService.getAppConfigByKey(MVCConstants.APP_DEFAULT_LOCATION);
+								this.defaultLocation = new Integer(locationIdStr);
+								
+								//this.defaultLocation = (Integer) commerceContext.getStoreSettings(CommerceConstants.OPEN_LOC_ID);
 							}
 							Map<Integer, Tender> tenderMap = this.commonService.retrieveAllTendersAsMap(this.defaultLocation);
 							List<AccountJournalBean> ajBeans = SupplierTransformer.transformAccountJournals(accountJournals, tenderMap,supplierAccounts,accountDTO.getSupplier().getName());
